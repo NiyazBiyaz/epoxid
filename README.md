@@ -29,10 +29,11 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 ### Already implemented:
 - Tokenizer supporting full Python spec.
 - PEG-parser generator (inspired by CPython's [pegen](https://github.com/we-like-parsers/pegen/)).
+- Python parser.
 
 ### Currently working on:
-
-Python parser & improving parser generator.
+- Improving Python parser.
+- Runtime basics and interpretation.
 
 ## Getting started
 
@@ -60,18 +61,19 @@ dotnet test
 
 ```
 pysharp
+├── docs
 ├── PySharp.Benchmarks                          -- Speed tests
 ├── src
 │   ├── PySharp                                 -- Main project of the language
-│   │   └── Runtime                             -- Draft of the runtime library
-│   ├── PySharp.SyntaxAnalysis.Common           -- Base library for PEG generator
-│   ├── PySharp.SyntaxAnalysis.Generator        -- PEG-Generator
-│   └── PySharp.SyntaxAnalysis.Tokens           -- Tokenizer
+│   │   ├── Runtime                             -- Runtime library
+│   │   │   └── Objects                         -- Py# object model
+│   │   └── SyntaxAnalysis                      -- Syntax analysis library
+│   │       ├── Common                          -- Non-specialized syntax library
+│   │       └── Tokens                          -- Tokenizer
+│   └── PySharp.SyntaxAnalysis.Generator        -- PegenNet (PEG parser generator)
 ├── tests
-│   ├── PySharp.SyntaxAnalysis.Generator.Tests  -- Test for the PEG parser generator
-│   └── PySharp.Tests
-│       ├── Data                                -- Tests data
-│       └── SyntaxAnalysis                      -- Tests for parsing & lexing
+│   ├── PySharp.SyntaxAnalysis.Generator.Tests  -- Tests for the PegenNet
+│   └── PySharp.Tests                           -- Tests of the main project
 └── Tools
 ```
 
