@@ -137,6 +137,7 @@ public class NodeArray<TNode> : INodeArray<TNode>, IEquatable<NodeArray<TNode>>
         return builder.ToString();
     }
 
+    // DO NOT CHANGE: tests dependency.
     public void AcceptPrettyPrint(StringBuilder builder, int indentation)
     {
         builder.Append("NodeArray()");

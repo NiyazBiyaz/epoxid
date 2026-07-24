@@ -1,0 +1,34 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    SingleSimpleStatementNode {
+      Slot[0]: StarExpressionsNode {
+        Slot[0]: NodeArray() [
+          SumNode {
+            Slot[0]: AtomPrimaryNode {
+              Slot[0]: NumberAtomNode {
+                Slot[0]: Token(Type: Number, RawString: `2`),
+              },
+            },
+            Slot[1]: Token(Type: Plus, RawString: `+`),
+            Slot[2]: TermNode {
+              Slot[0]: AtomPrimaryNode {
+                Slot[0]: NumberAtomNode {
+                  Slot[0]: Token(Type: Number, RawString: `2`),
+                },
+              },
+              Slot[1]: Token(Type: Star, RawString: `*`),
+              Slot[2]: AtomPrimaryNode {
+                Slot[0]: NumberAtomNode {
+                  Slot[0]: Token(Type: Number, RawString: `2`),
+                },
+              },
+            },
+          },
+        ],
+        Slot[1]: VoidNode(),
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

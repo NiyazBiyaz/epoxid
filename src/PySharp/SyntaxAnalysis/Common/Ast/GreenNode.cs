@@ -80,6 +80,7 @@ public abstract record GreenNode : IGreenNode
 
     private const string indentation_unit = "  ";
 
+    // DO NOT CHANGE: tests dependency.
     public virtual void AcceptPrettyPrint(StringBuilder builder, int indentation)
     {
         builder.Append(GetType().Name);

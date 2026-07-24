@@ -1,6 +1,9 @@
-﻿using PySharp.SyntaxAnalysis;
+﻿using System.Runtime.CompilerServices;
+using PySharp.SyntaxAnalysis;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Tokens;
+
+[assembly: InternalsVisibleTo("PySharp.Tests")]
 
 namespace PySharp;
 
