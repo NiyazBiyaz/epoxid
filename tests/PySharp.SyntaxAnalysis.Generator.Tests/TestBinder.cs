@@ -840,6 +840,35 @@ public class TestBinder
     }
 
     [Fact]
+    public void TestInspectRules_IndirectLeftRecursion()
+    {
+        const string src = """
+        @main
+        bau: BauBau
+
+        @memo
+        BauBau:
+            | Fluffy
+            | Fuzzy
+
+        Fluffy: BauBau Fuzzy
+
+        Fuzzy: "Bau"
+        """;
+        var gram = getView(src);
+        var binder = new Binder();
+        binder.RegisterRules(gram.Rules);
+        binder.PopulateRules();
+        binder.CreateTypes();
+        binder.InspectRules();
+
+        Assert.True(binder.Rules["Fluffy"].IsLeftRecursive);
+        Assert.False(binder.Rules["Fluffy"].EnableSeedNGrow);
+        Assert.True(binder.Rules["BauBau"].IsLeftRecursive);
+        Assert.True(binder.Rules["BauBau"].EnableSeedNGrow);
+    }
+
+    [Fact]
     public void TestInspectRules_ArmNeverReached()
     {
         const string src = """
