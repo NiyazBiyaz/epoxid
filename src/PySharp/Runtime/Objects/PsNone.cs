@@ -6,4 +6,6 @@ public class PsNone : PsObject
         : base(PsConstants.NoneType)
     {
     }
+
+    public override string ToString() => "None";
 }

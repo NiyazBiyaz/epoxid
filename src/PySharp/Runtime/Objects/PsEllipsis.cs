@@ -6,4 +6,6 @@ public class PsEllipsis : PsObject
         : base(PsConstants.EllipsisType)
     {
     }
+
+    public override string ToString() => "Ellipsis";
 }

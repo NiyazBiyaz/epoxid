@@ -12,4 +12,6 @@ public class PsFloat : PsObject
 
     public static explicit operator double(PsFloat psFloat) => psFloat.value;
     public static explicit operator PsFloat(double clrFloat) => new(clrFloat);
+
+    public override string ToString() => value.ToString();
 }

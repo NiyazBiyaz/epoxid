@@ -12,4 +12,6 @@ public class PsBool : PsObject
 
     public static explicit operator bool(PsBool psBool) => psBool.value;
     public static explicit operator PsBool(bool clrBool) => new(clrBool);
+
+    public override string ToString() => value.ToString();
 }

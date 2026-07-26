@@ -8,8 +8,12 @@ public static class PsConstants
     public static PsType Int { get; }
     public static PsType Float { get; }
     public static PsType Bool { get; }
+    public static PsType Tuple { get; }
+    public static PsType Dict { get; }
     public static PsType NoneType { get; }
     public static PsType EllipsisType { get; }
+    public static PsType Function { get; }
+    public static PsType NativeFunction { get; }
 
     public static PsBool True { get; }
     public static PsBool False { get; }
@@ -29,8 +33,14 @@ public static class PsConstants
         Int = new("int", [Object], Type);
         Bool = new("bool", [Int], Type);
 
+        Tuple = new("tuple", [Object], Type);
+        Dict = new("dict", [Object], Type);
+
         NoneType = new("NoneType", [Object], Type);
         EllipsisType = new("EllipsisType", [Object], Type);
+
+        Function = new("function", [Object], Type);
+        NativeFunction = new("built_in_function_or_method", [Object], Type);
 
         True = (PsBool)true;
         False = (PsBool)false;

@@ -12,4 +12,6 @@ public class PsString : PsObject
 
     public static explicit operator string(PsString str) => str.value;
     public static explicit operator PsString(string str) => new(str);
+
+    public override string ToString() => value;
 }

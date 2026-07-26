@@ -75,6 +75,8 @@ CompoundStatement:
 Assignment:
     | Name ':' Expression -EqualAnnotatedRhs -> AnnotatedAssignment(Target=name, TypeHint=expression, Rhs=equal_annotated_rhs)
 
+    | Name EqualAnnotatedRhs -> SimpleAssignment(Target=name, Rhs=equal_annotated_rhs)
+
     | '(' SingleTarget ')' ':' Expression -EqualAnnotatedRhs -> AnnotatedParenthesizedAssignment(
         Target=single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
 
@@ -699,7 +701,7 @@ DictComprehension:
 Arguments:
     | PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> WithPositionalArguments(
         PositionalArgumentsPart=positional_argument_Gather, KeywordArgumentsPart=keyword_arguments_part)
-    
+
     | Kwargs -',' -> OnlyKeywordArguments(Value=kwargs)
 
 @union

@@ -15,7 +15,7 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 ## State of the project
 
 ### Here is the my current goals:
-- [ ] Run `print("Bau Bau!")`
+- [x] Run `print("Bau Bau!")`
 - [ ] Turing complete
 - [ ] Basic classes, functions, simple object semantics
 - [ ] Bytecode VM (on top of the CLR)

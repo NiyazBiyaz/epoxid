@@ -984,6 +984,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // Assignment:
     //     | Name ':' Expression -EqualAnnotatedRhs -> AnnotatedAssignment(Target=name, TypeHint=expression, Rhs=equal_annotated_rhs)
     //
+    //     | Name EqualAnnotatedRhs -> SimpleAssignment(Target=name, Rhs=equal_annotated_rhs)
+    //
     //     | '(' SingleTarget ')' ':' Expression -EqualAnnotatedRhs -> AnnotatedParenthesizedAssignment(
     //         Target=single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
     //
@@ -1029,6 +1031,29 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("Name ':' Expression -EqualAnnotatedRhs");
+        }
+        base.Reset(_mark);
+        {
+            // Name EqualAnnotatedRhs -> SimpleAssignment(Target=name, Rhs=equal_annotated_rhs)
+            base.LogAlternativeEntered("Name EqualAnnotatedRhs");
+            IGreenNode? name;
+            IGreenNode? equal_annotated_rhs;
+            if ((name = Expect(TokenType.Name)) is not null
+                &&
+                (equal_annotated_rhs = rule_EqualAnnotatedRhs()) is not null
+            )
+            {
+                base.LogAlternativeSucceed("Name EqualAnnotatedRhs");
+                _res = new SimpleAssignmentNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        name,
+                        equal_annotated_rhs,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("Name EqualAnnotatedRhs");
         }
         base.Reset(_mark);
         {
@@ -13028,6 +13053,49 @@ public sealed partial class AnnotatedAssignmentView : AssignmentView
                 _field_rhs = (EqualAnnotatedRhsView)((AnnotatedAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
             }
             return (EqualAnnotatedRhsView?)_field_rhs;
+        }
+    }
+}
+
+public sealed partial record SimpleAssignmentNode : AssignmentNode
+{
+    public TokenNode Target => (TokenNode)Children![0];
+    public EqualAnnotatedRhsNode Rhs => (EqualAnnotatedRhsNode)Children![1];
+    public override SimpleAssignmentView GetView(int position, IRedView? parent)
+        => new SimpleAssignmentView(this, position, parent);
+}
+public sealed partial class SimpleAssignmentView : AssignmentView
+{
+    public SimpleAssignmentView(SimpleAssignmentNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_target = null;
+    public TokenView Target
+    {
+        get
+        {
+            if (_field_target == null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_target = (TokenView)((SimpleAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
+            }
+            return (TokenView)_field_target;
+        }
+    }
+
+    private EqualAnnotatedRhsView? _field_rhs = null;
+    public EqualAnnotatedRhsView Rhs
+    {
+        get
+        {
+            if (_field_rhs == null)
+            {
+                var _positionOfField = base.GetPositionFor(1);
+                _field_rhs = (EqualAnnotatedRhsView)((SimpleAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
+            }
+            return (EqualAnnotatedRhsView)_field_rhs;
         }
     }
 }

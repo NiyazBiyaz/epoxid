@@ -41,6 +41,7 @@ public static class Program
                 };
 
                 var interpreter = new Interpreter();
+                interpreter.LoadBuiltins();
 
                 interpreter.InterpretFile(fileView);
             }
