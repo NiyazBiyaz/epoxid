@@ -1,5 +1,8 @@
 using System.Diagnostics;
+using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using PySharp.Runtime.Objects;
 
 namespace PySharp.SyntaxAnalysis.Common;
 
@@ -35,6 +38,21 @@ public static class NumberParser
 
         return result;
     }
+
+    public static PsObject ParseNumber(ReadOnlySpan<char> number) => number switch
+    {
+        _ when number.ContainsAny("jJ") => throw new NotImplementedException("Complex number cannot be parsed yet."),
+
+        _ when number.ContainsAny("eE.") => new PsFloat(double.Parse(number, CultureInfo.InvariantCulture)),
+
+        ['0', 'x'] => new PsInteger(BigInteger.Parse(number, CultureInfo.InvariantCulture)),
+
+        ['0', 'b'] => new PsInteger(BigInteger.Parse(number, CultureInfo.InvariantCulture)),
+
+        ['0', 'o'] => throw new NotImplementedException("Octal numbers cannot be parsed yet."),
+
+        _ => new PsInteger(BigInteger.Parse(number, CultureInfo.InvariantCulture)),
+    };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int? convert(char ch) => ch switch

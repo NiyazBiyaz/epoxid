@@ -20,4 +20,6 @@ public class PsInteger : PsObject
 
     public static explicit operator long(PsInteger integer) => checked((long)integer.value);
     public static explicit operator PsInteger(long integer) => new(integer);
+
+    public override string ToString() => value.ToString();
 }

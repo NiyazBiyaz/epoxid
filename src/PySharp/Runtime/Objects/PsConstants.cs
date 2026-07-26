@@ -9,10 +9,12 @@ public static class PsConstants
     public static PsType Float { get; }
     public static PsType Bool { get; }
     public static PsType NoneType { get; }
+    public static PsType EllipsisType { get; }
 
     public static PsBool True { get; }
     public static PsBool False { get; }
     public static PsNone None { get; }
+    public static PsEllipsis Ellipsis { get; }
 
     static PsConstants()
     {
@@ -27,10 +29,12 @@ public static class PsConstants
         Int = new("int", [Object], Type);
         Bool = new("bool", [Int], Type);
 
-        NoneType = new("NoneType", [Object]);
+        NoneType = new("NoneType", [Object], Type);
+        EllipsisType = new("EllipsisType", [Object], Type);
 
         True = (PsBool)true;
         False = (PsBool)false;
         None = new PsNone();
+        Ellipsis = new PsEllipsis();
     }
 }

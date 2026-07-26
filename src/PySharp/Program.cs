@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using PySharp.Runtime;
 using PySharp.SyntaxAnalysis;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Tokens;
@@ -23,31 +24,25 @@ public static class Program
 
             string source = File.ReadAllText(arg);
 
-            string outPath = arg + ".ptree";
-
             var sync = SynchronizationPoint.ClearPoint(new StringBuffer(source));
 
             var tokenizer = new Tokenizer(sync);
             var parser = new PythonParser(new TokenNodeStream(tokenizer));
 
-            var startTime = DateTime.UtcNow;
-
             var tree = parser.Parse();
-
-            var endTime = DateTime.UtcNow;
 
             if (tree != null)
             {
-                var file = File.CreateText(outPath);
-                file.NewLine = "\n";
-                file.WriteLine(tree.PrettyPrint());
+                var fileView = tree.GetView(0, null);
+                fileView.SyntaxTree = new SyntaxViewTree
+                {
+                    Root = fileView,
+                    PositionMap = tokenizer.PositionMap
+                };
 
-                file.Flush();
-                file.Close();
+                var interpreter = new Interpreter();
 
-                Console.WriteLine($"File {arg} was parsed.");
-                Console.WriteLine($"Time elapsed: {(endTime - startTime).TotalMilliseconds}ms.");
-                Console.WriteLine($"Result was saved to {outPath}.");
+                interpreter.InterpretFile(fileView);
             }
             else
             {

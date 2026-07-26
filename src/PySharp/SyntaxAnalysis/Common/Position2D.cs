@@ -70,5 +70,5 @@ public readonly record struct Position2D(int Line, int Column)
         }
     }
 
-    public override string ToString() => $"TokenPos({Line}, {Column})";
+    public override string ToString() => $"{Line}.{Column}";
 }
