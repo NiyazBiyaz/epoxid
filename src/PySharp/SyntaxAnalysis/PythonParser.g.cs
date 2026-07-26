@@ -10,7 +10,7 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-internal partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<FileNode>(_tokenStream)
+public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<FileNode>(_tokenStream)
 {
     protected override HashSet<string> Keywords => [];
 
@@ -12833,21 +12833,21 @@ internal partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<
     #endregion // DeleteTargetAtom
 }
 #region Type definitions
-internal sealed partial record FileNode : GreenNode
+public sealed partial record FileNode : GreenNode
 {
-    internal NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![0];
+    public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![0];
     public override FileView GetView(int position, IRedView? parent)
         => new FileView(this, position, parent);
 }
-internal sealed partial class FileView : RedView
+public sealed partial class FileView : RedView
 {
-    internal FileView(FileNode green, int position, IRedView? parent)
+    public FileView(FileNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<IStatementView>? _field_statements = null;
-    internal ViewArray<IStatementView> Statements
+    public ViewArray<IStatementView> Statements
     {
         get
         {
@@ -12861,35 +12861,35 @@ internal sealed partial class FileView : RedView
     }
 }
 
-internal partial interface IStatementNode : IGreenNode;
-internal partial interface IStatementView : IRedView;
+public partial interface IStatementNode : IGreenNode;
+public partial interface IStatementView : IRedView;
 
-internal abstract partial record SimpleStatementsNode : GreenNode, IStatementNode
+public abstract partial record SimpleStatementsNode : GreenNode, IStatementNode
 {
 }
-internal abstract partial class SimpleStatementsView : RedView, IStatementView
+public abstract partial class SimpleStatementsView : RedView, IStatementView
 {
-    internal SimpleStatementsView(SimpleStatementsNode green, int position, IRedView? parent)
+    public SimpleStatementsView(SimpleStatementsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record SingleSimpleStatementNode : SimpleStatementsNode
+public sealed partial record SingleSimpleStatementNode : SimpleStatementsNode
 {
-    internal ISimpleStatementNode Value => (ISimpleStatementNode)Children![0];
+    public ISimpleStatementNode Value => (ISimpleStatementNode)Children![0];
     public override SingleSimpleStatementView GetView(int position, IRedView? parent)
         => new SingleSimpleStatementView(this, position, parent);
 }
-internal sealed partial class SingleSimpleStatementView : SimpleStatementsView
+public sealed partial class SingleSimpleStatementView : SimpleStatementsView
 {
-    internal SingleSimpleStatementView(SingleSimpleStatementNode green, int position, IRedView? parent)
+    public SingleSimpleStatementView(SingleSimpleStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ISimpleStatementView? _field_value = null;
-    internal ISimpleStatementView Value
+    public ISimpleStatementView Value
     {
         get
         {
@@ -12903,10 +12903,10 @@ internal sealed partial class SingleSimpleStatementView : SimpleStatementsView
     }
 }
 
-internal sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsNode
+public sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode>? _field_Values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode> Values
+    public global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode> Values
     {
         get
         {
@@ -12918,19 +12918,19 @@ internal sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsN
             return _field_Values.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
     public override SeparatedSimpleStatementsView GetView(int position, IRedView? parent)
         => new SeparatedSimpleStatementsView(this, position, parent);
 }
-internal sealed partial class SeparatedSimpleStatementsView : SimpleStatementsView
+public sealed partial class SeparatedSimpleStatementsView : SimpleStatementsView
 {
-    internal SeparatedSimpleStatementsView(SeparatedSimpleStatementsNode green, int position, IRedView? parent)
+    public SeparatedSimpleStatementsView(SeparatedSimpleStatementsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    internal ViewArray<RedView> AstValues
+    public ViewArray<RedView> AstValues
     {
         get
         {
@@ -12943,7 +12943,7 @@ internal sealed partial class SeparatedSimpleStatementsView : SimpleStatementsVi
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView>? _field_values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView> Values
+    public global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView> Values
     {
         get
         {
@@ -12957,40 +12957,40 @@ internal sealed partial class SeparatedSimpleStatementsView : SimpleStatementsVi
     }
 }
 
-internal partial interface ISimpleStatementNode : IGreenNode;
-internal partial interface ISimpleStatementView : IRedView;
+public partial interface ISimpleStatementNode : IGreenNode;
+public partial interface ISimpleStatementView : IRedView;
 
-internal partial interface ICompoundStatementNode : IGreenNode, IStatementNode;
-internal partial interface ICompoundStatementView : IRedView, IStatementView;
+public partial interface ICompoundStatementNode : IGreenNode, IStatementNode;
+public partial interface ICompoundStatementView : IRedView, IStatementView;
 
-internal abstract partial record AssignmentNode : GreenNode, ISimpleStatementNode
+public abstract partial record AssignmentNode : GreenNode, ISimpleStatementNode
 {
 }
-internal abstract partial class AssignmentView : RedView, ISimpleStatementView
+public abstract partial class AssignmentView : RedView, ISimpleStatementView
 {
-    internal AssignmentView(AssignmentNode green, int position, IRedView? parent)
+    public AssignmentView(AssignmentNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record AnnotatedAssignmentNode : AssignmentNode
+public sealed partial record AnnotatedAssignmentNode : AssignmentNode
 {
-    internal TokenNode Target => (TokenNode)Children![0];
-    internal IExpressionNode TypeHint => (IExpressionNode)Children![2];
-    internal EqualAnnotatedRhsNode? Rhs => Children![3] as EqualAnnotatedRhsNode;
+    public TokenNode Target => (TokenNode)Children![0];
+    public IExpressionNode TypeHint => (IExpressionNode)Children![2];
+    public EqualAnnotatedRhsNode? Rhs => Children![3] as EqualAnnotatedRhsNode;
     public override AnnotatedAssignmentView GetView(int position, IRedView? parent)
         => new AnnotatedAssignmentView(this, position, parent);
 }
-internal sealed partial class AnnotatedAssignmentView : AssignmentView
+public sealed partial class AnnotatedAssignmentView : AssignmentView
 {
-    internal AnnotatedAssignmentView(AnnotatedAssignmentNode green, int position, IRedView? parent)
+    public AnnotatedAssignmentView(AnnotatedAssignmentNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_target = null;
-    internal TokenView Target
+    public TokenView Target
     {
         get
         {
@@ -13004,7 +13004,7 @@ internal sealed partial class AnnotatedAssignmentView : AssignmentView
     }
 
     private IExpressionView? _field_typeHint = null;
-    internal IExpressionView TypeHint
+    public IExpressionView TypeHint
     {
         get
         {
@@ -13018,7 +13018,7 @@ internal sealed partial class AnnotatedAssignmentView : AssignmentView
     }
 
     private EqualAnnotatedRhsView? _field_rhs = null;
-    internal EqualAnnotatedRhsView? Rhs
+    public EqualAnnotatedRhsView? Rhs
     {
         get
         {
@@ -13032,23 +13032,23 @@ internal sealed partial class AnnotatedAssignmentView : AssignmentView
     }
 }
 
-internal sealed partial record AnnotatedParenthesizedAssignmentNode : AssignmentNode
+public sealed partial record AnnotatedParenthesizedAssignmentNode : AssignmentNode
 {
-    internal SingleTargetNode Target => (SingleTargetNode)Children![1];
-    internal IExpressionNode TypeHint => (IExpressionNode)Children![4];
-    internal EqualAnnotatedRhsNode? Rhs => Children![5] as EqualAnnotatedRhsNode;
+    public SingleTargetNode Target => (SingleTargetNode)Children![1];
+    public IExpressionNode TypeHint => (IExpressionNode)Children![4];
+    public EqualAnnotatedRhsNode? Rhs => Children![5] as EqualAnnotatedRhsNode;
     public override AnnotatedParenthesizedAssignmentView GetView(int position, IRedView? parent)
         => new AnnotatedParenthesizedAssignmentView(this, position, parent);
 }
-internal sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentView
+public sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentView
 {
-    internal AnnotatedParenthesizedAssignmentView(AnnotatedParenthesizedAssignmentNode green, int position, IRedView? parent)
+    public AnnotatedParenthesizedAssignmentView(AnnotatedParenthesizedAssignmentNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SingleTargetView? _field_target = null;
-    internal SingleTargetView Target
+    public SingleTargetView Target
     {
         get
         {
@@ -13062,7 +13062,7 @@ internal sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentV
     }
 
     private IExpressionView? _field_typeHint = null;
-    internal IExpressionView TypeHint
+    public IExpressionView TypeHint
     {
         get
         {
@@ -13076,7 +13076,7 @@ internal sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentV
     }
 
     private EqualAnnotatedRhsView? _field_rhs = null;
-    internal EqualAnnotatedRhsView? Rhs
+    public EqualAnnotatedRhsView? Rhs
     {
         get
         {
@@ -13090,23 +13090,23 @@ internal sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentV
     }
 }
 
-internal sealed partial record AnnotatedSubscriptAttributeAssignmentNode : AssignmentNode
+public sealed partial record AnnotatedSubscriptAttributeAssignmentNode : AssignmentNode
 {
-    internal SingleSubscriptAttributeTargetNode Target => (SingleSubscriptAttributeTargetNode)Children![0];
-    internal IExpressionNode TypeHint => (IExpressionNode)Children![2];
-    internal EqualAnnotatedRhsNode? Rhs => Children![3] as EqualAnnotatedRhsNode;
+    public SingleSubscriptAttributeTargetNode Target => (SingleSubscriptAttributeTargetNode)Children![0];
+    public IExpressionNode TypeHint => (IExpressionNode)Children![2];
+    public EqualAnnotatedRhsNode? Rhs => Children![3] as EqualAnnotatedRhsNode;
     public override AnnotatedSubscriptAttributeAssignmentView GetView(int position, IRedView? parent)
         => new AnnotatedSubscriptAttributeAssignmentView(this, position, parent);
 }
-internal sealed partial class AnnotatedSubscriptAttributeAssignmentView : AssignmentView
+public sealed partial class AnnotatedSubscriptAttributeAssignmentView : AssignmentView
 {
-    internal AnnotatedSubscriptAttributeAssignmentView(AnnotatedSubscriptAttributeAssignmentNode green, int position, IRedView? parent)
+    public AnnotatedSubscriptAttributeAssignmentView(AnnotatedSubscriptAttributeAssignmentNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SingleSubscriptAttributeTargetView? _field_target = null;
-    internal SingleSubscriptAttributeTargetView Target
+    public SingleSubscriptAttributeTargetView Target
     {
         get
         {
@@ -13120,7 +13120,7 @@ internal sealed partial class AnnotatedSubscriptAttributeAssignmentView : Assign
     }
 
     private IExpressionView? _field_typeHint = null;
-    internal IExpressionView TypeHint
+    public IExpressionView TypeHint
     {
         get
         {
@@ -13134,7 +13134,7 @@ internal sealed partial class AnnotatedSubscriptAttributeAssignmentView : Assign
     }
 
     private EqualAnnotatedRhsView? _field_rhs = null;
-    internal EqualAnnotatedRhsView? Rhs
+    public EqualAnnotatedRhsView? Rhs
     {
         get
         {
@@ -13148,22 +13148,22 @@ internal sealed partial class AnnotatedSubscriptAttributeAssignmentView : Assign
     }
 }
 
-internal sealed partial record CascadeAssignmentNode : AssignmentNode
+public sealed partial record CascadeAssignmentNode : AssignmentNode
 {
-    internal NodeArray<AssignmentTargetNode> Targets => (NodeArray<AssignmentTargetNode>)Children![0];
-    internal IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![1];
+    public NodeArray<AssignmentTargetNode> Targets => (NodeArray<AssignmentTargetNode>)Children![0];
+    public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![1];
     public override CascadeAssignmentView GetView(int position, IRedView? parent)
         => new CascadeAssignmentView(this, position, parent);
 }
-internal sealed partial class CascadeAssignmentView : AssignmentView
+public sealed partial class CascadeAssignmentView : AssignmentView
 {
-    internal CascadeAssignmentView(CascadeAssignmentNode green, int position, IRedView? parent)
+    public CascadeAssignmentView(CascadeAssignmentNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<AssignmentTargetView>? _field_targets = null;
-    internal ViewArray<AssignmentTargetView> Targets
+    public ViewArray<AssignmentTargetView> Targets
     {
         get
         {
@@ -13177,7 +13177,7 @@ internal sealed partial class CascadeAssignmentView : AssignmentView
     }
 
     private IAnnotatedRhsView? _field_rhs = null;
-    internal IAnnotatedRhsView Rhs
+    public IAnnotatedRhsView Rhs
     {
         get
         {
@@ -13191,23 +13191,23 @@ internal sealed partial class CascadeAssignmentView : AssignmentView
     }
 }
 
-internal sealed partial record AugmentedAssignmentNode : AssignmentNode
+public sealed partial record AugmentedAssignmentNode : AssignmentNode
 {
-    internal SingleTargetNode Target => (SingleTargetNode)Children![0];
-    internal TokenNode Operator => (TokenNode)Children![1];
-    internal IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![2];
+    public SingleTargetNode Target => (SingleTargetNode)Children![0];
+    public TokenNode Operator => (TokenNode)Children![1];
+    public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![2];
     public override AugmentedAssignmentView GetView(int position, IRedView? parent)
         => new AugmentedAssignmentView(this, position, parent);
 }
-internal sealed partial class AugmentedAssignmentView : AssignmentView
+public sealed partial class AugmentedAssignmentView : AssignmentView
 {
-    internal AugmentedAssignmentView(AugmentedAssignmentNode green, int position, IRedView? parent)
+    public AugmentedAssignmentView(AugmentedAssignmentNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SingleTargetView? _field_target = null;
-    internal SingleTargetView Target
+    public SingleTargetView Target
     {
         get
         {
@@ -13221,7 +13221,7 @@ internal sealed partial class AugmentedAssignmentView : AssignmentView
     }
 
     private TokenView? _field_operator = null;
-    internal TokenView Operator
+    public TokenView Operator
     {
         get
         {
@@ -13235,7 +13235,7 @@ internal sealed partial class AugmentedAssignmentView : AssignmentView
     }
 
     private IAnnotatedRhsView? _field_rhs = null;
-    internal IAnnotatedRhsView Rhs
+    public IAnnotatedRhsView Rhs
     {
         get
         {
@@ -13249,21 +13249,21 @@ internal sealed partial class AugmentedAssignmentView : AssignmentView
     }
 }
 
-internal sealed partial record AssignmentTargetNode : GreenNode
+public sealed partial record AssignmentTargetNode : GreenNode
 {
-    internal StarTargetsNode Value => (StarTargetsNode)Children![0];
+    public StarTargetsNode Value => (StarTargetsNode)Children![0];
     public override AssignmentTargetView GetView(int position, IRedView? parent)
         => new AssignmentTargetView(this, position, parent);
 }
-internal sealed partial class AssignmentTargetView : RedView
+public sealed partial class AssignmentTargetView : RedView
 {
-    internal AssignmentTargetView(AssignmentTargetNode green, int position, IRedView? parent)
+    public AssignmentTargetView(AssignmentTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetsView? _field_value = null;
-    internal StarTargetsView Value
+    public StarTargetsView Value
     {
         get
         {
@@ -13277,21 +13277,21 @@ internal sealed partial class AssignmentTargetView : RedView
     }
 }
 
-internal sealed partial record EqualAnnotatedRhsNode : GreenNode
+public sealed partial record EqualAnnotatedRhsNode : GreenNode
 {
-    internal IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
+    public IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
     public override EqualAnnotatedRhsView GetView(int position, IRedView? parent)
         => new EqualAnnotatedRhsView(this, position, parent);
 }
-internal sealed partial class EqualAnnotatedRhsView : RedView
+public sealed partial class EqualAnnotatedRhsView : RedView
 {
-    internal EqualAnnotatedRhsView(EqualAnnotatedRhsNode green, int position, IRedView? parent)
+    public EqualAnnotatedRhsView(EqualAnnotatedRhsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IAnnotatedRhsView? _field_value = null;
-    internal IAnnotatedRhsView Value
+    public IAnnotatedRhsView Value
     {
         get
         {
@@ -13305,24 +13305,24 @@ internal sealed partial class EqualAnnotatedRhsView : RedView
     }
 }
 
-internal partial interface IAnnotatedRhsNode : IGreenNode;
-internal partial interface IAnnotatedRhsView : IRedView;
+public partial interface IAnnotatedRhsNode : IGreenNode;
+public partial interface IAnnotatedRhsView : IRedView;
 
-internal sealed partial record ReturnStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record ReturnStatementNode : GreenNode, ISimpleStatementNode
 {
-    internal StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
+    public StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
     public override ReturnStatementView GetView(int position, IRedView? parent)
         => new ReturnStatementView(this, position, parent);
 }
-internal sealed partial class ReturnStatementView : RedView, ISimpleStatementView
+public sealed partial class ReturnStatementView : RedView, ISimpleStatementView
 {
-    internal ReturnStatementView(ReturnStatementNode green, int position, IRedView? parent)
+    public ReturnStatementView(ReturnStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarExpressionsView? _field_expression = null;
-    internal StarExpressionsView? Expression
+    public StarExpressionsView? Expression
     {
         get
         {
@@ -13336,33 +13336,33 @@ internal sealed partial class ReturnStatementView : RedView, ISimpleStatementVie
     }
 }
 
-internal abstract partial record RaiseStatementNode : GreenNode, ISimpleStatementNode
+public abstract partial record RaiseStatementNode : GreenNode, ISimpleStatementNode
 {
 }
-internal abstract partial class RaiseStatementView : RedView, ISimpleStatementView
+public abstract partial class RaiseStatementView : RedView, ISimpleStatementView
 {
-    internal RaiseStatementView(RaiseStatementNode green, int position, IRedView? parent)
+    public RaiseStatementView(RaiseStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record RaiseFromStatementNode : RaiseStatementNode
+public sealed partial record RaiseFromStatementNode : RaiseStatementNode
 {
-    internal IExpressionNode NewException => (IExpressionNode)Children![1];
-    internal IExpressionNode OldExpression => (IExpressionNode)Children![3];
+    public IExpressionNode NewException => (IExpressionNode)Children![1];
+    public IExpressionNode OldExpression => (IExpressionNode)Children![3];
     public override RaiseFromStatementView GetView(int position, IRedView? parent)
         => new RaiseFromStatementView(this, position, parent);
 }
-internal sealed partial class RaiseFromStatementView : RaiseStatementView
+public sealed partial class RaiseFromStatementView : RaiseStatementView
 {
-    internal RaiseFromStatementView(RaiseFromStatementNode green, int position, IRedView? parent)
+    public RaiseFromStatementView(RaiseFromStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_newException = null;
-    internal IExpressionView NewException
+    public IExpressionView NewException
     {
         get
         {
@@ -13376,7 +13376,7 @@ internal sealed partial class RaiseFromStatementView : RaiseStatementView
     }
 
     private IExpressionView? _field_oldExpression = null;
-    internal IExpressionView OldExpression
+    public IExpressionView OldExpression
     {
         get
         {
@@ -13390,21 +13390,21 @@ internal sealed partial class RaiseFromStatementView : RaiseStatementView
     }
 }
 
-internal sealed partial record RaiseFromScratchStatementNode : RaiseStatementNode
+public sealed partial record RaiseFromScratchStatementNode : RaiseStatementNode
 {
-    internal IExpressionNode Exception => (IExpressionNode)Children![1];
+    public IExpressionNode Exception => (IExpressionNode)Children![1];
     public override RaiseFromScratchStatementView GetView(int position, IRedView? parent)
         => new RaiseFromScratchStatementView(this, position, parent);
 }
-internal sealed partial class RaiseFromScratchStatementView : RaiseStatementView
+public sealed partial class RaiseFromScratchStatementView : RaiseStatementView
 {
-    internal RaiseFromScratchStatementView(RaiseFromScratchStatementNode green, int position, IRedView? parent)
+    public RaiseFromScratchStatementView(RaiseFromScratchStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_exception = null;
-    internal IExpressionView Exception
+    public IExpressionView Exception
     {
         get
         {
@@ -13418,62 +13418,62 @@ internal sealed partial class RaiseFromScratchStatementView : RaiseStatementView
     }
 }
 
-internal sealed partial record PassedRaiseStatementNode : RaiseStatementNode
+public sealed partial record PassedRaiseStatementNode : RaiseStatementNode
 {
     public override PassedRaiseStatementView GetView(int position, IRedView? parent)
         => new PassedRaiseStatementView(this, position, parent);
 }
-internal sealed partial class PassedRaiseStatementView : RaiseStatementView
+public sealed partial class PassedRaiseStatementView : RaiseStatementView
 {
-    internal PassedRaiseStatementView(PassedRaiseStatementNode green, int position, IRedView? parent)
+    public PassedRaiseStatementView(PassedRaiseStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record PassStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record PassStatementNode : GreenNode, ISimpleStatementNode
 {
     public override PassStatementView GetView(int position, IRedView? parent)
         => new PassStatementView(this, position, parent);
 }
-internal sealed partial class PassStatementView : RedView, ISimpleStatementView
+public sealed partial class PassStatementView : RedView, ISimpleStatementView
 {
-    internal PassStatementView(PassStatementNode green, int position, IRedView? parent)
+    public PassStatementView(PassStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record BreakStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record BreakStatementNode : GreenNode, ISimpleStatementNode
 {
     public override BreakStatementView GetView(int position, IRedView? parent)
         => new BreakStatementView(this, position, parent);
 }
-internal sealed partial class BreakStatementView : RedView, ISimpleStatementView
+public sealed partial class BreakStatementView : RedView, ISimpleStatementView
 {
-    internal BreakStatementView(BreakStatementNode green, int position, IRedView? parent)
+    public BreakStatementView(BreakStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ContinueStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record ContinueStatementNode : GreenNode, ISimpleStatementNode
 {
     public override ContinueStatementView GetView(int position, IRedView? parent)
         => new ContinueStatementView(this, position, parent);
 }
-internal sealed partial class ContinueStatementView : RedView, ISimpleStatementView
+public sealed partial class ContinueStatementView : RedView, ISimpleStatementView
 {
-    internal ContinueStatementView(ContinueStatementNode green, int position, IRedView? parent)
+    public ContinueStatementView(ContinueStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record GlobalStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record GlobalStatementNode : GreenNode, ISimpleStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Variables = null;
-    internal global::System.Collections.Immutable.ImmutableArray<TokenNode> Variables
+    public global::System.Collections.Immutable.ImmutableArray<TokenNode> Variables
     {
         get
         {
@@ -13485,19 +13485,19 @@ internal sealed partial record GlobalStatementNode : GreenNode, ISimpleStatement
             return _field_Variables.Value;
         }
     }
-    internal NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
     public override GlobalStatementView GetView(int position, IRedView? parent)
         => new GlobalStatementView(this, position, parent);
 }
-internal sealed partial class GlobalStatementView : RedView, ISimpleStatementView
+public sealed partial class GlobalStatementView : RedView, ISimpleStatementView
 {
-    internal GlobalStatementView(GlobalStatementNode green, int position, IRedView? parent)
+    public GlobalStatementView(GlobalStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_variables = null;
-    internal ViewArray<RedView> AstVariables
+    public ViewArray<RedView> AstVariables
     {
         get
         {
@@ -13510,7 +13510,7 @@ internal sealed partial class GlobalStatementView : RedView, ISimpleStatementVie
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<TokenView>? _field_variables = null;
-    internal global::System.Collections.Immutable.ImmutableArray<TokenView> Variables
+    public global::System.Collections.Immutable.ImmutableArray<TokenView> Variables
     {
         get
         {
@@ -13524,10 +13524,10 @@ internal sealed partial class GlobalStatementView : RedView, ISimpleStatementVie
     }
 }
 
-internal sealed partial record NonlocalStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record NonlocalStatementNode : GreenNode, ISimpleStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Variables = null;
-    internal global::System.Collections.Immutable.ImmutableArray<TokenNode> Variables
+    public global::System.Collections.Immutable.ImmutableArray<TokenNode> Variables
     {
         get
         {
@@ -13539,19 +13539,19 @@ internal sealed partial record NonlocalStatementNode : GreenNode, ISimpleStateme
             return _field_Variables.Value;
         }
     }
-    internal NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
     public override NonlocalStatementView GetView(int position, IRedView? parent)
         => new NonlocalStatementView(this, position, parent);
 }
-internal sealed partial class NonlocalStatementView : RedView, ISimpleStatementView
+public sealed partial class NonlocalStatementView : RedView, ISimpleStatementView
 {
-    internal NonlocalStatementView(NonlocalStatementNode green, int position, IRedView? parent)
+    public NonlocalStatementView(NonlocalStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_variables = null;
-    internal ViewArray<RedView> AstVariables
+    public ViewArray<RedView> AstVariables
     {
         get
         {
@@ -13564,7 +13564,7 @@ internal sealed partial class NonlocalStatementView : RedView, ISimpleStatementV
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<TokenView>? _field_variables = null;
-    internal global::System.Collections.Immutable.ImmutableArray<TokenView> Variables
+    public global::System.Collections.Immutable.ImmutableArray<TokenView> Variables
     {
         get
         {
@@ -13578,10 +13578,10 @@ internal sealed partial class NonlocalStatementView : RedView, ISimpleStatementV
     }
 }
 
-internal sealed partial record DeleteStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record DeleteStatementNode : GreenNode, ISimpleStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DeleteTargetNode>? _field_Targets = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DeleteTargetNode> Targets
+    public global::System.Collections.Immutable.ImmutableArray<DeleteTargetNode> Targets
     {
         get
         {
@@ -13593,19 +13593,19 @@ internal sealed partial record DeleteStatementNode : GreenNode, ISimpleStatement
             return _field_Targets.Value;
         }
     }
-    internal NodeArray<GreenNode> AstTargets => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> AstTargets => (NodeArray<GreenNode>)Children![1];
     public override DeleteStatementView GetView(int position, IRedView? parent)
         => new DeleteStatementView(this, position, parent);
 }
-internal sealed partial class DeleteStatementView : RedView, ISimpleStatementView
+public sealed partial class DeleteStatementView : RedView, ISimpleStatementView
 {
-    internal DeleteStatementView(DeleteStatementNode green, int position, IRedView? parent)
+    public DeleteStatementView(DeleteStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_targets = null;
-    internal ViewArray<RedView> AstTargets
+    public ViewArray<RedView> AstTargets
     {
         get
         {
@@ -13618,7 +13618,7 @@ internal sealed partial class DeleteStatementView : RedView, ISimpleStatementVie
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<DeleteTargetView>? _field_targets = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DeleteTargetView> Targets
+    public global::System.Collections.Immutable.ImmutableArray<DeleteTargetView> Targets
     {
         get
         {
@@ -13632,21 +13632,21 @@ internal sealed partial class DeleteStatementView : RedView, ISimpleStatementVie
     }
 }
 
-internal sealed partial record YieldStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record YieldStatementNode : GreenNode, ISimpleStatementNode
 {
-    internal YieldExpressionNode Expression => (YieldExpressionNode)Children![0];
+    public YieldExpressionNode Expression => (YieldExpressionNode)Children![0];
     public override YieldStatementView GetView(int position, IRedView? parent)
         => new YieldStatementView(this, position, parent);
 }
-internal sealed partial class YieldStatementView : RedView, ISimpleStatementView
+public sealed partial class YieldStatementView : RedView, ISimpleStatementView
 {
-    internal YieldStatementView(YieldStatementNode green, int position, IRedView? parent)
+    public YieldStatementView(YieldStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private YieldExpressionView? _field_expression = null;
-    internal YieldExpressionView Expression
+    public YieldExpressionView Expression
     {
         get
         {
@@ -13660,22 +13660,22 @@ internal sealed partial class YieldStatementView : RedView, ISimpleStatementView
     }
 }
 
-internal sealed partial record AssertStatementNode : GreenNode, ISimpleStatementNode
+public sealed partial record AssertStatementNode : GreenNode, ISimpleStatementNode
 {
-    internal IExpressionNode Guard => (IExpressionNode)Children![1];
-    internal AssertMessageNode? Message => Children![2] as AssertMessageNode;
+    public IExpressionNode Guard => (IExpressionNode)Children![1];
+    public AssertMessageNode? Message => Children![2] as AssertMessageNode;
     public override AssertStatementView GetView(int position, IRedView? parent)
         => new AssertStatementView(this, position, parent);
 }
-internal sealed partial class AssertStatementView : RedView, ISimpleStatementView
+public sealed partial class AssertStatementView : RedView, ISimpleStatementView
 {
-    internal AssertStatementView(AssertStatementNode green, int position, IRedView? parent)
+    public AssertStatementView(AssertStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_guard = null;
-    internal IExpressionView Guard
+    public IExpressionView Guard
     {
         get
         {
@@ -13689,7 +13689,7 @@ internal sealed partial class AssertStatementView : RedView, ISimpleStatementVie
     }
 
     private AssertMessageView? _field_message = null;
-    internal AssertMessageView? Message
+    public AssertMessageView? Message
     {
         get
         {
@@ -13703,21 +13703,21 @@ internal sealed partial class AssertStatementView : RedView, ISimpleStatementVie
     }
 }
 
-internal sealed partial record AssertMessageNode : GreenNode
+public sealed partial record AssertMessageNode : GreenNode
 {
-    internal IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![1];
     public override AssertMessageView GetView(int position, IRedView? parent)
         => new AssertMessageView(this, position, parent);
 }
-internal sealed partial class AssertMessageView : RedView
+public sealed partial class AssertMessageView : RedView
 {
-    internal AssertMessageView(AssertMessageNode green, int position, IRedView? parent)
+    public AssertMessageView(AssertMessageNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -13731,13 +13731,13 @@ internal sealed partial class AssertMessageView : RedView
     }
 }
 
-internal partial interface IImportStatementNode : IGreenNode, ISimpleStatementNode;
-internal partial interface IImportStatementView : IRedView, ISimpleStatementView;
+public partial interface IImportStatementNode : IGreenNode, ISimpleStatementNode;
+public partial interface IImportStatementView : IRedView, ISimpleStatementView;
 
-internal sealed partial record ImportNameNode : GreenNode, IImportStatementNode
+public sealed partial record ImportNameNode : GreenNode, IImportStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode>? _field_Import = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
     {
         get
         {
@@ -13749,19 +13749,19 @@ internal sealed partial record ImportNameNode : GreenNode, IImportStatementNode
             return _field_Import.Value;
         }
     }
-    internal NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![1];
     public override ImportNameView GetView(int position, IRedView? parent)
         => new ImportNameView(this, position, parent);
 }
-internal sealed partial class ImportNameView : RedView, IImportStatementView
+public sealed partial class ImportNameView : RedView, IImportStatementView
 {
-    internal ImportNameView(ImportNameNode green, int position, IRedView? parent)
+    public ImportNameView(ImportNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_import = null;
-    internal ViewArray<RedView> AstImport
+    public ViewArray<RedView> AstImport
     {
         get
         {
@@ -13774,7 +13774,7 @@ internal sealed partial class ImportNameView : RedView, IImportStatementView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<DottedAsNameView>? _field_import = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
     {
         get
         {
@@ -13788,10 +13788,10 @@ internal sealed partial class ImportNameView : RedView, IImportStatementView
     }
 }
 
-internal sealed partial record LazyImportNameNode : GreenNode, IImportStatementNode
+public sealed partial record LazyImportNameNode : GreenNode, IImportStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode>? _field_Import = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
     {
         get
         {
@@ -13803,19 +13803,19 @@ internal sealed partial record LazyImportNameNode : GreenNode, IImportStatementN
             return _field_Import.Value;
         }
     }
-    internal NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![2];
+    public NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![2];
     public override LazyImportNameView GetView(int position, IRedView? parent)
         => new LazyImportNameView(this, position, parent);
 }
-internal sealed partial class LazyImportNameView : RedView, IImportStatementView
+public sealed partial class LazyImportNameView : RedView, IImportStatementView
 {
-    internal LazyImportNameView(LazyImportNameNode green, int position, IRedView? parent)
+    public LazyImportNameView(LazyImportNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_import = null;
-    internal ViewArray<RedView> AstImport
+    public ViewArray<RedView> AstImport
     {
         get
         {
@@ -13828,7 +13828,7 @@ internal sealed partial class LazyImportNameView : RedView, IImportStatementView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<DottedAsNameView>? _field_import = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
     {
         get
         {
@@ -13842,19 +13842,19 @@ internal sealed partial class LazyImportNameView : RedView, IImportStatementView
     }
 }
 
-internal abstract partial record ImportFromNode : GreenNode, IImportStatementNode
+public abstract partial record ImportFromNode : GreenNode, IImportStatementNode
 {
-    internal NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![1];
+    public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![1];
 }
-internal abstract partial class ImportFromView : RedView, IImportStatementView
+public abstract partial class ImportFromView : RedView, IImportStatementView
 {
-    internal ImportFromView(ImportFromNode green, int position, IRedView? parent)
+    public ImportFromView(ImportFromNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<TokenView>? _field_relativePath = null;
-    internal ViewArray<TokenView> RelativePath
+    public ViewArray<TokenView> RelativePath
     {
         get
         {
@@ -13868,22 +13868,22 @@ internal abstract partial class ImportFromView : RedView, IImportStatementView
     }
 }
 
-internal sealed partial record ImportFromNamesNode : ImportFromNode
+public sealed partial record ImportFromNamesNode : ImportFromNode
 {
-    internal DottedNameNode Path => (DottedNameNode)Children![2];
-    internal ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
+    public DottedNameNode Path => (DottedNameNode)Children![2];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
     public override ImportFromNamesView GetView(int position, IRedView? parent)
         => new ImportFromNamesView(this, position, parent);
 }
-internal sealed partial class ImportFromNamesView : ImportFromView
+public sealed partial class ImportFromNamesView : ImportFromView
 {
-    internal ImportFromNamesView(ImportFromNamesNode green, int position, IRedView? parent)
+    public ImportFromNamesView(ImportFromNamesNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private DottedNameView? _field_path = null;
-    internal DottedNameView Path
+    public DottedNameView Path
     {
         get
         {
@@ -13897,7 +13897,7 @@ internal sealed partial class ImportFromNamesView : ImportFromView
     }
 
     private ImportFromTargetsView? _field_targets = null;
-    internal ImportFromTargetsView Targets
+    public ImportFromTargetsView Targets
     {
         get
         {
@@ -13911,21 +13911,21 @@ internal sealed partial class ImportFromNamesView : ImportFromView
     }
 }
 
-internal sealed partial record ImportFromRelativeNode : ImportFromNode
+public sealed partial record ImportFromRelativeNode : ImportFromNode
 {
-    internal ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![3];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![3];
     public override ImportFromRelativeView GetView(int position, IRedView? parent)
         => new ImportFromRelativeView(this, position, parent);
 }
-internal sealed partial class ImportFromRelativeView : ImportFromView
+public sealed partial class ImportFromRelativeView : ImportFromView
 {
-    internal ImportFromRelativeView(ImportFromRelativeNode green, int position, IRedView? parent)
+    public ImportFromRelativeView(ImportFromRelativeNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ImportFromTargetsView? _field_targets = null;
-    internal ImportFromTargetsView Targets
+    public ImportFromTargetsView Targets
     {
         get
         {
@@ -13939,19 +13939,19 @@ internal sealed partial class ImportFromRelativeView : ImportFromView
     }
 }
 
-internal abstract partial record LazyImportFromNode : GreenNode, IImportStatementNode
+public abstract partial record LazyImportFromNode : GreenNode, IImportStatementNode
 {
-    internal NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
+    public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
 }
-internal abstract partial class LazyImportFromView : RedView, IImportStatementView
+public abstract partial class LazyImportFromView : RedView, IImportStatementView
 {
-    internal LazyImportFromView(LazyImportFromNode green, int position, IRedView? parent)
+    public LazyImportFromView(LazyImportFromNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<TokenView>? _field_relativePath = null;
-    internal ViewArray<TokenView> RelativePath
+    public ViewArray<TokenView> RelativePath
     {
         get
         {
@@ -13965,10 +13965,10 @@ internal abstract partial class LazyImportFromView : RedView, IImportStatementVi
     }
 }
 
-internal sealed partial record LazyImportFromNamesNode : LazyImportFromNode
+public sealed partial record LazyImportFromNamesNode : LazyImportFromNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode>? _field_Path = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Path
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Path
     {
         get
         {
@@ -13980,20 +13980,20 @@ internal sealed partial record LazyImportFromNamesNode : LazyImportFromNode
             return _field_Path.Value;
         }
     }
-    internal NodeArray<GreenNode> AstPath => (NodeArray<GreenNode>)Children![3];
-    internal ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![5];
+    public NodeArray<GreenNode> AstPath => (NodeArray<GreenNode>)Children![3];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![5];
     public override LazyImportFromNamesView GetView(int position, IRedView? parent)
         => new LazyImportFromNamesView(this, position, parent);
 }
-internal sealed partial class LazyImportFromNamesView : LazyImportFromView
+public sealed partial class LazyImportFromNamesView : LazyImportFromView
 {
-    internal LazyImportFromNamesView(LazyImportFromNamesNode green, int position, IRedView? parent)
+    public LazyImportFromNamesView(LazyImportFromNamesNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_path = null;
-    internal ViewArray<RedView> AstPath
+    public ViewArray<RedView> AstPath
     {
         get
         {
@@ -14006,7 +14006,7 @@ internal sealed partial class LazyImportFromNamesView : LazyImportFromView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<DottedAsNameView>? _field_path = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Path
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Path
     {
         get
         {
@@ -14020,7 +14020,7 @@ internal sealed partial class LazyImportFromNamesView : LazyImportFromView
     }
 
     private ImportFromTargetsView? _field_targets = null;
-    internal ImportFromTargetsView Targets
+    public ImportFromTargetsView Targets
     {
         get
         {
@@ -14034,21 +14034,21 @@ internal sealed partial class LazyImportFromNamesView : LazyImportFromView
     }
 }
 
-internal sealed partial record LazyImportFromRelativeNode : LazyImportFromNode
+public sealed partial record LazyImportFromRelativeNode : LazyImportFromNode
 {
-    internal ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
     public override LazyImportFromRelativeView GetView(int position, IRedView? parent)
         => new LazyImportFromRelativeView(this, position, parent);
 }
-internal sealed partial class LazyImportFromRelativeView : LazyImportFromView
+public sealed partial class LazyImportFromRelativeView : LazyImportFromView
 {
-    internal LazyImportFromRelativeView(LazyImportFromRelativeNode green, int position, IRedView? parent)
+    public LazyImportFromRelativeView(LazyImportFromRelativeNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ImportFromTargetsView? _field_targets = null;
-    internal ImportFromTargetsView Targets
+    public ImportFromTargetsView Targets
     {
         get
         {
@@ -14062,21 +14062,21 @@ internal sealed partial class LazyImportFromRelativeView : LazyImportFromView
     }
 }
 
-internal abstract partial record ImportFromTargetsNode : GreenNode
+public abstract partial record ImportFromTargetsNode : GreenNode
 {
 }
-internal abstract partial class ImportFromTargetsView : RedView
+public abstract partial class ImportFromTargetsView : RedView
 {
-    internal ImportFromTargetsView(ImportFromTargetsNode green, int position, IRedView? parent)
+    public ImportFromTargetsView(ImportFromTargetsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ImportFromParenthesizedTargetsNode : ImportFromTargetsNode
+public sealed partial record ImportFromParenthesizedTargetsNode : ImportFromTargetsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameNode>? _field_Value = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameNode> Value
+    public global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameNode> Value
     {
         get
         {
@@ -14088,19 +14088,19 @@ internal sealed partial record ImportFromParenthesizedTargetsNode : ImportFromTa
             return _field_Value.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValue => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> AstValue => (NodeArray<GreenNode>)Children![1];
     public override ImportFromParenthesizedTargetsView GetView(int position, IRedView? parent)
         => new ImportFromParenthesizedTargetsView(this, position, parent);
 }
-internal sealed partial class ImportFromParenthesizedTargetsView : ImportFromTargetsView
+public sealed partial class ImportFromParenthesizedTargetsView : ImportFromTargetsView
 {
-    internal ImportFromParenthesizedTargetsView(ImportFromParenthesizedTargetsNode green, int position, IRedView? parent)
+    public ImportFromParenthesizedTargetsView(ImportFromParenthesizedTargetsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_value = null;
-    internal ViewArray<RedView> AstValue
+    public ViewArray<RedView> AstValue
     {
         get
         {
@@ -14113,7 +14113,7 @@ internal sealed partial class ImportFromParenthesizedTargetsView : ImportFromTar
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameView>? _field_value = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameView> Value
+    public global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameView> Value
     {
         get
         {
@@ -14127,10 +14127,10 @@ internal sealed partial class ImportFromParenthesizedTargetsView : ImportFromTar
     }
 }
 
-internal sealed partial record ImportFromFlatTargetsNode : ImportFromTargetsNode
+public sealed partial record ImportFromFlatTargetsNode : ImportFromTargetsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameNode>? _field_Value = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameNode> Value
+    public global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameNode> Value
     {
         get
         {
@@ -14142,19 +14142,19 @@ internal sealed partial record ImportFromFlatTargetsNode : ImportFromTargetsNode
             return _field_Value.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValue => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstValue => (NodeArray<GreenNode>)Children![0];
     public override ImportFromFlatTargetsView GetView(int position, IRedView? parent)
         => new ImportFromFlatTargetsView(this, position, parent);
 }
-internal sealed partial class ImportFromFlatTargetsView : ImportFromTargetsView
+public sealed partial class ImportFromFlatTargetsView : ImportFromTargetsView
 {
-    internal ImportFromFlatTargetsView(ImportFromFlatTargetsNode green, int position, IRedView? parent)
+    public ImportFromFlatTargetsView(ImportFromFlatTargetsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_value = null;
-    internal ViewArray<RedView> AstValue
+    public ViewArray<RedView> AstValue
     {
         get
         {
@@ -14167,7 +14167,7 @@ internal sealed partial class ImportFromFlatTargetsView : ImportFromTargetsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameView>? _field_value = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameView> Value
+    public global::System.Collections.Immutable.ImmutableArray<ImportFromAsNameView> Value
     {
         get
         {
@@ -14181,35 +14181,35 @@ internal sealed partial class ImportFromFlatTargetsView : ImportFromTargetsView
     }
 }
 
-internal sealed partial record ImportFromAllTargetsNode : ImportFromTargetsNode
+public sealed partial record ImportFromAllTargetsNode : ImportFromTargetsNode
 {
     public override ImportFromAllTargetsView GetView(int position, IRedView? parent)
         => new ImportFromAllTargetsView(this, position, parent);
 }
-internal sealed partial class ImportFromAllTargetsView : ImportFromTargetsView
+public sealed partial class ImportFromAllTargetsView : ImportFromTargetsView
 {
-    internal ImportFromAllTargetsView(ImportFromAllTargetsNode green, int position, IRedView? parent)
+    public ImportFromAllTargetsView(ImportFromAllTargetsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ImportFromAsNameNode : GreenNode
+public sealed partial record ImportFromAsNameNode : GreenNode
 {
-    internal TokenNode ToImport => (TokenNode)Children![0];
-    internal AsNameNode? Alias => Children![1] as AsNameNode;
+    public TokenNode ToImport => (TokenNode)Children![0];
+    public AsNameNode? Alias => Children![1] as AsNameNode;
     public override ImportFromAsNameView GetView(int position, IRedView? parent)
         => new ImportFromAsNameView(this, position, parent);
 }
-internal sealed partial class ImportFromAsNameView : RedView
+public sealed partial class ImportFromAsNameView : RedView
 {
-    internal ImportFromAsNameView(ImportFromAsNameNode green, int position, IRedView? parent)
+    public ImportFromAsNameView(ImportFromAsNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_toImport = null;
-    internal TokenView ToImport
+    public TokenView ToImport
     {
         get
         {
@@ -14223,7 +14223,7 @@ internal sealed partial class ImportFromAsNameView : RedView
     }
 
     private AsNameView? _field_alias = null;
-    internal AsNameView? Alias
+    public AsNameView? Alias
     {
         get
         {
@@ -14237,21 +14237,21 @@ internal sealed partial class ImportFromAsNameView : RedView
     }
 }
 
-internal sealed partial record AsNameNode : GreenNode
+public sealed partial record AsNameNode : GreenNode
 {
-    internal TokenNode Value => (TokenNode)Children![1];
+    public TokenNode Value => (TokenNode)Children![1];
     public override AsNameView GetView(int position, IRedView? parent)
         => new AsNameView(this, position, parent);
 }
-internal sealed partial class AsNameView : RedView
+public sealed partial class AsNameView : RedView
 {
-    internal AsNameView(AsNameNode green, int position, IRedView? parent)
+    public AsNameView(AsNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -14265,22 +14265,22 @@ internal sealed partial class AsNameView : RedView
     }
 }
 
-internal sealed partial record DottedAsNameNode : GreenNode
+public sealed partial record DottedAsNameNode : GreenNode
 {
-    internal DottedNameNode Name => (DottedNameNode)Children![0];
-    internal AsNameNode? Alias => Children![1] as AsNameNode;
+    public DottedNameNode Name => (DottedNameNode)Children![0];
+    public AsNameNode? Alias => Children![1] as AsNameNode;
     public override DottedAsNameView GetView(int position, IRedView? parent)
         => new DottedAsNameView(this, position, parent);
 }
-internal sealed partial class DottedAsNameView : RedView
+public sealed partial class DottedAsNameView : RedView
 {
-    internal DottedAsNameView(DottedAsNameNode green, int position, IRedView? parent)
+    public DottedAsNameView(DottedAsNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private DottedNameView? _field_name = null;
-    internal DottedNameView Name
+    public DottedNameView Name
     {
         get
         {
@@ -14294,7 +14294,7 @@ internal sealed partial class DottedAsNameView : RedView
     }
 
     private AsNameView? _field_alias = null;
-    internal AsNameView? Alias
+    public AsNameView? Alias
     {
         get
         {
@@ -14308,33 +14308,33 @@ internal sealed partial class DottedAsNameView : RedView
     }
 }
 
-internal abstract partial record DottedNameNode : GreenNode
+public abstract partial record DottedNameNode : GreenNode
 {
 }
-internal abstract partial class DottedNameView : RedView
+public abstract partial class DottedNameView : RedView
 {
-    internal DottedNameView(DottedNameNode green, int position, IRedView? parent)
+    public DottedNameView(DottedNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ManyDottedNameNode : DottedNameNode
+public sealed partial record ManyDottedNameNode : DottedNameNode
 {
-    internal DottedNameNode Left => (DottedNameNode)Children![0];
-    internal TokenNode Right => (TokenNode)Children![2];
+    public DottedNameNode Left => (DottedNameNode)Children![0];
+    public TokenNode Right => (TokenNode)Children![2];
     public override ManyDottedNameView GetView(int position, IRedView? parent)
         => new ManyDottedNameView(this, position, parent);
 }
-internal sealed partial class ManyDottedNameView : DottedNameView
+public sealed partial class ManyDottedNameView : DottedNameView
 {
-    internal ManyDottedNameView(ManyDottedNameNode green, int position, IRedView? parent)
+    public ManyDottedNameView(ManyDottedNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private DottedNameView? _field_left = null;
-    internal DottedNameView Left
+    public DottedNameView Left
     {
         get
         {
@@ -14348,7 +14348,7 @@ internal sealed partial class ManyDottedNameView : DottedNameView
     }
 
     private TokenView? _field_right = null;
-    internal TokenView Right
+    public TokenView Right
     {
         get
         {
@@ -14362,21 +14362,21 @@ internal sealed partial class ManyDottedNameView : DottedNameView
     }
 }
 
-internal sealed partial record SingleDottedNameNode : DottedNameNode
+public sealed partial record SingleDottedNameNode : DottedNameNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override SingleDottedNameView GetView(int position, IRedView? parent)
         => new SingleDottedNameView(this, position, parent);
 }
-internal sealed partial class SingleDottedNameView : DottedNameView
+public sealed partial class SingleDottedNameView : DottedNameView
 {
-    internal SingleDottedNameView(SingleDottedNameNode green, int position, IRedView? parent)
+    public SingleDottedNameView(SingleDottedNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -14390,32 +14390,32 @@ internal sealed partial class SingleDottedNameView : DottedNameView
     }
 }
 
-internal abstract partial record BlockNode : GreenNode
+public abstract partial record BlockNode : GreenNode
 {
 }
-internal abstract partial class BlockView : RedView
+public abstract partial class BlockView : RedView
 {
-    internal BlockView(BlockNode green, int position, IRedView? parent)
+    public BlockView(BlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record IndentedBlockNode : BlockNode
+public sealed partial record IndentedBlockNode : BlockNode
 {
-    internal NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![2];
+    public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![2];
     public override IndentedBlockView GetView(int position, IRedView? parent)
         => new IndentedBlockView(this, position, parent);
 }
-internal sealed partial class IndentedBlockView : BlockView
+public sealed partial class IndentedBlockView : BlockView
 {
-    internal IndentedBlockView(IndentedBlockNode green, int position, IRedView? parent)
+    public IndentedBlockView(IndentedBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<IStatementView>? _field_statements = null;
-    internal ViewArray<IStatementView> Statements
+    public ViewArray<IStatementView> Statements
     {
         get
         {
@@ -14429,21 +14429,21 @@ internal sealed partial class IndentedBlockView : BlockView
     }
 }
 
-internal sealed partial record OneLinedBlockNode : BlockNode
+public sealed partial record OneLinedBlockNode : BlockNode
 {
-    internal SimpleStatementsNode Statements => (SimpleStatementsNode)Children![0];
+    public SimpleStatementsNode Statements => (SimpleStatementsNode)Children![0];
     public override OneLinedBlockView GetView(int position, IRedView? parent)
         => new OneLinedBlockView(this, position, parent);
 }
-internal sealed partial class OneLinedBlockView : BlockView
+public sealed partial class OneLinedBlockView : BlockView
 {
-    internal OneLinedBlockView(OneLinedBlockNode green, int position, IRedView? parent)
+    public OneLinedBlockView(OneLinedBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SimpleStatementsView? _field_statements = null;
-    internal SimpleStatementsView Statements
+    public SimpleStatementsView Statements
     {
         get
         {
@@ -14457,21 +14457,21 @@ internal sealed partial class OneLinedBlockView : BlockView
     }
 }
 
-internal sealed partial record DecoratorNode : GreenNode
+public sealed partial record DecoratorNode : GreenNode
 {
-    internal INamedExpressionNode Value => (INamedExpressionNode)Children![1];
+    public INamedExpressionNode Value => (INamedExpressionNode)Children![1];
     public override DecoratorView GetView(int position, IRedView? parent)
         => new DecoratorView(this, position, parent);
 }
-internal sealed partial class DecoratorView : RedView
+public sealed partial class DecoratorView : RedView
 {
-    internal DecoratorView(DecoratorNode green, int position, IRedView? parent)
+    public DecoratorView(DecoratorNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private INamedExpressionView? _field_value = null;
-    internal INamedExpressionView Value
+    public INamedExpressionView Value
     {
         get
         {
@@ -14485,33 +14485,33 @@ internal sealed partial class DecoratorView : RedView
     }
 }
 
-internal abstract partial record ClassDefNode : GreenNode, ICompoundStatementNode
+public abstract partial record ClassDefNode : GreenNode, ICompoundStatementNode
 {
 }
-internal abstract partial class ClassDefView : RedView, ICompoundStatementView
+public abstract partial class ClassDefView : RedView, ICompoundStatementView
 {
-    internal ClassDefView(ClassDefNode green, int position, IRedView? parent)
+    public ClassDefView(ClassDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DecoratedClassDefNode : ClassDefNode
+public sealed partial record DecoratedClassDefNode : ClassDefNode
 {
-    internal NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
-    internal ClassDefRawNode ClassDef => (ClassDefRawNode)Children![1];
+    public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
+    public ClassDefRawNode ClassDef => (ClassDefRawNode)Children![1];
     public override DecoratedClassDefView GetView(int position, IRedView? parent)
         => new DecoratedClassDefView(this, position, parent);
 }
-internal sealed partial class DecoratedClassDefView : ClassDefView
+public sealed partial class DecoratedClassDefView : ClassDefView
 {
-    internal DecoratedClassDefView(DecoratedClassDefNode green, int position, IRedView? parent)
+    public DecoratedClassDefView(DecoratedClassDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<DecoratorView>? _field_decorators = null;
-    internal ViewArray<DecoratorView> Decorators
+    public ViewArray<DecoratorView> Decorators
     {
         get
         {
@@ -14525,7 +14525,7 @@ internal sealed partial class DecoratedClassDefView : ClassDefView
     }
 
     private ClassDefRawView? _field_classDef = null;
-    internal ClassDefRawView ClassDef
+    public ClassDefRawView ClassDef
     {
         get
         {
@@ -14539,21 +14539,21 @@ internal sealed partial class DecoratedClassDefView : ClassDefView
     }
 }
 
-internal sealed partial record RawClassDefNode : ClassDefNode
+public sealed partial record RawClassDefNode : ClassDefNode
 {
-    internal ClassDefRawNode Value => (ClassDefRawNode)Children![0];
+    public ClassDefRawNode Value => (ClassDefRawNode)Children![0];
     public override RawClassDefView GetView(int position, IRedView? parent)
         => new RawClassDefView(this, position, parent);
 }
-internal sealed partial class RawClassDefView : ClassDefView
+public sealed partial class RawClassDefView : ClassDefView
 {
-    internal RawClassDefView(RawClassDefNode green, int position, IRedView? parent)
+    public RawClassDefView(RawClassDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ClassDefRawView? _field_value = null;
-    internal ClassDefRawView Value
+    public ClassDefRawView Value
     {
         get
         {
@@ -14567,24 +14567,24 @@ internal sealed partial class RawClassDefView : ClassDefView
     }
 }
 
-internal sealed partial record ClassDefRawNode : GreenNode
+public sealed partial record ClassDefRawNode : GreenNode
 {
-    internal TokenNode Name => (TokenNode)Children![1];
-    internal TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
-    internal ClassDefArgsNode? Arguments => Children![3] as ClassDefArgsNode;
-    internal BlockNode Block => (BlockNode)Children![5];
+    public TokenNode Name => (TokenNode)Children![1];
+    public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
+    public ClassDefArgsNode? Arguments => Children![3] as ClassDefArgsNode;
+    public BlockNode Block => (BlockNode)Children![5];
     public override ClassDefRawView GetView(int position, IRedView? parent)
         => new ClassDefRawView(this, position, parent);
 }
-internal sealed partial class ClassDefRawView : RedView
+public sealed partial class ClassDefRawView : RedView
 {
-    internal ClassDefRawView(ClassDefRawNode green, int position, IRedView? parent)
+    public ClassDefRawView(ClassDefRawNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_name = null;
-    internal TokenView Name
+    public TokenView Name
     {
         get
         {
@@ -14598,7 +14598,7 @@ internal sealed partial class ClassDefRawView : RedView
     }
 
     private TypeParametersView? _field_typeParameters = null;
-    internal TypeParametersView? TypeParameters
+    public TypeParametersView? TypeParameters
     {
         get
         {
@@ -14612,7 +14612,7 @@ internal sealed partial class ClassDefRawView : RedView
     }
 
     private ClassDefArgsView? _field_arguments = null;
-    internal ClassDefArgsView? Arguments
+    public ClassDefArgsView? Arguments
     {
         get
         {
@@ -14626,7 +14626,7 @@ internal sealed partial class ClassDefRawView : RedView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -14640,21 +14640,21 @@ internal sealed partial class ClassDefRawView : RedView
     }
 }
 
-internal sealed partial record ClassDefArgsNode : GreenNode
+public sealed partial record ClassDefArgsNode : GreenNode
 {
-    internal ArgumentsNode? Value => Children![1] as ArgumentsNode;
+    public ArgumentsNode? Value => Children![1] as ArgumentsNode;
     public override ClassDefArgsView GetView(int position, IRedView? parent)
         => new ClassDefArgsView(this, position, parent);
 }
-internal sealed partial class ClassDefArgsView : RedView
+public sealed partial class ClassDefArgsView : RedView
 {
-    internal ClassDefArgsView(ClassDefArgsNode green, int position, IRedView? parent)
+    public ClassDefArgsView(ClassDefArgsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ArgumentsView? _field_value = null;
-    internal ArgumentsView? Value
+    public ArgumentsView? Value
     {
         get
         {
@@ -14668,33 +14668,33 @@ internal sealed partial class ClassDefArgsView : RedView
     }
 }
 
-internal abstract partial record FunctionDefNode : GreenNode, ICompoundStatementNode
+public abstract partial record FunctionDefNode : GreenNode, ICompoundStatementNode
 {
 }
-internal abstract partial class FunctionDefView : RedView, ICompoundStatementView
+public abstract partial class FunctionDefView : RedView, ICompoundStatementView
 {
-    internal FunctionDefView(FunctionDefNode green, int position, IRedView? parent)
+    public FunctionDefView(FunctionDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DecoratedFunctionDefNode : FunctionDefNode
+public sealed partial record DecoratedFunctionDefNode : FunctionDefNode
 {
-    internal NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
-    internal FunctionDefRawNode FunctionDef => (FunctionDefRawNode)Children![1];
+    public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
+    public FunctionDefRawNode FunctionDef => (FunctionDefRawNode)Children![1];
     public override DecoratedFunctionDefView GetView(int position, IRedView? parent)
         => new DecoratedFunctionDefView(this, position, parent);
 }
-internal sealed partial class DecoratedFunctionDefView : FunctionDefView
+public sealed partial class DecoratedFunctionDefView : FunctionDefView
 {
-    internal DecoratedFunctionDefView(DecoratedFunctionDefNode green, int position, IRedView? parent)
+    public DecoratedFunctionDefView(DecoratedFunctionDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<DecoratorView>? _field_decorators = null;
-    internal ViewArray<DecoratorView> Decorators
+    public ViewArray<DecoratorView> Decorators
     {
         get
         {
@@ -14708,7 +14708,7 @@ internal sealed partial class DecoratedFunctionDefView : FunctionDefView
     }
 
     private FunctionDefRawView? _field_functionDef = null;
-    internal FunctionDefRawView FunctionDef
+    public FunctionDefRawView FunctionDef
     {
         get
         {
@@ -14722,21 +14722,21 @@ internal sealed partial class DecoratedFunctionDefView : FunctionDefView
     }
 }
 
-internal sealed partial record RawFunctionDefNode : FunctionDefNode
+public sealed partial record RawFunctionDefNode : FunctionDefNode
 {
-    internal FunctionDefRawNode Value => (FunctionDefRawNode)Children![0];
+    public FunctionDefRawNode Value => (FunctionDefRawNode)Children![0];
     public override RawFunctionDefView GetView(int position, IRedView? parent)
         => new RawFunctionDefView(this, position, parent);
 }
-internal sealed partial class RawFunctionDefView : FunctionDefView
+public sealed partial class RawFunctionDefView : FunctionDefView
 {
-    internal RawFunctionDefView(RawFunctionDefNode green, int position, IRedView? parent)
+    public RawFunctionDefView(RawFunctionDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private FunctionDefRawView? _field_value = null;
-    internal FunctionDefRawView Value
+    public FunctionDefRawView Value
     {
         get
         {
@@ -14750,23 +14750,23 @@ internal sealed partial class RawFunctionDefView : FunctionDefView
     }
 }
 
-internal abstract partial record FunctionDefRawNode : GreenNode
+public abstract partial record FunctionDefRawNode : GreenNode
 {
-    internal TokenNode Name => (TokenNode)Children![1];
-    internal TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
-    internal ParametersNode? Parameters => Children![4] as ParametersNode;
-    internal FunctionReturnHintNode? ReturnHint => Children![6] as FunctionReturnHintNode;
-    internal BlockNode Block => (BlockNode)Children![8];
+    public TokenNode Name => (TokenNode)Children![1];
+    public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
+    public ParametersNode? Parameters => Children![4] as ParametersNode;
+    public FunctionReturnHintNode? ReturnHint => Children![6] as FunctionReturnHintNode;
+    public BlockNode Block => (BlockNode)Children![8];
 }
-internal abstract partial class FunctionDefRawView : RedView
+public abstract partial class FunctionDefRawView : RedView
 {
-    internal FunctionDefRawView(FunctionDefRawNode green, int position, IRedView? parent)
+    public FunctionDefRawView(FunctionDefRawNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_name = null;
-    internal TokenView Name
+    public TokenView Name
     {
         get
         {
@@ -14780,7 +14780,7 @@ internal abstract partial class FunctionDefRawView : RedView
     }
 
     private TypeParametersView? _field_typeParameters = null;
-    internal TypeParametersView? TypeParameters
+    public TypeParametersView? TypeParameters
     {
         get
         {
@@ -14794,7 +14794,7 @@ internal abstract partial class FunctionDefRawView : RedView
     }
 
     private ParametersView? _field_parameters = null;
-    internal ParametersView? Parameters
+    public ParametersView? Parameters
     {
         get
         {
@@ -14808,7 +14808,7 @@ internal abstract partial class FunctionDefRawView : RedView
     }
 
     private FunctionReturnHintView? _field_returnHint = null;
-    internal FunctionReturnHintView? ReturnHint
+    public FunctionReturnHintView? ReturnHint
     {
         get
         {
@@ -14822,7 +14822,7 @@ internal abstract partial class FunctionDefRawView : RedView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -14836,47 +14836,47 @@ internal abstract partial class FunctionDefRawView : RedView
     }
 }
 
-internal sealed partial record NormalFunctionDefNode : FunctionDefRawNode
+public sealed partial record NormalFunctionDefNode : FunctionDefRawNode
 {
     public override NormalFunctionDefView GetView(int position, IRedView? parent)
         => new NormalFunctionDefView(this, position, parent);
 }
-internal sealed partial class NormalFunctionDefView : FunctionDefRawView
+public sealed partial class NormalFunctionDefView : FunctionDefRawView
 {
-    internal NormalFunctionDefView(NormalFunctionDefNode green, int position, IRedView? parent)
+    public NormalFunctionDefView(NormalFunctionDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record AsyncFunctionDefNode : FunctionDefRawNode
+public sealed partial record AsyncFunctionDefNode : FunctionDefRawNode
 {
     public override AsyncFunctionDefView GetView(int position, IRedView? parent)
         => new AsyncFunctionDefView(this, position, parent);
 }
-internal sealed partial class AsyncFunctionDefView : FunctionDefRawView
+public sealed partial class AsyncFunctionDefView : FunctionDefRawView
 {
-    internal AsyncFunctionDefView(AsyncFunctionDefNode green, int position, IRedView? parent)
+    public AsyncFunctionDefView(AsyncFunctionDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record FunctionReturnHintNode : GreenNode
+public sealed partial record FunctionReturnHintNode : GreenNode
 {
-    internal IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![1];
     public override FunctionReturnHintView GetView(int position, IRedView? parent)
         => new FunctionReturnHintView(this, position, parent);
 }
-internal sealed partial class FunctionReturnHintView : RedView
+public sealed partial class FunctionReturnHintView : RedView
 {
-    internal FunctionReturnHintView(FunctionReturnHintNode green, int position, IRedView? parent)
+    public FunctionReturnHintView(FunctionReturnHintNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -14890,35 +14890,35 @@ internal sealed partial class FunctionReturnHintView : RedView
     }
 }
 
-internal abstract partial record ParametersNode : GreenNode
+public abstract partial record ParametersNode : GreenNode
 {
 }
-internal abstract partial class ParametersView : RedView
+public abstract partial class ParametersView : RedView
 {
-    internal ParametersView(ParametersNode green, int position, IRedView? parent)
+    public ParametersView(ParametersNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record Parameters_Derived0Node : ParametersNode
+public sealed partial record Parameters_Derived0Node : ParametersNode
 {
-    internal SlashNoDefaultNode SlashNoDefault => (SlashNoDefaultNode)Children![0];
-    internal NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![1];
-    internal NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![2];
-    internal StarEtcNode? StarEtc => Children![3] as StarEtcNode;
+    public SlashNoDefaultNode SlashNoDefault => (SlashNoDefaultNode)Children![0];
+    public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![1];
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![2];
+    public StarEtcNode? StarEtc => Children![3] as StarEtcNode;
     public override Parameters_Derived0View GetView(int position, IRedView? parent)
         => new Parameters_Derived0View(this, position, parent);
 }
-internal sealed partial class Parameters_Derived0View : ParametersView
+public sealed partial class Parameters_Derived0View : ParametersView
 {
-    internal Parameters_Derived0View(Parameters_Derived0Node green, int position, IRedView? parent)
+    public Parameters_Derived0View(Parameters_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SlashNoDefaultView? _field_slashNoDefault = null;
-    internal SlashNoDefaultView SlashNoDefault
+    public SlashNoDefaultView SlashNoDefault
     {
         get
         {
@@ -14932,7 +14932,7 @@ internal sealed partial class Parameters_Derived0View : ParametersView
     }
 
     private ViewArray<ParamNoDefaultView>? _field_paramNoDefault = null;
-    internal ViewArray<ParamNoDefaultView> ParamNoDefault
+    public ViewArray<ParamNoDefaultView> ParamNoDefault
     {
         get
         {
@@ -14946,7 +14946,7 @@ internal sealed partial class Parameters_Derived0View : ParametersView
     }
 
     private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-    internal ViewArray<ParamWithDefaultView> ParamWithDefault
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
     {
         get
         {
@@ -14960,7 +14960,7 @@ internal sealed partial class Parameters_Derived0View : ParametersView
     }
 
     private StarEtcView? _field_starEtc = null;
-    internal StarEtcView? StarEtc
+    public StarEtcView? StarEtc
     {
         get
         {
@@ -14974,23 +14974,23 @@ internal sealed partial class Parameters_Derived0View : ParametersView
     }
 }
 
-internal sealed partial record Parameters_Derived1Node : ParametersNode
+public sealed partial record Parameters_Derived1Node : ParametersNode
 {
-    internal SlashWithDefaultNode SlashWithDefault => (SlashWithDefaultNode)Children![0];
-    internal NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
-    internal StarEtcNode? StarEtc => Children![2] as StarEtcNode;
+    public SlashWithDefaultNode SlashWithDefault => (SlashWithDefaultNode)Children![0];
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
+    public StarEtcNode? StarEtc => Children![2] as StarEtcNode;
     public override Parameters_Derived1View GetView(int position, IRedView? parent)
         => new Parameters_Derived1View(this, position, parent);
 }
-internal sealed partial class Parameters_Derived1View : ParametersView
+public sealed partial class Parameters_Derived1View : ParametersView
 {
-    internal Parameters_Derived1View(Parameters_Derived1Node green, int position, IRedView? parent)
+    public Parameters_Derived1View(Parameters_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SlashWithDefaultView? _field_slashWithDefault = null;
-    internal SlashWithDefaultView SlashWithDefault
+    public SlashWithDefaultView SlashWithDefault
     {
         get
         {
@@ -15004,7 +15004,7 @@ internal sealed partial class Parameters_Derived1View : ParametersView
     }
 
     private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-    internal ViewArray<ParamWithDefaultView> ParamWithDefault
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
     {
         get
         {
@@ -15018,7 +15018,7 @@ internal sealed partial class Parameters_Derived1View : ParametersView
     }
 
     private StarEtcView? _field_starEtc = null;
-    internal StarEtcView? StarEtc
+    public StarEtcView? StarEtc
     {
         get
         {
@@ -15032,23 +15032,23 @@ internal sealed partial class Parameters_Derived1View : ParametersView
     }
 }
 
-internal sealed partial record Parameters_Derived2Node : ParametersNode
+public sealed partial record Parameters_Derived2Node : ParametersNode
 {
-    internal NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
-    internal NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
-    internal StarEtcNode? StarEtc => Children![2] as StarEtcNode;
+    public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
+    public StarEtcNode? StarEtc => Children![2] as StarEtcNode;
     public override Parameters_Derived2View GetView(int position, IRedView? parent)
         => new Parameters_Derived2View(this, position, parent);
 }
-internal sealed partial class Parameters_Derived2View : ParametersView
+public sealed partial class Parameters_Derived2View : ParametersView
 {
-    internal Parameters_Derived2View(Parameters_Derived2Node green, int position, IRedView? parent)
+    public Parameters_Derived2View(Parameters_Derived2Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<ParamNoDefaultView>? _field_paramNoDefault = null;
-    internal ViewArray<ParamNoDefaultView> ParamNoDefault
+    public ViewArray<ParamNoDefaultView> ParamNoDefault
     {
         get
         {
@@ -15062,7 +15062,7 @@ internal sealed partial class Parameters_Derived2View : ParametersView
     }
 
     private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-    internal ViewArray<ParamWithDefaultView> ParamWithDefault
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
     {
         get
         {
@@ -15076,7 +15076,7 @@ internal sealed partial class Parameters_Derived2View : ParametersView
     }
 
     private StarEtcView? _field_starEtc = null;
-    internal StarEtcView? StarEtc
+    public StarEtcView? StarEtc
     {
         get
         {
@@ -15090,22 +15090,22 @@ internal sealed partial class Parameters_Derived2View : ParametersView
     }
 }
 
-internal sealed partial record Parameters_Derived3Node : ParametersNode
+public sealed partial record Parameters_Derived3Node : ParametersNode
 {
-    internal NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![0];
-    internal StarEtcNode? StarEtc => Children![1] as StarEtcNode;
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![0];
+    public StarEtcNode? StarEtc => Children![1] as StarEtcNode;
     public override Parameters_Derived3View GetView(int position, IRedView? parent)
         => new Parameters_Derived3View(this, position, parent);
 }
-internal sealed partial class Parameters_Derived3View : ParametersView
+public sealed partial class Parameters_Derived3View : ParametersView
 {
-    internal Parameters_Derived3View(Parameters_Derived3Node green, int position, IRedView? parent)
+    public Parameters_Derived3View(Parameters_Derived3Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-    internal ViewArray<ParamWithDefaultView> ParamWithDefault
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
     {
         get
         {
@@ -15119,7 +15119,7 @@ internal sealed partial class Parameters_Derived3View : ParametersView
     }
 
     private StarEtcView? _field_starEtc = null;
-    internal StarEtcView? StarEtc
+    public StarEtcView? StarEtc
     {
         get
         {
@@ -15133,21 +15133,21 @@ internal sealed partial class Parameters_Derived3View : ParametersView
     }
 }
 
-internal sealed partial record Parameters_Derived4Node : ParametersNode
+public sealed partial record Parameters_Derived4Node : ParametersNode
 {
-    internal StarEtcNode StarEtc => (StarEtcNode)Children![0];
+    public StarEtcNode StarEtc => (StarEtcNode)Children![0];
     public override Parameters_Derived4View GetView(int position, IRedView? parent)
         => new Parameters_Derived4View(this, position, parent);
 }
-internal sealed partial class Parameters_Derived4View : ParametersView
+public sealed partial class Parameters_Derived4View : ParametersView
 {
-    internal Parameters_Derived4View(Parameters_Derived4Node green, int position, IRedView? parent)
+    public Parameters_Derived4View(Parameters_Derived4Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarEtcView? _field_starEtc = null;
-    internal StarEtcView StarEtc
+    public StarEtcView StarEtc
     {
         get
         {
@@ -15161,20 +15161,20 @@ internal sealed partial class Parameters_Derived4View : ParametersView
     }
 }
 
-internal abstract partial record SlashNoDefaultNode : GreenNode
+public abstract partial record SlashNoDefaultNode : GreenNode
 {
-    internal NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
-    internal TokenNode Token => (TokenNode)Children![1];
+    public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
+    public TokenNode Token => (TokenNode)Children![1];
 }
-internal abstract partial class SlashNoDefaultView : RedView
+public abstract partial class SlashNoDefaultView : RedView
 {
-    internal SlashNoDefaultView(SlashNoDefaultNode green, int position, IRedView? parent)
+    public SlashNoDefaultView(SlashNoDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<ParamNoDefaultView>? _field_paramNoDefault = null;
-    internal ViewArray<ParamNoDefaultView> ParamNoDefault
+    public ViewArray<ParamNoDefaultView> ParamNoDefault
     {
         get
         {
@@ -15188,7 +15188,7 @@ internal abstract partial class SlashNoDefaultView : RedView
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15202,21 +15202,21 @@ internal abstract partial class SlashNoDefaultView : RedView
     }
 }
 
-internal sealed partial record SlashNoDefault_Derived0Node : SlashNoDefaultNode
+public sealed partial record SlashNoDefault_Derived0Node : SlashNoDefaultNode
 {
-    internal TokenNode Token1 => (TokenNode)Children![2];
+    public TokenNode Token1 => (TokenNode)Children![2];
     public override SlashNoDefault_Derived0View GetView(int position, IRedView? parent)
         => new SlashNoDefault_Derived0View(this, position, parent);
 }
-internal sealed partial class SlashNoDefault_Derived0View : SlashNoDefaultView
+public sealed partial class SlashNoDefault_Derived0View : SlashNoDefaultView
 {
-    internal SlashNoDefault_Derived0View(SlashNoDefault_Derived0Node green, int position, IRedView? parent)
+    public SlashNoDefault_Derived0View(SlashNoDefault_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token1 = null;
-    internal TokenView Token1
+    public TokenView Token1
     {
         get
         {
@@ -15230,34 +15230,34 @@ internal sealed partial class SlashNoDefault_Derived0View : SlashNoDefaultView
     }
 }
 
-internal sealed partial record SlashNoDefault_Derived1Node : SlashNoDefaultNode
+public sealed partial record SlashNoDefault_Derived1Node : SlashNoDefaultNode
 {
     public override SlashNoDefault_Derived1View GetView(int position, IRedView? parent)
         => new SlashNoDefault_Derived1View(this, position, parent);
 }
-internal sealed partial class SlashNoDefault_Derived1View : SlashNoDefaultView
+public sealed partial class SlashNoDefault_Derived1View : SlashNoDefaultView
 {
-    internal SlashNoDefault_Derived1View(SlashNoDefault_Derived1Node green, int position, IRedView? parent)
+    public SlashNoDefault_Derived1View(SlashNoDefault_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record SlashWithDefaultNode : GreenNode
+public abstract partial record SlashWithDefaultNode : GreenNode
 {
-    internal NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
-    internal NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
-    internal TokenNode Token => (TokenNode)Children![2];
+    public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
+    public TokenNode Token => (TokenNode)Children![2];
 }
-internal abstract partial class SlashWithDefaultView : RedView
+public abstract partial class SlashWithDefaultView : RedView
 {
-    internal SlashWithDefaultView(SlashWithDefaultNode green, int position, IRedView? parent)
+    public SlashWithDefaultView(SlashWithDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<ParamNoDefaultView>? _field_paramNoDefault = null;
-    internal ViewArray<ParamNoDefaultView> ParamNoDefault
+    public ViewArray<ParamNoDefaultView> ParamNoDefault
     {
         get
         {
@@ -15271,7 +15271,7 @@ internal abstract partial class SlashWithDefaultView : RedView
     }
 
     private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-    internal ViewArray<ParamWithDefaultView> ParamWithDefault
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
     {
         get
         {
@@ -15285,7 +15285,7 @@ internal abstract partial class SlashWithDefaultView : RedView
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15299,21 +15299,21 @@ internal abstract partial class SlashWithDefaultView : RedView
     }
 }
 
-internal sealed partial record SlashWithDefault_Derived0Node : SlashWithDefaultNode
+public sealed partial record SlashWithDefault_Derived0Node : SlashWithDefaultNode
 {
-    internal TokenNode Token1 => (TokenNode)Children![3];
+    public TokenNode Token1 => (TokenNode)Children![3];
     public override SlashWithDefault_Derived0View GetView(int position, IRedView? parent)
         => new SlashWithDefault_Derived0View(this, position, parent);
 }
-internal sealed partial class SlashWithDefault_Derived0View : SlashWithDefaultView
+public sealed partial class SlashWithDefault_Derived0View : SlashWithDefaultView
 {
-    internal SlashWithDefault_Derived0View(SlashWithDefault_Derived0Node green, int position, IRedView? parent)
+    public SlashWithDefault_Derived0View(SlashWithDefault_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token1 = null;
-    internal TokenView Token1
+    public TokenView Token1
     {
         get
         {
@@ -15327,48 +15327,48 @@ internal sealed partial class SlashWithDefault_Derived0View : SlashWithDefaultVi
     }
 }
 
-internal sealed partial record SlashWithDefault_Derived1Node : SlashWithDefaultNode
+public sealed partial record SlashWithDefault_Derived1Node : SlashWithDefaultNode
 {
     public override SlashWithDefault_Derived1View GetView(int position, IRedView? parent)
         => new SlashWithDefault_Derived1View(this, position, parent);
 }
-internal sealed partial class SlashWithDefault_Derived1View : SlashWithDefaultView
+public sealed partial class SlashWithDefault_Derived1View : SlashWithDefaultView
 {
-    internal SlashWithDefault_Derived1View(SlashWithDefault_Derived1Node green, int position, IRedView? parent)
+    public SlashWithDefault_Derived1View(SlashWithDefault_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record StarEtcNode : GreenNode
+public abstract partial record StarEtcNode : GreenNode
 {
 }
-internal abstract partial class StarEtcView : RedView
+public abstract partial class StarEtcView : RedView
 {
-    internal StarEtcView(StarEtcNode green, int position, IRedView? parent)
+    public StarEtcView(StarEtcNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record StarEtc_Derived0Node : StarEtcNode
+public sealed partial record StarEtc_Derived0Node : StarEtcNode
 {
-    internal TokenNode Token => (TokenNode)Children![0];
-    internal ParamNoDefaultNode ParamNoDefault => (ParamNoDefaultNode)Children![1];
-    internal NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
-    internal KeywordsNode? Keywords => Children![3] as KeywordsNode;
+    public TokenNode Token => (TokenNode)Children![0];
+    public ParamNoDefaultNode ParamNoDefault => (ParamNoDefaultNode)Children![1];
+    public NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
+    public KeywordsNode? Keywords => Children![3] as KeywordsNode;
     public override StarEtc_Derived0View GetView(int position, IRedView? parent)
         => new StarEtc_Derived0View(this, position, parent);
 }
-internal sealed partial class StarEtc_Derived0View : StarEtcView
+public sealed partial class StarEtc_Derived0View : StarEtcView
 {
-    internal StarEtc_Derived0View(StarEtc_Derived0Node green, int position, IRedView? parent)
+    public StarEtc_Derived0View(StarEtc_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15382,7 +15382,7 @@ internal sealed partial class StarEtc_Derived0View : StarEtcView
     }
 
     private ParamNoDefaultView? _field_paramNoDefault = null;
-    internal ParamNoDefaultView ParamNoDefault
+    public ParamNoDefaultView ParamNoDefault
     {
         get
         {
@@ -15396,7 +15396,7 @@ internal sealed partial class StarEtc_Derived0View : StarEtcView
     }
 
     private ViewArray<ParamMaybeDefaultView>? _field_paramMaybeDefault = null;
-    internal ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
+    public ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
     {
         get
         {
@@ -15410,7 +15410,7 @@ internal sealed partial class StarEtc_Derived0View : StarEtcView
     }
 
     private KeywordsView? _field_keywords = null;
-    internal KeywordsView? Keywords
+    public KeywordsView? Keywords
     {
         get
         {
@@ -15424,24 +15424,24 @@ internal sealed partial class StarEtc_Derived0View : StarEtcView
     }
 }
 
-internal sealed partial record StarEtc_Derived1Node : StarEtcNode
+public sealed partial record StarEtc_Derived1Node : StarEtcNode
 {
-    internal TokenNode Token => (TokenNode)Children![0];
-    internal ParamNoDefaultStarAnnotationNode ParamNoDefaultStarAnnotation => (ParamNoDefaultStarAnnotationNode)Children![1];
-    internal NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
-    internal KeywordsNode? Keywords => Children![3] as KeywordsNode;
+    public TokenNode Token => (TokenNode)Children![0];
+    public ParamNoDefaultStarAnnotationNode ParamNoDefaultStarAnnotation => (ParamNoDefaultStarAnnotationNode)Children![1];
+    public NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
+    public KeywordsNode? Keywords => Children![3] as KeywordsNode;
     public override StarEtc_Derived1View GetView(int position, IRedView? parent)
         => new StarEtc_Derived1View(this, position, parent);
 }
-internal sealed partial class StarEtc_Derived1View : StarEtcView
+public sealed partial class StarEtc_Derived1View : StarEtcView
 {
-    internal StarEtc_Derived1View(StarEtc_Derived1Node green, int position, IRedView? parent)
+    public StarEtc_Derived1View(StarEtc_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15455,7 +15455,7 @@ internal sealed partial class StarEtc_Derived1View : StarEtcView
     }
 
     private ParamNoDefaultStarAnnotationView? _field_paramNoDefaultStarAnnotation = null;
-    internal ParamNoDefaultStarAnnotationView ParamNoDefaultStarAnnotation
+    public ParamNoDefaultStarAnnotationView ParamNoDefaultStarAnnotation
     {
         get
         {
@@ -15469,7 +15469,7 @@ internal sealed partial class StarEtc_Derived1View : StarEtcView
     }
 
     private ViewArray<ParamMaybeDefaultView>? _field_paramMaybeDefault = null;
-    internal ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
+    public ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
     {
         get
         {
@@ -15483,7 +15483,7 @@ internal sealed partial class StarEtc_Derived1View : StarEtcView
     }
 
     private KeywordsView? _field_keywords = null;
-    internal KeywordsView? Keywords
+    public KeywordsView? Keywords
     {
         get
         {
@@ -15497,24 +15497,24 @@ internal sealed partial class StarEtc_Derived1View : StarEtcView
     }
 }
 
-internal sealed partial record StarEtc_Derived2Node : StarEtcNode
+public sealed partial record StarEtc_Derived2Node : StarEtcNode
 {
-    internal TokenNode Token => (TokenNode)Children![0];
-    internal TokenNode Token1 => (TokenNode)Children![1];
-    internal NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
-    internal KeywordsNode? Keywords => Children![3] as KeywordsNode;
+    public TokenNode Token => (TokenNode)Children![0];
+    public TokenNode Token1 => (TokenNode)Children![1];
+    public NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
+    public KeywordsNode? Keywords => Children![3] as KeywordsNode;
     public override StarEtc_Derived2View GetView(int position, IRedView? parent)
         => new StarEtc_Derived2View(this, position, parent);
 }
-internal sealed partial class StarEtc_Derived2View : StarEtcView
+public sealed partial class StarEtc_Derived2View : StarEtcView
 {
-    internal StarEtc_Derived2View(StarEtc_Derived2Node green, int position, IRedView? parent)
+    public StarEtc_Derived2View(StarEtc_Derived2Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15528,7 +15528,7 @@ internal sealed partial class StarEtc_Derived2View : StarEtcView
     }
 
     private TokenView? _field_token1 = null;
-    internal TokenView Token1
+    public TokenView Token1
     {
         get
         {
@@ -15542,7 +15542,7 @@ internal sealed partial class StarEtc_Derived2View : StarEtcView
     }
 
     private ViewArray<ParamMaybeDefaultView>? _field_paramMaybeDefault = null;
-    internal ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
+    public ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
     {
         get
         {
@@ -15556,7 +15556,7 @@ internal sealed partial class StarEtc_Derived2View : StarEtcView
     }
 
     private KeywordsView? _field_keywords = null;
-    internal KeywordsView? Keywords
+    public KeywordsView? Keywords
     {
         get
         {
@@ -15570,21 +15570,21 @@ internal sealed partial class StarEtc_Derived2View : StarEtcView
     }
 }
 
-internal sealed partial record StarEtc_Derived3Node : StarEtcNode
+public sealed partial record StarEtc_Derived3Node : StarEtcNode
 {
-    internal KeywordsNode Keywords => (KeywordsNode)Children![0];
+    public KeywordsNode Keywords => (KeywordsNode)Children![0];
     public override StarEtc_Derived3View GetView(int position, IRedView? parent)
         => new StarEtc_Derived3View(this, position, parent);
 }
-internal sealed partial class StarEtc_Derived3View : StarEtcView
+public sealed partial class StarEtc_Derived3View : StarEtcView
 {
-    internal StarEtc_Derived3View(StarEtc_Derived3Node green, int position, IRedView? parent)
+    public StarEtc_Derived3View(StarEtc_Derived3Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private KeywordsView? _field_keywords = null;
-    internal KeywordsView Keywords
+    public KeywordsView Keywords
     {
         get
         {
@@ -15598,21 +15598,21 @@ internal sealed partial class StarEtc_Derived3View : StarEtcView
     }
 }
 
-internal sealed partial record KeywordsNode : GreenNode
+public sealed partial record KeywordsNode : GreenNode
 {
-    internal ParamNoDefaultNode Parameter => (ParamNoDefaultNode)Children![1];
+    public ParamNoDefaultNode Parameter => (ParamNoDefaultNode)Children![1];
     public override KeywordsView GetView(int position, IRedView? parent)
         => new KeywordsView(this, position, parent);
 }
-internal sealed partial class KeywordsView : RedView
+public sealed partial class KeywordsView : RedView
 {
-    internal KeywordsView(KeywordsNode green, int position, IRedView? parent)
+    public KeywordsView(KeywordsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ParamNoDefaultView? _field_parameter = null;
-    internal ParamNoDefaultView Parameter
+    public ParamNoDefaultView Parameter
     {
         get
         {
@@ -15626,19 +15626,19 @@ internal sealed partial class KeywordsView : RedView
     }
 }
 
-internal abstract partial record ParamNoDefaultNode : GreenNode
+public abstract partial record ParamNoDefaultNode : GreenNode
 {
-    internal ParamNode Param => (ParamNode)Children![0];
+    public ParamNode Param => (ParamNode)Children![0];
 }
-internal abstract partial class ParamNoDefaultView : RedView
+public abstract partial class ParamNoDefaultView : RedView
 {
-    internal ParamNoDefaultView(ParamNoDefaultNode green, int position, IRedView? parent)
+    public ParamNoDefaultView(ParamNoDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ParamView? _field_param = null;
-    internal ParamView Param
+    public ParamView Param
     {
         get
         {
@@ -15652,21 +15652,21 @@ internal abstract partial class ParamNoDefaultView : RedView
     }
 }
 
-internal sealed partial record ParamNoDefault_Derived0Node : ParamNoDefaultNode
+public sealed partial record ParamNoDefault_Derived0Node : ParamNoDefaultNode
 {
-    internal TokenNode Token => (TokenNode)Children![1];
+    public TokenNode Token => (TokenNode)Children![1];
     public override ParamNoDefault_Derived0View GetView(int position, IRedView? parent)
         => new ParamNoDefault_Derived0View(this, position, parent);
 }
-internal sealed partial class ParamNoDefault_Derived0View : ParamNoDefaultView
+public sealed partial class ParamNoDefault_Derived0View : ParamNoDefaultView
 {
-    internal ParamNoDefault_Derived0View(ParamNoDefault_Derived0Node green, int position, IRedView? parent)
+    public ParamNoDefault_Derived0View(ParamNoDefault_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15680,32 +15680,32 @@ internal sealed partial class ParamNoDefault_Derived0View : ParamNoDefaultView
     }
 }
 
-internal sealed partial record ParamNoDefault_Derived1Node : ParamNoDefaultNode
+public sealed partial record ParamNoDefault_Derived1Node : ParamNoDefaultNode
 {
     public override ParamNoDefault_Derived1View GetView(int position, IRedView? parent)
         => new ParamNoDefault_Derived1View(this, position, parent);
 }
-internal sealed partial class ParamNoDefault_Derived1View : ParamNoDefaultView
+public sealed partial class ParamNoDefault_Derived1View : ParamNoDefaultView
 {
-    internal ParamNoDefault_Derived1View(ParamNoDefault_Derived1Node green, int position, IRedView? parent)
+    public ParamNoDefault_Derived1View(ParamNoDefault_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record ParamNoDefaultStarAnnotationNode : GreenNode
+public abstract partial record ParamNoDefaultStarAnnotationNode : GreenNode
 {
-    internal ParamStarAnnotationNode ParamStarAnnotation => (ParamStarAnnotationNode)Children![0];
+    public ParamStarAnnotationNode ParamStarAnnotation => (ParamStarAnnotationNode)Children![0];
 }
-internal abstract partial class ParamNoDefaultStarAnnotationView : RedView
+public abstract partial class ParamNoDefaultStarAnnotationView : RedView
 {
-    internal ParamNoDefaultStarAnnotationView(ParamNoDefaultStarAnnotationNode green, int position, IRedView? parent)
+    public ParamNoDefaultStarAnnotationView(ParamNoDefaultStarAnnotationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ParamStarAnnotationView? _field_paramStarAnnotation = null;
-    internal ParamStarAnnotationView ParamStarAnnotation
+    public ParamStarAnnotationView ParamStarAnnotation
     {
         get
         {
@@ -15719,21 +15719,21 @@ internal abstract partial class ParamNoDefaultStarAnnotationView : RedView
     }
 }
 
-internal sealed partial record ParamNoDefaultStarAnnotation_Derived0Node : ParamNoDefaultStarAnnotationNode
+public sealed partial record ParamNoDefaultStarAnnotation_Derived0Node : ParamNoDefaultStarAnnotationNode
 {
-    internal TokenNode Token => (TokenNode)Children![1];
+    public TokenNode Token => (TokenNode)Children![1];
     public override ParamNoDefaultStarAnnotation_Derived0View GetView(int position, IRedView? parent)
         => new ParamNoDefaultStarAnnotation_Derived0View(this, position, parent);
 }
-internal sealed partial class ParamNoDefaultStarAnnotation_Derived0View : ParamNoDefaultStarAnnotationView
+public sealed partial class ParamNoDefaultStarAnnotation_Derived0View : ParamNoDefaultStarAnnotationView
 {
-    internal ParamNoDefaultStarAnnotation_Derived0View(ParamNoDefaultStarAnnotation_Derived0Node green, int position, IRedView? parent)
+    public ParamNoDefaultStarAnnotation_Derived0View(ParamNoDefaultStarAnnotation_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15747,33 +15747,33 @@ internal sealed partial class ParamNoDefaultStarAnnotation_Derived0View : ParamN
     }
 }
 
-internal sealed partial record ParamNoDefaultStarAnnotation_Derived1Node : ParamNoDefaultStarAnnotationNode
+public sealed partial record ParamNoDefaultStarAnnotation_Derived1Node : ParamNoDefaultStarAnnotationNode
 {
     public override ParamNoDefaultStarAnnotation_Derived1View GetView(int position, IRedView? parent)
         => new ParamNoDefaultStarAnnotation_Derived1View(this, position, parent);
 }
-internal sealed partial class ParamNoDefaultStarAnnotation_Derived1View : ParamNoDefaultStarAnnotationView
+public sealed partial class ParamNoDefaultStarAnnotation_Derived1View : ParamNoDefaultStarAnnotationView
 {
-    internal ParamNoDefaultStarAnnotation_Derived1View(ParamNoDefaultStarAnnotation_Derived1Node green, int position, IRedView? parent)
+    public ParamNoDefaultStarAnnotation_Derived1View(ParamNoDefaultStarAnnotation_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record ParamWithDefaultNode : GreenNode
+public abstract partial record ParamWithDefaultNode : GreenNode
 {
-    internal ParamNode Param => (ParamNode)Children![0];
-    internal DefaultValueNode DefaultValue => (DefaultValueNode)Children![1];
+    public ParamNode Param => (ParamNode)Children![0];
+    public DefaultValueNode DefaultValue => (DefaultValueNode)Children![1];
 }
-internal abstract partial class ParamWithDefaultView : RedView
+public abstract partial class ParamWithDefaultView : RedView
 {
-    internal ParamWithDefaultView(ParamWithDefaultNode green, int position, IRedView? parent)
+    public ParamWithDefaultView(ParamWithDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ParamView? _field_param = null;
-    internal ParamView Param
+    public ParamView Param
     {
         get
         {
@@ -15787,7 +15787,7 @@ internal abstract partial class ParamWithDefaultView : RedView
     }
 
     private DefaultValueView? _field_defaultValue = null;
-    internal DefaultValueView DefaultValue
+    public DefaultValueView DefaultValue
     {
         get
         {
@@ -15801,21 +15801,21 @@ internal abstract partial class ParamWithDefaultView : RedView
     }
 }
 
-internal sealed partial record ParamWithDefault_Derived0Node : ParamWithDefaultNode
+public sealed partial record ParamWithDefault_Derived0Node : ParamWithDefaultNode
 {
-    internal TokenNode Token => (TokenNode)Children![2];
+    public TokenNode Token => (TokenNode)Children![2];
     public override ParamWithDefault_Derived0View GetView(int position, IRedView? parent)
         => new ParamWithDefault_Derived0View(this, position, parent);
 }
-internal sealed partial class ParamWithDefault_Derived0View : ParamWithDefaultView
+public sealed partial class ParamWithDefault_Derived0View : ParamWithDefaultView
 {
-    internal ParamWithDefault_Derived0View(ParamWithDefault_Derived0Node green, int position, IRedView? parent)
+    public ParamWithDefault_Derived0View(ParamWithDefault_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15829,33 +15829,33 @@ internal sealed partial class ParamWithDefault_Derived0View : ParamWithDefaultVi
     }
 }
 
-internal sealed partial record ParamWithDefault_Derived1Node : ParamWithDefaultNode
+public sealed partial record ParamWithDefault_Derived1Node : ParamWithDefaultNode
 {
     public override ParamWithDefault_Derived1View GetView(int position, IRedView? parent)
         => new ParamWithDefault_Derived1View(this, position, parent);
 }
-internal sealed partial class ParamWithDefault_Derived1View : ParamWithDefaultView
+public sealed partial class ParamWithDefault_Derived1View : ParamWithDefaultView
 {
-    internal ParamWithDefault_Derived1View(ParamWithDefault_Derived1Node green, int position, IRedView? parent)
+    public ParamWithDefault_Derived1View(ParamWithDefault_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record ParamMaybeDefaultNode : GreenNode
+public abstract partial record ParamMaybeDefaultNode : GreenNode
 {
-    internal ParamNode Param => (ParamNode)Children![0];
-    internal DefaultValueNode? DefaultValue => Children![1] as DefaultValueNode;
+    public ParamNode Param => (ParamNode)Children![0];
+    public DefaultValueNode? DefaultValue => Children![1] as DefaultValueNode;
 }
-internal abstract partial class ParamMaybeDefaultView : RedView
+public abstract partial class ParamMaybeDefaultView : RedView
 {
-    internal ParamMaybeDefaultView(ParamMaybeDefaultNode green, int position, IRedView? parent)
+    public ParamMaybeDefaultView(ParamMaybeDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ParamView? _field_param = null;
-    internal ParamView Param
+    public ParamView Param
     {
         get
         {
@@ -15869,7 +15869,7 @@ internal abstract partial class ParamMaybeDefaultView : RedView
     }
 
     private DefaultValueView? _field_defaultValue = null;
-    internal DefaultValueView? DefaultValue
+    public DefaultValueView? DefaultValue
     {
         get
         {
@@ -15883,21 +15883,21 @@ internal abstract partial class ParamMaybeDefaultView : RedView
     }
 }
 
-internal sealed partial record ParamMaybeDefault_Derived0Node : ParamMaybeDefaultNode
+public sealed partial record ParamMaybeDefault_Derived0Node : ParamMaybeDefaultNode
 {
-    internal TokenNode Token => (TokenNode)Children![2];
+    public TokenNode Token => (TokenNode)Children![2];
     public override ParamMaybeDefault_Derived0View GetView(int position, IRedView? parent)
         => new ParamMaybeDefault_Derived0View(this, position, parent);
 }
-internal sealed partial class ParamMaybeDefault_Derived0View : ParamMaybeDefaultView
+public sealed partial class ParamMaybeDefault_Derived0View : ParamMaybeDefaultView
 {
-    internal ParamMaybeDefault_Derived0View(ParamMaybeDefault_Derived0Node green, int position, IRedView? parent)
+    public ParamMaybeDefault_Derived0View(ParamMaybeDefault_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -15911,35 +15911,35 @@ internal sealed partial class ParamMaybeDefault_Derived0View : ParamMaybeDefault
     }
 }
 
-internal sealed partial record ParamMaybeDefault_Derived1Node : ParamMaybeDefaultNode
+public sealed partial record ParamMaybeDefault_Derived1Node : ParamMaybeDefaultNode
 {
     public override ParamMaybeDefault_Derived1View GetView(int position, IRedView? parent)
         => new ParamMaybeDefault_Derived1View(this, position, parent);
 }
-internal sealed partial class ParamMaybeDefault_Derived1View : ParamMaybeDefaultView
+public sealed partial class ParamMaybeDefault_Derived1View : ParamMaybeDefaultView
 {
-    internal ParamMaybeDefault_Derived1View(ParamMaybeDefault_Derived1Node green, int position, IRedView? parent)
+    public ParamMaybeDefault_Derived1View(ParamMaybeDefault_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ParamNode : GreenNode
+public sealed partial record ParamNode : GreenNode
 {
-    internal TokenNode Name => (TokenNode)Children![0];
-    internal AnnotationNode? Annotation => Children![1] as AnnotationNode;
+    public TokenNode Name => (TokenNode)Children![0];
+    public AnnotationNode? Annotation => Children![1] as AnnotationNode;
     public override ParamView GetView(int position, IRedView? parent)
         => new ParamView(this, position, parent);
 }
-internal sealed partial class ParamView : RedView
+public sealed partial class ParamView : RedView
 {
-    internal ParamView(ParamNode green, int position, IRedView? parent)
+    public ParamView(ParamNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_name = null;
-    internal TokenView Name
+    public TokenView Name
     {
         get
         {
@@ -15953,7 +15953,7 @@ internal sealed partial class ParamView : RedView
     }
 
     private AnnotationView? _field_annotation = null;
-    internal AnnotationView? Annotation
+    public AnnotationView? Annotation
     {
         get
         {
@@ -15967,22 +15967,22 @@ internal sealed partial class ParamView : RedView
     }
 }
 
-internal sealed partial record ParamStarAnnotationNode : GreenNode
+public sealed partial record ParamStarAnnotationNode : GreenNode
 {
-    internal TokenNode Name => (TokenNode)Children![0];
-    internal StarAnnotationNode Annotation => (StarAnnotationNode)Children![1];
+    public TokenNode Name => (TokenNode)Children![0];
+    public StarAnnotationNode Annotation => (StarAnnotationNode)Children![1];
     public override ParamStarAnnotationView GetView(int position, IRedView? parent)
         => new ParamStarAnnotationView(this, position, parent);
 }
-internal sealed partial class ParamStarAnnotationView : RedView
+public sealed partial class ParamStarAnnotationView : RedView
 {
-    internal ParamStarAnnotationView(ParamStarAnnotationNode green, int position, IRedView? parent)
+    public ParamStarAnnotationView(ParamStarAnnotationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_name = null;
-    internal TokenView Name
+    public TokenView Name
     {
         get
         {
@@ -15996,7 +15996,7 @@ internal sealed partial class ParamStarAnnotationView : RedView
     }
 
     private StarAnnotationView? _field_annotation = null;
-    internal StarAnnotationView Annotation
+    public StarAnnotationView Annotation
     {
         get
         {
@@ -16010,21 +16010,21 @@ internal sealed partial class ParamStarAnnotationView : RedView
     }
 }
 
-internal sealed partial record AnnotationNode : GreenNode
+public sealed partial record AnnotationNode : GreenNode
 {
-    internal IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![1];
     public override AnnotationView GetView(int position, IRedView? parent)
         => new AnnotationView(this, position, parent);
 }
-internal sealed partial class AnnotationView : RedView
+public sealed partial class AnnotationView : RedView
 {
-    internal AnnotationView(AnnotationNode green, int position, IRedView? parent)
+    public AnnotationView(AnnotationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -16038,21 +16038,21 @@ internal sealed partial class AnnotationView : RedView
     }
 }
 
-internal sealed partial record StarAnnotationNode : GreenNode
+public sealed partial record StarAnnotationNode : GreenNode
 {
-    internal IStarExpressionNode Value => (IStarExpressionNode)Children![1];
+    public IStarExpressionNode Value => (IStarExpressionNode)Children![1];
     public override StarAnnotationView GetView(int position, IRedView? parent)
         => new StarAnnotationView(this, position, parent);
 }
-internal sealed partial class StarAnnotationView : RedView
+public sealed partial class StarAnnotationView : RedView
 {
-    internal StarAnnotationView(StarAnnotationNode green, int position, IRedView? parent)
+    public StarAnnotationView(StarAnnotationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarExpressionView? _field_value = null;
-    internal IStarExpressionView Value
+    public IStarExpressionView Value
     {
         get
         {
@@ -16066,21 +16066,21 @@ internal sealed partial class StarAnnotationView : RedView
     }
 }
 
-internal sealed partial record DefaultValueNode : GreenNode
+public sealed partial record DefaultValueNode : GreenNode
 {
-    internal IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![1];
     public override DefaultValueView GetView(int position, IRedView? parent)
         => new DefaultValueView(this, position, parent);
 }
-internal sealed partial class DefaultValueView : RedView
+public sealed partial class DefaultValueView : RedView
 {
-    internal DefaultValueView(DefaultValueNode green, int position, IRedView? parent)
+    public DefaultValueView(DefaultValueNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -16094,20 +16094,20 @@ internal sealed partial class DefaultValueView : RedView
     }
 }
 
-internal abstract partial record IfStatementNode : GreenNode, ICompoundStatementNode
+public abstract partial record IfStatementNode : GreenNode, ICompoundStatementNode
 {
-    internal INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
-    internal BlockNode Block => (BlockNode)Children![3];
+    public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
 }
-internal abstract partial class IfStatementView : RedView, ICompoundStatementView
+public abstract partial class IfStatementView : RedView, ICompoundStatementView
 {
-    internal IfStatementView(IfStatementNode green, int position, IRedView? parent)
+    public IfStatementView(IfStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private INamedExpressionView? _field_condition = null;
-    internal INamedExpressionView Condition
+    public INamedExpressionView Condition
     {
         get
         {
@@ -16121,7 +16121,7 @@ internal abstract partial class IfStatementView : RedView, ICompoundStatementVie
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16135,21 +16135,21 @@ internal abstract partial class IfStatementView : RedView, ICompoundStatementVie
     }
 }
 
-internal sealed partial record IfElifStatementNode : IfStatementNode
+public sealed partial record IfElifStatementNode : IfStatementNode
 {
-    internal ElifStatementNode Elif => (ElifStatementNode)Children![4];
+    public ElifStatementNode Elif => (ElifStatementNode)Children![4];
     public override IfElifStatementView GetView(int position, IRedView? parent)
         => new IfElifStatementView(this, position, parent);
 }
-internal sealed partial class IfElifStatementView : IfStatementView
+public sealed partial class IfElifStatementView : IfStatementView
 {
-    internal IfElifStatementView(IfElifStatementNode green, int position, IRedView? parent)
+    public IfElifStatementView(IfElifStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ElifStatementView? _field_elif = null;
-    internal ElifStatementView Elif
+    public ElifStatementView Elif
     {
         get
         {
@@ -16163,21 +16163,21 @@ internal sealed partial class IfElifStatementView : IfStatementView
     }
 }
 
-internal sealed partial record IfMaybeElseStatementNode : IfStatementNode
+public sealed partial record IfMaybeElseStatementNode : IfStatementNode
 {
-    internal ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
     public override IfMaybeElseStatementView GetView(int position, IRedView? parent)
         => new IfMaybeElseStatementView(this, position, parent);
 }
-internal sealed partial class IfMaybeElseStatementView : IfStatementView
+public sealed partial class IfMaybeElseStatementView : IfStatementView
 {
-    internal IfMaybeElseStatementView(IfMaybeElseStatementNode green, int position, IRedView? parent)
+    public IfMaybeElseStatementView(IfMaybeElseStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -16191,20 +16191,20 @@ internal sealed partial class IfMaybeElseStatementView : IfStatementView
     }
 }
 
-internal abstract partial record ElifStatementNode : GreenNode
+public abstract partial record ElifStatementNode : GreenNode
 {
-    internal INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
-    internal BlockNode Block => (BlockNode)Children![3];
+    public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
 }
-internal abstract partial class ElifStatementView : RedView
+public abstract partial class ElifStatementView : RedView
 {
-    internal ElifStatementView(ElifStatementNode green, int position, IRedView? parent)
+    public ElifStatementView(ElifStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private INamedExpressionView? _field_condition = null;
-    internal INamedExpressionView Condition
+    public INamedExpressionView Condition
     {
         get
         {
@@ -16218,7 +16218,7 @@ internal abstract partial class ElifStatementView : RedView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16232,21 +16232,21 @@ internal abstract partial class ElifStatementView : RedView
     }
 }
 
-internal sealed partial record ElifElifStatementNode : ElifStatementNode
+public sealed partial record ElifElifStatementNode : ElifStatementNode
 {
-    internal ElifStatementNode Elif => (ElifStatementNode)Children![4];
+    public ElifStatementNode Elif => (ElifStatementNode)Children![4];
     public override ElifElifStatementView GetView(int position, IRedView? parent)
         => new ElifElifStatementView(this, position, parent);
 }
-internal sealed partial class ElifElifStatementView : ElifStatementView
+public sealed partial class ElifElifStatementView : ElifStatementView
 {
-    internal ElifElifStatementView(ElifElifStatementNode green, int position, IRedView? parent)
+    public ElifElifStatementView(ElifElifStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ElifStatementView? _field_elif = null;
-    internal ElifStatementView Elif
+    public ElifStatementView Elif
     {
         get
         {
@@ -16260,21 +16260,21 @@ internal sealed partial class ElifElifStatementView : ElifStatementView
     }
 }
 
-internal sealed partial record ElifMaybeElseStatementNode : ElifStatementNode
+public sealed partial record ElifMaybeElseStatementNode : ElifStatementNode
 {
-    internal ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
     public override ElifMaybeElseStatementView GetView(int position, IRedView? parent)
         => new ElifMaybeElseStatementView(this, position, parent);
 }
-internal sealed partial class ElifMaybeElseStatementView : ElifStatementView
+public sealed partial class ElifMaybeElseStatementView : ElifStatementView
 {
-    internal ElifMaybeElseStatementView(ElifMaybeElseStatementNode green, int position, IRedView? parent)
+    public ElifMaybeElseStatementView(ElifMaybeElseStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -16288,21 +16288,21 @@ internal sealed partial class ElifMaybeElseStatementView : ElifStatementView
     }
 }
 
-internal sealed partial record ElseBlockNode : GreenNode
+public sealed partial record ElseBlockNode : GreenNode
 {
-    internal BlockNode Block => (BlockNode)Children![2];
+    public BlockNode Block => (BlockNode)Children![2];
     public override ElseBlockView GetView(int position, IRedView? parent)
         => new ElseBlockView(this, position, parent);
 }
-internal sealed partial class ElseBlockView : RedView
+public sealed partial class ElseBlockView : RedView
 {
-    internal ElseBlockView(ElseBlockNode green, int position, IRedView? parent)
+    public ElseBlockView(ElseBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16316,23 +16316,23 @@ internal sealed partial class ElseBlockView : RedView
     }
 }
 
-internal sealed partial record WhileStatementNode : GreenNode, ICompoundStatementNode
+public sealed partial record WhileStatementNode : GreenNode, ICompoundStatementNode
 {
-    internal INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
-    internal BlockNode Block => (BlockNode)Children![3];
-    internal ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
     public override WhileStatementView GetView(int position, IRedView? parent)
         => new WhileStatementView(this, position, parent);
 }
-internal sealed partial class WhileStatementView : RedView, ICompoundStatementView
+public sealed partial class WhileStatementView : RedView, ICompoundStatementView
 {
-    internal WhileStatementView(WhileStatementNode green, int position, IRedView? parent)
+    public WhileStatementView(WhileStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private INamedExpressionView? _field_condition = null;
-    internal INamedExpressionView Condition
+    public INamedExpressionView Condition
     {
         get
         {
@@ -16346,7 +16346,7 @@ internal sealed partial class WhileStatementView : RedView, ICompoundStatementVi
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16360,7 +16360,7 @@ internal sealed partial class WhileStatementView : RedView, ICompoundStatementVi
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -16374,35 +16374,35 @@ internal sealed partial class WhileStatementView : RedView, ICompoundStatementVi
     }
 }
 
-internal abstract partial record ForStatementNode : GreenNode, ICompoundStatementNode
+public abstract partial record ForStatementNode : GreenNode, ICompoundStatementNode
 {
 }
-internal abstract partial class ForStatementView : RedView, ICompoundStatementView
+public abstract partial class ForStatementView : RedView, ICompoundStatementView
 {
-    internal ForStatementView(ForStatementNode green, int position, IRedView? parent)
+    public ForStatementView(ForStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NormalForStatementNode : ForStatementNode
+public sealed partial record NormalForStatementNode : ForStatementNode
 {
-    internal StarTargetsNode Targets => (StarTargetsNode)Children![1];
-    internal StarExpressionsNode Expression => (StarExpressionsNode)Children![3];
-    internal BlockNode Block => (BlockNode)Children![5];
-    internal ElseBlockNode? Else => Children![6] as ElseBlockNode;
+    public StarTargetsNode Targets => (StarTargetsNode)Children![1];
+    public StarExpressionsNode Expression => (StarExpressionsNode)Children![3];
+    public BlockNode Block => (BlockNode)Children![5];
+    public ElseBlockNode? Else => Children![6] as ElseBlockNode;
     public override NormalForStatementView GetView(int position, IRedView? parent)
         => new NormalForStatementView(this, position, parent);
 }
-internal sealed partial class NormalForStatementView : ForStatementView
+public sealed partial class NormalForStatementView : ForStatementView
 {
-    internal NormalForStatementView(NormalForStatementNode green, int position, IRedView? parent)
+    public NormalForStatementView(NormalForStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetsView? _field_targets = null;
-    internal StarTargetsView Targets
+    public StarTargetsView Targets
     {
         get
         {
@@ -16416,7 +16416,7 @@ internal sealed partial class NormalForStatementView : ForStatementView
     }
 
     private StarExpressionsView? _field_expression = null;
-    internal StarExpressionsView Expression
+    public StarExpressionsView Expression
     {
         get
         {
@@ -16430,7 +16430,7 @@ internal sealed partial class NormalForStatementView : ForStatementView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16444,7 +16444,7 @@ internal sealed partial class NormalForStatementView : ForStatementView
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -16458,24 +16458,24 @@ internal sealed partial class NormalForStatementView : ForStatementView
     }
 }
 
-internal sealed partial record AsyncForStatementNode : ForStatementNode
+public sealed partial record AsyncForStatementNode : ForStatementNode
 {
-    internal StarTargetsNode Targets => (StarTargetsNode)Children![2];
-    internal StarExpressionsNode Expression => (StarExpressionsNode)Children![4];
-    internal BlockNode Block => (BlockNode)Children![6];
-    internal ElseBlockNode? Else => Children![7] as ElseBlockNode;
+    public StarTargetsNode Targets => (StarTargetsNode)Children![2];
+    public StarExpressionsNode Expression => (StarExpressionsNode)Children![4];
+    public BlockNode Block => (BlockNode)Children![6];
+    public ElseBlockNode? Else => Children![7] as ElseBlockNode;
     public override AsyncForStatementView GetView(int position, IRedView? parent)
         => new AsyncForStatementView(this, position, parent);
 }
-internal sealed partial class AsyncForStatementView : ForStatementView
+public sealed partial class AsyncForStatementView : ForStatementView
 {
-    internal AsyncForStatementView(AsyncForStatementNode green, int position, IRedView? parent)
+    public AsyncForStatementView(AsyncForStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetsView? _field_targets = null;
-    internal StarTargetsView Targets
+    public StarTargetsView Targets
     {
         get
         {
@@ -16489,7 +16489,7 @@ internal sealed partial class AsyncForStatementView : ForStatementView
     }
 
     private StarExpressionsView? _field_expression = null;
-    internal StarExpressionsView Expression
+    public StarExpressionsView Expression
     {
         get
         {
@@ -16503,7 +16503,7 @@ internal sealed partial class AsyncForStatementView : ForStatementView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16517,7 +16517,7 @@ internal sealed partial class AsyncForStatementView : ForStatementView
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -16531,21 +16531,21 @@ internal sealed partial class AsyncForStatementView : ForStatementView
     }
 }
 
-internal abstract partial record WithStatementNode : GreenNode, ICompoundStatementNode
+public abstract partial record WithStatementNode : GreenNode, ICompoundStatementNode
 {
 }
-internal abstract partial class WithStatementView : RedView, ICompoundStatementView
+public abstract partial class WithStatementView : RedView, ICompoundStatementView
 {
-    internal WithStatementView(WithStatementNode green, int position, IRedView? parent)
+    public WithStatementView(WithStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ParenthesizedWithStatementNode : WithStatementNode
+public sealed partial record ParenthesizedWithStatementNode : WithStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
     {
         get
         {
@@ -16557,20 +16557,20 @@ internal sealed partial record ParenthesizedWithStatementNode : WithStatementNod
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
-    internal BlockNode Block => (BlockNode)Children![6];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
+    public BlockNode Block => (BlockNode)Children![6];
     public override ParenthesizedWithStatementView GetView(int position, IRedView? parent)
         => new ParenthesizedWithStatementView(this, position, parent);
 }
-internal sealed partial class ParenthesizedWithStatementView : WithStatementView
+public sealed partial class ParenthesizedWithStatementView : WithStatementView
 {
-    internal ParenthesizedWithStatementView(ParenthesizedWithStatementNode green, int position, IRedView? parent)
+    public ParenthesizedWithStatementView(ParenthesizedWithStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -16583,7 +16583,7 @@ internal sealed partial class ParenthesizedWithStatementView : WithStatementView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<WithItemView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
     {
         get
         {
@@ -16597,7 +16597,7 @@ internal sealed partial class ParenthesizedWithStatementView : WithStatementView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16611,10 +16611,10 @@ internal sealed partial class ParenthesizedWithStatementView : WithStatementView
     }
 }
 
-internal sealed partial record OneLinedWithStatementNode : WithStatementNode
+public sealed partial record OneLinedWithStatementNode : WithStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
     {
         get
         {
@@ -16626,20 +16626,20 @@ internal sealed partial record OneLinedWithStatementNode : WithStatementNode
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![1];
-    internal BlockNode Block => (BlockNode)Children![3];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
     public override OneLinedWithStatementView GetView(int position, IRedView? parent)
         => new OneLinedWithStatementView(this, position, parent);
 }
-internal sealed partial class OneLinedWithStatementView : WithStatementView
+public sealed partial class OneLinedWithStatementView : WithStatementView
 {
-    internal OneLinedWithStatementView(OneLinedWithStatementNode green, int position, IRedView? parent)
+    public OneLinedWithStatementView(OneLinedWithStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -16652,7 +16652,7 @@ internal sealed partial class OneLinedWithStatementView : WithStatementView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<WithItemView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
     {
         get
         {
@@ -16666,7 +16666,7 @@ internal sealed partial class OneLinedWithStatementView : WithStatementView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16680,10 +16680,10 @@ internal sealed partial class OneLinedWithStatementView : WithStatementView
     }
 }
 
-internal sealed partial record ParenthesizedAsyncWithStatementNode : WithStatementNode
+public sealed partial record ParenthesizedAsyncWithStatementNode : WithStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
     {
         get
         {
@@ -16695,20 +16695,20 @@ internal sealed partial record ParenthesizedAsyncWithStatementNode : WithStateme
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![3];
-    internal BlockNode Block => (BlockNode)Children![7];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![3];
+    public BlockNode Block => (BlockNode)Children![7];
     public override ParenthesizedAsyncWithStatementView GetView(int position, IRedView? parent)
         => new ParenthesizedAsyncWithStatementView(this, position, parent);
 }
-internal sealed partial class ParenthesizedAsyncWithStatementView : WithStatementView
+public sealed partial class ParenthesizedAsyncWithStatementView : WithStatementView
 {
-    internal ParenthesizedAsyncWithStatementView(ParenthesizedAsyncWithStatementNode green, int position, IRedView? parent)
+    public ParenthesizedAsyncWithStatementView(ParenthesizedAsyncWithStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -16721,7 +16721,7 @@ internal sealed partial class ParenthesizedAsyncWithStatementView : WithStatemen
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<WithItemView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
     {
         get
         {
@@ -16735,7 +16735,7 @@ internal sealed partial class ParenthesizedAsyncWithStatementView : WithStatemen
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16749,10 +16749,10 @@ internal sealed partial class ParenthesizedAsyncWithStatementView : WithStatemen
     }
 }
 
-internal sealed partial record OneLinedAsyncWithStatementNode : WithStatementNode
+public sealed partial record OneLinedAsyncWithStatementNode : WithStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
     {
         get
         {
@@ -16764,20 +16764,20 @@ internal sealed partial record OneLinedAsyncWithStatementNode : WithStatementNod
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
-    internal BlockNode Block => (BlockNode)Children![4];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
+    public BlockNode Block => (BlockNode)Children![4];
     public override OneLinedAsyncWithStatementView GetView(int position, IRedView? parent)
         => new OneLinedAsyncWithStatementView(this, position, parent);
 }
-internal sealed partial class OneLinedAsyncWithStatementView : WithStatementView
+public sealed partial class OneLinedAsyncWithStatementView : WithStatementView
 {
-    internal OneLinedAsyncWithStatementView(OneLinedAsyncWithStatementNode green, int position, IRedView? parent)
+    public OneLinedAsyncWithStatementView(OneLinedAsyncWithStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -16790,7 +16790,7 @@ internal sealed partial class OneLinedAsyncWithStatementView : WithStatementView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<WithItemView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
+    public global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
     {
         get
         {
@@ -16804,7 +16804,7 @@ internal sealed partial class OneLinedAsyncWithStatementView : WithStatementView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -16818,19 +16818,19 @@ internal sealed partial class OneLinedAsyncWithStatementView : WithStatementView
     }
 }
 
-internal abstract partial record WithItemNode : GreenNode
+public abstract partial record WithItemNode : GreenNode
 {
-    internal IExpressionNode Expression => (IExpressionNode)Children![0];
+    public IExpressionNode Expression => (IExpressionNode)Children![0];
 }
-internal abstract partial class WithItemView : RedView
+public abstract partial class WithItemView : RedView
 {
-    internal WithItemView(WithItemNode green, int position, IRedView? parent)
+    public WithItemView(WithItemNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_expression = null;
-    internal IExpressionView Expression
+    public IExpressionView Expression
     {
         get
         {
@@ -16844,21 +16844,21 @@ internal abstract partial class WithItemView : RedView
     }
 }
 
-internal sealed partial record NamedWithItemNode : WithItemNode
+public sealed partial record NamedWithItemNode : WithItemNode
 {
-    internal StarTargetNode Target => (StarTargetNode)Children![2];
+    public StarTargetNode Target => (StarTargetNode)Children![2];
     public override NamedWithItemView GetView(int position, IRedView? parent)
         => new NamedWithItemView(this, position, parent);
 }
-internal sealed partial class NamedWithItemView : WithItemView
+public sealed partial class NamedWithItemView : WithItemView
 {
-    internal NamedWithItemView(NamedWithItemNode green, int position, IRedView? parent)
+    public NamedWithItemView(NamedWithItemNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetView? _field_target = null;
-    internal StarTargetView Target
+    public StarTargetView Target
     {
         get
         {
@@ -16872,32 +16872,32 @@ internal sealed partial class NamedWithItemView : WithItemView
     }
 }
 
-internal sealed partial record PlainWithItemNode : WithItemNode
+public sealed partial record PlainWithItemNode : WithItemNode
 {
     public override PlainWithItemView GetView(int position, IRedView? parent)
         => new PlainWithItemView(this, position, parent);
 }
-internal sealed partial class PlainWithItemView : WithItemView
+public sealed partial class PlainWithItemView : WithItemView
 {
-    internal PlainWithItemView(PlainWithItemNode green, int position, IRedView? parent)
+    public PlainWithItemView(PlainWithItemNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record TryStatementNode : GreenNode, ICompoundStatementNode
+public abstract partial record TryStatementNode : GreenNode, ICompoundStatementNode
 {
-    internal BlockNode Try => (BlockNode)Children![2];
+    public BlockNode Try => (BlockNode)Children![2];
 }
-internal abstract partial class TryStatementView : RedView, ICompoundStatementView
+public abstract partial class TryStatementView : RedView, ICompoundStatementView
 {
-    internal TryStatementView(TryStatementNode green, int position, IRedView? parent)
+    public TryStatementView(TryStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private BlockView? _field_try = null;
-    internal BlockView Try
+    public BlockView Try
     {
         get
         {
@@ -16911,21 +16911,21 @@ internal abstract partial class TryStatementView : RedView, ICompoundStatementVi
     }
 }
 
-internal sealed partial record TryFinallyStatementNode : TryStatementNode
+public sealed partial record TryFinallyStatementNode : TryStatementNode
 {
-    internal FinallyBlockNode Finally => (FinallyBlockNode)Children![3];
+    public FinallyBlockNode Finally => (FinallyBlockNode)Children![3];
     public override TryFinallyStatementView GetView(int position, IRedView? parent)
         => new TryFinallyStatementView(this, position, parent);
 }
-internal sealed partial class TryFinallyStatementView : TryStatementView
+public sealed partial class TryFinallyStatementView : TryStatementView
 {
-    internal TryFinallyStatementView(TryFinallyStatementNode green, int position, IRedView? parent)
+    public TryFinallyStatementView(TryFinallyStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private FinallyBlockView? _field_finally = null;
-    internal FinallyBlockView Finally
+    public FinallyBlockView Finally
     {
         get
         {
@@ -16939,23 +16939,23 @@ internal sealed partial class TryFinallyStatementView : TryStatementView
     }
 }
 
-internal sealed partial record TryExceptStatementNode : TryStatementNode
+public sealed partial record TryExceptStatementNode : TryStatementNode
 {
-    internal NodeArray<ExceptBlockNode> Excepts => (NodeArray<ExceptBlockNode>)Children![3];
-    internal ElseBlockNode? Else => Children![4] as ElseBlockNode;
-    internal FinallyBlockNode? Finally => Children![5] as FinallyBlockNode;
+    public NodeArray<ExceptBlockNode> Excepts => (NodeArray<ExceptBlockNode>)Children![3];
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public FinallyBlockNode? Finally => Children![5] as FinallyBlockNode;
     public override TryExceptStatementView GetView(int position, IRedView? parent)
         => new TryExceptStatementView(this, position, parent);
 }
-internal sealed partial class TryExceptStatementView : TryStatementView
+public sealed partial class TryExceptStatementView : TryStatementView
 {
-    internal TryExceptStatementView(TryExceptStatementNode green, int position, IRedView? parent)
+    public TryExceptStatementView(TryExceptStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<ExceptBlockView>? _field_excepts = null;
-    internal ViewArray<ExceptBlockView> Excepts
+    public ViewArray<ExceptBlockView> Excepts
     {
         get
         {
@@ -16969,7 +16969,7 @@ internal sealed partial class TryExceptStatementView : TryStatementView
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -16983,7 +16983,7 @@ internal sealed partial class TryExceptStatementView : TryStatementView
     }
 
     private FinallyBlockView? _field_finally = null;
-    internal FinallyBlockView? Finally
+    public FinallyBlockView? Finally
     {
         get
         {
@@ -16997,23 +16997,23 @@ internal sealed partial class TryExceptStatementView : TryStatementView
     }
 }
 
-internal sealed partial record TryExceptStarStatementNode : TryStatementNode
+public sealed partial record TryExceptStarStatementNode : TryStatementNode
 {
-    internal NodeArray<ExceptStarBlockNode> Excepts => (NodeArray<ExceptStarBlockNode>)Children![3];
-    internal ElseBlockNode? Else => Children![4] as ElseBlockNode;
-    internal FinallyBlockNode? Finally => Children![5] as FinallyBlockNode;
+    public NodeArray<ExceptStarBlockNode> Excepts => (NodeArray<ExceptStarBlockNode>)Children![3];
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public FinallyBlockNode? Finally => Children![5] as FinallyBlockNode;
     public override TryExceptStarStatementView GetView(int position, IRedView? parent)
         => new TryExceptStarStatementView(this, position, parent);
 }
-internal sealed partial class TryExceptStarStatementView : TryStatementView
+public sealed partial class TryExceptStarStatementView : TryStatementView
 {
-    internal TryExceptStarStatementView(TryExceptStarStatementNode green, int position, IRedView? parent)
+    public TryExceptStarStatementView(TryExceptStarStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<ExceptStarBlockView>? _field_excepts = null;
-    internal ViewArray<ExceptStarBlockView> Excepts
+    public ViewArray<ExceptStarBlockView> Excepts
     {
         get
         {
@@ -17027,7 +17027,7 @@ internal sealed partial class TryExceptStarStatementView : TryStatementView
     }
 
     private ElseBlockView? _field_else = null;
-    internal ElseBlockView? Else
+    public ElseBlockView? Else
     {
         get
         {
@@ -17041,7 +17041,7 @@ internal sealed partial class TryExceptStarStatementView : TryStatementView
     }
 
     private FinallyBlockView? _field_finally = null;
-    internal FinallyBlockView? Finally
+    public FinallyBlockView? Finally
     {
         get
         {
@@ -17055,33 +17055,33 @@ internal sealed partial class TryExceptStarStatementView : TryStatementView
     }
 }
 
-internal abstract partial record ExceptBlockNode : GreenNode
+public abstract partial record ExceptBlockNode : GreenNode
 {
 }
-internal abstract partial class ExceptBlockView : RedView
+public abstract partial class ExceptBlockView : RedView
 {
-    internal ExceptBlockView(ExceptBlockNode green, int position, IRedView? parent)
+    public ExceptBlockView(ExceptBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record PlainExceptBlockNode : ExceptBlockNode
+public sealed partial record PlainExceptBlockNode : ExceptBlockNode
 {
-    internal IExpressionNode Exception => (IExpressionNode)Children![1];
-    internal BlockNode Block => (BlockNode)Children![3];
+    public IExpressionNode Exception => (IExpressionNode)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
     public override PlainExceptBlockView GetView(int position, IRedView? parent)
         => new PlainExceptBlockView(this, position, parent);
 }
-internal sealed partial class PlainExceptBlockView : ExceptBlockView
+public sealed partial class PlainExceptBlockView : ExceptBlockView
 {
-    internal PlainExceptBlockView(PlainExceptBlockNode green, int position, IRedView? parent)
+    public PlainExceptBlockView(PlainExceptBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_exception = null;
-    internal IExpressionView Exception
+    public IExpressionView Exception
     {
         get
         {
@@ -17095,7 +17095,7 @@ internal sealed partial class PlainExceptBlockView : ExceptBlockView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17109,23 +17109,23 @@ internal sealed partial class PlainExceptBlockView : ExceptBlockView
     }
 }
 
-internal sealed partial record AliasExceptBlockNode : ExceptBlockNode
+public sealed partial record AliasExceptBlockNode : ExceptBlockNode
 {
-    internal IExpressionNode Exception => (IExpressionNode)Children![1];
-    internal TokenNode Alias => (TokenNode)Children![3];
-    internal BlockNode Block => (BlockNode)Children![5];
+    public IExpressionNode Exception => (IExpressionNode)Children![1];
+    public TokenNode Alias => (TokenNode)Children![3];
+    public BlockNode Block => (BlockNode)Children![5];
     public override AliasExceptBlockView GetView(int position, IRedView? parent)
         => new AliasExceptBlockView(this, position, parent);
 }
-internal sealed partial class AliasExceptBlockView : ExceptBlockView
+public sealed partial class AliasExceptBlockView : ExceptBlockView
 {
-    internal AliasExceptBlockView(AliasExceptBlockNode green, int position, IRedView? parent)
+    public AliasExceptBlockView(AliasExceptBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_exception = null;
-    internal IExpressionView Exception
+    public IExpressionView Exception
     {
         get
         {
@@ -17139,7 +17139,7 @@ internal sealed partial class AliasExceptBlockView : ExceptBlockView
     }
 
     private TokenView? _field_alias = null;
-    internal TokenView Alias
+    public TokenView Alias
     {
         get
         {
@@ -17153,7 +17153,7 @@ internal sealed partial class AliasExceptBlockView : ExceptBlockView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17167,10 +17167,10 @@ internal sealed partial class AliasExceptBlockView : ExceptBlockView
     }
 }
 
-internal sealed partial record MultipleExceptBlockNode : ExceptBlockNode
+public sealed partial record MultipleExceptBlockNode : ExceptBlockNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IExpressionNode>? _field_Exceptions = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IExpressionNode> Exceptions
+    public global::System.Collections.Immutable.ImmutableArray<IExpressionNode> Exceptions
     {
         get
         {
@@ -17182,20 +17182,20 @@ internal sealed partial record MultipleExceptBlockNode : ExceptBlockNode
             return _field_Exceptions.Value;
         }
     }
-    internal NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![1];
-    internal BlockNode Block => (BlockNode)Children![4];
+    public NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![1];
+    public BlockNode Block => (BlockNode)Children![4];
     public override MultipleExceptBlockView GetView(int position, IRedView? parent)
         => new MultipleExceptBlockView(this, position, parent);
 }
-internal sealed partial class MultipleExceptBlockView : ExceptBlockView
+public sealed partial class MultipleExceptBlockView : ExceptBlockView
 {
-    internal MultipleExceptBlockView(MultipleExceptBlockNode green, int position, IRedView? parent)
+    public MultipleExceptBlockView(MultipleExceptBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_exceptions = null;
-    internal ViewArray<RedView> AstExceptions
+    public ViewArray<RedView> AstExceptions
     {
         get
         {
@@ -17208,7 +17208,7 @@ internal sealed partial class MultipleExceptBlockView : ExceptBlockView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IExpressionView>? _field_exceptions = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IExpressionView> Exceptions
+    public global::System.Collections.Immutable.ImmutableArray<IExpressionView> Exceptions
     {
         get
         {
@@ -17222,7 +17222,7 @@ internal sealed partial class MultipleExceptBlockView : ExceptBlockView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17236,21 +17236,21 @@ internal sealed partial class MultipleExceptBlockView : ExceptBlockView
     }
 }
 
-internal sealed partial record EmptyExceptBlockNode : ExceptBlockNode
+public sealed partial record EmptyExceptBlockNode : ExceptBlockNode
 {
-    internal BlockNode Block => (BlockNode)Children![2];
+    public BlockNode Block => (BlockNode)Children![2];
     public override EmptyExceptBlockView GetView(int position, IRedView? parent)
         => new EmptyExceptBlockView(this, position, parent);
 }
-internal sealed partial class EmptyExceptBlockView : ExceptBlockView
+public sealed partial class EmptyExceptBlockView : ExceptBlockView
 {
-    internal EmptyExceptBlockView(EmptyExceptBlockNode green, int position, IRedView? parent)
+    public EmptyExceptBlockView(EmptyExceptBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17264,33 +17264,33 @@ internal sealed partial class EmptyExceptBlockView : ExceptBlockView
     }
 }
 
-internal abstract partial record ExceptStarBlockNode : GreenNode
+public abstract partial record ExceptStarBlockNode : GreenNode
 {
 }
-internal abstract partial class ExceptStarBlockView : RedView
+public abstract partial class ExceptStarBlockView : RedView
 {
-    internal ExceptStarBlockView(ExceptStarBlockNode green, int position, IRedView? parent)
+    public ExceptStarBlockView(ExceptStarBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record PlainExceptStarBlockNode : ExceptStarBlockNode
+public sealed partial record PlainExceptStarBlockNode : ExceptStarBlockNode
 {
-    internal IExpressionNode Exception => (IExpressionNode)Children![2];
-    internal BlockNode Block => (BlockNode)Children![4];
+    public IExpressionNode Exception => (IExpressionNode)Children![2];
+    public BlockNode Block => (BlockNode)Children![4];
     public override PlainExceptStarBlockView GetView(int position, IRedView? parent)
         => new PlainExceptStarBlockView(this, position, parent);
 }
-internal sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
+public sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
 {
-    internal PlainExceptStarBlockView(PlainExceptStarBlockNode green, int position, IRedView? parent)
+    public PlainExceptStarBlockView(PlainExceptStarBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_exception = null;
-    internal IExpressionView Exception
+    public IExpressionView Exception
     {
         get
         {
@@ -17304,7 +17304,7 @@ internal sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17318,23 +17318,23 @@ internal sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
     }
 }
 
-internal sealed partial record AliasExceptStarBlockNode : ExceptStarBlockNode
+public sealed partial record AliasExceptStarBlockNode : ExceptStarBlockNode
 {
-    internal IExpressionNode Exception => (IExpressionNode)Children![2];
-    internal TokenNode Alias => (TokenNode)Children![4];
-    internal BlockNode Block => (BlockNode)Children![6];
+    public IExpressionNode Exception => (IExpressionNode)Children![2];
+    public TokenNode Alias => (TokenNode)Children![4];
+    public BlockNode Block => (BlockNode)Children![6];
     public override AliasExceptStarBlockView GetView(int position, IRedView? parent)
         => new AliasExceptStarBlockView(this, position, parent);
 }
-internal sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
+public sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
 {
-    internal AliasExceptStarBlockView(AliasExceptStarBlockNode green, int position, IRedView? parent)
+    public AliasExceptStarBlockView(AliasExceptStarBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_exception = null;
-    internal IExpressionView Exception
+    public IExpressionView Exception
     {
         get
         {
@@ -17348,7 +17348,7 @@ internal sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
     }
 
     private TokenView? _field_alias = null;
-    internal TokenView Alias
+    public TokenView Alias
     {
         get
         {
@@ -17362,7 +17362,7 @@ internal sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17376,10 +17376,10 @@ internal sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
     }
 }
 
-internal sealed partial record MultipleExceptStarBlockNode : ExceptStarBlockNode
+public sealed partial record MultipleExceptStarBlockNode : ExceptStarBlockNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IExpressionNode>? _field_Exceptions = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IExpressionNode> Exceptions
+    public global::System.Collections.Immutable.ImmutableArray<IExpressionNode> Exceptions
     {
         get
         {
@@ -17391,20 +17391,20 @@ internal sealed partial record MultipleExceptStarBlockNode : ExceptStarBlockNode
             return _field_Exceptions.Value;
         }
     }
-    internal NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![2];
-    internal BlockNode Block => (BlockNode)Children![5];
+    public NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![2];
+    public BlockNode Block => (BlockNode)Children![5];
     public override MultipleExceptStarBlockView GetView(int position, IRedView? parent)
         => new MultipleExceptStarBlockView(this, position, parent);
 }
-internal sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
+public sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
 {
-    internal MultipleExceptStarBlockView(MultipleExceptStarBlockNode green, int position, IRedView? parent)
+    public MultipleExceptStarBlockView(MultipleExceptStarBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_exceptions = null;
-    internal ViewArray<RedView> AstExceptions
+    public ViewArray<RedView> AstExceptions
     {
         get
         {
@@ -17417,7 +17417,7 @@ internal sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IExpressionView>? _field_exceptions = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IExpressionView> Exceptions
+    public global::System.Collections.Immutable.ImmutableArray<IExpressionView> Exceptions
     {
         get
         {
@@ -17431,7 +17431,7 @@ internal sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
     }
 
     private BlockView? _field_block = null;
-    internal BlockView Block
+    public BlockView Block
     {
         get
         {
@@ -17445,21 +17445,21 @@ internal sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
     }
 }
 
-internal sealed partial record FinallyBlockNode : GreenNode
+public sealed partial record FinallyBlockNode : GreenNode
 {
-    internal BlockNode Value => (BlockNode)Children![2];
+    public BlockNode Value => (BlockNode)Children![2];
     public override FinallyBlockView GetView(int position, IRedView? parent)
         => new FinallyBlockView(this, position, parent);
 }
-internal sealed partial class FinallyBlockView : RedView
+public sealed partial class FinallyBlockView : RedView
 {
-    internal FinallyBlockView(FinallyBlockNode green, int position, IRedView? parent)
+    public FinallyBlockView(FinallyBlockNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private BlockView? _field_value = null;
-    internal BlockView Value
+    public BlockView Value
     {
         get
         {
@@ -17473,23 +17473,23 @@ internal sealed partial class FinallyBlockView : RedView
     }
 }
 
-internal sealed partial record TypeAliasNode : GreenNode, ISimpleStatementNode
+public sealed partial record TypeAliasNode : GreenNode, ISimpleStatementNode
 {
-    internal TokenNode Name => (TokenNode)Children![1];
-    internal TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
-    internal IExpressionNode Value => (IExpressionNode)Children![4];
+    public TokenNode Name => (TokenNode)Children![1];
+    public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
+    public IExpressionNode Value => (IExpressionNode)Children![4];
     public override TypeAliasView GetView(int position, IRedView? parent)
         => new TypeAliasView(this, position, parent);
 }
-internal sealed partial class TypeAliasView : RedView, ISimpleStatementView
+public sealed partial class TypeAliasView : RedView, ISimpleStatementView
 {
-    internal TypeAliasView(TypeAliasNode green, int position, IRedView? parent)
+    public TypeAliasView(TypeAliasNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_name = null;
-    internal TokenView Name
+    public TokenView Name
     {
         get
         {
@@ -17503,7 +17503,7 @@ internal sealed partial class TypeAliasView : RedView, ISimpleStatementView
     }
 
     private TypeParametersView? _field_typeParameters = null;
-    internal TypeParametersView? TypeParameters
+    public TypeParametersView? TypeParameters
     {
         get
         {
@@ -17517,7 +17517,7 @@ internal sealed partial class TypeAliasView : RedView, ISimpleStatementView
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -17531,10 +17531,10 @@ internal sealed partial class TypeAliasView : RedView, ISimpleStatementView
     }
 }
 
-internal sealed partial record TypeParametersNode : GreenNode
+public sealed partial record TypeParametersNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<TypeParameterNode>? _field_Values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<TypeParameterNode> Values
+    public global::System.Collections.Immutable.ImmutableArray<TypeParameterNode> Values
     {
         get
         {
@@ -17546,19 +17546,19 @@ internal sealed partial record TypeParametersNode : GreenNode
             return _field_Values.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![1];
     public override TypeParametersView GetView(int position, IRedView? parent)
         => new TypeParametersView(this, position, parent);
 }
-internal sealed partial class TypeParametersView : RedView
+public sealed partial class TypeParametersView : RedView
 {
-    internal TypeParametersView(TypeParametersNode green, int position, IRedView? parent)
+    public TypeParametersView(TypeParametersNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    internal ViewArray<RedView> AstValues
+    public ViewArray<RedView> AstValues
     {
         get
         {
@@ -17571,7 +17571,7 @@ internal sealed partial class TypeParametersView : RedView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<TypeParameterView>? _field_values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<TypeParameterView> Values
+    public global::System.Collections.Immutable.ImmutableArray<TypeParameterView> Values
     {
         get
         {
@@ -17585,19 +17585,19 @@ internal sealed partial class TypeParametersView : RedView
     }
 }
 
-internal abstract partial record TypeParameterNode : GreenNode
+public abstract partial record TypeParameterNode : GreenNode
 {
-    internal TokenNode Token => (TokenNode)Children![0];
+    public TokenNode Token => (TokenNode)Children![0];
 }
-internal abstract partial class TypeParameterView : RedView
+public abstract partial class TypeParameterView : RedView
 {
-    internal TypeParameterView(TypeParameterNode green, int position, IRedView? parent)
+    public TypeParameterView(TypeParameterNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -17611,22 +17611,22 @@ internal abstract partial class TypeParameterView : RedView
     }
 }
 
-internal sealed partial record TypeParameter_Derived0Node : TypeParameterNode
+public sealed partial record TypeParameter_Derived0Node : TypeParameterNode
 {
-    internal TypeParameterBoundNode? TypeParameterBound => Children![1] as TypeParameterBoundNode;
-    internal TypeParameterDefaultNode? TypeParameterDefault => Children![2] as TypeParameterDefaultNode;
+    public TypeParameterBoundNode? TypeParameterBound => Children![1] as TypeParameterBoundNode;
+    public TypeParameterDefaultNode? TypeParameterDefault => Children![2] as TypeParameterDefaultNode;
     public override TypeParameter_Derived0View GetView(int position, IRedView? parent)
         => new TypeParameter_Derived0View(this, position, parent);
 }
-internal sealed partial class TypeParameter_Derived0View : TypeParameterView
+public sealed partial class TypeParameter_Derived0View : TypeParameterView
 {
-    internal TypeParameter_Derived0View(TypeParameter_Derived0Node green, int position, IRedView? parent)
+    public TypeParameter_Derived0View(TypeParameter_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TypeParameterBoundView? _field_typeParameterBound = null;
-    internal TypeParameterBoundView? TypeParameterBound
+    public TypeParameterBoundView? TypeParameterBound
     {
         get
         {
@@ -17640,7 +17640,7 @@ internal sealed partial class TypeParameter_Derived0View : TypeParameterView
     }
 
     private TypeParameterDefaultView? _field_typeParameterDefault = null;
-    internal TypeParameterDefaultView? TypeParameterDefault
+    public TypeParameterDefaultView? TypeParameterDefault
     {
         get
         {
@@ -17654,22 +17654,22 @@ internal sealed partial class TypeParameter_Derived0View : TypeParameterView
     }
 }
 
-internal sealed partial record TypeParameter_Derived1Node : TypeParameterNode
+public sealed partial record TypeParameter_Derived1Node : TypeParameterNode
 {
-    internal TokenNode Token1 => (TokenNode)Children![1];
-    internal TypeParameterStarredDefaultNode? TypeParameterStarredDefault => Children![2] as TypeParameterStarredDefaultNode;
+    public TokenNode Token1 => (TokenNode)Children![1];
+    public TypeParameterStarredDefaultNode? TypeParameterStarredDefault => Children![2] as TypeParameterStarredDefaultNode;
     public override TypeParameter_Derived1View GetView(int position, IRedView? parent)
         => new TypeParameter_Derived1View(this, position, parent);
 }
-internal sealed partial class TypeParameter_Derived1View : TypeParameterView
+public sealed partial class TypeParameter_Derived1View : TypeParameterView
 {
-    internal TypeParameter_Derived1View(TypeParameter_Derived1Node green, int position, IRedView? parent)
+    public TypeParameter_Derived1View(TypeParameter_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token1 = null;
-    internal TokenView Token1
+    public TokenView Token1
     {
         get
         {
@@ -17683,7 +17683,7 @@ internal sealed partial class TypeParameter_Derived1View : TypeParameterView
     }
 
     private TypeParameterStarredDefaultView? _field_typeParameterStarredDefault = null;
-    internal TypeParameterStarredDefaultView? TypeParameterStarredDefault
+    public TypeParameterStarredDefaultView? TypeParameterStarredDefault
     {
         get
         {
@@ -17697,22 +17697,22 @@ internal sealed partial class TypeParameter_Derived1View : TypeParameterView
     }
 }
 
-internal sealed partial record TypeParameter_Derived2Node : TypeParameterNode
+public sealed partial record TypeParameter_Derived2Node : TypeParameterNode
 {
-    internal TokenNode Token1 => (TokenNode)Children![1];
-    internal TypeParameterDefaultNode? TypeParameterDefault => Children![2] as TypeParameterDefaultNode;
+    public TokenNode Token1 => (TokenNode)Children![1];
+    public TypeParameterDefaultNode? TypeParameterDefault => Children![2] as TypeParameterDefaultNode;
     public override TypeParameter_Derived2View GetView(int position, IRedView? parent)
         => new TypeParameter_Derived2View(this, position, parent);
 }
-internal sealed partial class TypeParameter_Derived2View : TypeParameterView
+public sealed partial class TypeParameter_Derived2View : TypeParameterView
 {
-    internal TypeParameter_Derived2View(TypeParameter_Derived2Node green, int position, IRedView? parent)
+    public TypeParameter_Derived2View(TypeParameter_Derived2Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_token1 = null;
-    internal TokenView Token1
+    public TokenView Token1
     {
         get
         {
@@ -17726,7 +17726,7 @@ internal sealed partial class TypeParameter_Derived2View : TypeParameterView
     }
 
     private TypeParameterDefaultView? _field_typeParameterDefault = null;
-    internal TypeParameterDefaultView? TypeParameterDefault
+    public TypeParameterDefaultView? TypeParameterDefault
     {
         get
         {
@@ -17740,21 +17740,21 @@ internal sealed partial class TypeParameter_Derived2View : TypeParameterView
     }
 }
 
-internal sealed partial record TypeParameterBoundNode : GreenNode
+public sealed partial record TypeParameterBoundNode : GreenNode
 {
-    internal IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![1];
     public override TypeParameterBoundView GetView(int position, IRedView? parent)
         => new TypeParameterBoundView(this, position, parent);
 }
-internal sealed partial class TypeParameterBoundView : RedView
+public sealed partial class TypeParameterBoundView : RedView
 {
-    internal TypeParameterBoundView(TypeParameterBoundNode green, int position, IRedView? parent)
+    public TypeParameterBoundView(TypeParameterBoundNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -17768,21 +17768,21 @@ internal sealed partial class TypeParameterBoundView : RedView
     }
 }
 
-internal sealed partial record TypeParameterDefaultNode : GreenNode
+public sealed partial record TypeParameterDefaultNode : GreenNode
 {
-    internal IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![1];
     public override TypeParameterDefaultView GetView(int position, IRedView? parent)
         => new TypeParameterDefaultView(this, position, parent);
 }
-internal sealed partial class TypeParameterDefaultView : RedView
+public sealed partial class TypeParameterDefaultView : RedView
 {
-    internal TypeParameterDefaultView(TypeParameterDefaultNode green, int position, IRedView? parent)
+    public TypeParameterDefaultView(TypeParameterDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -17796,21 +17796,21 @@ internal sealed partial class TypeParameterDefaultView : RedView
     }
 }
 
-internal sealed partial record TypeParameterStarredDefaultNode : GreenNode
+public sealed partial record TypeParameterStarredDefaultNode : GreenNode
 {
-    internal IStarExpressionNode Value => (IStarExpressionNode)Children![1];
+    public IStarExpressionNode Value => (IStarExpressionNode)Children![1];
     public override TypeParameterStarredDefaultView GetView(int position, IRedView? parent)
         => new TypeParameterStarredDefaultView(this, position, parent);
 }
-internal sealed partial class TypeParameterStarredDefaultView : RedView
+public sealed partial class TypeParameterStarredDefaultView : RedView
 {
-    internal TypeParameterStarredDefaultView(TypeParameterStarredDefaultNode green, int position, IRedView? parent)
+    public TypeParameterStarredDefaultView(TypeParameterStarredDefaultNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarExpressionView? _field_value = null;
-    internal IStarExpressionView Value
+    public IStarExpressionView Value
     {
         get
         {
@@ -17824,28 +17824,28 @@ internal sealed partial class TypeParameterStarredDefaultView : RedView
     }
 }
 
-internal partial interface IExpressionNode : IGreenNode, IStarExpressionNode, INamedExpressionNode;
-internal partial interface IExpressionView : IRedView, IStarExpressionView, INamedExpressionView;
+public partial interface IExpressionNode : IGreenNode, IStarExpressionNode, INamedExpressionNode;
+public partial interface IExpressionView : IRedView, IStarExpressionView, INamedExpressionView;
 
-internal sealed partial record IfExpressionNode : GreenNode, IExpressionNode
+public sealed partial record IfExpressionNode : GreenNode, IExpressionNode
 {
-    internal DisjunctionNode Disjunction => (DisjunctionNode)Children![0];
-    internal TokenNode Token => (TokenNode)Children![1];
-    internal DisjunctionNode Disjunction1 => (DisjunctionNode)Children![2];
-    internal TokenNode Token1 => (TokenNode)Children![3];
-    internal IExpressionNode Expression => (IExpressionNode)Children![4];
+    public DisjunctionNode Disjunction => (DisjunctionNode)Children![0];
+    public TokenNode Token => (TokenNode)Children![1];
+    public DisjunctionNode Disjunction1 => (DisjunctionNode)Children![2];
+    public TokenNode Token1 => (TokenNode)Children![3];
+    public IExpressionNode Expression => (IExpressionNode)Children![4];
     public override IfExpressionView GetView(int position, IRedView? parent)
         => new IfExpressionView(this, position, parent);
 }
-internal sealed partial class IfExpressionView : RedView, IExpressionView
+public sealed partial class IfExpressionView : RedView, IExpressionView
 {
-    internal IfExpressionView(IfExpressionNode green, int position, IRedView? parent)
+    public IfExpressionView(IfExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private DisjunctionView? _field_disjunction = null;
-    internal DisjunctionView Disjunction
+    public DisjunctionView Disjunction
     {
         get
         {
@@ -17859,7 +17859,7 @@ internal sealed partial class IfExpressionView : RedView, IExpressionView
     }
 
     private TokenView? _field_token = null;
-    internal TokenView Token
+    public TokenView Token
     {
         get
         {
@@ -17873,7 +17873,7 @@ internal sealed partial class IfExpressionView : RedView, IExpressionView
     }
 
     private DisjunctionView? _field_disjunction1 = null;
-    internal DisjunctionView Disjunction1
+    public DisjunctionView Disjunction1
     {
         get
         {
@@ -17887,7 +17887,7 @@ internal sealed partial class IfExpressionView : RedView, IExpressionView
     }
 
     private TokenView? _field_token1 = null;
-    internal TokenView Token1
+    public TokenView Token1
     {
         get
         {
@@ -17901,7 +17901,7 @@ internal sealed partial class IfExpressionView : RedView, IExpressionView
     }
 
     private IExpressionView? _field_expression = null;
-    internal IExpressionView Expression
+    public IExpressionView Expression
     {
         get
         {
@@ -17915,32 +17915,32 @@ internal sealed partial class IfExpressionView : RedView, IExpressionView
     }
 }
 
-internal abstract partial record YieldExpressionNode : GreenNode, IAnnotatedRhsNode
+public abstract partial record YieldExpressionNode : GreenNode, IAnnotatedRhsNode
 {
 }
-internal abstract partial class YieldExpressionView : RedView, IAnnotatedRhsView
+public abstract partial class YieldExpressionView : RedView, IAnnotatedRhsView
 {
-    internal YieldExpressionView(YieldExpressionNode green, int position, IRedView? parent)
+    public YieldExpressionView(YieldExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record YieldFromExpressionNode : YieldExpressionNode
+public sealed partial record YieldFromExpressionNode : YieldExpressionNode
 {
-    internal IExpressionNode Expression => (IExpressionNode)Children![2];
+    public IExpressionNode Expression => (IExpressionNode)Children![2];
     public override YieldFromExpressionView GetView(int position, IRedView? parent)
         => new YieldFromExpressionView(this, position, parent);
 }
-internal sealed partial class YieldFromExpressionView : YieldExpressionView
+public sealed partial class YieldFromExpressionView : YieldExpressionView
 {
-    internal YieldFromExpressionView(YieldFromExpressionNode green, int position, IRedView? parent)
+    public YieldFromExpressionView(YieldFromExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_expression = null;
-    internal IExpressionView Expression
+    public IExpressionView Expression
     {
         get
         {
@@ -17954,21 +17954,21 @@ internal sealed partial class YieldFromExpressionView : YieldExpressionView
     }
 }
 
-internal sealed partial record YieldStarExpressionNode : YieldExpressionNode
+public sealed partial record YieldStarExpressionNode : YieldExpressionNode
 {
-    internal StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
+    public StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
     public override YieldStarExpressionView GetView(int position, IRedView? parent)
         => new YieldStarExpressionView(this, position, parent);
 }
-internal sealed partial class YieldStarExpressionView : YieldExpressionView
+public sealed partial class YieldStarExpressionView : YieldExpressionView
 {
-    internal YieldStarExpressionView(YieldStarExpressionNode green, int position, IRedView? parent)
+    public YieldStarExpressionView(YieldStarExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarExpressionsView? _field_expression = null;
-    internal StarExpressionsView? Expression
+    public StarExpressionsView? Expression
     {
         get
         {
@@ -17982,10 +17982,10 @@ internal sealed partial class YieldStarExpressionView : YieldExpressionView
     }
 }
 
-internal sealed partial record StarExpressionsNode : GreenNode, ISimpleStatementNode, IAnnotatedRhsNode
+public sealed partial record StarExpressionsNode : GreenNode, ISimpleStatementNode, IAnnotatedRhsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IStarExpressionNode>? _field_Values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IStarExpressionNode> Values
+    public global::System.Collections.Immutable.ImmutableArray<IStarExpressionNode> Values
     {
         get
         {
@@ -17997,19 +17997,19 @@ internal sealed partial record StarExpressionsNode : GreenNode, ISimpleStatement
             return _field_Values.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
     public override StarExpressionsView GetView(int position, IRedView? parent)
         => new StarExpressionsView(this, position, parent);
 }
-internal sealed partial class StarExpressionsView : RedView, ISimpleStatementView, IAnnotatedRhsView
+public sealed partial class StarExpressionsView : RedView, ISimpleStatementView, IAnnotatedRhsView
 {
-    internal StarExpressionsView(StarExpressionsNode green, int position, IRedView? parent)
+    public StarExpressionsView(StarExpressionsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    internal ViewArray<RedView> AstValues
+    public ViewArray<RedView> AstValues
     {
         get
         {
@@ -18022,7 +18022,7 @@ internal sealed partial class StarExpressionsView : RedView, ISimpleStatementVie
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IStarExpressionView>? _field_values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IStarExpressionView> Values
+    public global::System.Collections.Immutable.ImmutableArray<IStarExpressionView> Values
     {
         get
         {
@@ -18036,24 +18036,24 @@ internal sealed partial class StarExpressionsView : RedView, ISimpleStatementVie
     }
 }
 
-internal partial interface IStarExpressionNode : IGreenNode, IKwargOrStarredNode;
-internal partial interface IStarExpressionView : IRedView, IKwargOrStarredView;
+public partial interface IStarExpressionNode : IGreenNode, IKwargOrStarredNode;
+public partial interface IStarExpressionView : IRedView, IKwargOrStarredView;
 
-internal sealed partial record StarBitwiseOrExpressionNode : GreenNode, IStarExpressionNode, IStarNamedExpressionNode
+public sealed partial record StarBitwiseOrExpressionNode : GreenNode, IStarExpressionNode, IStarNamedExpressionNode
 {
-    internal IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
     public override StarBitwiseOrExpressionView GetView(int position, IRedView? parent)
         => new StarBitwiseOrExpressionView(this, position, parent);
 }
-internal sealed partial class StarBitwiseOrExpressionView : RedView, IStarExpressionView, IStarNamedExpressionView
+public sealed partial class StarBitwiseOrExpressionView : RedView, IStarExpressionView, IStarNamedExpressionView
 {
-    internal StarBitwiseOrExpressionView(StarBitwiseOrExpressionNode green, int position, IRedView? parent)
+    public StarBitwiseOrExpressionView(StarBitwiseOrExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_value = null;
-    internal IBitwiseOrExpressionView Value
+    public IBitwiseOrExpressionView Value
     {
         get
         {
@@ -18067,13 +18067,13 @@ internal sealed partial class StarBitwiseOrExpressionView : RedView, IStarExpres
     }
 }
 
-internal partial interface IStarNamedExpressionNode : IGreenNode;
-internal partial interface IStarNamedExpressionView : IRedView;
+public partial interface IStarNamedExpressionNode : IGreenNode;
+public partial interface IStarNamedExpressionView : IRedView;
 
-internal sealed partial record StarNamedExpressionsNode : GreenNode
+public sealed partial record StarNamedExpressionsNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode> Items
     {
         get
         {
@@ -18085,19 +18085,19 @@ internal sealed partial record StarNamedExpressionsNode : GreenNode
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
     public override StarNamedExpressionsView GetView(int position, IRedView? parent)
         => new StarNamedExpressionsView(this, position, parent);
 }
-internal sealed partial class StarNamedExpressionsView : RedView
+public sealed partial class StarNamedExpressionsView : RedView
 {
-    internal StarNamedExpressionsView(StarNamedExpressionsNode green, int position, IRedView? parent)
+    public StarNamedExpressionsView(StarNamedExpressionsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -18110,7 +18110,7 @@ internal sealed partial class StarNamedExpressionsView : RedView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView> Items
+    public global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView> Items
     {
         get
         {
@@ -18124,22 +18124,22 @@ internal sealed partial class StarNamedExpressionsView : RedView
     }
 }
 
-internal sealed partial record AssignmentExpressionNode : GreenNode, INamedExpressionNode
+public sealed partial record AssignmentExpressionNode : GreenNode, INamedExpressionNode
 {
-    internal TokenNode Target => (TokenNode)Children![0];
-    internal IExpressionNode Value => (IExpressionNode)Children![2];
+    public TokenNode Target => (TokenNode)Children![0];
+    public IExpressionNode Value => (IExpressionNode)Children![2];
     public override AssignmentExpressionView GetView(int position, IRedView? parent)
         => new AssignmentExpressionView(this, position, parent);
 }
-internal sealed partial class AssignmentExpressionView : RedView, INamedExpressionView
+public sealed partial class AssignmentExpressionView : RedView, INamedExpressionView
 {
-    internal AssignmentExpressionView(AssignmentExpressionNode green, int position, IRedView? parent)
+    public AssignmentExpressionView(AssignmentExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_target = null;
-    internal TokenView Target
+    public TokenView Target
     {
         get
         {
@@ -18153,7 +18153,7 @@ internal sealed partial class AssignmentExpressionView : RedView, INamedExpressi
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -18167,13 +18167,13 @@ internal sealed partial class AssignmentExpressionView : RedView, INamedExpressi
     }
 }
 
-internal partial interface INamedExpressionNode : IGreenNode, IStarNamedExpressionNode, IPositionalArgumentNode;
-internal partial interface INamedExpressionView : IRedView, IStarNamedExpressionView, IPositionalArgumentView;
+public partial interface INamedExpressionNode : IGreenNode, IStarNamedExpressionNode, IPositionalArgumentNode;
+public partial interface INamedExpressionView : IRedView, IStarNamedExpressionView, IPositionalArgumentView;
 
-internal sealed partial record DisjunctionNode : GreenNode, IExpressionNode
+public sealed partial record DisjunctionNode : GreenNode, IExpressionNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ConjunctionNode>? _field_Values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ConjunctionNode> Values
+    public global::System.Collections.Immutable.ImmutableArray<ConjunctionNode> Values
     {
         get
         {
@@ -18185,19 +18185,19 @@ internal sealed partial record DisjunctionNode : GreenNode, IExpressionNode
             return _field_Values.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
     public override DisjunctionView GetView(int position, IRedView? parent)
         => new DisjunctionView(this, position, parent);
 }
-internal sealed partial class DisjunctionView : RedView, IExpressionView
+public sealed partial class DisjunctionView : RedView, IExpressionView
 {
-    internal DisjunctionView(DisjunctionNode green, int position, IRedView? parent)
+    public DisjunctionView(DisjunctionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    internal ViewArray<RedView> AstValues
+    public ViewArray<RedView> AstValues
     {
         get
         {
@@ -18210,7 +18210,7 @@ internal sealed partial class DisjunctionView : RedView, IExpressionView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<ConjunctionView>? _field_values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<ConjunctionView> Values
+    public global::System.Collections.Immutable.ImmutableArray<ConjunctionView> Values
     {
         get
         {
@@ -18224,10 +18224,10 @@ internal sealed partial class DisjunctionView : RedView, IExpressionView
     }
 }
 
-internal sealed partial record ConjunctionNode : GreenNode
+public sealed partial record ConjunctionNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode>? _field_Values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode> Values
+    public global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode> Values
     {
         get
         {
@@ -18239,19 +18239,19 @@ internal sealed partial record ConjunctionNode : GreenNode
             return _field_Values.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
     public override ConjunctionView GetView(int position, IRedView? parent)
         => new ConjunctionView(this, position, parent);
 }
-internal sealed partial class ConjunctionView : RedView
+public sealed partial class ConjunctionView : RedView
 {
-    internal ConjunctionView(ConjunctionNode green, int position, IRedView? parent)
+    public ConjunctionView(ConjunctionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    internal ViewArray<RedView> AstValues
+    public ViewArray<RedView> AstValues
     {
         get
         {
@@ -18264,7 +18264,7 @@ internal sealed partial class ConjunctionView : RedView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView>? _field_values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView> Values
+    public global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView> Values
     {
         get
         {
@@ -18278,24 +18278,24 @@ internal sealed partial class ConjunctionView : RedView
     }
 }
 
-internal partial interface IInversionExpressionNode : IGreenNode;
-internal partial interface IInversionExpressionView : IRedView;
+public partial interface IInversionExpressionNode : IGreenNode;
+public partial interface IInversionExpressionView : IRedView;
 
-internal sealed partial record InversionNode : GreenNode, IInversionExpressionNode
+public sealed partial record InversionNode : GreenNode, IInversionExpressionNode
 {
-    internal IInversionExpressionNode Value => (IInversionExpressionNode)Children![1];
+    public IInversionExpressionNode Value => (IInversionExpressionNode)Children![1];
     public override InversionView GetView(int position, IRedView? parent)
         => new InversionView(this, position, parent);
 }
-internal sealed partial class InversionView : RedView, IInversionExpressionView
+public sealed partial class InversionView : RedView, IInversionExpressionView
 {
-    internal InversionView(InversionNode green, int position, IRedView? parent)
+    public InversionView(InversionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IInversionExpressionView? _field_value = null;
-    internal IInversionExpressionView Value
+    public IInversionExpressionView Value
     {
         get
         {
@@ -18309,22 +18309,22 @@ internal sealed partial class InversionView : RedView, IInversionExpressionView
     }
 }
 
-internal sealed partial record ComparisonNode : GreenNode, IInversionExpressionNode
+public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNode
 {
-    internal IBitwiseOrExpressionNode First => (IBitwiseOrExpressionNode)Children![0];
-    internal NodeArray<CompareOperationNode> Rest => (NodeArray<CompareOperationNode>)Children![1];
+    public IBitwiseOrExpressionNode First => (IBitwiseOrExpressionNode)Children![0];
+    public NodeArray<CompareOperationNode> Rest => (NodeArray<CompareOperationNode>)Children![1];
     public override ComparisonView GetView(int position, IRedView? parent)
         => new ComparisonView(this, position, parent);
 }
-internal sealed partial class ComparisonView : RedView, IInversionExpressionView
+public sealed partial class ComparisonView : RedView, IInversionExpressionView
 {
-    internal ComparisonView(ComparisonNode green, int position, IRedView? parent)
+    public ComparisonView(ComparisonNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_first = null;
-    internal IBitwiseOrExpressionView First
+    public IBitwiseOrExpressionView First
     {
         get
         {
@@ -18338,7 +18338,7 @@ internal sealed partial class ComparisonView : RedView, IInversionExpressionView
     }
 
     private ViewArray<CompareOperationView>? _field_rest = null;
-    internal ViewArray<CompareOperationView> Rest
+    public ViewArray<CompareOperationView> Rest
     {
         get
         {
@@ -18352,32 +18352,32 @@ internal sealed partial class ComparisonView : RedView, IInversionExpressionView
     }
 }
 
-internal abstract partial record CompareOperationNode : GreenNode
+public abstract partial record CompareOperationNode : GreenNode
 {
 }
-internal abstract partial class CompareOperationView : RedView
+public abstract partial class CompareOperationView : RedView
 {
-    internal CompareOperationView(CompareOperationNode green, int position, IRedView? parent)
+    public CompareOperationView(CompareOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record EqOperationNode : CompareOperationNode
+public sealed partial record EqOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override EqOperationView GetView(int position, IRedView? parent)
         => new EqOperationView(this, position, parent);
 }
-internal sealed partial class EqOperationView : CompareOperationView
+public sealed partial class EqOperationView : CompareOperationView
 {
-    internal EqOperationView(EqOperationNode green, int position, IRedView? parent)
+    public EqOperationView(EqOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18391,21 +18391,21 @@ internal sealed partial class EqOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record NotEqOperationNode : CompareOperationNode
+public sealed partial record NotEqOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override NotEqOperationView GetView(int position, IRedView? parent)
         => new NotEqOperationView(this, position, parent);
 }
-internal sealed partial class NotEqOperationView : CompareOperationView
+public sealed partial class NotEqOperationView : CompareOperationView
 {
-    internal NotEqOperationView(NotEqOperationNode green, int position, IRedView? parent)
+    public NotEqOperationView(NotEqOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18419,21 +18419,21 @@ internal sealed partial class NotEqOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record LtEqOperationNode : CompareOperationNode
+public sealed partial record LtEqOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override LtEqOperationView GetView(int position, IRedView? parent)
         => new LtEqOperationView(this, position, parent);
 }
-internal sealed partial class LtEqOperationView : CompareOperationView
+public sealed partial class LtEqOperationView : CompareOperationView
 {
-    internal LtEqOperationView(LtEqOperationNode green, int position, IRedView? parent)
+    public LtEqOperationView(LtEqOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18447,21 +18447,21 @@ internal sealed partial class LtEqOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record LtOperationNode : CompareOperationNode
+public sealed partial record LtOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override LtOperationView GetView(int position, IRedView? parent)
         => new LtOperationView(this, position, parent);
 }
-internal sealed partial class LtOperationView : CompareOperationView
+public sealed partial class LtOperationView : CompareOperationView
 {
-    internal LtOperationView(LtOperationNode green, int position, IRedView? parent)
+    public LtOperationView(LtOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18475,21 +18475,21 @@ internal sealed partial class LtOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record GtEqOperationNode : CompareOperationNode
+public sealed partial record GtEqOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override GtEqOperationView GetView(int position, IRedView? parent)
         => new GtEqOperationView(this, position, parent);
 }
-internal sealed partial class GtEqOperationView : CompareOperationView
+public sealed partial class GtEqOperationView : CompareOperationView
 {
-    internal GtEqOperationView(GtEqOperationNode green, int position, IRedView? parent)
+    public GtEqOperationView(GtEqOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18503,21 +18503,21 @@ internal sealed partial class GtEqOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record GtOperationNode : CompareOperationNode
+public sealed partial record GtOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override GtOperationView GetView(int position, IRedView? parent)
         => new GtOperationView(this, position, parent);
 }
-internal sealed partial class GtOperationView : CompareOperationView
+public sealed partial class GtOperationView : CompareOperationView
 {
-    internal GtOperationView(GtOperationNode green, int position, IRedView? parent)
+    public GtOperationView(GtOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18531,21 +18531,21 @@ internal sealed partial class GtOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record NotInOperationNode : CompareOperationNode
+public sealed partial record NotInOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![2];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![2];
     public override NotInOperationView GetView(int position, IRedView? parent)
         => new NotInOperationView(this, position, parent);
 }
-internal sealed partial class NotInOperationView : CompareOperationView
+public sealed partial class NotInOperationView : CompareOperationView
 {
-    internal NotInOperationView(NotInOperationNode green, int position, IRedView? parent)
+    public NotInOperationView(NotInOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18559,21 +18559,21 @@ internal sealed partial class NotInOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record InOperationNode : CompareOperationNode
+public sealed partial record InOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override InOperationView GetView(int position, IRedView? parent)
         => new InOperationView(this, position, parent);
 }
-internal sealed partial class InOperationView : CompareOperationView
+public sealed partial class InOperationView : CompareOperationView
 {
-    internal InOperationView(InOperationNode green, int position, IRedView? parent)
+    public InOperationView(InOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18587,21 +18587,21 @@ internal sealed partial class InOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record IsNotOperationNode : CompareOperationNode
+public sealed partial record IsNotOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![2];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![2];
     public override IsNotOperationView GetView(int position, IRedView? parent)
         => new IsNotOperationView(this, position, parent);
 }
-internal sealed partial class IsNotOperationView : CompareOperationView
+public sealed partial class IsNotOperationView : CompareOperationView
 {
-    internal IsNotOperationView(IsNotOperationNode green, int position, IRedView? parent)
+    public IsNotOperationView(IsNotOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18615,21 +18615,21 @@ internal sealed partial class IsNotOperationView : CompareOperationView
     }
 }
 
-internal sealed partial record IsOperationNode : CompareOperationNode
+public sealed partial record IsOperationNode : CompareOperationNode
 {
-    internal IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
     public override IsOperationView GetView(int position, IRedView? parent)
         => new IsOperationView(this, position, parent);
 }
-internal sealed partial class IsOperationView : CompareOperationView
+public sealed partial class IsOperationView : CompareOperationView
 {
-    internal IsOperationView(IsOperationNode green, int position, IRedView? parent)
+    public IsOperationView(IsOperationNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_right = null;
-    internal IBitwiseOrExpressionView Right
+    public IBitwiseOrExpressionView Right
     {
         get
         {
@@ -18643,25 +18643,25 @@ internal sealed partial class IsOperationView : CompareOperationView
     }
 }
 
-internal partial interface IBitwiseOrExpressionNode : IGreenNode, IExpressionNode;
-internal partial interface IBitwiseOrExpressionView : IRedView, IExpressionView;
+public partial interface IBitwiseOrExpressionNode : IGreenNode, IExpressionNode;
+public partial interface IBitwiseOrExpressionView : IRedView, IExpressionView;
 
-internal sealed partial record BitwiseOrNode : GreenNode, IBitwiseOrExpressionNode
+public sealed partial record BitwiseOrNode : GreenNode, IBitwiseOrExpressionNode
 {
-    internal IBitwiseOrExpressionNode Left => (IBitwiseOrExpressionNode)Children![0];
-    internal IBitwiseXorExpressionNode Right => (IBitwiseXorExpressionNode)Children![2];
+    public IBitwiseOrExpressionNode Left => (IBitwiseOrExpressionNode)Children![0];
+    public IBitwiseXorExpressionNode Right => (IBitwiseXorExpressionNode)Children![2];
     public override BitwiseOrView GetView(int position, IRedView? parent)
         => new BitwiseOrView(this, position, parent);
 }
-internal sealed partial class BitwiseOrView : RedView, IBitwiseOrExpressionView
+public sealed partial class BitwiseOrView : RedView, IBitwiseOrExpressionView
 {
-    internal BitwiseOrView(BitwiseOrNode green, int position, IRedView? parent)
+    public BitwiseOrView(BitwiseOrNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_left = null;
-    internal IBitwiseOrExpressionView Left
+    public IBitwiseOrExpressionView Left
     {
         get
         {
@@ -18675,7 +18675,7 @@ internal sealed partial class BitwiseOrView : RedView, IBitwiseOrExpressionView
     }
 
     private IBitwiseXorExpressionView? _field_right = null;
-    internal IBitwiseXorExpressionView Right
+    public IBitwiseXorExpressionView Right
     {
         get
         {
@@ -18689,25 +18689,25 @@ internal sealed partial class BitwiseOrView : RedView, IBitwiseOrExpressionView
     }
 }
 
-internal partial interface IBitwiseXorExpressionNode : IGreenNode, IBitwiseOrExpressionNode;
-internal partial interface IBitwiseXorExpressionView : IRedView, IBitwiseOrExpressionView;
+public partial interface IBitwiseXorExpressionNode : IGreenNode, IBitwiseOrExpressionNode;
+public partial interface IBitwiseXorExpressionView : IRedView, IBitwiseOrExpressionView;
 
-internal sealed partial record BitwiseXorNode : GreenNode, IBitwiseXorExpressionNode
+public sealed partial record BitwiseXorNode : GreenNode, IBitwiseXorExpressionNode
 {
-    internal IBitwiseXorExpressionNode Left => (IBitwiseXorExpressionNode)Children![0];
-    internal IBitwiseAndExpressionNode Right => (IBitwiseAndExpressionNode)Children![2];
+    public IBitwiseXorExpressionNode Left => (IBitwiseXorExpressionNode)Children![0];
+    public IBitwiseAndExpressionNode Right => (IBitwiseAndExpressionNode)Children![2];
     public override BitwiseXorView GetView(int position, IRedView? parent)
         => new BitwiseXorView(this, position, parent);
 }
-internal sealed partial class BitwiseXorView : RedView, IBitwiseXorExpressionView
+public sealed partial class BitwiseXorView : RedView, IBitwiseXorExpressionView
 {
-    internal BitwiseXorView(BitwiseXorNode green, int position, IRedView? parent)
+    public BitwiseXorView(BitwiseXorNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseXorExpressionView? _field_left = null;
-    internal IBitwiseXorExpressionView Left
+    public IBitwiseXorExpressionView Left
     {
         get
         {
@@ -18721,7 +18721,7 @@ internal sealed partial class BitwiseXorView : RedView, IBitwiseXorExpressionVie
     }
 
     private IBitwiseAndExpressionView? _field_right = null;
-    internal IBitwiseAndExpressionView Right
+    public IBitwiseAndExpressionView Right
     {
         get
         {
@@ -18735,25 +18735,25 @@ internal sealed partial class BitwiseXorView : RedView, IBitwiseXorExpressionVie
     }
 }
 
-internal partial interface IBitwiseAndExpressionNode : IGreenNode, IBitwiseXorExpressionNode;
-internal partial interface IBitwiseAndExpressionView : IRedView, IBitwiseXorExpressionView;
+public partial interface IBitwiseAndExpressionNode : IGreenNode, IBitwiseXorExpressionNode;
+public partial interface IBitwiseAndExpressionView : IRedView, IBitwiseXorExpressionView;
 
-internal sealed partial record BitwiseAndNode : GreenNode, IBitwiseAndExpressionNode
+public sealed partial record BitwiseAndNode : GreenNode, IBitwiseAndExpressionNode
 {
-    internal IBitwiseAndExpressionNode Left => (IBitwiseAndExpressionNode)Children![0];
-    internal IBitShiftExpressionNode Right => (IBitShiftExpressionNode)Children![2];
+    public IBitwiseAndExpressionNode Left => (IBitwiseAndExpressionNode)Children![0];
+    public IBitShiftExpressionNode Right => (IBitShiftExpressionNode)Children![2];
     public override BitwiseAndView GetView(int position, IRedView? parent)
         => new BitwiseAndView(this, position, parent);
 }
-internal sealed partial class BitwiseAndView : RedView, IBitwiseAndExpressionView
+public sealed partial class BitwiseAndView : RedView, IBitwiseAndExpressionView
 {
-    internal BitwiseAndView(BitwiseAndNode green, int position, IRedView? parent)
+    public BitwiseAndView(BitwiseAndNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseAndExpressionView? _field_left = null;
-    internal IBitwiseAndExpressionView Left
+    public IBitwiseAndExpressionView Left
     {
         get
         {
@@ -18767,7 +18767,7 @@ internal sealed partial class BitwiseAndView : RedView, IBitwiseAndExpressionVie
     }
 
     private IBitShiftExpressionView? _field_right = null;
-    internal IBitShiftExpressionView Right
+    public IBitShiftExpressionView Right
     {
         get
         {
@@ -18781,26 +18781,26 @@ internal sealed partial class BitwiseAndView : RedView, IBitwiseAndExpressionVie
     }
 }
 
-internal partial interface IBitShiftExpressionNode : IGreenNode, IBitwiseAndExpressionNode;
-internal partial interface IBitShiftExpressionView : IRedView, IBitwiseAndExpressionView;
+public partial interface IBitShiftExpressionNode : IGreenNode, IBitwiseAndExpressionNode;
+public partial interface IBitShiftExpressionView : IRedView, IBitwiseAndExpressionView;
 
-internal sealed partial record BitShiftNode : GreenNode, IBitShiftExpressionNode
+public sealed partial record BitShiftNode : GreenNode, IBitShiftExpressionNode
 {
-    internal IBitShiftExpressionNode Left => (IBitShiftExpressionNode)Children![0];
-    internal ISumExpressionNode Right => (ISumExpressionNode)Children![2];
-    internal TokenNode Operator => (TokenNode)Children![1];
+    public IBitShiftExpressionNode Left => (IBitShiftExpressionNode)Children![0];
+    public ISumExpressionNode Right => (ISumExpressionNode)Children![2];
+    public TokenNode Operator => (TokenNode)Children![1];
     public override BitShiftView GetView(int position, IRedView? parent)
         => new BitShiftView(this, position, parent);
 }
-internal sealed partial class BitShiftView : RedView, IBitShiftExpressionView
+public sealed partial class BitShiftView : RedView, IBitShiftExpressionView
 {
-    internal BitShiftView(BitShiftNode green, int position, IRedView? parent)
+    public BitShiftView(BitShiftNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitShiftExpressionView? _field_left = null;
-    internal IBitShiftExpressionView Left
+    public IBitShiftExpressionView Left
     {
         get
         {
@@ -18814,7 +18814,7 @@ internal sealed partial class BitShiftView : RedView, IBitShiftExpressionView
     }
 
     private ISumExpressionView? _field_right = null;
-    internal ISumExpressionView Right
+    public ISumExpressionView Right
     {
         get
         {
@@ -18828,7 +18828,7 @@ internal sealed partial class BitShiftView : RedView, IBitShiftExpressionView
     }
 
     private TokenView? _field_operator = null;
-    internal TokenView Operator
+    public TokenView Operator
     {
         get
         {
@@ -18842,26 +18842,26 @@ internal sealed partial class BitShiftView : RedView, IBitShiftExpressionView
     }
 }
 
-internal partial interface ISumExpressionNode : IGreenNode, IBitShiftExpressionNode;
-internal partial interface ISumExpressionView : IRedView, IBitShiftExpressionView;
+public partial interface ISumExpressionNode : IGreenNode, IBitShiftExpressionNode;
+public partial interface ISumExpressionView : IRedView, IBitShiftExpressionView;
 
-internal sealed partial record SumNode : GreenNode, ISumExpressionNode
+public sealed partial record SumNode : GreenNode, ISumExpressionNode
 {
-    internal ISumExpressionNode Left => (ISumExpressionNode)Children![0];
-    internal ITermExpressionNode Right => (ITermExpressionNode)Children![2];
-    internal TokenNode Operator => (TokenNode)Children![1];
+    public ISumExpressionNode Left => (ISumExpressionNode)Children![0];
+    public ITermExpressionNode Right => (ITermExpressionNode)Children![2];
+    public TokenNode Operator => (TokenNode)Children![1];
     public override SumView GetView(int position, IRedView? parent)
         => new SumView(this, position, parent);
 }
-internal sealed partial class SumView : RedView, ISumExpressionView
+public sealed partial class SumView : RedView, ISumExpressionView
 {
-    internal SumView(SumNode green, int position, IRedView? parent)
+    public SumView(SumNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ISumExpressionView? _field_left = null;
-    internal ISumExpressionView Left
+    public ISumExpressionView Left
     {
         get
         {
@@ -18875,7 +18875,7 @@ internal sealed partial class SumView : RedView, ISumExpressionView
     }
 
     private ITermExpressionView? _field_right = null;
-    internal ITermExpressionView Right
+    public ITermExpressionView Right
     {
         get
         {
@@ -18889,7 +18889,7 @@ internal sealed partial class SumView : RedView, ISumExpressionView
     }
 
     private TokenView? _field_operator = null;
-    internal TokenView Operator
+    public TokenView Operator
     {
         get
         {
@@ -18903,26 +18903,26 @@ internal sealed partial class SumView : RedView, ISumExpressionView
     }
 }
 
-internal partial interface ITermExpressionNode : IGreenNode, ISumExpressionNode;
-internal partial interface ITermExpressionView : IRedView, ISumExpressionView;
+public partial interface ITermExpressionNode : IGreenNode, ISumExpressionNode;
+public partial interface ITermExpressionView : IRedView, ISumExpressionView;
 
-internal sealed partial record TermNode : GreenNode, ITermExpressionNode
+public sealed partial record TermNode : GreenNode, ITermExpressionNode
 {
-    internal ITermExpressionNode Left => (ITermExpressionNode)Children![0];
-    internal IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
-    internal TokenNode Operator => (TokenNode)Children![1];
+    public ITermExpressionNode Left => (ITermExpressionNode)Children![0];
+    public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
+    public TokenNode Operator => (TokenNode)Children![1];
     public override TermView GetView(int position, IRedView? parent)
         => new TermView(this, position, parent);
 }
-internal sealed partial class TermView : RedView, ITermExpressionView
+public sealed partial class TermView : RedView, ITermExpressionView
 {
-    internal TermView(TermNode green, int position, IRedView? parent)
+    public TermView(TermNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ITermExpressionView? _field_left = null;
-    internal ITermExpressionView Left
+    public ITermExpressionView Left
     {
         get
         {
@@ -18936,7 +18936,7 @@ internal sealed partial class TermView : RedView, ITermExpressionView
     }
 
     private IFactorExpressionView? _field_right = null;
-    internal IFactorExpressionView Right
+    public IFactorExpressionView Right
     {
         get
         {
@@ -18950,7 +18950,7 @@ internal sealed partial class TermView : RedView, ITermExpressionView
     }
 
     private TokenView? _field_operator = null;
-    internal TokenView Operator
+    public TokenView Operator
     {
         get
         {
@@ -18964,25 +18964,25 @@ internal sealed partial class TermView : RedView, ITermExpressionView
     }
 }
 
-internal partial interface IFactorExpressionNode : IGreenNode, ITermExpressionNode;
-internal partial interface IFactorExpressionView : IRedView, ITermExpressionView;
+public partial interface IFactorExpressionNode : IGreenNode, ITermExpressionNode;
+public partial interface IFactorExpressionView : IRedView, ITermExpressionView;
 
-internal sealed partial record FactorNode : GreenNode, IFactorExpressionNode
+public sealed partial record FactorNode : GreenNode, IFactorExpressionNode
 {
-    internal TokenNode Operator => (TokenNode)Children![0];
-    internal IFactorExpressionNode Value => (IFactorExpressionNode)Children![1];
+    public TokenNode Operator => (TokenNode)Children![0];
+    public IFactorExpressionNode Value => (IFactorExpressionNode)Children![1];
     public override FactorView GetView(int position, IRedView? parent)
         => new FactorView(this, position, parent);
 }
-internal sealed partial class FactorView : RedView, IFactorExpressionView
+public sealed partial class FactorView : RedView, IFactorExpressionView
 {
-    internal FactorView(FactorNode green, int position, IRedView? parent)
+    public FactorView(FactorNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_operator = null;
-    internal TokenView Operator
+    public TokenView Operator
     {
         get
         {
@@ -18996,7 +18996,7 @@ internal sealed partial class FactorView : RedView, IFactorExpressionView
     }
 
     private IFactorExpressionView? _field_value = null;
-    internal IFactorExpressionView Value
+    public IFactorExpressionView Value
     {
         get
         {
@@ -19010,25 +19010,25 @@ internal sealed partial class FactorView : RedView, IFactorExpressionView
     }
 }
 
-internal partial interface IPowerExpressionNode : IGreenNode, IFactorExpressionNode;
-internal partial interface IPowerExpressionView : IRedView, IFactorExpressionView;
+public partial interface IPowerExpressionNode : IGreenNode, IFactorExpressionNode;
+public partial interface IPowerExpressionView : IRedView, IFactorExpressionView;
 
-internal sealed partial record PowerNode : GreenNode, IPowerExpressionNode
+public sealed partial record PowerNode : GreenNode, IPowerExpressionNode
 {
-    internal IPrimaryNode Left => (IPrimaryNode)Children![0];
-    internal IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
+    public IPrimaryNode Left => (IPrimaryNode)Children![0];
+    public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
     public override PowerView GetView(int position, IRedView? parent)
         => new PowerView(this, position, parent);
 }
-internal sealed partial class PowerView : RedView, IPowerExpressionView
+public sealed partial class PowerView : RedView, IPowerExpressionView
 {
-    internal PowerView(PowerNode green, int position, IRedView? parent)
+    public PowerView(PowerNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IPrimaryView? _field_left = null;
-    internal IPrimaryView Left
+    public IPrimaryView Left
     {
         get
         {
@@ -19042,7 +19042,7 @@ internal sealed partial class PowerView : RedView, IPowerExpressionView
     }
 
     private IFactorExpressionView? _field_right = null;
-    internal IFactorExpressionView Right
+    public IFactorExpressionView Right
     {
         get
         {
@@ -19056,24 +19056,24 @@ internal sealed partial class PowerView : RedView, IPowerExpressionView
     }
 }
 
-internal partial interface IPrimaryNode : IGreenNode, IPowerExpressionNode;
-internal partial interface IPrimaryView : IRedView, IPowerExpressionView;
+public partial interface IPrimaryNode : IGreenNode, IPowerExpressionNode;
+public partial interface IPrimaryView : IRedView, IPowerExpressionView;
 
-internal sealed partial record AwaitPrimaryNode : GreenNode, IPrimaryNode
+public sealed partial record AwaitPrimaryNode : GreenNode, IPrimaryNode
 {
-    internal RawPrimaryNode Value => (RawPrimaryNode)Children![1];
+    public RawPrimaryNode Value => (RawPrimaryNode)Children![1];
     public override AwaitPrimaryView GetView(int position, IRedView? parent)
         => new AwaitPrimaryView(this, position, parent);
 }
-internal sealed partial class AwaitPrimaryView : RedView, IPrimaryView
+public sealed partial class AwaitPrimaryView : RedView, IPrimaryView
 {
-    internal AwaitPrimaryView(AwaitPrimaryNode green, int position, IRedView? parent)
+    public AwaitPrimaryView(AwaitPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private RawPrimaryView? _field_value = null;
-    internal RawPrimaryView Value
+    public RawPrimaryView Value
     {
         get
         {
@@ -19087,33 +19087,33 @@ internal sealed partial class AwaitPrimaryView : RedView, IPrimaryView
     }
 }
 
-internal abstract partial record RawPrimaryNode : GreenNode, IPrimaryNode
+public abstract partial record RawPrimaryNode : GreenNode, IPrimaryNode
 {
 }
-internal abstract partial class RawPrimaryView : RedView, IPrimaryView
+public abstract partial class RawPrimaryView : RedView, IPrimaryView
 {
-    internal RawPrimaryView(RawPrimaryNode green, int position, IRedView? parent)
+    public RawPrimaryView(RawPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DotOperationPrimaryNode : RawPrimaryNode
+public sealed partial record DotOperationPrimaryNode : RawPrimaryNode
 {
-    internal RawPrimaryNode Left => (RawPrimaryNode)Children![0];
-    internal TokenNode Right => (TokenNode)Children![2];
+    public RawPrimaryNode Left => (RawPrimaryNode)Children![0];
+    public TokenNode Right => (TokenNode)Children![2];
     public override DotOperationPrimaryView GetView(int position, IRedView? parent)
         => new DotOperationPrimaryView(this, position, parent);
 }
-internal sealed partial class DotOperationPrimaryView : RawPrimaryView
+public sealed partial class DotOperationPrimaryView : RawPrimaryView
 {
-    internal DotOperationPrimaryView(DotOperationPrimaryNode green, int position, IRedView? parent)
+    public DotOperationPrimaryView(DotOperationPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private RawPrimaryView? _field_left = null;
-    internal RawPrimaryView Left
+    public RawPrimaryView Left
     {
         get
         {
@@ -19127,7 +19127,7 @@ internal sealed partial class DotOperationPrimaryView : RawPrimaryView
     }
 
     private TokenView? _field_right = null;
-    internal TokenView Right
+    public TokenView Right
     {
         get
         {
@@ -19141,22 +19141,22 @@ internal sealed partial class DotOperationPrimaryView : RawPrimaryView
     }
 }
 
-internal sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
+public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
 {
-    internal RawPrimaryNode Function => (RawPrimaryNode)Children![0];
-    internal GeneratorExpressionNode Argument => (GeneratorExpressionNode)Children![1];
+    public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
+    public GeneratorExpressionNode Argument => (GeneratorExpressionNode)Children![1];
     public override CallWithGeneratorPrimaryView GetView(int position, IRedView? parent)
         => new CallWithGeneratorPrimaryView(this, position, parent);
 }
-internal sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
+public sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
 {
-    internal CallWithGeneratorPrimaryView(CallWithGeneratorPrimaryNode green, int position, IRedView? parent)
+    public CallWithGeneratorPrimaryView(CallWithGeneratorPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private RawPrimaryView? _field_function = null;
-    internal RawPrimaryView Function
+    public RawPrimaryView Function
     {
         get
         {
@@ -19170,7 +19170,7 @@ internal sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
     }
 
     private GeneratorExpressionView? _field_argument = null;
-    internal GeneratorExpressionView Argument
+    public GeneratorExpressionView Argument
     {
         get
         {
@@ -19184,22 +19184,22 @@ internal sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
     }
 }
 
-internal sealed partial record CallWithArgumentsPrimaryNode : RawPrimaryNode
+public sealed partial record CallWithArgumentsPrimaryNode : RawPrimaryNode
 {
-    internal RawPrimaryNode Function => (RawPrimaryNode)Children![0];
-    internal ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
+    public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
+    public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
     public override CallWithArgumentsPrimaryView GetView(int position, IRedView? parent)
         => new CallWithArgumentsPrimaryView(this, position, parent);
 }
-internal sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
+public sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
 {
-    internal CallWithArgumentsPrimaryView(CallWithArgumentsPrimaryNode green, int position, IRedView? parent)
+    public CallWithArgumentsPrimaryView(CallWithArgumentsPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private RawPrimaryView? _field_function = null;
-    internal RawPrimaryView Function
+    public RawPrimaryView Function
     {
         get
         {
@@ -19213,7 +19213,7 @@ internal sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
     }
 
     private ArgumentsView? _field_arguments = null;
-    internal ArgumentsView? Arguments
+    public ArgumentsView? Arguments
     {
         get
         {
@@ -19227,22 +19227,22 @@ internal sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
     }
 }
 
-internal sealed partial record SubscriptPrimaryNode : RawPrimaryNode
+public sealed partial record SubscriptPrimaryNode : RawPrimaryNode
 {
-    internal RawPrimaryNode Target => (RawPrimaryNode)Children![0];
-    internal SlicesNode Subscript => (SlicesNode)Children![2];
+    public RawPrimaryNode Target => (RawPrimaryNode)Children![0];
+    public SlicesNode Subscript => (SlicesNode)Children![2];
     public override SubscriptPrimaryView GetView(int position, IRedView? parent)
         => new SubscriptPrimaryView(this, position, parent);
 }
-internal sealed partial class SubscriptPrimaryView : RawPrimaryView
+public sealed partial class SubscriptPrimaryView : RawPrimaryView
 {
-    internal SubscriptPrimaryView(SubscriptPrimaryNode green, int position, IRedView? parent)
+    public SubscriptPrimaryView(SubscriptPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private RawPrimaryView? _field_target = null;
-    internal RawPrimaryView Target
+    public RawPrimaryView Target
     {
         get
         {
@@ -19256,7 +19256,7 @@ internal sealed partial class SubscriptPrimaryView : RawPrimaryView
     }
 
     private SlicesView? _field_subscript = null;
-    internal SlicesView Subscript
+    public SlicesView Subscript
     {
         get
         {
@@ -19270,21 +19270,21 @@ internal sealed partial class SubscriptPrimaryView : RawPrimaryView
     }
 }
 
-internal sealed partial record AtomPrimaryNode : RawPrimaryNode
+public sealed partial record AtomPrimaryNode : RawPrimaryNode
 {
-    internal IAtomNode Value => (IAtomNode)Children![0];
+    public IAtomNode Value => (IAtomNode)Children![0];
     public override AtomPrimaryView GetView(int position, IRedView? parent)
         => new AtomPrimaryView(this, position, parent);
 }
-internal sealed partial class AtomPrimaryView : RawPrimaryView
+public sealed partial class AtomPrimaryView : RawPrimaryView
 {
-    internal AtomPrimaryView(AtomPrimaryNode green, int position, IRedView? parent)
+    public AtomPrimaryView(AtomPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IAtomView? _field_value = null;
-    internal IAtomView Value
+    public IAtomView Value
     {
         get
         {
@@ -19298,32 +19298,32 @@ internal sealed partial class AtomPrimaryView : RawPrimaryView
     }
 }
 
-internal abstract partial record SlicesNode : GreenNode
+public abstract partial record SlicesNode : GreenNode
 {
 }
-internal abstract partial class SlicesView : RedView
+public abstract partial class SlicesView : RedView
 {
-    internal SlicesView(SlicesNode green, int position, IRedView? parent)
+    public SlicesView(SlicesNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record OneSliceSubscriptNode : SlicesNode
+public sealed partial record OneSliceSubscriptNode : SlicesNode
 {
-    internal SliceNode Value => (SliceNode)Children![0];
+    public SliceNode Value => (SliceNode)Children![0];
     public override OneSliceSubscriptView GetView(int position, IRedView? parent)
         => new OneSliceSubscriptView(this, position, parent);
 }
-internal sealed partial class OneSliceSubscriptView : SlicesView
+public sealed partial class OneSliceSubscriptView : SlicesView
 {
-    internal OneSliceSubscriptView(OneSliceSubscriptNode green, int position, IRedView? parent)
+    public OneSliceSubscriptView(OneSliceSubscriptNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SliceView? _field_value = null;
-    internal SliceView Value
+    public SliceView Value
     {
         get
         {
@@ -19337,10 +19337,10 @@ internal sealed partial class OneSliceSubscriptView : SlicesView
     }
 }
 
-internal sealed partial record DimensionalSubscriptNode : SlicesNode
+public sealed partial record DimensionalSubscriptNode : SlicesNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DimensionNode>? _field_Values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DimensionNode> Values
+    public global::System.Collections.Immutable.ImmutableArray<DimensionNode> Values
     {
         get
         {
@@ -19352,19 +19352,19 @@ internal sealed partial record DimensionalSubscriptNode : SlicesNode
             return _field_Values.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
     public override DimensionalSubscriptView GetView(int position, IRedView? parent)
         => new DimensionalSubscriptView(this, position, parent);
 }
-internal sealed partial class DimensionalSubscriptView : SlicesView
+public sealed partial class DimensionalSubscriptView : SlicesView
 {
-    internal DimensionalSubscriptView(DimensionalSubscriptNode green, int position, IRedView? parent)
+    public DimensionalSubscriptView(DimensionalSubscriptNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    internal ViewArray<RedView> AstValues
+    public ViewArray<RedView> AstValues
     {
         get
         {
@@ -19377,7 +19377,7 @@ internal sealed partial class DimensionalSubscriptView : SlicesView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<DimensionView>? _field_values = null;
-    internal global::System.Collections.Immutable.ImmutableArray<DimensionView> Values
+    public global::System.Collections.Immutable.ImmutableArray<DimensionView> Values
     {
         get
         {
@@ -19391,32 +19391,32 @@ internal sealed partial class DimensionalSubscriptView : SlicesView
     }
 }
 
-internal abstract partial record DimensionNode : GreenNode
+public abstract partial record DimensionNode : GreenNode
 {
 }
-internal abstract partial class DimensionView : RedView
+public abstract partial class DimensionView : RedView
 {
-    internal DimensionView(DimensionNode green, int position, IRedView? parent)
+    public DimensionView(DimensionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DimensionSliceNode : DimensionNode
+public sealed partial record DimensionSliceNode : DimensionNode
 {
-    internal SliceNode Value => (SliceNode)Children![0];
+    public SliceNode Value => (SliceNode)Children![0];
     public override DimensionSliceView GetView(int position, IRedView? parent)
         => new DimensionSliceView(this, position, parent);
 }
-internal sealed partial class DimensionSliceView : DimensionView
+public sealed partial class DimensionSliceView : DimensionView
 {
-    internal DimensionSliceView(DimensionSliceNode green, int position, IRedView? parent)
+    public DimensionSliceView(DimensionSliceNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SliceView? _field_value = null;
-    internal SliceView Value
+    public SliceView Value
     {
         get
         {
@@ -19430,21 +19430,21 @@ internal sealed partial class DimensionSliceView : DimensionView
     }
 }
 
-internal sealed partial record DimensionExpressionNode : DimensionNode
+public sealed partial record DimensionExpressionNode : DimensionNode
 {
-    internal IStarExpressionNode Value => (IStarExpressionNode)Children![0];
+    public IStarExpressionNode Value => (IStarExpressionNode)Children![0];
     public override DimensionExpressionView GetView(int position, IRedView? parent)
         => new DimensionExpressionView(this, position, parent);
 }
-internal sealed partial class DimensionExpressionView : DimensionView
+public sealed partial class DimensionExpressionView : DimensionView
 {
-    internal DimensionExpressionView(DimensionExpressionNode green, int position, IRedView? parent)
+    public DimensionExpressionView(DimensionExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarExpressionView? _field_value = null;
-    internal IStarExpressionView Value
+    public IStarExpressionView Value
     {
         get
         {
@@ -19458,32 +19458,32 @@ internal sealed partial class DimensionExpressionView : DimensionView
     }
 }
 
-internal abstract partial record SliceNode : GreenNode
+public abstract partial record SliceNode : GreenNode
 {
 }
-internal abstract partial class SliceView : RedView
+public abstract partial class SliceView : RedView
 {
-    internal SliceView(SliceNode green, int position, IRedView? parent)
+    public SliceView(SliceNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NamedSliceExpressionNode : SliceNode
+public sealed partial record NamedSliceExpressionNode : SliceNode
 {
-    internal INamedExpressionNode Value => (INamedExpressionNode)Children![0];
+    public INamedExpressionNode Value => (INamedExpressionNode)Children![0];
     public override NamedSliceExpressionView GetView(int position, IRedView? parent)
         => new NamedSliceExpressionView(this, position, parent);
 }
-internal sealed partial class NamedSliceExpressionView : SliceView
+public sealed partial class NamedSliceExpressionView : SliceView
 {
-    internal NamedSliceExpressionView(NamedSliceExpressionNode green, int position, IRedView? parent)
+    public NamedSliceExpressionView(NamedSliceExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private INamedExpressionView? _field_value = null;
-    internal INamedExpressionView Value
+    public INamedExpressionView Value
     {
         get
         {
@@ -19497,23 +19497,23 @@ internal sealed partial class NamedSliceExpressionView : SliceView
     }
 }
 
-internal sealed partial record ColonSliceNode : SliceNode
+public sealed partial record ColonSliceNode : SliceNode
 {
-    internal IExpressionNode? Start => Children![0] as IExpressionNode;
-    internal IExpressionNode? End => Children![2] as IExpressionNode;
-    internal StepSliceParamNode? Step => Children![3] as StepSliceParamNode;
+    public IExpressionNode? Start => Children![0] as IExpressionNode;
+    public IExpressionNode? End => Children![2] as IExpressionNode;
+    public StepSliceParamNode? Step => Children![3] as StepSliceParamNode;
     public override ColonSliceView GetView(int position, IRedView? parent)
         => new ColonSliceView(this, position, parent);
 }
-internal sealed partial class ColonSliceView : SliceView
+public sealed partial class ColonSliceView : SliceView
 {
-    internal ColonSliceView(ColonSliceNode green, int position, IRedView? parent)
+    public ColonSliceView(ColonSliceNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_start = null;
-    internal IExpressionView? Start
+    public IExpressionView? Start
     {
         get
         {
@@ -19527,7 +19527,7 @@ internal sealed partial class ColonSliceView : SliceView
     }
 
     private IExpressionView? _field_end = null;
-    internal IExpressionView? End
+    public IExpressionView? End
     {
         get
         {
@@ -19541,7 +19541,7 @@ internal sealed partial class ColonSliceView : SliceView
     }
 
     private StepSliceParamView? _field_step = null;
-    internal StepSliceParamView? Step
+    public StepSliceParamView? Step
     {
         get
         {
@@ -19555,21 +19555,21 @@ internal sealed partial class ColonSliceView : SliceView
     }
 }
 
-internal sealed partial record StepSliceParamNode : GreenNode
+public sealed partial record StepSliceParamNode : GreenNode
 {
-    internal IExpressionNode? Value => Children![1] as IExpressionNode;
+    public IExpressionNode? Value => Children![1] as IExpressionNode;
     public override StepSliceParamView GetView(int position, IRedView? parent)
         => new StepSliceParamView(this, position, parent);
 }
-internal sealed partial class StepSliceParamView : RedView
+public sealed partial class StepSliceParamView : RedView
 {
-    internal StepSliceParamView(StepSliceParamNode green, int position, IRedView? parent)
+    public StepSliceParamView(StepSliceParamNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView? Value
+    public IExpressionView? Value
     {
         get
         {
@@ -19583,35 +19583,35 @@ internal sealed partial class StepSliceParamView : RedView
     }
 }
 
-internal partial interface IAtomNode : IGreenNode;
-internal partial interface IAtomView : IRedView;
+public partial interface IAtomNode : IGreenNode;
+public partial interface IAtomView : IRedView;
 
-internal abstract partial record OneTokenAtomNode : GreenNode, IAtomNode
+public abstract partial record OneTokenAtomNode : GreenNode, IAtomNode
 {
 }
-internal abstract partial class OneTokenAtomView : RedView, IAtomView
+public abstract partial class OneTokenAtomView : RedView, IAtomView
 {
-    internal OneTokenAtomView(OneTokenAtomNode green, int position, IRedView? parent)
+    public OneTokenAtomView(OneTokenAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NameAtomNode : OneTokenAtomNode
+public sealed partial record NameAtomNode : OneTokenAtomNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override NameAtomView GetView(int position, IRedView? parent)
         => new NameAtomView(this, position, parent);
 }
-internal sealed partial class NameAtomView : OneTokenAtomView
+public sealed partial class NameAtomView : OneTokenAtomView
 {
-    internal NameAtomView(NameAtomNode green, int position, IRedView? parent)
+    public NameAtomView(NameAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -19625,60 +19625,60 @@ internal sealed partial class NameAtomView : OneTokenAtomView
     }
 }
 
-internal sealed partial record TrueAtomNode : OneTokenAtomNode
+public sealed partial record TrueAtomNode : OneTokenAtomNode
 {
     public override TrueAtomView GetView(int position, IRedView? parent)
         => new TrueAtomView(this, position, parent);
 }
-internal sealed partial class TrueAtomView : OneTokenAtomView
+public sealed partial class TrueAtomView : OneTokenAtomView
 {
-    internal TrueAtomView(TrueAtomNode green, int position, IRedView? parent)
+    public TrueAtomView(TrueAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record FalseAtomNode : OneTokenAtomNode
+public sealed partial record FalseAtomNode : OneTokenAtomNode
 {
     public override FalseAtomView GetView(int position, IRedView? parent)
         => new FalseAtomView(this, position, parent);
 }
-internal sealed partial class FalseAtomView : OneTokenAtomView
+public sealed partial class FalseAtomView : OneTokenAtomView
 {
-    internal FalseAtomView(FalseAtomNode green, int position, IRedView? parent)
+    public FalseAtomView(FalseAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NoneAtomNode : OneTokenAtomNode
+public sealed partial record NoneAtomNode : OneTokenAtomNode
 {
     public override NoneAtomView GetView(int position, IRedView? parent)
         => new NoneAtomView(this, position, parent);
 }
-internal sealed partial class NoneAtomView : OneTokenAtomView
+public sealed partial class NoneAtomView : OneTokenAtomView
 {
-    internal NoneAtomView(NoneAtomNode green, int position, IRedView? parent)
+    public NoneAtomView(NoneAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NumberAtomNode : OneTokenAtomNode
+public sealed partial record NumberAtomNode : OneTokenAtomNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override NumberAtomView GetView(int position, IRedView? parent)
         => new NumberAtomView(this, position, parent);
 }
-internal sealed partial class NumberAtomView : OneTokenAtomView
+public sealed partial class NumberAtomView : OneTokenAtomView
 {
-    internal NumberAtomView(NumberAtomNode green, int position, IRedView? parent)
+    public NumberAtomView(NumberAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -19692,45 +19692,45 @@ internal sealed partial class NumberAtomView : OneTokenAtomView
     }
 }
 
-internal sealed partial record EllipsisAtomNode : OneTokenAtomNode
+public sealed partial record EllipsisAtomNode : OneTokenAtomNode
 {
     public override EllipsisAtomView GetView(int position, IRedView? parent)
         => new EllipsisAtomView(this, position, parent);
 }
-internal sealed partial class EllipsisAtomView : OneTokenAtomView
+public sealed partial class EllipsisAtomView : OneTokenAtomView
 {
-    internal EllipsisAtomView(EllipsisAtomNode green, int position, IRedView? parent)
+    public EllipsisAtomView(EllipsisAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal abstract partial record GroupNode : GreenNode, IAtomNode
+public abstract partial record GroupNode : GreenNode, IAtomNode
 {
 }
-internal abstract partial class GroupView : RedView, IAtomView
+public abstract partial class GroupView : RedView, IAtomView
 {
-    internal GroupView(GroupNode green, int position, IRedView? parent)
+    public GroupView(GroupNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NamedGroupExpressionNode : GroupNode
+public sealed partial record NamedGroupExpressionNode : GroupNode
 {
-    internal INamedExpressionNode Value => (INamedExpressionNode)Children![1];
+    public INamedExpressionNode Value => (INamedExpressionNode)Children![1];
     public override NamedGroupExpressionView GetView(int position, IRedView? parent)
         => new NamedGroupExpressionView(this, position, parent);
 }
-internal sealed partial class NamedGroupExpressionView : GroupView
+public sealed partial class NamedGroupExpressionView : GroupView
 {
-    internal NamedGroupExpressionView(NamedGroupExpressionNode green, int position, IRedView? parent)
+    public NamedGroupExpressionView(NamedGroupExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private INamedExpressionView? _field_value = null;
-    internal INamedExpressionView Value
+    public INamedExpressionView Value
     {
         get
         {
@@ -19744,21 +19744,21 @@ internal sealed partial class NamedGroupExpressionView : GroupView
     }
 }
 
-internal sealed partial record YieldGroupExpressionNode : GroupNode
+public sealed partial record YieldGroupExpressionNode : GroupNode
 {
-    internal YieldExpressionNode Value => (YieldExpressionNode)Children![1];
+    public YieldExpressionNode Value => (YieldExpressionNode)Children![1];
     public override YieldGroupExpressionView GetView(int position, IRedView? parent)
         => new YieldGroupExpressionView(this, position, parent);
 }
-internal sealed partial class YieldGroupExpressionView : GroupView
+public sealed partial class YieldGroupExpressionView : GroupView
 {
-    internal YieldGroupExpressionView(YieldGroupExpressionNode green, int position, IRedView? parent)
+    public YieldGroupExpressionView(YieldGroupExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private YieldExpressionView? _field_value = null;
-    internal YieldExpressionView Value
+    public YieldExpressionView Value
     {
         get
         {
@@ -19772,22 +19772,22 @@ internal sealed partial class YieldGroupExpressionView : GroupView
     }
 }
 
-internal sealed partial record FStringNode : GreenNode, IStringValueNode
+public sealed partial record FStringNode : GreenNode, IStringValueNode
 {
-    internal TokenNode Header => (TokenNode)Children![0];
-    internal NodeArray<FStringValueNode> Values => (NodeArray<FStringValueNode>)Children![1];
+    public TokenNode Header => (TokenNode)Children![0];
+    public NodeArray<FStringValueNode> Values => (NodeArray<FStringValueNode>)Children![1];
     public override FStringView GetView(int position, IRedView? parent)
         => new FStringView(this, position, parent);
 }
-internal sealed partial class FStringView : RedView, IStringValueView
+public sealed partial class FStringView : RedView, IStringValueView
 {
-    internal FStringView(FStringNode green, int position, IRedView? parent)
+    public FStringView(FStringNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_header = null;
-    internal TokenView Header
+    public TokenView Header
     {
         get
         {
@@ -19801,7 +19801,7 @@ internal sealed partial class FStringView : RedView, IStringValueView
     }
 
     private ViewArray<FStringValueView>? _field_values = null;
-    internal ViewArray<FStringValueView> Values
+    public ViewArray<FStringValueView> Values
     {
         get
         {
@@ -19815,32 +19815,32 @@ internal sealed partial class FStringView : RedView, IStringValueView
     }
 }
 
-internal abstract partial record FStringValueNode : GreenNode
+public abstract partial record FStringValueNode : GreenNode
 {
 }
-internal abstract partial class FStringValueView : RedView
+public abstract partial class FStringValueView : RedView
 {
-    internal FStringValueView(FStringValueNode green, int position, IRedView? parent)
+    public FStringValueView(FStringValueNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record FStringValueLiteralNode : FStringValueNode
+public sealed partial record FStringValueLiteralNode : FStringValueNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override FStringValueLiteralView GetView(int position, IRedView? parent)
         => new FStringValueLiteralView(this, position, parent);
 }
-internal sealed partial class FStringValueLiteralView : FStringValueView
+public sealed partial class FStringValueLiteralView : FStringValueView
 {
-    internal FStringValueLiteralView(FStringValueLiteralNode green, int position, IRedView? parent)
+    public FStringValueLiteralView(FStringValueLiteralNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -19854,21 +19854,21 @@ internal sealed partial class FStringValueLiteralView : FStringValueView
     }
 }
 
-internal sealed partial record FStringValueReplacementNode : FStringValueNode
+public sealed partial record FStringValueReplacementNode : FStringValueNode
 {
-    internal FStringReplacementFieldNode Value => (FStringReplacementFieldNode)Children![0];
+    public FStringReplacementFieldNode Value => (FStringReplacementFieldNode)Children![0];
     public override FStringValueReplacementView GetView(int position, IRedView? parent)
         => new FStringValueReplacementView(this, position, parent);
 }
-internal sealed partial class FStringValueReplacementView : FStringValueView
+public sealed partial class FStringValueReplacementView : FStringValueView
 {
-    internal FStringValueReplacementView(FStringValueReplacementNode green, int position, IRedView? parent)
+    public FStringValueReplacementView(FStringValueReplacementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private FStringReplacementFieldView? _field_value = null;
-    internal FStringReplacementFieldView Value
+    public FStringReplacementFieldView Value
     {
         get
         {
@@ -19882,24 +19882,24 @@ internal sealed partial class FStringValueReplacementView : FStringValueView
     }
 }
 
-internal sealed partial record FStringReplacementFieldNode : GreenNode
+public sealed partial record FStringReplacementFieldNode : GreenNode
 {
-    internal IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
-    internal DebugSpecifierNode? DebugSpecifier => Children![2] as DebugSpecifierNode;
-    internal ConversionNode? Conversion => Children![3] as ConversionNode;
-    internal FStringFullFormatSpecNode? FormatSpec => Children![4] as FStringFullFormatSpecNode;
+    public IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
+    public DebugSpecifierNode? DebugSpecifier => Children![2] as DebugSpecifierNode;
+    public ConversionNode? Conversion => Children![3] as ConversionNode;
+    public FStringFullFormatSpecNode? FormatSpec => Children![4] as FStringFullFormatSpecNode;
     public override FStringReplacementFieldView GetView(int position, IRedView? parent)
         => new FStringReplacementFieldView(this, position, parent);
 }
-internal sealed partial class FStringReplacementFieldView : RedView
+public sealed partial class FStringReplacementFieldView : RedView
 {
-    internal FStringReplacementFieldView(FStringReplacementFieldNode green, int position, IRedView? parent)
+    public FStringReplacementFieldView(FStringReplacementFieldNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IAnnotatedRhsView? _field_value = null;
-    internal IAnnotatedRhsView Value
+    public IAnnotatedRhsView Value
     {
         get
         {
@@ -19913,7 +19913,7 @@ internal sealed partial class FStringReplacementFieldView : RedView
     }
 
     private DebugSpecifierView? _field_debugSpecifier = null;
-    internal DebugSpecifierView? DebugSpecifier
+    public DebugSpecifierView? DebugSpecifier
     {
         get
         {
@@ -19927,7 +19927,7 @@ internal sealed partial class FStringReplacementFieldView : RedView
     }
 
     private ConversionView? _field_conversion = null;
-    internal ConversionView? Conversion
+    public ConversionView? Conversion
     {
         get
         {
@@ -19941,7 +19941,7 @@ internal sealed partial class FStringReplacementFieldView : RedView
     }
 
     private FStringFullFormatSpecView? _field_formatSpec = null;
-    internal FStringFullFormatSpecView? FormatSpec
+    public FStringFullFormatSpecView? FormatSpec
     {
         get
         {
@@ -19955,21 +19955,21 @@ internal sealed partial class FStringReplacementFieldView : RedView
     }
 }
 
-internal sealed partial record FStringFullFormatSpecNode : GreenNode
+public sealed partial record FStringFullFormatSpecNode : GreenNode
 {
-    internal NodeArray<FStringFormatSpecNode> Specs => (NodeArray<FStringFormatSpecNode>)Children![1];
+    public NodeArray<FStringFormatSpecNode> Specs => (NodeArray<FStringFormatSpecNode>)Children![1];
     public override FStringFullFormatSpecView GetView(int position, IRedView? parent)
         => new FStringFullFormatSpecView(this, position, parent);
 }
-internal sealed partial class FStringFullFormatSpecView : RedView
+public sealed partial class FStringFullFormatSpecView : RedView
 {
-    internal FStringFullFormatSpecView(FStringFullFormatSpecNode green, int position, IRedView? parent)
+    public FStringFullFormatSpecView(FStringFullFormatSpecNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<FStringFormatSpecView>? _field_specs = null;
-    internal ViewArray<FStringFormatSpecView> Specs
+    public ViewArray<FStringFormatSpecView> Specs
     {
         get
         {
@@ -19983,32 +19983,32 @@ internal sealed partial class FStringFullFormatSpecView : RedView
     }
 }
 
-internal abstract partial record FStringFormatSpecNode : GreenNode
+public abstract partial record FStringFormatSpecNode : GreenNode
 {
 }
-internal abstract partial class FStringFormatSpecView : RedView
+public abstract partial class FStringFormatSpecView : RedView
 {
-    internal FStringFormatSpecView(FStringFormatSpecNode green, int position, IRedView? parent)
+    public FStringFormatSpecView(FStringFormatSpecNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record FStringFormatLiteralNode : FStringFormatSpecNode
+public sealed partial record FStringFormatLiteralNode : FStringFormatSpecNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override FStringFormatLiteralView GetView(int position, IRedView? parent)
         => new FStringFormatLiteralView(this, position, parent);
 }
-internal sealed partial class FStringFormatLiteralView : FStringFormatSpecView
+public sealed partial class FStringFormatLiteralView : FStringFormatSpecView
 {
-    internal FStringFormatLiteralView(FStringFormatLiteralNode green, int position, IRedView? parent)
+    public FStringFormatLiteralView(FStringFormatLiteralNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -20022,21 +20022,21 @@ internal sealed partial class FStringFormatLiteralView : FStringFormatSpecView
     }
 }
 
-internal sealed partial record FStringFormatReplacementNode : FStringFormatSpecNode
+public sealed partial record FStringFormatReplacementNode : FStringFormatSpecNode
 {
-    internal FStringReplacementFieldNode Value => (FStringReplacementFieldNode)Children![0];
+    public FStringReplacementFieldNode Value => (FStringReplacementFieldNode)Children![0];
     public override FStringFormatReplacementView GetView(int position, IRedView? parent)
         => new FStringFormatReplacementView(this, position, parent);
 }
-internal sealed partial class FStringFormatReplacementView : FStringFormatSpecView
+public sealed partial class FStringFormatReplacementView : FStringFormatSpecView
 {
-    internal FStringFormatReplacementView(FStringFormatReplacementNode green, int position, IRedView? parent)
+    public FStringFormatReplacementView(FStringFormatReplacementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private FStringReplacementFieldView? _field_value = null;
-    internal FStringReplacementFieldView Value
+    public FStringReplacementFieldView Value
     {
         get
         {
@@ -20050,22 +20050,22 @@ internal sealed partial class FStringFormatReplacementView : FStringFormatSpecVi
     }
 }
 
-internal sealed partial record TStringNode : GreenNode
+public sealed partial record TStringNode : GreenNode
 {
-    internal TokenNode Header => (TokenNode)Children![0];
-    internal NodeArray<TStringValueNode> Values => (NodeArray<TStringValueNode>)Children![1];
+    public TokenNode Header => (TokenNode)Children![0];
+    public NodeArray<TStringValueNode> Values => (NodeArray<TStringValueNode>)Children![1];
     public override TStringView GetView(int position, IRedView? parent)
         => new TStringView(this, position, parent);
 }
-internal sealed partial class TStringView : RedView
+public sealed partial class TStringView : RedView
 {
-    internal TStringView(TStringNode green, int position, IRedView? parent)
+    public TStringView(TStringNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_header = null;
-    internal TokenView Header
+    public TokenView Header
     {
         get
         {
@@ -20079,7 +20079,7 @@ internal sealed partial class TStringView : RedView
     }
 
     private ViewArray<TStringValueView>? _field_values = null;
-    internal ViewArray<TStringValueView> Values
+    public ViewArray<TStringValueView> Values
     {
         get
         {
@@ -20093,32 +20093,32 @@ internal sealed partial class TStringView : RedView
     }
 }
 
-internal abstract partial record TStringValueNode : GreenNode
+public abstract partial record TStringValueNode : GreenNode
 {
 }
-internal abstract partial class TStringValueView : RedView
+public abstract partial class TStringValueView : RedView
 {
-    internal TStringValueView(TStringValueNode green, int position, IRedView? parent)
+    public TStringValueView(TStringValueNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record TStringValueLiteralNode : TStringValueNode
+public sealed partial record TStringValueLiteralNode : TStringValueNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override TStringValueLiteralView GetView(int position, IRedView? parent)
         => new TStringValueLiteralView(this, position, parent);
 }
-internal sealed partial class TStringValueLiteralView : TStringValueView
+public sealed partial class TStringValueLiteralView : TStringValueView
 {
-    internal TStringValueLiteralView(TStringValueLiteralNode green, int position, IRedView? parent)
+    public TStringValueLiteralView(TStringValueLiteralNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -20132,21 +20132,21 @@ internal sealed partial class TStringValueLiteralView : TStringValueView
     }
 }
 
-internal sealed partial record TStringValueReplacementNode : TStringValueNode
+public sealed partial record TStringValueReplacementNode : TStringValueNode
 {
-    internal TStringReplacementFieldNode Value => (TStringReplacementFieldNode)Children![0];
+    public TStringReplacementFieldNode Value => (TStringReplacementFieldNode)Children![0];
     public override TStringValueReplacementView GetView(int position, IRedView? parent)
         => new TStringValueReplacementView(this, position, parent);
 }
-internal sealed partial class TStringValueReplacementView : TStringValueView
+public sealed partial class TStringValueReplacementView : TStringValueView
 {
-    internal TStringValueReplacementView(TStringValueReplacementNode green, int position, IRedView? parent)
+    public TStringValueReplacementView(TStringValueReplacementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TStringReplacementFieldView? _field_value = null;
-    internal TStringReplacementFieldView Value
+    public TStringReplacementFieldView Value
     {
         get
         {
@@ -20160,24 +20160,24 @@ internal sealed partial class TStringValueReplacementView : TStringValueView
     }
 }
 
-internal sealed partial record TStringReplacementFieldNode : GreenNode
+public sealed partial record TStringReplacementFieldNode : GreenNode
 {
-    internal IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
-    internal DebugSpecifierNode? DebugSpecifier => Children![2] as DebugSpecifierNode;
-    internal ConversionNode? Conversion => Children![3] as ConversionNode;
-    internal TStringFullFormatSpecNode? FormatSpec => Children![4] as TStringFullFormatSpecNode;
+    public IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
+    public DebugSpecifierNode? DebugSpecifier => Children![2] as DebugSpecifierNode;
+    public ConversionNode? Conversion => Children![3] as ConversionNode;
+    public TStringFullFormatSpecNode? FormatSpec => Children![4] as TStringFullFormatSpecNode;
     public override TStringReplacementFieldView GetView(int position, IRedView? parent)
         => new TStringReplacementFieldView(this, position, parent);
 }
-internal sealed partial class TStringReplacementFieldView : RedView
+public sealed partial class TStringReplacementFieldView : RedView
 {
-    internal TStringReplacementFieldView(TStringReplacementFieldNode green, int position, IRedView? parent)
+    public TStringReplacementFieldView(TStringReplacementFieldNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IAnnotatedRhsView? _field_value = null;
-    internal IAnnotatedRhsView Value
+    public IAnnotatedRhsView Value
     {
         get
         {
@@ -20191,7 +20191,7 @@ internal sealed partial class TStringReplacementFieldView : RedView
     }
 
     private DebugSpecifierView? _field_debugSpecifier = null;
-    internal DebugSpecifierView? DebugSpecifier
+    public DebugSpecifierView? DebugSpecifier
     {
         get
         {
@@ -20205,7 +20205,7 @@ internal sealed partial class TStringReplacementFieldView : RedView
     }
 
     private ConversionView? _field_conversion = null;
-    internal ConversionView? Conversion
+    public ConversionView? Conversion
     {
         get
         {
@@ -20219,7 +20219,7 @@ internal sealed partial class TStringReplacementFieldView : RedView
     }
 
     private TStringFullFormatSpecView? _field_formatSpec = null;
-    internal TStringFullFormatSpecView? FormatSpec
+    public TStringFullFormatSpecView? FormatSpec
     {
         get
         {
@@ -20233,21 +20233,21 @@ internal sealed partial class TStringReplacementFieldView : RedView
     }
 }
 
-internal sealed partial record TStringFullFormatSpecNode : GreenNode
+public sealed partial record TStringFullFormatSpecNode : GreenNode
 {
-    internal NodeArray<TStringFormatSpecNode> Specs => (NodeArray<TStringFormatSpecNode>)Children![1];
+    public NodeArray<TStringFormatSpecNode> Specs => (NodeArray<TStringFormatSpecNode>)Children![1];
     public override TStringFullFormatSpecView GetView(int position, IRedView? parent)
         => new TStringFullFormatSpecView(this, position, parent);
 }
-internal sealed partial class TStringFullFormatSpecView : RedView
+public sealed partial class TStringFullFormatSpecView : RedView
 {
-    internal TStringFullFormatSpecView(TStringFullFormatSpecNode green, int position, IRedView? parent)
+    public TStringFullFormatSpecView(TStringFullFormatSpecNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<TStringFormatSpecView>? _field_specs = null;
-    internal ViewArray<TStringFormatSpecView> Specs
+    public ViewArray<TStringFormatSpecView> Specs
     {
         get
         {
@@ -20261,32 +20261,32 @@ internal sealed partial class TStringFullFormatSpecView : RedView
     }
 }
 
-internal abstract partial record TStringFormatSpecNode : GreenNode
+public abstract partial record TStringFormatSpecNode : GreenNode
 {
 }
-internal abstract partial class TStringFormatSpecView : RedView
+public abstract partial class TStringFormatSpecView : RedView
 {
-    internal TStringFormatSpecView(TStringFormatSpecNode green, int position, IRedView? parent)
+    public TStringFormatSpecView(TStringFormatSpecNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record TStringFormatLiteralNode : TStringFormatSpecNode
+public sealed partial record TStringFormatLiteralNode : TStringFormatSpecNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override TStringFormatLiteralView GetView(int position, IRedView? parent)
         => new TStringFormatLiteralView(this, position, parent);
 }
-internal sealed partial class TStringFormatLiteralView : TStringFormatSpecView
+public sealed partial class TStringFormatLiteralView : TStringFormatSpecView
 {
-    internal TStringFormatLiteralView(TStringFormatLiteralNode green, int position, IRedView? parent)
+    public TStringFormatLiteralView(TStringFormatLiteralNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -20300,21 +20300,21 @@ internal sealed partial class TStringFormatLiteralView : TStringFormatSpecView
     }
 }
 
-internal sealed partial record TStringFormatReplacementNode : TStringFormatSpecNode
+public sealed partial record TStringFormatReplacementNode : TStringFormatSpecNode
 {
-    internal TStringReplacementFieldNode Value => (TStringReplacementFieldNode)Children![0];
+    public TStringReplacementFieldNode Value => (TStringReplacementFieldNode)Children![0];
     public override TStringFormatReplacementView GetView(int position, IRedView? parent)
         => new TStringFormatReplacementView(this, position, parent);
 }
-internal sealed partial class TStringFormatReplacementView : TStringFormatSpecView
+public sealed partial class TStringFormatReplacementView : TStringFormatSpecView
 {
-    internal TStringFormatReplacementView(TStringFormatReplacementNode green, int position, IRedView? parent)
+    public TStringFormatReplacementView(TStringFormatReplacementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TStringReplacementFieldView? _field_value = null;
-    internal TStringReplacementFieldView Value
+    public TStringReplacementFieldView Value
     {
         get
         {
@@ -20328,34 +20328,34 @@ internal sealed partial class TStringFormatReplacementView : TStringFormatSpecVi
     }
 }
 
-internal sealed partial record DebugSpecifierNode : GreenNode
+public sealed partial record DebugSpecifierNode : GreenNode
 {
     public override DebugSpecifierView GetView(int position, IRedView? parent)
         => new DebugSpecifierView(this, position, parent);
 }
-internal sealed partial class DebugSpecifierView : RedView
+public sealed partial class DebugSpecifierView : RedView
 {
-    internal DebugSpecifierView(DebugSpecifierNode green, int position, IRedView? parent)
+    public DebugSpecifierView(DebugSpecifierNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ConversionNode : GreenNode
+public sealed partial record ConversionNode : GreenNode
 {
-    internal TokenNode Value => (TokenNode)Children![1];
+    public TokenNode Value => (TokenNode)Children![1];
     public override ConversionView GetView(int position, IRedView? parent)
         => new ConversionView(this, position, parent);
 }
-internal sealed partial class ConversionView : RedView
+public sealed partial class ConversionView : RedView
 {
-    internal ConversionView(ConversionNode green, int position, IRedView? parent)
+    public ConversionView(ConversionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -20369,32 +20369,32 @@ internal sealed partial class ConversionView : RedView
     }
 }
 
-internal abstract partial record StringAtomNode : GreenNode, IAtomNode
+public abstract partial record StringAtomNode : GreenNode, IAtomNode
 {
 }
-internal abstract partial class StringAtomView : RedView, IAtomView
+public abstract partial class StringAtomView : RedView, IAtomView
 {
-    internal StringAtomView(StringAtomNode green, int position, IRedView? parent)
+    public StringAtomView(StringAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record StringValueAtomNode : StringAtomNode
+public sealed partial record StringValueAtomNode : StringAtomNode
 {
-    internal NodeArray<IStringValueNode> Parts => (NodeArray<IStringValueNode>)Children![0];
+    public NodeArray<IStringValueNode> Parts => (NodeArray<IStringValueNode>)Children![0];
     public override StringValueAtomView GetView(int position, IRedView? parent)
         => new StringValueAtomView(this, position, parent);
 }
-internal sealed partial class StringValueAtomView : StringAtomView
+public sealed partial class StringValueAtomView : StringAtomView
 {
-    internal StringValueAtomView(StringValueAtomNode green, int position, IRedView? parent)
+    public StringValueAtomView(StringValueAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<IStringValueView>? _field_parts = null;
-    internal ViewArray<IStringValueView> Parts
+    public ViewArray<IStringValueView> Parts
     {
         get
         {
@@ -20408,21 +20408,21 @@ internal sealed partial class StringValueAtomView : StringAtomView
     }
 }
 
-internal sealed partial record StringTemplateAtomNode : StringAtomNode
+public sealed partial record StringTemplateAtomNode : StringAtomNode
 {
-    internal NodeArray<TStringNode> Parts => (NodeArray<TStringNode>)Children![0];
+    public NodeArray<TStringNode> Parts => (NodeArray<TStringNode>)Children![0];
     public override StringTemplateAtomView GetView(int position, IRedView? parent)
         => new StringTemplateAtomView(this, position, parent);
 }
-internal sealed partial class StringTemplateAtomView : StringAtomView
+public sealed partial class StringTemplateAtomView : StringAtomView
 {
-    internal StringTemplateAtomView(StringTemplateAtomNode green, int position, IRedView? parent)
+    public StringTemplateAtomView(StringTemplateAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<TStringView>? _field_parts = null;
-    internal ViewArray<TStringView> Parts
+    public ViewArray<TStringView> Parts
     {
         get
         {
@@ -20436,21 +20436,21 @@ internal sealed partial class StringTemplateAtomView : StringAtomView
     }
 }
 
-internal sealed partial record StringConstantNode : GreenNode, IStringValueNode
+public sealed partial record StringConstantNode : GreenNode, IStringValueNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override StringConstantView GetView(int position, IRedView? parent)
         => new StringConstantView(this, position, parent);
 }
-internal sealed partial class StringConstantView : RedView, IStringValueView
+public sealed partial class StringConstantView : RedView, IStringValueView
 {
-    internal StringConstantView(StringConstantNode green, int position, IRedView? parent)
+    public StringConstantView(StringConstantNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -20464,24 +20464,24 @@ internal sealed partial class StringConstantView : RedView, IStringValueView
     }
 }
 
-internal partial interface IStringValueNode : IGreenNode;
-internal partial interface IStringValueView : IRedView;
+public partial interface IStringValueNode : IGreenNode;
+public partial interface IStringValueView : IRedView;
 
-internal sealed partial record ListNode : GreenNode, IAtomNode
+public sealed partial record ListNode : GreenNode, IAtomNode
 {
-    internal StarNamedExpressionsNode? Items => Children![1] as StarNamedExpressionsNode;
+    public StarNamedExpressionsNode? Items => Children![1] as StarNamedExpressionsNode;
     public override ListView GetView(int position, IRedView? parent)
         => new ListView(this, position, parent);
 }
-internal sealed partial class ListView : RedView, IAtomView
+public sealed partial class ListView : RedView, IAtomView
 {
-    internal ListView(ListNode green, int position, IRedView? parent)
+    public ListView(ListNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarNamedExpressionsView? _field_items = null;
-    internal StarNamedExpressionsView? Items
+    public StarNamedExpressionsView? Items
     {
         get
         {
@@ -20495,22 +20495,22 @@ internal sealed partial class ListView : RedView, IAtomView
     }
 }
 
-internal sealed partial record TupleNode : GreenNode, IAtomNode
+public sealed partial record TupleNode : GreenNode, IAtomNode
 {
-    internal IStarNamedExpressionNode First => (IStarNamedExpressionNode)Children![1];
-    internal StarNamedExpressionsNode? Rest => Children![3] as StarNamedExpressionsNode;
+    public IStarNamedExpressionNode First => (IStarNamedExpressionNode)Children![1];
+    public StarNamedExpressionsNode? Rest => Children![3] as StarNamedExpressionsNode;
     public override TupleView GetView(int position, IRedView? parent)
         => new TupleView(this, position, parent);
 }
-internal sealed partial class TupleView : RedView, IAtomView
+public sealed partial class TupleView : RedView, IAtomView
 {
-    internal TupleView(TupleNode green, int position, IRedView? parent)
+    public TupleView(TupleNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarNamedExpressionView? _field_first = null;
-    internal IStarNamedExpressionView First
+    public IStarNamedExpressionView First
     {
         get
         {
@@ -20524,7 +20524,7 @@ internal sealed partial class TupleView : RedView, IAtomView
     }
 
     private StarNamedExpressionsView? _field_rest = null;
-    internal StarNamedExpressionsView? Rest
+    public StarNamedExpressionsView? Rest
     {
         get
         {
@@ -20538,21 +20538,21 @@ internal sealed partial class TupleView : RedView, IAtomView
     }
 }
 
-internal sealed partial record SetNode : GreenNode, IAtomNode
+public sealed partial record SetNode : GreenNode, IAtomNode
 {
-    internal StarNamedExpressionsNode Items => (StarNamedExpressionsNode)Children![1];
+    public StarNamedExpressionsNode Items => (StarNamedExpressionsNode)Children![1];
     public override SetView GetView(int position, IRedView? parent)
         => new SetView(this, position, parent);
 }
-internal sealed partial class SetView : RedView, IAtomView
+public sealed partial class SetView : RedView, IAtomView
 {
-    internal SetView(SetNode green, int position, IRedView? parent)
+    public SetView(SetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarNamedExpressionsView? _field_items = null;
-    internal StarNamedExpressionsView Items
+    public StarNamedExpressionsView Items
     {
         get
         {
@@ -20566,21 +20566,21 @@ internal sealed partial class SetView : RedView, IAtomView
     }
 }
 
-internal sealed partial record DictNode : GreenNode, IAtomNode
+public sealed partial record DictNode : GreenNode, IAtomNode
 {
-    internal StarredOrKeyValuesNode? KeyValuePairs => Children![1] as StarredOrKeyValuesNode;
+    public StarredOrKeyValuesNode? KeyValuePairs => Children![1] as StarredOrKeyValuesNode;
     public override DictView GetView(int position, IRedView? parent)
         => new DictView(this, position, parent);
 }
-internal sealed partial class DictView : RedView, IAtomView
+public sealed partial class DictView : RedView, IAtomView
 {
-    internal DictView(DictNode green, int position, IRedView? parent)
+    public DictView(DictNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarredOrKeyValuesView? _field_keyValuePairs = null;
-    internal StarredOrKeyValuesView? KeyValuePairs
+    public StarredOrKeyValuesView? KeyValuePairs
     {
         get
         {
@@ -20594,10 +20594,10 @@ internal sealed partial class DictView : RedView, IAtomView
     }
 }
 
-internal sealed partial record StarredOrKeyValuesNode : GreenNode
+public sealed partial record StarredOrKeyValuesNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<StarredOrKeyValueNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<StarredOrKeyValueNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<StarredOrKeyValueNode> Items
     {
         get
         {
@@ -20609,19 +20609,19 @@ internal sealed partial record StarredOrKeyValuesNode : GreenNode
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
     public override StarredOrKeyValuesView GetView(int position, IRedView? parent)
         => new StarredOrKeyValuesView(this, position, parent);
 }
-internal sealed partial class StarredOrKeyValuesView : RedView
+public sealed partial class StarredOrKeyValuesView : RedView
 {
-    internal StarredOrKeyValuesView(StarredOrKeyValuesNode green, int position, IRedView? parent)
+    public StarredOrKeyValuesView(StarredOrKeyValuesNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -20634,7 +20634,7 @@ internal sealed partial class StarredOrKeyValuesView : RedView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<StarredOrKeyValueView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<StarredOrKeyValueView> Items
+    public global::System.Collections.Immutable.ImmutableArray<StarredOrKeyValueView> Items
     {
         get
         {
@@ -20648,32 +20648,32 @@ internal sealed partial class StarredOrKeyValuesView : RedView
     }
 }
 
-internal abstract partial record StarredOrKeyValueNode : GreenNode
+public abstract partial record StarredOrKeyValueNode : GreenNode
 {
 }
-internal abstract partial class StarredOrKeyValueView : RedView
+public abstract partial class StarredOrKeyValueView : RedView
 {
-    internal StarredOrKeyValueView(StarredOrKeyValueNode green, int position, IRedView? parent)
+    public StarredOrKeyValueView(StarredOrKeyValueNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DoubleStarredNode : StarredOrKeyValueNode
+public sealed partial record DoubleStarredNode : StarredOrKeyValueNode
 {
-    internal IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
+    public IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
     public override DoubleStarredView GetView(int position, IRedView? parent)
         => new DoubleStarredView(this, position, parent);
 }
-internal sealed partial class DoubleStarredView : StarredOrKeyValueView
+public sealed partial class DoubleStarredView : StarredOrKeyValueView
 {
-    internal DoubleStarredView(DoubleStarredNode green, int position, IRedView? parent)
+    public DoubleStarredView(DoubleStarredNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IBitwiseOrExpressionView? _field_value = null;
-    internal IBitwiseOrExpressionView Value
+    public IBitwiseOrExpressionView Value
     {
         get
         {
@@ -20687,22 +20687,22 @@ internal sealed partial class DoubleStarredView : StarredOrKeyValueView
     }
 }
 
-internal sealed partial record KeyValuePairNode : StarredOrKeyValueNode
+public sealed partial record KeyValuePairNode : StarredOrKeyValueNode
 {
-    internal IExpressionNode Key => (IExpressionNode)Children![0];
-    internal IExpressionNode Value => (IExpressionNode)Children![2];
+    public IExpressionNode Key => (IExpressionNode)Children![0];
+    public IExpressionNode Value => (IExpressionNode)Children![2];
     public override KeyValuePairView GetView(int position, IRedView? parent)
         => new KeyValuePairView(this, position, parent);
 }
-internal sealed partial class KeyValuePairView : StarredOrKeyValueView
+public sealed partial class KeyValuePairView : StarredOrKeyValueView
 {
-    internal KeyValuePairView(KeyValuePairNode green, int position, IRedView? parent)
+    public KeyValuePairView(KeyValuePairNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_key = null;
-    internal IExpressionView Key
+    public IExpressionView Key
     {
         get
         {
@@ -20716,7 +20716,7 @@ internal sealed partial class KeyValuePairView : StarredOrKeyValueView
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -20730,34 +20730,34 @@ internal sealed partial class KeyValuePairView : StarredOrKeyValueView
     }
 }
 
-internal abstract partial record ForIfClauseNode : GreenNode
+public abstract partial record ForIfClauseNode : GreenNode
 {
 }
-internal abstract partial class ForIfClauseView : RedView
+public abstract partial class ForIfClauseView : RedView
 {
-    internal ForIfClauseView(ForIfClauseNode green, int position, IRedView? parent)
+    public ForIfClauseView(ForIfClauseNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record AsyncForIfClauseNode : ForIfClauseNode
+public sealed partial record AsyncForIfClauseNode : ForIfClauseNode
 {
-    internal StarTargetsNode Variables => (StarTargetsNode)Children![2];
-    internal DisjunctionNode Iterable => (DisjunctionNode)Children![4];
-    internal NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![5];
+    public StarTargetsNode Variables => (StarTargetsNode)Children![2];
+    public DisjunctionNode Iterable => (DisjunctionNode)Children![4];
+    public NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![5];
     public override AsyncForIfClauseView GetView(int position, IRedView? parent)
         => new AsyncForIfClauseView(this, position, parent);
 }
-internal sealed partial class AsyncForIfClauseView : ForIfClauseView
+public sealed partial class AsyncForIfClauseView : ForIfClauseView
 {
-    internal AsyncForIfClauseView(AsyncForIfClauseNode green, int position, IRedView? parent)
+    public AsyncForIfClauseView(AsyncForIfClauseNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetsView? _field_variables = null;
-    internal StarTargetsView Variables
+    public StarTargetsView Variables
     {
         get
         {
@@ -20771,7 +20771,7 @@ internal sealed partial class AsyncForIfClauseView : ForIfClauseView
     }
 
     private DisjunctionView? _field_iterable = null;
-    internal DisjunctionView Iterable
+    public DisjunctionView Iterable
     {
         get
         {
@@ -20785,7 +20785,7 @@ internal sealed partial class AsyncForIfClauseView : ForIfClauseView
     }
 
     private ViewArray<IfClauseView>? _field_conditions = null;
-    internal ViewArray<IfClauseView> Conditions
+    public ViewArray<IfClauseView> Conditions
     {
         get
         {
@@ -20799,23 +20799,23 @@ internal sealed partial class AsyncForIfClauseView : ForIfClauseView
     }
 }
 
-internal sealed partial record NormalForIfClauseNode : ForIfClauseNode
+public sealed partial record NormalForIfClauseNode : ForIfClauseNode
 {
-    internal StarTargetsNode Variables => (StarTargetsNode)Children![1];
-    internal DisjunctionNode Iterable => (DisjunctionNode)Children![3];
-    internal NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![4];
+    public StarTargetsNode Variables => (StarTargetsNode)Children![1];
+    public DisjunctionNode Iterable => (DisjunctionNode)Children![3];
+    public NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![4];
     public override NormalForIfClauseView GetView(int position, IRedView? parent)
         => new NormalForIfClauseView(this, position, parent);
 }
-internal sealed partial class NormalForIfClauseView : ForIfClauseView
+public sealed partial class NormalForIfClauseView : ForIfClauseView
 {
-    internal NormalForIfClauseView(NormalForIfClauseNode green, int position, IRedView? parent)
+    public NormalForIfClauseView(NormalForIfClauseNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetsView? _field_variables = null;
-    internal StarTargetsView Variables
+    public StarTargetsView Variables
     {
         get
         {
@@ -20829,7 +20829,7 @@ internal sealed partial class NormalForIfClauseView : ForIfClauseView
     }
 
     private DisjunctionView? _field_iterable = null;
-    internal DisjunctionView Iterable
+    public DisjunctionView Iterable
     {
         get
         {
@@ -20843,7 +20843,7 @@ internal sealed partial class NormalForIfClauseView : ForIfClauseView
     }
 
     private ViewArray<IfClauseView>? _field_conditions = null;
-    internal ViewArray<IfClauseView> Conditions
+    public ViewArray<IfClauseView> Conditions
     {
         get
         {
@@ -20857,21 +20857,21 @@ internal sealed partial class NormalForIfClauseView : ForIfClauseView
     }
 }
 
-internal sealed partial record IfClauseNode : GreenNode
+public sealed partial record IfClauseNode : GreenNode
 {
-    internal DisjunctionNode Condition => (DisjunctionNode)Children![1];
+    public DisjunctionNode Condition => (DisjunctionNode)Children![1];
     public override IfClauseView GetView(int position, IRedView? parent)
         => new IfClauseView(this, position, parent);
 }
-internal sealed partial class IfClauseView : RedView
+public sealed partial class IfClauseView : RedView
 {
-    internal IfClauseView(IfClauseNode green, int position, IRedView? parent)
+    public IfClauseView(IfClauseNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private DisjunctionView? _field_condition = null;
-    internal DisjunctionView Condition
+    public DisjunctionView Condition
     {
         get
         {
@@ -20885,22 +20885,22 @@ internal sealed partial class IfClauseView : RedView
     }
 }
 
-internal sealed partial record ListComprehensionNode : GreenNode, IAtomNode
+public sealed partial record ListComprehensionNode : GreenNode, IAtomNode
 {
-    internal IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
-    internal NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
+    public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
     public override ListComprehensionView GetView(int position, IRedView? parent)
         => new ListComprehensionView(this, position, parent);
 }
-internal sealed partial class ListComprehensionView : RedView, IAtomView
+public sealed partial class ListComprehensionView : RedView, IAtomView
 {
-    internal ListComprehensionView(ListComprehensionNode green, int position, IRedView? parent)
+    public ListComprehensionView(ListComprehensionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarNamedExpressionView? _field_expression = null;
-    internal IStarNamedExpressionView Expression
+    public IStarNamedExpressionView Expression
     {
         get
         {
@@ -20914,7 +20914,7 @@ internal sealed partial class ListComprehensionView : RedView, IAtomView
     }
 
     private ViewArray<ForIfClauseView>? _field_iterators = null;
-    internal ViewArray<ForIfClauseView> Iterators
+    public ViewArray<ForIfClauseView> Iterators
     {
         get
         {
@@ -20928,22 +20928,22 @@ internal sealed partial class ListComprehensionView : RedView, IAtomView
     }
 }
 
-internal sealed partial record SetComprehensionNode : GreenNode, IAtomNode
+public sealed partial record SetComprehensionNode : GreenNode, IAtomNode
 {
-    internal IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
-    internal NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
+    public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
     public override SetComprehensionView GetView(int position, IRedView? parent)
         => new SetComprehensionView(this, position, parent);
 }
-internal sealed partial class SetComprehensionView : RedView, IAtomView
+public sealed partial class SetComprehensionView : RedView, IAtomView
 {
-    internal SetComprehensionView(SetComprehensionNode green, int position, IRedView? parent)
+    public SetComprehensionView(SetComprehensionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarNamedExpressionView? _field_expression = null;
-    internal IStarNamedExpressionView Expression
+    public IStarNamedExpressionView Expression
     {
         get
         {
@@ -20957,7 +20957,7 @@ internal sealed partial class SetComprehensionView : RedView, IAtomView
     }
 
     private ViewArray<ForIfClauseView>? _field_iterators = null;
-    internal ViewArray<ForIfClauseView> Iterators
+    public ViewArray<ForIfClauseView> Iterators
     {
         get
         {
@@ -20971,22 +20971,22 @@ internal sealed partial class SetComprehensionView : RedView, IAtomView
     }
 }
 
-internal sealed partial record GeneratorExpressionNode : GreenNode, IAtomNode
+public sealed partial record GeneratorExpressionNode : GreenNode, IAtomNode
 {
-    internal IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
-    internal NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
+    public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
     public override GeneratorExpressionView GetView(int position, IRedView? parent)
         => new GeneratorExpressionView(this, position, parent);
 }
-internal sealed partial class GeneratorExpressionView : RedView, IAtomView
+public sealed partial class GeneratorExpressionView : RedView, IAtomView
 {
-    internal GeneratorExpressionView(GeneratorExpressionNode green, int position, IRedView? parent)
+    public GeneratorExpressionView(GeneratorExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IStarNamedExpressionView? _field_expression = null;
-    internal IStarNamedExpressionView Expression
+    public IStarNamedExpressionView Expression
     {
         get
         {
@@ -21000,7 +21000,7 @@ internal sealed partial class GeneratorExpressionView : RedView, IAtomView
     }
 
     private ViewArray<ForIfClauseView>? _field_iterators = null;
-    internal ViewArray<ForIfClauseView> Iterators
+    public ViewArray<ForIfClauseView> Iterators
     {
         get
         {
@@ -21014,34 +21014,34 @@ internal sealed partial class GeneratorExpressionView : RedView, IAtomView
     }
 }
 
-internal abstract partial record DictComprehensionNode : GreenNode, IAtomNode
+public abstract partial record DictComprehensionNode : GreenNode, IAtomNode
 {
 }
-internal abstract partial class DictComprehensionView : RedView, IAtomView
+public abstract partial class DictComprehensionView : RedView, IAtomView
 {
-    internal DictComprehensionView(DictComprehensionNode green, int position, IRedView? parent)
+    public DictComprehensionView(DictComprehensionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record KeyValueDictComprehensionNode : DictComprehensionNode
+public sealed partial record KeyValueDictComprehensionNode : DictComprehensionNode
 {
-    internal IExpressionNode Key => (IExpressionNode)Children![1];
-    internal IExpressionNode Value => (IExpressionNode)Children![3];
-    internal NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![4];
+    public IExpressionNode Key => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![3];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![4];
     public override KeyValueDictComprehensionView GetView(int position, IRedView? parent)
         => new KeyValueDictComprehensionView(this, position, parent);
 }
-internal sealed partial class KeyValueDictComprehensionView : DictComprehensionView
+public sealed partial class KeyValueDictComprehensionView : DictComprehensionView
 {
-    internal KeyValueDictComprehensionView(KeyValueDictComprehensionNode green, int position, IRedView? parent)
+    public KeyValueDictComprehensionView(KeyValueDictComprehensionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_key = null;
-    internal IExpressionView Key
+    public IExpressionView Key
     {
         get
         {
@@ -21055,7 +21055,7 @@ internal sealed partial class KeyValueDictComprehensionView : DictComprehensionV
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -21069,7 +21069,7 @@ internal sealed partial class KeyValueDictComprehensionView : DictComprehensionV
     }
 
     private ViewArray<ForIfClauseView>? _field_iterators = null;
-    internal ViewArray<ForIfClauseView> Iterators
+    public ViewArray<ForIfClauseView> Iterators
     {
         get
         {
@@ -21083,22 +21083,22 @@ internal sealed partial class KeyValueDictComprehensionView : DictComprehensionV
     }
 }
 
-internal sealed partial record UnpackingDictComprehensionNode : DictComprehensionNode
+public sealed partial record UnpackingDictComprehensionNode : DictComprehensionNode
 {
-    internal IExpressionNode Expression => (IExpressionNode)Children![2];
-    internal NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![3];
+    public IExpressionNode Expression => (IExpressionNode)Children![2];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![3];
     public override UnpackingDictComprehensionView GetView(int position, IRedView? parent)
         => new UnpackingDictComprehensionView(this, position, parent);
 }
-internal sealed partial class UnpackingDictComprehensionView : DictComprehensionView
+public sealed partial class UnpackingDictComprehensionView : DictComprehensionView
 {
-    internal UnpackingDictComprehensionView(UnpackingDictComprehensionNode green, int position, IRedView? parent)
+    public UnpackingDictComprehensionView(UnpackingDictComprehensionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_expression = null;
-    internal IExpressionView Expression
+    public IExpressionView Expression
     {
         get
         {
@@ -21112,7 +21112,7 @@ internal sealed partial class UnpackingDictComprehensionView : DictComprehension
     }
 
     private ViewArray<ForIfClauseView>? _field_iterators = null;
-    internal ViewArray<ForIfClauseView> Iterators
+    public ViewArray<ForIfClauseView> Iterators
     {
         get
         {
@@ -21126,21 +21126,21 @@ internal sealed partial class UnpackingDictComprehensionView : DictComprehension
     }
 }
 
-internal abstract partial record ArgumentsNode : GreenNode
+public abstract partial record ArgumentsNode : GreenNode
 {
 }
-internal abstract partial class ArgumentsView : RedView
+public abstract partial class ArgumentsView : RedView
 {
-    internal ArgumentsView(ArgumentsNode green, int position, IRedView? parent)
+    public ArgumentsView(ArgumentsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record WithPositionalArgumentsNode : ArgumentsNode
+public sealed partial record WithPositionalArgumentsNode : ArgumentsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode>? _field_PositionalArgumentsPart = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode> PositionalArgumentsPart
+    public global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode> PositionalArgumentsPart
     {
         get
         {
@@ -21152,20 +21152,20 @@ internal sealed partial record WithPositionalArgumentsNode : ArgumentsNode
             return _field_PositionalArgumentsPart.Value;
         }
     }
-    internal NodeArray<GreenNode> AstPositionalArgumentsPart => (NodeArray<GreenNode>)Children![0];
-    internal KeywordArgumentsPartNode? KeywordArgumentsPart => Children![1] as KeywordArgumentsPartNode;
+    public NodeArray<GreenNode> AstPositionalArgumentsPart => (NodeArray<GreenNode>)Children![0];
+    public KeywordArgumentsPartNode? KeywordArgumentsPart => Children![1] as KeywordArgumentsPartNode;
     public override WithPositionalArgumentsView GetView(int position, IRedView? parent)
         => new WithPositionalArgumentsView(this, position, parent);
 }
-internal sealed partial class WithPositionalArgumentsView : ArgumentsView
+public sealed partial class WithPositionalArgumentsView : ArgumentsView
 {
-    internal WithPositionalArgumentsView(WithPositionalArgumentsNode green, int position, IRedView? parent)
+    public WithPositionalArgumentsView(WithPositionalArgumentsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_positionalArgumentsPart = null;
-    internal ViewArray<RedView> AstPositionalArgumentsPart
+    public ViewArray<RedView> AstPositionalArgumentsPart
     {
         get
         {
@@ -21178,7 +21178,7 @@ internal sealed partial class WithPositionalArgumentsView : ArgumentsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView>? _field_positionalArgumentsPart = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView> PositionalArgumentsPart
+    public global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView> PositionalArgumentsPart
     {
         get
         {
@@ -21192,7 +21192,7 @@ internal sealed partial class WithPositionalArgumentsView : ArgumentsView
     }
 
     private KeywordArgumentsPartView? _field_keywordArgumentsPart = null;
-    internal KeywordArgumentsPartView? KeywordArgumentsPart
+    public KeywordArgumentsPartView? KeywordArgumentsPart
     {
         get
         {
@@ -21206,21 +21206,21 @@ internal sealed partial class WithPositionalArgumentsView : ArgumentsView
     }
 }
 
-internal sealed partial record OnlyKeywordArgumentsNode : ArgumentsNode
+public sealed partial record OnlyKeywordArgumentsNode : ArgumentsNode
 {
-    internal KwargsNode Value => (KwargsNode)Children![0];
+    public KwargsNode Value => (KwargsNode)Children![0];
     public override OnlyKeywordArgumentsView GetView(int position, IRedView? parent)
         => new OnlyKeywordArgumentsView(this, position, parent);
 }
-internal sealed partial class OnlyKeywordArgumentsView : ArgumentsView
+public sealed partial class OnlyKeywordArgumentsView : ArgumentsView
 {
-    internal OnlyKeywordArgumentsView(OnlyKeywordArgumentsNode green, int position, IRedView? parent)
+    public OnlyKeywordArgumentsView(OnlyKeywordArgumentsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private KwargsView? _field_value = null;
-    internal KwargsView Value
+    public KwargsView Value
     {
         get
         {
@@ -21234,21 +21234,21 @@ internal sealed partial class OnlyKeywordArgumentsView : ArgumentsView
     }
 }
 
-internal sealed partial record KeywordArgumentsPartNode : GreenNode
+public sealed partial record KeywordArgumentsPartNode : GreenNode
 {
-    internal KwargsNode Value => (KwargsNode)Children![1];
+    public KwargsNode Value => (KwargsNode)Children![1];
     public override KeywordArgumentsPartView GetView(int position, IRedView? parent)
         => new KeywordArgumentsPartView(this, position, parent);
 }
-internal sealed partial class KeywordArgumentsPartView : RedView
+public sealed partial class KeywordArgumentsPartView : RedView
 {
-    internal KeywordArgumentsPartView(KeywordArgumentsPartNode green, int position, IRedView? parent)
+    public KeywordArgumentsPartView(KeywordArgumentsPartNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private KwargsView? _field_value = null;
-    internal KwargsView Value
+    public KwargsView Value
     {
         get
         {
@@ -21262,24 +21262,24 @@ internal sealed partial class KeywordArgumentsPartView : RedView
     }
 }
 
-internal partial interface IPositionalArgumentNode : IGreenNode;
-internal partial interface IPositionalArgumentView : IRedView;
+public partial interface IPositionalArgumentNode : IGreenNode;
+public partial interface IPositionalArgumentView : IRedView;
 
-internal abstract partial record KwargsNode : GreenNode
+public abstract partial record KwargsNode : GreenNode
 {
 }
-internal abstract partial class KwargsView : RedView
+public abstract partial class KwargsView : RedView
 {
-    internal KwargsView(KwargsNode green, int position, IRedView? parent)
+    public KwargsView(KwargsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record BothStarredKwargsNode : KwargsNode
+public sealed partial record BothStarredKwargsNode : KwargsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredNode>? _field_OneStarred = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredNode> OneStarred
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredNode> OneStarred
     {
         get
         {
@@ -21291,9 +21291,9 @@ internal sealed partial record BothStarredKwargsNode : KwargsNode
             return _field_OneStarred.Value;
         }
     }
-    internal NodeArray<GreenNode> AstOneStarred => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstOneStarred => (NodeArray<GreenNode>)Children![0];
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode>? _field_DoubleStarred = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode> DoubleStarred
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode> DoubleStarred
     {
         get
         {
@@ -21305,19 +21305,19 @@ internal sealed partial record BothStarredKwargsNode : KwargsNode
             return _field_DoubleStarred.Value;
         }
     }
-    internal NodeArray<GreenNode> AstDoubleStarred => (NodeArray<GreenNode>)Children![2];
+    public NodeArray<GreenNode> AstDoubleStarred => (NodeArray<GreenNode>)Children![2];
     public override BothStarredKwargsView GetView(int position, IRedView? parent)
         => new BothStarredKwargsView(this, position, parent);
 }
-internal sealed partial class BothStarredKwargsView : KwargsView
+public sealed partial class BothStarredKwargsView : KwargsView
 {
-    internal BothStarredKwargsView(BothStarredKwargsNode green, int position, IRedView? parent)
+    public BothStarredKwargsView(BothStarredKwargsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_oneStarred = null;
-    internal ViewArray<RedView> AstOneStarred
+    public ViewArray<RedView> AstOneStarred
     {
         get
         {
@@ -21330,7 +21330,7 @@ internal sealed partial class BothStarredKwargsView : KwargsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredView>? _field_oneStarred = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredView> OneStarred
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredView> OneStarred
     {
         get
         {
@@ -21344,7 +21344,7 @@ internal sealed partial class BothStarredKwargsView : KwargsView
     }
 
     private ViewArray<RedView>? _ast_field_doubleStarred = null;
-    internal ViewArray<RedView> AstDoubleStarred
+    public ViewArray<RedView> AstDoubleStarred
     {
         get
         {
@@ -21357,7 +21357,7 @@ internal sealed partial class BothStarredKwargsView : KwargsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView>? _field_doubleStarred = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView> DoubleStarred
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView> DoubleStarred
     {
         get
         {
@@ -21371,10 +21371,10 @@ internal sealed partial class BothStarredKwargsView : KwargsView
     }
 }
 
-internal sealed partial record OneStarredKwargsNode : KwargsNode
+public sealed partial record OneStarredKwargsNode : KwargsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredNode> Items
     {
         get
         {
@@ -21386,19 +21386,19 @@ internal sealed partial record OneStarredKwargsNode : KwargsNode
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
     public override OneStarredKwargsView GetView(int position, IRedView? parent)
         => new OneStarredKwargsView(this, position, parent);
 }
-internal sealed partial class OneStarredKwargsView : KwargsView
+public sealed partial class OneStarredKwargsView : KwargsView
 {
-    internal OneStarredKwargsView(OneStarredKwargsNode green, int position, IRedView? parent)
+    public OneStarredKwargsView(OneStarredKwargsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -21411,7 +21411,7 @@ internal sealed partial class OneStarredKwargsView : KwargsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredView> Items
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrStarredView> Items
     {
         get
         {
@@ -21425,10 +21425,10 @@ internal sealed partial class OneStarredKwargsView : KwargsView
     }
 }
 
-internal sealed partial record DoubleStarredKwargsNode : KwargsNode
+public sealed partial record DoubleStarredKwargsNode : KwargsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode> Items
     {
         get
         {
@@ -21440,19 +21440,19 @@ internal sealed partial record DoubleStarredKwargsNode : KwargsNode
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
     public override DoubleStarredKwargsView GetView(int position, IRedView? parent)
         => new DoubleStarredKwargsView(this, position, parent);
 }
-internal sealed partial class DoubleStarredKwargsView : KwargsView
+public sealed partial class DoubleStarredKwargsView : KwargsView
 {
-    internal DoubleStarredKwargsView(DoubleStarredKwargsNode green, int position, IRedView? parent)
+    public DoubleStarredKwargsView(DoubleStarredKwargsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -21465,7 +21465,7 @@ internal sealed partial class DoubleStarredKwargsView : KwargsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView> Items
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView> Items
     {
         get
         {
@@ -21479,27 +21479,27 @@ internal sealed partial class DoubleStarredKwargsView : KwargsView
     }
 }
 
-internal partial interface IKwargOrStarredNode : IGreenNode;
-internal partial interface IKwargOrStarredView : IRedView;
+public partial interface IKwargOrStarredNode : IGreenNode;
+public partial interface IKwargOrStarredView : IRedView;
 
-internal partial interface IKwargOrDoubleStarredNode : IGreenNode;
-internal partial interface IKwargOrDoubleStarredView : IRedView;
+public partial interface IKwargOrDoubleStarredNode : IGreenNode;
+public partial interface IKwargOrDoubleStarredView : IRedView;
 
-internal sealed partial record DoubleStarredExpressionNode : GreenNode, IKwargOrDoubleStarredNode
+public sealed partial record DoubleStarredExpressionNode : GreenNode, IKwargOrDoubleStarredNode
 {
-    internal IExpressionNode Expression => (IExpressionNode)Children![1];
+    public IExpressionNode Expression => (IExpressionNode)Children![1];
     public override DoubleStarredExpressionView GetView(int position, IRedView? parent)
         => new DoubleStarredExpressionView(this, position, parent);
 }
-internal sealed partial class DoubleStarredExpressionView : RedView, IKwargOrDoubleStarredView
+public sealed partial class DoubleStarredExpressionView : RedView, IKwargOrDoubleStarredView
 {
-    internal DoubleStarredExpressionView(DoubleStarredExpressionNode green, int position, IRedView? parent)
+    public DoubleStarredExpressionView(DoubleStarredExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_expression = null;
-    internal IExpressionView Expression
+    public IExpressionView Expression
     {
         get
         {
@@ -21513,21 +21513,21 @@ internal sealed partial class DoubleStarredExpressionView : RedView, IKwargOrDou
     }
 }
 
-internal sealed partial record StarredExpressionNode : GreenNode, IPositionalArgumentNode
+public sealed partial record StarredExpressionNode : GreenNode, IPositionalArgumentNode
 {
-    internal IExpressionNode Expression => (IExpressionNode)Children![1];
+    public IExpressionNode Expression => (IExpressionNode)Children![1];
     public override StarredExpressionView GetView(int position, IRedView? parent)
         => new StarredExpressionView(this, position, parent);
 }
-internal sealed partial class StarredExpressionView : RedView, IPositionalArgumentView
+public sealed partial class StarredExpressionView : RedView, IPositionalArgumentView
 {
-    internal StarredExpressionView(StarredExpressionNode green, int position, IRedView? parent)
+    public StarredExpressionView(StarredExpressionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IExpressionView? _field_expression = null;
-    internal IExpressionView Expression
+    public IExpressionView Expression
     {
         get
         {
@@ -21541,22 +21541,22 @@ internal sealed partial class StarredExpressionView : RedView, IPositionalArgume
     }
 }
 
-internal sealed partial record KwargNode : GreenNode, IKwargOrStarredNode, IKwargOrDoubleStarredNode
+public sealed partial record KwargNode : GreenNode, IKwargOrStarredNode, IKwargOrDoubleStarredNode
 {
-    internal TokenNode Keyword => (TokenNode)Children![0];
-    internal IExpressionNode Value => (IExpressionNode)Children![2];
+    public TokenNode Keyword => (TokenNode)Children![0];
+    public IExpressionNode Value => (IExpressionNode)Children![2];
     public override KwargView GetView(int position, IRedView? parent)
         => new KwargView(this, position, parent);
 }
-internal sealed partial class KwargView : RedView, IKwargOrStarredView, IKwargOrDoubleStarredView
+public sealed partial class KwargView : RedView, IKwargOrStarredView, IKwargOrDoubleStarredView
 {
-    internal KwargView(KwargNode green, int position, IRedView? parent)
+    public KwargView(KwargNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_keyword = null;
-    internal TokenView Keyword
+    public TokenView Keyword
     {
         get
         {
@@ -21570,7 +21570,7 @@ internal sealed partial class KwargView : RedView, IKwargOrStarredView, IKwargOr
     }
 
     private IExpressionView? _field_value = null;
-    internal IExpressionView Value
+    public IExpressionView Value
     {
         get
         {
@@ -21584,32 +21584,32 @@ internal sealed partial class KwargView : RedView, IKwargOrStarredView, IKwargOr
     }
 }
 
-internal abstract partial record StarTargetsNode : GreenNode
+public abstract partial record StarTargetsNode : GreenNode
 {
 }
-internal abstract partial class StarTargetsView : RedView
+public abstract partial class StarTargetsView : RedView
 {
-    internal StarTargetsView(StarTargetsNode green, int position, IRedView? parent)
+    public StarTargetsView(StarTargetsNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record StarTargets_Derived0Node : StarTargetsNode
+public sealed partial record StarTargets_Derived0Node : StarTargetsNode
 {
-    internal StarTargetNode StarTarget => (StarTargetNode)Children![0];
+    public StarTargetNode StarTarget => (StarTargetNode)Children![0];
     public override StarTargets_Derived0View GetView(int position, IRedView? parent)
         => new StarTargets_Derived0View(this, position, parent);
 }
-internal sealed partial class StarTargets_Derived0View : StarTargetsView
+public sealed partial class StarTargets_Derived0View : StarTargetsView
 {
-    internal StarTargets_Derived0View(StarTargets_Derived0Node green, int position, IRedView? parent)
+    public StarTargets_Derived0View(StarTargets_Derived0Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetView? _field_starTarget = null;
-    internal StarTargetView StarTarget
+    public StarTargetView StarTarget
     {
         get
         {
@@ -21623,10 +21623,10 @@ internal sealed partial class StarTargets_Derived0View : StarTargetsView
     }
 }
 
-internal sealed partial record StarTargets_Derived1Node : StarTargetsNode
+public sealed partial record StarTargets_Derived1Node : StarTargetsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<StarTargetNode>? _field_StarTarget = null;
-    internal global::System.Collections.Immutable.ImmutableArray<StarTargetNode> StarTarget
+    public global::System.Collections.Immutable.ImmutableArray<StarTargetNode> StarTarget
     {
         get
         {
@@ -21638,20 +21638,20 @@ internal sealed partial record StarTargets_Derived1Node : StarTargetsNode
             return _field_StarTarget.Value;
         }
     }
-    internal NodeArray<GreenNode> AstStarTarget => (NodeArray<GreenNode>)Children![0];
-    internal TokenNode? Token => Children![1] as TokenNode;
+    public NodeArray<GreenNode> AstStarTarget => (NodeArray<GreenNode>)Children![0];
+    public TokenNode? Token => Children![1] as TokenNode;
     public override StarTargets_Derived1View GetView(int position, IRedView? parent)
         => new StarTargets_Derived1View(this, position, parent);
 }
-internal sealed partial class StarTargets_Derived1View : StarTargetsView
+public sealed partial class StarTargets_Derived1View : StarTargetsView
 {
-    internal StarTargets_Derived1View(StarTargets_Derived1Node green, int position, IRedView? parent)
+    public StarTargets_Derived1View(StarTargets_Derived1Node green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_starTarget = null;
-    internal ViewArray<RedView> AstStarTarget
+    public ViewArray<RedView> AstStarTarget
     {
         get
         {
@@ -21664,7 +21664,7 @@ internal sealed partial class StarTargets_Derived1View : StarTargetsView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<StarTargetView>? _field_starTarget = null;
-    internal global::System.Collections.Immutable.ImmutableArray<StarTargetView> StarTarget
+    public global::System.Collections.Immutable.ImmutableArray<StarTargetView> StarTarget
     {
         get
         {
@@ -21678,7 +21678,7 @@ internal sealed partial class StarTargets_Derived1View : StarTargetsView
     }
 
     private TokenView? _field_token = null;
-    internal TokenView? Token
+    public TokenView? Token
     {
         get
         {
@@ -21692,32 +21692,32 @@ internal sealed partial class StarTargets_Derived1View : StarTargetsView
     }
 }
 
-internal abstract partial record StarTargetNode : GreenNode
+public abstract partial record StarTargetNode : GreenNode
 {
 }
-internal abstract partial class StarTargetView : RedView
+public abstract partial class StarTargetView : RedView
 {
-    internal StarTargetView(StarTargetNode green, int position, IRedView? parent)
+    public StarTargetView(StarTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record ActuallyStarTargetNode : StarTargetNode
+public sealed partial record ActuallyStarTargetNode : StarTargetNode
 {
-    internal TargetWithStarAtomNode Target => (TargetWithStarAtomNode)Children![1];
+    public TargetWithStarAtomNode Target => (TargetWithStarAtomNode)Children![1];
     public override ActuallyStarTargetView GetView(int position, IRedView? parent)
         => new ActuallyStarTargetView(this, position, parent);
 }
-internal sealed partial class ActuallyStarTargetView : StarTargetView
+public sealed partial class ActuallyStarTargetView : StarTargetView
 {
-    internal ActuallyStarTargetView(ActuallyStarTargetNode green, int position, IRedView? parent)
+    public ActuallyStarTargetView(ActuallyStarTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetWithStarAtomView? _field_target = null;
-    internal TargetWithStarAtomView Target
+    public TargetWithStarAtomView Target
     {
         get
         {
@@ -21731,21 +21731,21 @@ internal sealed partial class ActuallyStarTargetView : StarTargetView
     }
 }
 
-internal sealed partial record NotStarTargetNode : StarTargetNode
+public sealed partial record NotStarTargetNode : StarTargetNode
 {
-    internal TargetWithStarAtomNode Target => (TargetWithStarAtomNode)Children![0];
+    public TargetWithStarAtomNode Target => (TargetWithStarAtomNode)Children![0];
     public override NotStarTargetView GetView(int position, IRedView? parent)
         => new NotStarTargetView(this, position, parent);
 }
-internal sealed partial class NotStarTargetView : StarTargetView
+public sealed partial class NotStarTargetView : StarTargetView
 {
-    internal NotStarTargetView(NotStarTargetNode green, int position, IRedView? parent)
+    public NotStarTargetView(NotStarTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetWithStarAtomView? _field_target = null;
-    internal TargetWithStarAtomView Target
+    public TargetWithStarAtomView Target
     {
         get
         {
@@ -21759,33 +21759,33 @@ internal sealed partial class NotStarTargetView : StarTargetView
     }
 }
 
-internal abstract partial record TargetWithStarAtomNode : GreenNode
+public abstract partial record TargetWithStarAtomNode : GreenNode
 {
 }
-internal abstract partial class TargetWithStarAtomView : RedView
+public abstract partial class TargetWithStarAtomView : RedView
 {
-    internal TargetWithStarAtomView(TargetWithStarAtomNode green, int position, IRedView? parent)
+    public TargetWithStarAtomView(TargetWithStarAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DottedStarTargetNode : TargetWithStarAtomNode
+public sealed partial record DottedStarTargetNode : TargetWithStarAtomNode
 {
-    internal TargetPrimaryNode Left => (TargetPrimaryNode)Children![0];
-    internal TokenNode Right => (TokenNode)Children![2];
+    public TargetPrimaryNode Left => (TargetPrimaryNode)Children![0];
+    public TokenNode Right => (TokenNode)Children![2];
     public override DottedStarTargetView GetView(int position, IRedView? parent)
         => new DottedStarTargetView(this, position, parent);
 }
-internal sealed partial class DottedStarTargetView : TargetWithStarAtomView
+public sealed partial class DottedStarTargetView : TargetWithStarAtomView
 {
-    internal DottedStarTargetView(DottedStarTargetNode green, int position, IRedView? parent)
+    public DottedStarTargetView(DottedStarTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_left = null;
-    internal TargetPrimaryView Left
+    public TargetPrimaryView Left
     {
         get
         {
@@ -21799,7 +21799,7 @@ internal sealed partial class DottedStarTargetView : TargetWithStarAtomView
     }
 
     private TokenView? _field_right = null;
-    internal TokenView Right
+    public TokenView Right
     {
         get
         {
@@ -21813,22 +21813,22 @@ internal sealed partial class DottedStarTargetView : TargetWithStarAtomView
     }
 }
 
-internal sealed partial record SubscriptStarTargetNode : TargetWithStarAtomNode
+public sealed partial record SubscriptStarTargetNode : TargetWithStarAtomNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal SlicesNode Subscript => (SlicesNode)Children![2];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public SlicesNode Subscript => (SlicesNode)Children![2];
     public override SubscriptStarTargetView GetView(int position, IRedView? parent)
         => new SubscriptStarTargetView(this, position, parent);
 }
-internal sealed partial class SubscriptStarTargetView : TargetWithStarAtomView
+public sealed partial class SubscriptStarTargetView : TargetWithStarAtomView
 {
-    internal SubscriptStarTargetView(SubscriptStarTargetNode green, int position, IRedView? parent)
+    public SubscriptStarTargetView(SubscriptStarTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -21842,7 +21842,7 @@ internal sealed partial class SubscriptStarTargetView : TargetWithStarAtomView
     }
 
     private SlicesView? _field_subscript = null;
-    internal SlicesView Subscript
+    public SlicesView Subscript
     {
         get
         {
@@ -21856,21 +21856,21 @@ internal sealed partial class SubscriptStarTargetView : TargetWithStarAtomView
     }
 }
 
-internal sealed partial record SingleStarTargetNode : TargetWithStarAtomNode
+public sealed partial record SingleStarTargetNode : TargetWithStarAtomNode
 {
-    internal StarAtomNode Atom => (StarAtomNode)Children![0];
+    public StarAtomNode Atom => (StarAtomNode)Children![0];
     public override SingleStarTargetView GetView(int position, IRedView? parent)
         => new SingleStarTargetView(this, position, parent);
 }
-internal sealed partial class SingleStarTargetView : TargetWithStarAtomView
+public sealed partial class SingleStarTargetView : TargetWithStarAtomView
 {
-    internal SingleStarTargetView(SingleStarTargetNode green, int position, IRedView? parent)
+    public SingleStarTargetView(SingleStarTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarAtomView? _field_atom = null;
-    internal StarAtomView Atom
+    public StarAtomView Atom
     {
         get
         {
@@ -21884,32 +21884,32 @@ internal sealed partial class SingleStarTargetView : TargetWithStarAtomView
     }
 }
 
-internal abstract partial record StarAtomNode : GreenNode
+public abstract partial record StarAtomNode : GreenNode
 {
 }
-internal abstract partial class StarAtomView : RedView
+public abstract partial class StarAtomView : RedView
 {
-    internal StarAtomView(StarAtomNode green, int position, IRedView? parent)
+    public StarAtomView(StarAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record NameStarAtomNode : StarAtomNode
+public sealed partial record NameStarAtomNode : StarAtomNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override NameStarAtomView GetView(int position, IRedView? parent)
         => new NameStarAtomView(this, position, parent);
 }
-internal sealed partial class NameStarAtomView : StarAtomView
+public sealed partial class NameStarAtomView : StarAtomView
 {
-    internal NameStarAtomView(NameStarAtomNode green, int position, IRedView? parent)
+    public NameStarAtomView(NameStarAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -21923,21 +21923,21 @@ internal sealed partial class NameStarAtomView : StarAtomView
     }
 }
 
-internal sealed partial record TupleStarAtomNode : StarAtomNode
+public sealed partial record TupleStarAtomNode : StarAtomNode
 {
-    internal StarTargetSequenceNode? Items => Children![1] as StarTargetSequenceNode;
+    public StarTargetSequenceNode? Items => Children![1] as StarTargetSequenceNode;
     public override TupleStarAtomView GetView(int position, IRedView? parent)
         => new TupleStarAtomView(this, position, parent);
 }
-internal sealed partial class TupleStarAtomView : StarAtomView
+public sealed partial class TupleStarAtomView : StarAtomView
 {
-    internal TupleStarAtomView(TupleStarAtomNode green, int position, IRedView? parent)
+    public TupleStarAtomView(TupleStarAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetSequenceView? _field_items = null;
-    internal StarTargetSequenceView? Items
+    public StarTargetSequenceView? Items
     {
         get
         {
@@ -21951,21 +21951,21 @@ internal sealed partial class TupleStarAtomView : StarAtomView
     }
 }
 
-internal sealed partial record ListStarAtomNode : StarAtomNode
+public sealed partial record ListStarAtomNode : StarAtomNode
 {
-    internal StarTargetSequenceNode? Items => Children![1] as StarTargetSequenceNode;
+    public StarTargetSequenceNode? Items => Children![1] as StarTargetSequenceNode;
     public override ListStarAtomView GetView(int position, IRedView? parent)
         => new ListStarAtomView(this, position, parent);
 }
-internal sealed partial class ListStarAtomView : StarAtomView
+public sealed partial class ListStarAtomView : StarAtomView
 {
-    internal ListStarAtomView(ListStarAtomNode green, int position, IRedView? parent)
+    public ListStarAtomView(ListStarAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private StarTargetSequenceView? _field_items = null;
-    internal StarTargetSequenceView? Items
+    public StarTargetSequenceView? Items
     {
         get
         {
@@ -21979,10 +21979,10 @@ internal sealed partial class ListStarAtomView : StarAtomView
     }
 }
 
-internal sealed partial record StarTargetSequenceNode : GreenNode
+public sealed partial record StarTargetSequenceNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<StarTargetNode>? _field_Items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<StarTargetNode> Items
+    public global::System.Collections.Immutable.ImmutableArray<StarTargetNode> Items
     {
         get
         {
@@ -21994,19 +21994,19 @@ internal sealed partial record StarTargetSequenceNode : GreenNode
             return _field_Items.Value;
         }
     }
-    internal NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
     public override StarTargetSequenceView GetView(int position, IRedView? parent)
         => new StarTargetSequenceView(this, position, parent);
 }
-internal sealed partial class StarTargetSequenceView : RedView
+public sealed partial class StarTargetSequenceView : RedView
 {
-    internal StarTargetSequenceView(StarTargetSequenceNode green, int position, IRedView? parent)
+    public StarTargetSequenceView(StarTargetSequenceNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    internal ViewArray<RedView> AstItems
+    public ViewArray<RedView> AstItems
     {
         get
         {
@@ -22019,7 +22019,7 @@ internal sealed partial class StarTargetSequenceView : RedView
         }
     }
     private global::System.Collections.Immutable.ImmutableArray<StarTargetView>? _field_items = null;
-    internal global::System.Collections.Immutable.ImmutableArray<StarTargetView> Items
+    public global::System.Collections.Immutable.ImmutableArray<StarTargetView> Items
     {
         get
         {
@@ -22033,32 +22033,32 @@ internal sealed partial class StarTargetSequenceView : RedView
     }
 }
 
-internal abstract partial record SingleTargetNode : GreenNode
+public abstract partial record SingleTargetNode : GreenNode
 {
 }
-internal abstract partial class SingleTargetView : RedView
+public abstract partial class SingleTargetView : RedView
 {
-    internal SingleTargetView(SingleTargetNode green, int position, IRedView? parent)
+    public SingleTargetView(SingleTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record SubscriptSingleTargetNode : SingleTargetNode
+public sealed partial record SubscriptSingleTargetNode : SingleTargetNode
 {
-    internal SingleSubscriptAttributeTargetNode Value => (SingleSubscriptAttributeTargetNode)Children![0];
+    public SingleSubscriptAttributeTargetNode Value => (SingleSubscriptAttributeTargetNode)Children![0];
     public override SubscriptSingleTargetView GetView(int position, IRedView? parent)
         => new SubscriptSingleTargetView(this, position, parent);
 }
-internal sealed partial class SubscriptSingleTargetView : SingleTargetView
+public sealed partial class SubscriptSingleTargetView : SingleTargetView
 {
-    internal SubscriptSingleTargetView(SubscriptSingleTargetNode green, int position, IRedView? parent)
+    public SubscriptSingleTargetView(SubscriptSingleTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SingleSubscriptAttributeTargetView? _field_value = null;
-    internal SingleSubscriptAttributeTargetView Value
+    public SingleSubscriptAttributeTargetView Value
     {
         get
         {
@@ -22072,21 +22072,21 @@ internal sealed partial class SubscriptSingleTargetView : SingleTargetView
     }
 }
 
-internal sealed partial record NameSingleTargetNode : SingleTargetNode
+public sealed partial record NameSingleTargetNode : SingleTargetNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override NameSingleTargetView GetView(int position, IRedView? parent)
         => new NameSingleTargetView(this, position, parent);
 }
-internal sealed partial class NameSingleTargetView : SingleTargetView
+public sealed partial class NameSingleTargetView : SingleTargetView
 {
-    internal NameSingleTargetView(NameSingleTargetNode green, int position, IRedView? parent)
+    public NameSingleTargetView(NameSingleTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {
@@ -22100,19 +22100,19 @@ internal sealed partial class NameSingleTargetView : SingleTargetView
     }
 }
 
-internal abstract partial record SingleSubscriptAttributeTargetNode : GreenNode
+public abstract partial record SingleSubscriptAttributeTargetNode : GreenNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
 }
-internal abstract partial class SingleSubscriptAttributeTargetView : RedView
+public abstract partial class SingleSubscriptAttributeTargetView : RedView
 {
-    internal SingleSubscriptAttributeTargetView(SingleSubscriptAttributeTargetNode green, int position, IRedView? parent)
+    public SingleSubscriptAttributeTargetView(SingleSubscriptAttributeTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22126,21 +22126,21 @@ internal abstract partial class SingleSubscriptAttributeTargetView : RedView
     }
 }
 
-internal sealed partial record SingleAttributeTargetNode : SingleSubscriptAttributeTargetNode
+public sealed partial record SingleAttributeTargetNode : SingleSubscriptAttributeTargetNode
 {
-    internal TokenNode AttributeName => (TokenNode)Children![2];
+    public TokenNode AttributeName => (TokenNode)Children![2];
     public override SingleAttributeTargetView GetView(int position, IRedView? parent)
         => new SingleAttributeTargetView(this, position, parent);
 }
-internal sealed partial class SingleAttributeTargetView : SingleSubscriptAttributeTargetView
+public sealed partial class SingleAttributeTargetView : SingleSubscriptAttributeTargetView
 {
-    internal SingleAttributeTargetView(SingleAttributeTargetNode green, int position, IRedView? parent)
+    public SingleAttributeTargetView(SingleAttributeTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_attributeName = null;
-    internal TokenView AttributeName
+    public TokenView AttributeName
     {
         get
         {
@@ -22154,21 +22154,21 @@ internal sealed partial class SingleAttributeTargetView : SingleSubscriptAttribu
     }
 }
 
-internal sealed partial record SingleSubscriptTargetNode : SingleSubscriptAttributeTargetNode
+public sealed partial record SingleSubscriptTargetNode : SingleSubscriptAttributeTargetNode
 {
-    internal SlicesNode Subscript => (SlicesNode)Children![2];
+    public SlicesNode Subscript => (SlicesNode)Children![2];
     public override SingleSubscriptTargetView GetView(int position, IRedView? parent)
         => new SingleSubscriptTargetView(this, position, parent);
 }
-internal sealed partial class SingleSubscriptTargetView : SingleSubscriptAttributeTargetView
+public sealed partial class SingleSubscriptTargetView : SingleSubscriptAttributeTargetView
 {
-    internal SingleSubscriptTargetView(SingleSubscriptTargetNode green, int position, IRedView? parent)
+    public SingleSubscriptTargetView(SingleSubscriptTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private SlicesView? _field_subscript = null;
-    internal SlicesView Subscript
+    public SlicesView Subscript
     {
         get
         {
@@ -22182,33 +22182,33 @@ internal sealed partial class SingleSubscriptTargetView : SingleSubscriptAttribu
     }
 }
 
-internal abstract partial record TargetPrimaryNode : GreenNode
+public abstract partial record TargetPrimaryNode : GreenNode
 {
 }
-internal abstract partial class TargetPrimaryView : RedView
+public abstract partial class TargetPrimaryView : RedView
 {
-    internal TargetPrimaryView(TargetPrimaryNode green, int position, IRedView? parent)
+    public TargetPrimaryView(TargetPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record AttributeTargetNode : TargetPrimaryNode
+public sealed partial record AttributeTargetNode : TargetPrimaryNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal TokenNode AttributeName => (TokenNode)Children![2];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public TokenNode AttributeName => (TokenNode)Children![2];
     public override AttributeTargetView GetView(int position, IRedView? parent)
         => new AttributeTargetView(this, position, parent);
 }
-internal sealed partial class AttributeTargetView : TargetPrimaryView
+public sealed partial class AttributeTargetView : TargetPrimaryView
 {
-    internal AttributeTargetView(AttributeTargetNode green, int position, IRedView? parent)
+    public AttributeTargetView(AttributeTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22222,7 +22222,7 @@ internal sealed partial class AttributeTargetView : TargetPrimaryView
     }
 
     private TokenView? _field_attributeName = null;
-    internal TokenView AttributeName
+    public TokenView AttributeName
     {
         get
         {
@@ -22236,22 +22236,22 @@ internal sealed partial class AttributeTargetView : TargetPrimaryView
     }
 }
 
-internal sealed partial record SubscriptTargetNode : TargetPrimaryNode
+public sealed partial record SubscriptTargetNode : TargetPrimaryNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal SlicesNode Subscript => (SlicesNode)Children![2];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public SlicesNode Subscript => (SlicesNode)Children![2];
     public override SubscriptTargetView GetView(int position, IRedView? parent)
         => new SubscriptTargetView(this, position, parent);
 }
-internal sealed partial class SubscriptTargetView : TargetPrimaryView
+public sealed partial class SubscriptTargetView : TargetPrimaryView
 {
-    internal SubscriptTargetView(SubscriptTargetNode green, int position, IRedView? parent)
+    public SubscriptTargetView(SubscriptTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22265,7 +22265,7 @@ internal sealed partial class SubscriptTargetView : TargetPrimaryView
     }
 
     private SlicesView? _field_subscript = null;
-    internal SlicesView Subscript
+    public SlicesView Subscript
     {
         get
         {
@@ -22279,22 +22279,22 @@ internal sealed partial class SubscriptTargetView : TargetPrimaryView
     }
 }
 
-internal sealed partial record GeneratorTargetNode : TargetPrimaryNode
+public sealed partial record GeneratorTargetNode : TargetPrimaryNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal GeneratorExpressionNode Generator => (GeneratorExpressionNode)Children![1];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public GeneratorExpressionNode Generator => (GeneratorExpressionNode)Children![1];
     public override GeneratorTargetView GetView(int position, IRedView? parent)
         => new GeneratorTargetView(this, position, parent);
 }
-internal sealed partial class GeneratorTargetView : TargetPrimaryView
+public sealed partial class GeneratorTargetView : TargetPrimaryView
 {
-    internal GeneratorTargetView(GeneratorTargetNode green, int position, IRedView? parent)
+    public GeneratorTargetView(GeneratorTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22308,7 +22308,7 @@ internal sealed partial class GeneratorTargetView : TargetPrimaryView
     }
 
     private GeneratorExpressionView? _field_generator = null;
-    internal GeneratorExpressionView Generator
+    public GeneratorExpressionView Generator
     {
         get
         {
@@ -22322,22 +22322,22 @@ internal sealed partial class GeneratorTargetView : TargetPrimaryView
     }
 }
 
-internal sealed partial record CallTargetNode : TargetPrimaryNode
+public sealed partial record CallTargetNode : TargetPrimaryNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
     public override CallTargetView GetView(int position, IRedView? parent)
         => new CallTargetView(this, position, parent);
 }
-internal sealed partial class CallTargetView : TargetPrimaryView
+public sealed partial class CallTargetView : TargetPrimaryView
 {
-    internal CallTargetView(CallTargetNode green, int position, IRedView? parent)
+    public CallTargetView(CallTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22351,7 +22351,7 @@ internal sealed partial class CallTargetView : TargetPrimaryView
     }
 
     private ArgumentsView? _field_arguments = null;
-    internal ArgumentsView? Arguments
+    public ArgumentsView? Arguments
     {
         get
         {
@@ -22365,21 +22365,21 @@ internal sealed partial class CallTargetView : TargetPrimaryView
     }
 }
 
-internal sealed partial record AtomTargetNode : TargetPrimaryNode
+public sealed partial record AtomTargetNode : TargetPrimaryNode
 {
-    internal IAtomNode Value => (IAtomNode)Children![0];
+    public IAtomNode Value => (IAtomNode)Children![0];
     public override AtomTargetView GetView(int position, IRedView? parent)
         => new AtomTargetView(this, position, parent);
 }
-internal sealed partial class AtomTargetView : TargetPrimaryView
+public sealed partial class AtomTargetView : TargetPrimaryView
 {
-    internal AtomTargetView(AtomTargetNode green, int position, IRedView? parent)
+    public AtomTargetView(AtomTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private IAtomView? _field_value = null;
-    internal IAtomView Value
+    public IAtomView Value
     {
         get
         {
@@ -22393,33 +22393,33 @@ internal sealed partial class AtomTargetView : TargetPrimaryView
     }
 }
 
-internal abstract partial record DeleteTargetNode : GreenNode
+public abstract partial record DeleteTargetNode : GreenNode
 {
 }
-internal abstract partial class DeleteTargetView : RedView
+public abstract partial class DeleteTargetView : RedView
 {
-    internal DeleteTargetView(DeleteTargetNode green, int position, IRedView? parent)
+    public DeleteTargetView(DeleteTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 }
 
-internal sealed partial record DeleteAttributeTargetNode : DeleteTargetNode
+public sealed partial record DeleteAttributeTargetNode : DeleteTargetNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal TokenNode AttributeName => (TokenNode)Children![2];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public TokenNode AttributeName => (TokenNode)Children![2];
     public override DeleteAttributeTargetView GetView(int position, IRedView? parent)
         => new DeleteAttributeTargetView(this, position, parent);
 }
-internal sealed partial class DeleteAttributeTargetView : DeleteTargetView
+public sealed partial class DeleteAttributeTargetView : DeleteTargetView
 {
-    internal DeleteAttributeTargetView(DeleteAttributeTargetNode green, int position, IRedView? parent)
+    public DeleteAttributeTargetView(DeleteAttributeTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22433,7 +22433,7 @@ internal sealed partial class DeleteAttributeTargetView : DeleteTargetView
     }
 
     private TokenView? _field_attributeName = null;
-    internal TokenView AttributeName
+    public TokenView AttributeName
     {
         get
         {
@@ -22447,22 +22447,22 @@ internal sealed partial class DeleteAttributeTargetView : DeleteTargetView
     }
 }
 
-internal sealed partial record DeleteSubscriptTargetNode : DeleteTargetNode
+public sealed partial record DeleteSubscriptTargetNode : DeleteTargetNode
 {
-    internal TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    internal SlicesNode Subscript => (SlicesNode)Children![2];
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public SlicesNode Subscript => (SlicesNode)Children![2];
     public override DeleteSubscriptTargetView GetView(int position, IRedView? parent)
         => new DeleteSubscriptTargetView(this, position, parent);
 }
-internal sealed partial class DeleteSubscriptTargetView : DeleteTargetView
+public sealed partial class DeleteSubscriptTargetView : DeleteTargetView
 {
-    internal DeleteSubscriptTargetView(DeleteSubscriptTargetNode green, int position, IRedView? parent)
+    public DeleteSubscriptTargetView(DeleteSubscriptTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TargetPrimaryView? _field_primary = null;
-    internal TargetPrimaryView Primary
+    public TargetPrimaryView Primary
     {
         get
         {
@@ -22476,7 +22476,7 @@ internal sealed partial class DeleteSubscriptTargetView : DeleteTargetView
     }
 
     private SlicesView? _field_subscript = null;
-    internal SlicesView Subscript
+    public SlicesView Subscript
     {
         get
         {
@@ -22490,21 +22490,21 @@ internal sealed partial class DeleteSubscriptTargetView : DeleteTargetView
     }
 }
 
-internal sealed partial record DeleteAtomTargetNode : DeleteTargetNode
+public sealed partial record DeleteAtomTargetNode : DeleteTargetNode
 {
-    internal DeleteTargetAtomNode Value => (DeleteTargetAtomNode)Children![0];
+    public DeleteTargetAtomNode Value => (DeleteTargetAtomNode)Children![0];
     public override DeleteAtomTargetView GetView(int position, IRedView? parent)
         => new DeleteAtomTargetView(this, position, parent);
 }
-internal sealed partial class DeleteAtomTargetView : DeleteTargetView
+public sealed partial class DeleteAtomTargetView : DeleteTargetView
 {
-    internal DeleteAtomTargetView(DeleteAtomTargetNode green, int position, IRedView? parent)
+    public DeleteAtomTargetView(DeleteAtomTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private DeleteTargetAtomView? _field_value = null;
-    internal DeleteTargetAtomView Value
+    public DeleteTargetAtomView Value
     {
         get
         {
@@ -22518,21 +22518,21 @@ internal sealed partial class DeleteAtomTargetView : DeleteTargetView
     }
 }
 
-internal sealed partial record DeleteTargetAtomNode : GreenNode
+public sealed partial record DeleteTargetAtomNode : GreenNode
 {
-    internal TokenNode Value => (TokenNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override DeleteTargetAtomView GetView(int position, IRedView? parent)
         => new DeleteTargetAtomView(this, position, parent);
 }
-internal sealed partial class DeleteTargetAtomView : RedView
+public sealed partial class DeleteTargetAtomView : RedView
 {
-    internal DeleteTargetAtomView(DeleteTargetAtomNode green, int position, IRedView? parent)
+    public DeleteTargetAtomView(DeleteTargetAtomNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
     private TokenView? _field_value = null;
-    internal TokenView Value
+    public TokenView Value
     {
         get
         {

@@ -71,7 +71,6 @@ internal enum TypeKind
 internal record TypeIr(
     TypeKind Kind,
     IEnumerable<FieldIr> Fields,
-    AccessModifier AccessModifier,
     string Name,
     string? BaseName,
     bool? IsAbstract,
@@ -79,7 +78,6 @@ internal record TypeIr(
 
 internal record FieldIr
 {
-    internal required AccessModifier AccessModifier { get; init; }
     internal required string Name { get; init; }
     internal required string TypeName { get; init; }
     internal required FieldKind Kind { get; init; }
@@ -88,13 +86,12 @@ internal record FieldIr
     internal required bool TypeIsUnion { get; init; }
 
     [SetsRequiredMembers]
-    internal FieldIr(BoundField boundField, AccessModifier accessModifier)
+    internal FieldIr(BoundField boundField)
     {
         Name = boundField.Name;
         TypeName = boundField.Type.Name;
         Kind = boundField.Kind;
         ChildIndex = boundField.Index;
-        AccessModifier = accessModifier;
         IsOptional = boundField.IsOptional;
         TypeIsUnion = boundField.Type is BoundUnionType;
     }

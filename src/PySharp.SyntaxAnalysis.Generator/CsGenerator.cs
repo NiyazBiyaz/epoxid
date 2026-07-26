@@ -5,7 +5,7 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis.Generator;
 
-internal class CsGenerator
+internal class CsGenerator(string accessModifier)
 {
     private readonly StringBuilder builder = new();
 
@@ -401,12 +401,8 @@ internal class CsGenerator
 
     internal void AddRuleEnd(RuleIr ruleIr) => AddLine($"#endregion // {ruleIr.Name}");
 
-    internal void AddParserSignature(AccessModifier accessModifier, string parserName, string topLevelNodeName)
-    {
-        string modifierName = accessModifier.CodeRepresentation();
-
-        AddLine($"{modifierName} partial class {parserName}(ITokenNodeStream _tokenStream) : BaseParser<{topLevelNodeName}Node>(_tokenStream)");
-    }
+    internal void AddParserSignature(string parserName, string topLevelNodeName)
+        => AddLine($"{accessModifier} partial class {parserName}(ITokenNodeStream _tokenStream) : BaseParser<{topLevelNodeName}Node>(_tokenStream)");
 
     internal void AddParserBody(string mainName, string mainTypeName, IEnumerable<RuleIr> ruleIrs, IEnumerable<string> keywords)
     {
@@ -487,14 +483,13 @@ internal class CsGenerator
 
     internal void AddNodeType(TypeIr ir)
     {
-        string modifierName = ir.AccessModifier.CodeRepresentation();
         string abstractOrSealed = ir.IsAbstract!.Value ? "abstract" : "sealed";
         string typeNodeName = nodeName(ir.Name);
         string baseNodeName = nodeName(ir.BaseName ?? "Green");
 
         // Add node class.
         beginLine();
-        add($"{modifierName} {abstractOrSealed} partial record {typeNodeName} : {baseNodeName}");
+        add($"{accessModifier} {abstractOrSealed} partial record {typeNodeName} : {baseNodeName}");
         foreach (string union in ir.UnionMembership)
         {
             Debug.Assert(union != null);
@@ -509,7 +504,6 @@ internal class CsGenerator
 
         foreach (var field in ir.Fields)
         {
-            string modifier = field.AccessModifier.CodeRepresentation();
             string fieldTypeName = nodeName(field.TypeName, field.TypeIsUnion);
 
             switch (field.Kind)
@@ -517,24 +511,24 @@ internal class CsGenerator
                 case FieldKind.Plain:
                     if (field.IsOptional)
                     {
-                        AddLine($"{modifier} {fieldTypeName}? {field.Name} => Children![{field.ChildIndex}] as {fieldTypeName};");
+                        AddLine($"{accessModifier} {fieldTypeName}? {field.Name} => Children![{field.ChildIndex}] as {fieldTypeName};");
                     }
                     else
                     {
-                        AddLine($"{modifier} {fieldTypeName} {field.Name} => ({fieldTypeName})Children![{field.ChildIndex}];");
+                        AddLine($"{accessModifier} {fieldTypeName} {field.Name} => ({fieldTypeName})Children![{field.ChildIndex}];");
                     }
                     break;
 
                 case FieldKind.Array:
                     AddLine($"""
-                    {modifier} NodeArray<{fieldTypeName}> {field.Name} => (NodeArray<{fieldTypeName}>)Children![{field.ChildIndex}];
+                    {accessModifier} NodeArray<{fieldTypeName}> {field.Name} => (NodeArray<{fieldTypeName}>)Children![{field.ChildIndex}];
                     """);
                     break;
 
                 case FieldKind.Gather:
                     addLines($$"""
                     private global::System.Collections.Immutable.ImmutableArray<{{fieldTypeName}}>? _field_{{field.Name}} = null;
-                    {{modifier}} global::System.Collections.Immutable.ImmutableArray<{{fieldTypeName}}> {{field.Name}}
+                    {{accessModifier}} global::System.Collections.Immutable.ImmutableArray<{{fieldTypeName}}> {{field.Name}}
                     {
                         get
                         {
@@ -546,7 +540,7 @@ internal class CsGenerator
                             return _field_{{field.Name}}.Value;
                         }
                     }
-                    {{modifier}} NodeArray<GreenNode> Ast{{field.Name}} => (NodeArray<GreenNode>)Children![{{field.ChildIndex}}];
+                    {{accessModifier}} NodeArray<GreenNode> Ast{{field.Name}} => (NodeArray<GreenNode>)Children![{{field.ChildIndex}}];
                     """);
                     break;
 
@@ -567,7 +561,7 @@ internal class CsGenerator
         string baseViewName = viewName(ir.BaseName ?? "Red");
 
         beginLine();
-        add($"{modifierName} {abstractOrSealed} partial class {typeViewName} : {baseViewName}");
+        add($"{accessModifier} {abstractOrSealed} partial class {typeViewName} : {baseViewName}");
         foreach (string union in ir.UnionMembership)
         {
             Debug.Assert(union != null);
@@ -579,7 +573,7 @@ internal class CsGenerator
         open();
 
         addLines($$"""
-        {{modifierName}} {{typeViewName}}({{typeNodeName}} green, int position, IRedView? parent)
+        {{accessModifier}} {{typeViewName}}({{typeNodeName}} green, int position, IRedView? parent)
             : base(green, position, parent)
         {
         }
@@ -589,7 +583,6 @@ internal class CsGenerator
         {
             addBlankLine();
 
-            string modifier = field.AccessModifier.CodeRepresentation();
             string fieldTypeName = viewName(field.TypeName, field.TypeIsUnion);
             string backingFieldName = "_field_" + field.Name.Camelize();
 
@@ -623,7 +616,7 @@ internal class CsGenerator
 
                 addLines($$"""
                 private {{fieldTypeName}}? {{backingFieldName}} = null;
-                {{modifier}} {{fieldTypeName}}{{optional}} {{field.Name}}
+                {{accessModifier}} {{fieldTypeName}}{{optional}} {{field.Name}}
                 {
                     get
                     {
@@ -641,7 +634,7 @@ internal class CsGenerator
             {
                 addLines($$"""
                 private ViewArray<RedView>? _ast{{backingFieldName}} = null;
-                {{modifier}} ViewArray<RedView> Ast{{field.Name}}
+                {{accessModifier}} ViewArray<RedView> Ast{{field.Name}}
                 {
                     get
                     {
@@ -654,7 +647,7 @@ internal class CsGenerator
                     }
                 }
                 private global::System.Collections.Immutable.ImmutableArray<{{fieldTypeName}}>? {{backingFieldName}} = null;
-                {{modifier}} global::System.Collections.Immutable.ImmutableArray<{{fieldTypeName}}> {{field.Name}}
+                {{accessModifier}} global::System.Collections.Immutable.ImmutableArray<{{fieldTypeName}}> {{field.Name}}
                 {
                     get
                     {
@@ -675,11 +668,10 @@ internal class CsGenerator
 
     internal void AddUnionType(TypeIr ir)
     {
-        string modifierName = ir.AccessModifier.CodeRepresentation();
         string typeNodeName = nodeName(ir.Name, true);
 
         beginLine();
-        add($"{modifierName} partial interface {typeNodeName} : IGreenNode");
+        add($"{accessModifier} partial interface {typeNodeName} : IGreenNode");
         foreach (string union in ir.UnionMembership.Select(u => nodeName(u, true)))
         {
             add($", {union}");
@@ -690,7 +682,7 @@ internal class CsGenerator
         string typeViewName = viewName(ir.Name, true);
 
         beginLine();
-        add($"{modifierName} partial interface {typeViewName} : IRedView");
+        add($"{accessModifier} partial interface {typeViewName} : IRedView");
         foreach (string union in ir.UnionMembership.Select(u => viewName(u, true)))
         {
             add($", {union}");

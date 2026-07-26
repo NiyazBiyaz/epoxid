@@ -91,7 +91,7 @@ internal class Program
 
             var boundGrammar = binder.Grammar;
 
-            var fileGenerator = new CsGenerator();
+            var fileGenerator = new CsGenerator(boundGrammar.AccessModifier);
 
             fileGenerator.AddFileHeader(boundGrammar.UserHeader!, grammarFile.Name);
 

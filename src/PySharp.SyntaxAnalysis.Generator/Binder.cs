@@ -18,6 +18,7 @@ internal class Binder
     private const string
         meta_header = "header",
         meta_parser_name = "parser_name",
+        meta_access_modifier = "access",
         decor_main = "main",
         decor_union = "union",
         decor_token_union = "inline",
@@ -28,7 +29,7 @@ internal class Binder
 
     internal void ReadMetadata(IEnumerable<MetadataView> metadata)
     {
-        string? userHeader = null, parserName = null;
+        string? userHeader = null, parserName = null, accessModifier = null;
         foreach (var meta in metadata)
         {
             switch (meta.Key.RawString)
@@ -38,6 +39,16 @@ internal class Binder
                     break;
                 case meta_parser_name:
                     parserName = StringParser.ParseQuoted(meta.Value.RawString);
+                    break;
+                case meta_access_modifier:
+                    accessModifier = StringParser.ParseQuoted(meta.Value.RawString);
+
+                    if (accessModifier != "internal" && accessModifier != "public")
+                        throw new CompilationException($"Invalid access modifier value: {meta.Value.RawString}")
+                        {
+                            Line = meta.Value.Position2D.Line,
+                        };
+
                     break;
                 default:
                     throw new InvalidNameException($"Unexpected metadata name: {meta.Key}.")
@@ -52,8 +63,11 @@ internal class Binder
         if (parserName is null)
             throw new IncompleteMetadataException(meta_parser_name) { Line = metadata.Last().EndPosition2D.Line };
 
+        accessModifier ??= "internal";
+
         Grammar.UserHeader = userHeader;
         Grammar.ParserName = parserName;
+        Grammar.AccessModifier = accessModifier;
     }
 
     internal void RegisterRules(IEnumerable<RuleView> rules)
@@ -661,7 +675,6 @@ internal class Binder
             _ => throw new ArgumentOutOfRangeException(variable.Entry.Quantifier.ToString()),
         },
         Type = getEntryType(variable.Entry),
-        AccessModifier = AccessModifier.Internal,
         Name = variable.FieldName,
         IsOptional = variable.Entry.Quantifier == QuantifierKind.Optional,
     };

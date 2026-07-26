@@ -10,15 +10,16 @@ internal class BoundGrammar
     internal string ParserName { get; set; } = null!;
     internal string TopLevelNodeName { get; set; } = null!;
     internal string UserHeader { get; set; } = null!;
+    internal string AccessModifier { get; set; } = null!;
     internal BoundRule MainRule { get; set; } = null!;
     internal List<BoundRule> Rules { get; } = [];
     internal List<BoundType> Types { get; } = [];
 
     internal string GenerateCode()
     {
-        var gen = new CsGenerator();
+        var gen = new CsGenerator(AccessModifier);
 
-        gen.AddParserSignature(AccessModifier.Internal, ParserName, TopLevelNodeName);
+        gen.AddParserSignature(ParserName, TopLevelNodeName);
 
         gen.AddParserBody(MainRule.Name, TopLevelNodeName, Rules.Select(r => r.ToIr()), []);
 
@@ -356,8 +357,7 @@ internal abstract class BoundType
 
     internal TypeIr ToIr() => new(
         this is BoundRuleType ? TypeKind.Node : TypeKind.Union,
-        (this as BoundRuleType)?.Fields.Select(f => new FieldIr(f, AccessModifier.Internal)) ?? [],
-        AccessModifier.Internal,
+        (this as BoundRuleType)?.Fields.Select(f => new FieldIr(f)) ?? [],
         Name,
         (this as BoundRuleType)?.Base?.Name,
         (this as BoundRuleType)?.IsAbstract,
@@ -380,7 +380,6 @@ internal sealed class BoundUnionType : BoundType
 internal record BoundField
 {
     internal required int Index { get; init; }
-    internal required AccessModifier AccessModifier { get; init; }
     internal required FieldKind Kind { get; init; }
     internal required string Name { get; init; }
     internal required BoundType Type { get; init; }
