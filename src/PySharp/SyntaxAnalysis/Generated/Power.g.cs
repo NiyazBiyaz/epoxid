@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record PowerNode : GreenNode, IPowerExpressionNode
 {
-    public sealed partial record PowerNode : GreenNode, IPowerExpressionNode
+    public IPrimaryNode Left => (IPrimaryNode)Children![0];
+    public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
+    public override PowerView GetView(int position, IRedView? parent)
+        => new PowerView(this, position, parent);
+}
+
+public sealed partial class PowerView : RedView, IPowerExpressionView
+{
+    public PowerView(PowerNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IPrimaryNode Left => (IPrimaryNode)Children![0];
-        public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
-        public override PowerView GetView(int position, IRedView? parent)
-            => new PowerView(this, position, parent);
     }
-    public sealed partial class PowerView : RedView, IPowerExpressionView
+
+    private IPrimaryView? _field_left = null;
+    public IPrimaryView Left
     {
-        public PowerView(PowerNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IPrimaryView? _field_left = null;
-        public IPrimaryView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (IPrimaryView)((PowerNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (IPrimaryView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (IPrimaryView)((PowerNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (IPrimaryView)_field_left;
         }
+    }
 
-        private IFactorExpressionView? _field_right = null;
-        public IFactorExpressionView Right
+    private IFactorExpressionView? _field_right = null;
+    public IFactorExpressionView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (IFactorExpressionView)((PowerNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (IFactorExpressionView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (IFactorExpressionView)((PowerNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (IFactorExpressionView)_field_right;
         }
     }
 }

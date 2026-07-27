@@ -8,46 +8,46 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record IfStatementNode : GreenNode, ICompoundStatementNode
 {
-    public abstract partial record IfStatementNode : GreenNode, ICompoundStatementNode
+    public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
+}
+
+public abstract partial class IfStatementView : RedView, ICompoundStatementView
+{
+    public IfStatementView(IfStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
-        public BlockNode Block => (BlockNode)Children![3];
     }
-    public abstract partial class IfStatementView : RedView, ICompoundStatementView
+
+    private INamedExpressionView? _field_condition = null;
+    public INamedExpressionView Condition
     {
-        public IfStatementView(IfStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private INamedExpressionView? _field_condition = null;
-        public INamedExpressionView Condition
-        {
-            get
+            if (_field_condition == null)
             {
-                if (_field_condition == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_condition = (INamedExpressionView)((IfStatementNode)base.Green).Condition!.GetView(_positionOfField, this);
-                }
-                return (INamedExpressionView)_field_condition;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_condition = (INamedExpressionView)((IfStatementNode)base.Green).Condition!.GetView(_positionOfField, this);
             }
+            return (INamedExpressionView)_field_condition;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_block = (BlockView)((IfStatementNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_block = (BlockView)((IfStatementNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

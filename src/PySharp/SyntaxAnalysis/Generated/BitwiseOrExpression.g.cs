@@ -8,8 +8,8 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public partial interface IBitwiseOrExpressionNode : IGreenNode, IExpressionNode;
-    public partial interface IBitwiseOrExpressionView : IRedView, IExpressionView;
-}
+namespace PySharp.SyntaxAnalysis;
+
+public partial interface IBitwiseOrExpressionNode : IGreenNode, IExpressionNode;
+
+public partial interface IBitwiseOrExpressionView : IRedView, IExpressionView;

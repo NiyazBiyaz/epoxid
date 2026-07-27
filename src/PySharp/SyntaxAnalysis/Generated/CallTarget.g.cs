@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record CallTargetNode : TargetPrimaryNode
 {
-    public sealed partial record CallTargetNode : TargetPrimaryNode
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
+    public override CallTargetView GetView(int position, IRedView? parent)
+        => new CallTargetView(this, position, parent);
+}
+
+public sealed partial class CallTargetView : TargetPrimaryView
+{
+    public CallTargetView(CallTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-        public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
-        public override CallTargetView GetView(int position, IRedView? parent)
-            => new CallTargetView(this, position, parent);
     }
-    public sealed partial class CallTargetView : TargetPrimaryView
+
+    private TargetPrimaryView? _field_primary = null;
+    public TargetPrimaryView Primary
     {
-        public CallTargetView(CallTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TargetPrimaryView? _field_primary = null;
-        public TargetPrimaryView Primary
-        {
-            get
+            if (_field_primary == null)
             {
-                if (_field_primary == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_primary = (TargetPrimaryView)((CallTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
-                }
-                return (TargetPrimaryView)_field_primary;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_primary = (TargetPrimaryView)((CallTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
             }
+            return (TargetPrimaryView)_field_primary;
         }
+    }
 
-        private ArgumentsView? _field_arguments = null;
-        public ArgumentsView? Arguments
+    private ArgumentsView? _field_arguments = null;
+    public ArgumentsView? Arguments
+    {
+        get
         {
-            get
+            if (_field_arguments == null && ((CallTargetNode)base.Green).Arguments != null)
             {
-                if (_field_arguments == null && ((CallTargetNode)base.Green).Arguments != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_arguments = (ArgumentsView)((CallTargetNode)base.Green).Arguments!.GetView(_positionOfField, this);
-                }
-                return (ArgumentsView?)_field_arguments;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_arguments = (ArgumentsView)((CallTargetNode)base.Green).Arguments!.GetView(_positionOfField, this);
             }
+            return (ArgumentsView?)_field_arguments;
         }
     }
 }

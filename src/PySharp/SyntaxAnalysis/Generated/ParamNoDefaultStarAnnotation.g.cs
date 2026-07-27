@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record ParamNoDefaultStarAnnotationNode : GreenNode
-    {
-        public ParamStarAnnotationNode ParamStarAnnotation => (ParamStarAnnotationNode)Children![0];
-    }
-    public abstract partial class ParamNoDefaultStarAnnotationView : RedView
-    {
-        public ParamNoDefaultStarAnnotationView(ParamNoDefaultStarAnnotationNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ParamStarAnnotationView? _field_paramStarAnnotation = null;
-        public ParamStarAnnotationView ParamStarAnnotation
+public abstract partial record ParamNoDefaultStarAnnotationNode : GreenNode
+{
+    public ParamStarAnnotationNode ParamStarAnnotation => (ParamStarAnnotationNode)Children![0];
+}
+
+public abstract partial class ParamNoDefaultStarAnnotationView : RedView
+{
+    public ParamNoDefaultStarAnnotationView(ParamNoDefaultStarAnnotationNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ParamStarAnnotationView? _field_paramStarAnnotation = null;
+    public ParamStarAnnotationView ParamStarAnnotation
+    {
+        get
         {
-            get
+            if (_field_paramStarAnnotation == null)
             {
-                if (_field_paramStarAnnotation == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_paramStarAnnotation = (ParamStarAnnotationView)((ParamNoDefaultStarAnnotationNode)base.Green).ParamStarAnnotation!.GetView(_positionOfField, this);
-                }
-                return (ParamStarAnnotationView)_field_paramStarAnnotation;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_paramStarAnnotation = (ParamStarAnnotationView)((ParamNoDefaultStarAnnotationNode)base.Green).ParamStarAnnotation!.GetView(_positionOfField, this);
             }
+            return (ParamStarAnnotationView)_field_paramStarAnnotation;
         }
     }
 }

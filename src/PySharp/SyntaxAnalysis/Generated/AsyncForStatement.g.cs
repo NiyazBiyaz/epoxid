@@ -8,78 +8,78 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AsyncForStatementNode : ForStatementNode
 {
-    public sealed partial record AsyncForStatementNode : ForStatementNode
+    public StarTargetsNode Targets => (StarTargetsNode)Children![2];
+    public StarExpressionsNode Expression => (StarExpressionsNode)Children![4];
+    public BlockNode Block => (BlockNode)Children![6];
+    public ElseBlockNode? Else => Children![7] as ElseBlockNode;
+    public override AsyncForStatementView GetView(int position, IRedView? parent)
+        => new AsyncForStatementView(this, position, parent);
+}
+
+public sealed partial class AsyncForStatementView : ForStatementView
+{
+    public AsyncForStatementView(AsyncForStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public StarTargetsNode Targets => (StarTargetsNode)Children![2];
-        public StarExpressionsNode Expression => (StarExpressionsNode)Children![4];
-        public BlockNode Block => (BlockNode)Children![6];
-        public ElseBlockNode? Else => Children![7] as ElseBlockNode;
-        public override AsyncForStatementView GetView(int position, IRedView? parent)
-            => new AsyncForStatementView(this, position, parent);
     }
-    public sealed partial class AsyncForStatementView : ForStatementView
+
+    private StarTargetsView? _field_targets = null;
+    public StarTargetsView Targets
     {
-        public AsyncForStatementView(AsyncForStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private StarTargetsView? _field_targets = null;
-        public StarTargetsView Targets
-        {
-            get
+            if (_field_targets == null)
             {
-                if (_field_targets == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_targets = (StarTargetsView)((AsyncForStatementNode)base.Green).Targets!.GetView(_positionOfField, this);
-                }
-                return (StarTargetsView)_field_targets;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_targets = (StarTargetsView)((AsyncForStatementNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
+            return (StarTargetsView)_field_targets;
         }
+    }
 
-        private StarExpressionsView? _field_expression = null;
-        public StarExpressionsView Expression
+    private StarExpressionsView? _field_expression = null;
+    public StarExpressionsView Expression
+    {
+        get
         {
-            get
+            if (_field_expression == null)
             {
-                if (_field_expression == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_expression = (StarExpressionsView)((AsyncForStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
-                }
-                return (StarExpressionsView)_field_expression;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_expression = (StarExpressionsView)((AsyncForStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
+            return (StarExpressionsView)_field_expression;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(6);
-                    _field_block = (BlockView)((AsyncForStatementNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(6);
+                _field_block = (BlockView)((AsyncForStatementNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
+    }
 
-        private ElseBlockView? _field_else = null;
-        public ElseBlockView? Else
+    private ElseBlockView? _field_else = null;
+    public ElseBlockView? Else
+    {
+        get
         {
-            get
+            if (_field_else == null && ((AsyncForStatementNode)base.Green).Else != null)
             {
-                if (_field_else == null && ((AsyncForStatementNode)base.Green).Else != null)
-                {
-                    var _positionOfField = base.GetPositionFor(7);
-                    _field_else = (ElseBlockView)((AsyncForStatementNode)base.Green).Else!.GetView(_positionOfField, this);
-                }
-                return (ElseBlockView?)_field_else;
+                var _positionOfField = base.GetPositionFor(7);
+                _field_else = (ElseBlockView)((AsyncForStatementNode)base.Green).Else!.GetView(_positionOfField, this);
             }
+            return (ElseBlockView?)_field_else;
         }
     }
 }

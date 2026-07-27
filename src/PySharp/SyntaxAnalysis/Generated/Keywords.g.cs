@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record KeywordsNode : GreenNode
-    {
-        public ParamNoDefaultNode Parameter => (ParamNoDefaultNode)Children![1];
-        public override KeywordsView GetView(int position, IRedView? parent)
-            => new KeywordsView(this, position, parent);
-    }
-    public sealed partial class KeywordsView : RedView
-    {
-        public KeywordsView(KeywordsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ParamNoDefaultView? _field_parameter = null;
-        public ParamNoDefaultView Parameter
+public sealed partial record KeywordsNode : GreenNode
+{
+    public ParamNoDefaultNode Parameter => (ParamNoDefaultNode)Children![1];
+    public override KeywordsView GetView(int position, IRedView? parent)
+        => new KeywordsView(this, position, parent);
+}
+
+public sealed partial class KeywordsView : RedView
+{
+    public KeywordsView(KeywordsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ParamNoDefaultView? _field_parameter = null;
+    public ParamNoDefaultView Parameter
+    {
+        get
         {
-            get
+            if (_field_parameter == null)
             {
-                if (_field_parameter == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_parameter = (ParamNoDefaultView)((KeywordsNode)base.Green).Parameter!.GetView(_positionOfField, this);
-                }
-                return (ParamNoDefaultView)_field_parameter;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_parameter = (ParamNoDefaultView)((KeywordsNode)base.Green).Parameter!.GetView(_positionOfField, this);
             }
+            return (ParamNoDefaultView)_field_parameter;
         }
     }
 }

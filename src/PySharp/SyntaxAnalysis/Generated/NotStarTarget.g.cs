@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record NotStarTargetNode : StarTargetNode
-    {
-        public TargetWithStarAtomNode Target => (TargetWithStarAtomNode)Children![0];
-        public override NotStarTargetView GetView(int position, IRedView? parent)
-            => new NotStarTargetView(this, position, parent);
-    }
-    public sealed partial class NotStarTargetView : StarTargetView
-    {
-        public NotStarTargetView(NotStarTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TargetWithStarAtomView? _field_target = null;
-        public TargetWithStarAtomView Target
+public sealed partial record NotStarTargetNode : StarTargetNode
+{
+    public TargetWithStarAtomNode Target => (TargetWithStarAtomNode)Children![0];
+    public override NotStarTargetView GetView(int position, IRedView? parent)
+        => new NotStarTargetView(this, position, parent);
+}
+
+public sealed partial class NotStarTargetView : StarTargetView
+{
+    public NotStarTargetView(NotStarTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TargetWithStarAtomView? _field_target = null;
+    public TargetWithStarAtomView Target
+    {
+        get
         {
-            get
+            if (_field_target == null)
             {
-                if (_field_target == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_target = (TargetWithStarAtomView)((NotStarTargetNode)base.Green).Target!.GetView(_positionOfField, this);
-                }
-                return (TargetWithStarAtomView)_field_target;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_target = (TargetWithStarAtomView)((NotStarTargetNode)base.Green).Target!.GetView(_positionOfField, this);
             }
+            return (TargetWithStarAtomView)_field_target;
         }
     }
 }

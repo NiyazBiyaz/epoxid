@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record CascadeAssignmentNode : AssignmentNode
 {
-    public sealed partial record CascadeAssignmentNode : AssignmentNode
+    public NodeArray<AssignmentTargetNode> Targets => (NodeArray<AssignmentTargetNode>)Children![0];
+    public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![1];
+    public override CascadeAssignmentView GetView(int position, IRedView? parent)
+        => new CascadeAssignmentView(this, position, parent);
+}
+
+public sealed partial class CascadeAssignmentView : AssignmentView
+{
+    public CascadeAssignmentView(CascadeAssignmentNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public NodeArray<AssignmentTargetNode> Targets => (NodeArray<AssignmentTargetNode>)Children![0];
-        public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![1];
-        public override CascadeAssignmentView GetView(int position, IRedView? parent)
-            => new CascadeAssignmentView(this, position, parent);
     }
-    public sealed partial class CascadeAssignmentView : AssignmentView
+
+    private ViewArray<AssignmentTargetView>? _field_targets = null;
+    public ViewArray<AssignmentTargetView> Targets
     {
-        public CascadeAssignmentView(CascadeAssignmentNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ViewArray<AssignmentTargetView>? _field_targets = null;
-        public ViewArray<AssignmentTargetView> Targets
-        {
-            get
+            if (_field_targets == null)
             {
-                if (_field_targets == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_targets = (ViewArray<AssignmentTargetView>)new ViewArray<AssignmentTargetView>(((CascadeAssignmentNode)base.Green).Targets, _positionOfField, this);
-                }
-                return (ViewArray<AssignmentTargetView>)_field_targets;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_targets = (ViewArray<AssignmentTargetView>)new ViewArray<AssignmentTargetView>(((CascadeAssignmentNode)base.Green).Targets, _positionOfField, this);
             }
+            return (ViewArray<AssignmentTargetView>)_field_targets;
         }
+    }
 
-        private IAnnotatedRhsView? _field_rhs = null;
-        public IAnnotatedRhsView Rhs
+    private IAnnotatedRhsView? _field_rhs = null;
+    public IAnnotatedRhsView Rhs
+    {
+        get
         {
-            get
+            if (_field_rhs == null)
             {
-                if (_field_rhs == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_rhs = (IAnnotatedRhsView)((CascadeAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
-                }
-                return (IAnnotatedRhsView)_field_rhs;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_rhs = (IAnnotatedRhsView)((CascadeAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
             }
+            return (IAnnotatedRhsView)_field_rhs;
         }
     }
 }

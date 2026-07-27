@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record ClassDefArgsNode : GreenNode
-    {
-        public ArgumentsNode? Value => Children![1] as ArgumentsNode;
-        public override ClassDefArgsView GetView(int position, IRedView? parent)
-            => new ClassDefArgsView(this, position, parent);
-    }
-    public sealed partial class ClassDefArgsView : RedView
-    {
-        public ClassDefArgsView(ClassDefArgsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ArgumentsView? _field_value = null;
-        public ArgumentsView? Value
+public sealed partial record ClassDefArgsNode : GreenNode
+{
+    public ArgumentsNode? Value => Children![1] as ArgumentsNode;
+    public override ClassDefArgsView GetView(int position, IRedView? parent)
+        => new ClassDefArgsView(this, position, parent);
+}
+
+public sealed partial class ClassDefArgsView : RedView
+{
+    public ClassDefArgsView(ClassDefArgsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ArgumentsView? _field_value = null;
+    public ArgumentsView? Value
+    {
+        get
         {
-            get
+            if (_field_value == null && ((ClassDefArgsNode)base.Green).Value != null)
             {
-                if (_field_value == null && ((ClassDefArgsNode)base.Green).Value != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (ArgumentsView)((ClassDefArgsNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (ArgumentsView?)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (ArgumentsView)((ClassDefArgsNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (ArgumentsView?)_field_value;
         }
     }
 }

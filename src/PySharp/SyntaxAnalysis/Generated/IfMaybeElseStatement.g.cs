@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record IfMaybeElseStatementNode : IfStatementNode
-    {
-        public ElseBlockNode? Else => Children![4] as ElseBlockNode;
-        public override IfMaybeElseStatementView GetView(int position, IRedView? parent)
-            => new IfMaybeElseStatementView(this, position, parent);
-    }
-    public sealed partial class IfMaybeElseStatementView : IfStatementView
-    {
-        public IfMaybeElseStatementView(IfMaybeElseStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ElseBlockView? _field_else = null;
-        public ElseBlockView? Else
+public sealed partial record IfMaybeElseStatementNode : IfStatementNode
+{
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public override IfMaybeElseStatementView GetView(int position, IRedView? parent)
+        => new IfMaybeElseStatementView(this, position, parent);
+}
+
+public sealed partial class IfMaybeElseStatementView : IfStatementView
+{
+    public IfMaybeElseStatementView(IfMaybeElseStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ElseBlockView? _field_else = null;
+    public ElseBlockView? Else
+    {
+        get
         {
-            get
+            if (_field_else == null && ((IfMaybeElseStatementNode)base.Green).Else != null)
             {
-                if (_field_else == null && ((IfMaybeElseStatementNode)base.Green).Else != null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_else = (ElseBlockView)((IfMaybeElseStatementNode)base.Green).Else!.GetView(_positionOfField, this);
-                }
-                return (ElseBlockView?)_field_else;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_else = (ElseBlockView)((IfMaybeElseStatementNode)base.Green).Else!.GetView(_positionOfField, this);
             }
+            return (ElseBlockView?)_field_else;
         }
     }
 }

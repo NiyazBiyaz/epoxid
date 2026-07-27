@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TryExceptStatementNode : TryStatementNode
 {
-    public sealed partial record TryExceptStatementNode : TryStatementNode
+    public NodeArray<ExceptBlockNode> Excepts => (NodeArray<ExceptBlockNode>)Children![3];
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public FinallyBlockNode? Finally => Children![5] as FinallyBlockNode;
+    public override TryExceptStatementView GetView(int position, IRedView? parent)
+        => new TryExceptStatementView(this, position, parent);
+}
+
+public sealed partial class TryExceptStatementView : TryStatementView
+{
+    public TryExceptStatementView(TryExceptStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public NodeArray<ExceptBlockNode> Excepts => (NodeArray<ExceptBlockNode>)Children![3];
-        public ElseBlockNode? Else => Children![4] as ElseBlockNode;
-        public FinallyBlockNode? Finally => Children![5] as FinallyBlockNode;
-        public override TryExceptStatementView GetView(int position, IRedView? parent)
-            => new TryExceptStatementView(this, position, parent);
     }
-    public sealed partial class TryExceptStatementView : TryStatementView
+
+    private ViewArray<ExceptBlockView>? _field_excepts = null;
+    public ViewArray<ExceptBlockView> Excepts
     {
-        public TryExceptStatementView(TryExceptStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ViewArray<ExceptBlockView>? _field_excepts = null;
-        public ViewArray<ExceptBlockView> Excepts
-        {
-            get
+            if (_field_excepts == null)
             {
-                if (_field_excepts == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_excepts = (ViewArray<ExceptBlockView>)new ViewArray<ExceptBlockView>(((TryExceptStatementNode)base.Green).Excepts, _positionOfField, this);
-                }
-                return (ViewArray<ExceptBlockView>)_field_excepts;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_excepts = (ViewArray<ExceptBlockView>)new ViewArray<ExceptBlockView>(((TryExceptStatementNode)base.Green).Excepts, _positionOfField, this);
             }
+            return (ViewArray<ExceptBlockView>)_field_excepts;
         }
+    }
 
-        private ElseBlockView? _field_else = null;
-        public ElseBlockView? Else
+    private ElseBlockView? _field_else = null;
+    public ElseBlockView? Else
+    {
+        get
         {
-            get
+            if (_field_else == null && ((TryExceptStatementNode)base.Green).Else != null)
             {
-                if (_field_else == null && ((TryExceptStatementNode)base.Green).Else != null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_else = (ElseBlockView)((TryExceptStatementNode)base.Green).Else!.GetView(_positionOfField, this);
-                }
-                return (ElseBlockView?)_field_else;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_else = (ElseBlockView)((TryExceptStatementNode)base.Green).Else!.GetView(_positionOfField, this);
             }
+            return (ElseBlockView?)_field_else;
         }
+    }
 
-        private FinallyBlockView? _field_finally = null;
-        public FinallyBlockView? Finally
+    private FinallyBlockView? _field_finally = null;
+    public FinallyBlockView? Finally
+    {
+        get
         {
-            get
+            if (_field_finally == null && ((TryExceptStatementNode)base.Green).Finally != null)
             {
-                if (_field_finally == null && ((TryExceptStatementNode)base.Green).Finally != null)
-                {
-                    var _positionOfField = base.GetPositionFor(5);
-                    _field_finally = (FinallyBlockView)((TryExceptStatementNode)base.Green).Finally!.GetView(_positionOfField, this);
-                }
-                return (FinallyBlockView?)_field_finally;
+                var _positionOfField = base.GetPositionFor(5);
+                _field_finally = (FinallyBlockView)((TryExceptStatementNode)base.Green).Finally!.GetView(_positionOfField, this);
             }
+            return (FinallyBlockView?)_field_finally;
         }
     }
 }

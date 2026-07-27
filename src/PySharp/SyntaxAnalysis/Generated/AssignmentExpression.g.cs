@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AssignmentExpressionNode : GreenNode, INamedExpressionNode
 {
-    public sealed partial record AssignmentExpressionNode : GreenNode, INamedExpressionNode
+    public TokenNode Target => (TokenNode)Children![0];
+    public IExpressionNode Value => (IExpressionNode)Children![2];
+    public override AssignmentExpressionView GetView(int position, IRedView? parent)
+        => new AssignmentExpressionView(this, position, parent);
+}
+
+public sealed partial class AssignmentExpressionView : RedView, INamedExpressionView
+{
+    public AssignmentExpressionView(AssignmentExpressionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Target => (TokenNode)Children![0];
-        public IExpressionNode Value => (IExpressionNode)Children![2];
-        public override AssignmentExpressionView GetView(int position, IRedView? parent)
-            => new AssignmentExpressionView(this, position, parent);
     }
-    public sealed partial class AssignmentExpressionView : RedView, INamedExpressionView
+
+    private TokenView? _field_target = null;
+    public TokenView Target
     {
-        public AssignmentExpressionView(AssignmentExpressionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_target = null;
-        public TokenView Target
-        {
-            get
+            if (_field_target == null)
             {
-                if (_field_target == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_target = (TokenView)((AssignmentExpressionNode)base.Green).Target!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_target;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_target = (TokenView)((AssignmentExpressionNode)base.Green).Target!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_target;
         }
+    }
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_value = (IExpressionView)((AssignmentExpressionNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_value = (IExpressionView)((AssignmentExpressionNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
     }
 }

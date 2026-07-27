@@ -8,78 +8,78 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TStringReplacementFieldNode : GreenNode
 {
-    public sealed partial record TStringReplacementFieldNode : GreenNode
+    public IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
+    public DebugSpecifierNode? DebugSpecifier => Children![2] as DebugSpecifierNode;
+    public ConversionNode? Conversion => Children![3] as ConversionNode;
+    public TStringFullFormatSpecNode? FormatSpec => Children![4] as TStringFullFormatSpecNode;
+    public override TStringReplacementFieldView GetView(int position, IRedView? parent)
+        => new TStringReplacementFieldView(this, position, parent);
+}
+
+public sealed partial class TStringReplacementFieldView : RedView
+{
+    public TStringReplacementFieldView(TStringReplacementFieldNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
-        public DebugSpecifierNode? DebugSpecifier => Children![2] as DebugSpecifierNode;
-        public ConversionNode? Conversion => Children![3] as ConversionNode;
-        public TStringFullFormatSpecNode? FormatSpec => Children![4] as TStringFullFormatSpecNode;
-        public override TStringReplacementFieldView GetView(int position, IRedView? parent)
-            => new TStringReplacementFieldView(this, position, parent);
     }
-    public sealed partial class TStringReplacementFieldView : RedView
+
+    private IAnnotatedRhsView? _field_value = null;
+    public IAnnotatedRhsView Value
     {
-        public TStringReplacementFieldView(TStringReplacementFieldNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IAnnotatedRhsView? _field_value = null;
-        public IAnnotatedRhsView Value
-        {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IAnnotatedRhsView)((TStringReplacementFieldNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IAnnotatedRhsView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IAnnotatedRhsView)((TStringReplacementFieldNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IAnnotatedRhsView)_field_value;
         }
+    }
 
-        private DebugSpecifierView? _field_debugSpecifier = null;
-        public DebugSpecifierView? DebugSpecifier
+    private DebugSpecifierView? _field_debugSpecifier = null;
+    public DebugSpecifierView? DebugSpecifier
+    {
+        get
         {
-            get
+            if (_field_debugSpecifier == null && ((TStringReplacementFieldNode)base.Green).DebugSpecifier != null)
             {
-                if (_field_debugSpecifier == null && ((TStringReplacementFieldNode)base.Green).DebugSpecifier != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_debugSpecifier = (DebugSpecifierView)((TStringReplacementFieldNode)base.Green).DebugSpecifier!.GetView(_positionOfField, this);
-                }
-                return (DebugSpecifierView?)_field_debugSpecifier;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_debugSpecifier = (DebugSpecifierView)((TStringReplacementFieldNode)base.Green).DebugSpecifier!.GetView(_positionOfField, this);
             }
+            return (DebugSpecifierView?)_field_debugSpecifier;
         }
+    }
 
-        private ConversionView? _field_conversion = null;
-        public ConversionView? Conversion
+    private ConversionView? _field_conversion = null;
+    public ConversionView? Conversion
+    {
+        get
         {
-            get
+            if (_field_conversion == null && ((TStringReplacementFieldNode)base.Green).Conversion != null)
             {
-                if (_field_conversion == null && ((TStringReplacementFieldNode)base.Green).Conversion != null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_conversion = (ConversionView)((TStringReplacementFieldNode)base.Green).Conversion!.GetView(_positionOfField, this);
-                }
-                return (ConversionView?)_field_conversion;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_conversion = (ConversionView)((TStringReplacementFieldNode)base.Green).Conversion!.GetView(_positionOfField, this);
             }
+            return (ConversionView?)_field_conversion;
         }
+    }
 
-        private TStringFullFormatSpecView? _field_formatSpec = null;
-        public TStringFullFormatSpecView? FormatSpec
+    private TStringFullFormatSpecView? _field_formatSpec = null;
+    public TStringFullFormatSpecView? FormatSpec
+    {
+        get
         {
-            get
+            if (_field_formatSpec == null && ((TStringReplacementFieldNode)base.Green).FormatSpec != null)
             {
-                if (_field_formatSpec == null && ((TStringReplacementFieldNode)base.Green).FormatSpec != null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_formatSpec = (TStringFullFormatSpecView)((TStringReplacementFieldNode)base.Green).FormatSpec!.GetView(_positionOfField, this);
-                }
-                return (TStringFullFormatSpecView?)_field_formatSpec;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_formatSpec = (TStringFullFormatSpecView)((TStringReplacementFieldNode)base.Green).FormatSpec!.GetView(_positionOfField, this);
             }
+            return (TStringFullFormatSpecView?)_field_formatSpec;
         }
     }
 }

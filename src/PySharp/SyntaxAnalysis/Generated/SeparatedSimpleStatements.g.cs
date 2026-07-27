@@ -8,59 +8,59 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsNode
-    {
-        private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode>? _field_Values = null;
-        public global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode> Values
-        {
-            get
-            {
-                if (_field_Values is null)
-                {
-                    var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<ISimpleStatementNode>();
-                    _field_Values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Values.Value;
-            }
-        }
-        public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
-        public override SeparatedSimpleStatementsView GetView(int position, IRedView? parent)
-            => new SeparatedSimpleStatementsView(this, position, parent);
-    }
-    public sealed partial class SeparatedSimpleStatementsView : SimpleStatementsView
-    {
-        public SeparatedSimpleStatementsView(SeparatedSimpleStatementsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<RedView>? _ast_field_values = null;
-        public ViewArray<RedView> AstValues
+public sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsNode
+{
+    private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode>? _field_Values = null;
+    public global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode> Values
+    {
+        get
         {
-            get
+            if (_field_Values is null)
             {
-                if (_ast_field_values == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _ast_field_values = new ViewArray<RedView>(((SeparatedSimpleStatementsNode)base.Green).AstValues, _positionOfField, this);
-                }
-                return _ast_field_values.Value;
+                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<ISimpleStatementNode>();
+                _field_Values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Values.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView>? _field_values = null;
-        public global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView> Values
+    }
+    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public override SeparatedSimpleStatementsView GetView(int position, IRedView? parent)
+        => new SeparatedSimpleStatementsView(this, position, parent);
+}
+
+public sealed partial class SeparatedSimpleStatementsView : SimpleStatementsView
+{
+    public SeparatedSimpleStatementsView(SeparatedSimpleStatementsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<RedView>? _ast_field_values = null;
+    public ViewArray<RedView> AstValues
+    {
+        get
         {
-            get
+            if (_ast_field_values == null)
             {
-                if (_field_values == null)
-                {
-                    var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<ISimpleStatementView>();
-                    _field_values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_values.Value;
+                var _positionOfField = base.GetPositionFor(0);
+                _ast_field_values = new ViewArray<RedView>(((SeparatedSimpleStatementsNode)base.Green).AstValues, _positionOfField, this);
             }
+            return _ast_field_values.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView>? _field_values = null;
+    public global::System.Collections.Immutable.ImmutableArray<ISimpleStatementView> Values
+    {
+        get
+        {
+            if (_field_values == null)
+            {
+                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<ISimpleStatementView>();
+                _field_values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_values.Value;
         }
     }
 }

@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record LazyImportFromRelativeNode : LazyImportFromNode
-    {
-        public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
-        public override LazyImportFromRelativeView GetView(int position, IRedView? parent)
-            => new LazyImportFromRelativeView(this, position, parent);
-    }
-    public sealed partial class LazyImportFromRelativeView : LazyImportFromView
-    {
-        public LazyImportFromRelativeView(LazyImportFromRelativeNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ImportFromTargetsView? _field_targets = null;
-        public ImportFromTargetsView Targets
+public sealed partial record LazyImportFromRelativeNode : LazyImportFromNode
+{
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
+    public override LazyImportFromRelativeView GetView(int position, IRedView? parent)
+        => new LazyImportFromRelativeView(this, position, parent);
+}
+
+public sealed partial class LazyImportFromRelativeView : LazyImportFromView
+{
+    public LazyImportFromRelativeView(LazyImportFromRelativeNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ImportFromTargetsView? _field_targets = null;
+    public ImportFromTargetsView Targets
+    {
+        get
         {
-            get
+            if (_field_targets == null)
             {
-                if (_field_targets == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_targets = (ImportFromTargetsView)((LazyImportFromRelativeNode)base.Green).Targets!.GetView(_positionOfField, this);
-                }
-                return (ImportFromTargetsView)_field_targets;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_targets = (ImportFromTargetsView)((LazyImportFromRelativeNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
+            return (ImportFromTargetsView)_field_targets;
         }
     }
 }

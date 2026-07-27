@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record LazyImportFromNode : GreenNode, IImportStatementNode
-    {
-        public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
-    }
-    public abstract partial class LazyImportFromView : RedView, IImportStatementView
-    {
-        public LazyImportFromView(LazyImportFromNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<TokenView>? _field_relativePath = null;
-        public ViewArray<TokenView> RelativePath
+public abstract partial record LazyImportFromNode : GreenNode, IImportStatementNode
+{
+    public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
+}
+
+public abstract partial class LazyImportFromView : RedView, IImportStatementView
+{
+    public LazyImportFromView(LazyImportFromNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<TokenView>? _field_relativePath = null;
+    public ViewArray<TokenView> RelativePath
+    {
+        get
         {
-            get
+            if (_field_relativePath == null)
             {
-                if (_field_relativePath == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_relativePath = (ViewArray<TokenView>)new ViewArray<TokenView>(((LazyImportFromNode)base.Green).RelativePath, _positionOfField, this);
-                }
-                return (ViewArray<TokenView>)_field_relativePath;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_relativePath = (ViewArray<TokenView>)new ViewArray<TokenView>(((LazyImportFromNode)base.Green).RelativePath, _positionOfField, this);
             }
+            return (ViewArray<TokenView>)_field_relativePath;
         }
     }
 }

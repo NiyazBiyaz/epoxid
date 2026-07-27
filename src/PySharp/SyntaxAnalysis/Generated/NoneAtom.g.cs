@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record NoneAtomNode : OneTokenAtomNode
 {
-    public sealed partial record NoneAtomNode : OneTokenAtomNode
+    public override NoneAtomView GetView(int position, IRedView? parent)
+        => new NoneAtomView(this, position, parent);
+}
+
+public sealed partial class NoneAtomView : OneTokenAtomView
+{
+    public NoneAtomView(NoneAtomNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override NoneAtomView GetView(int position, IRedView? parent)
-            => new NoneAtomView(this, position, parent);
-    }
-    public sealed partial class NoneAtomView : OneTokenAtomView
-    {
-        public NoneAtomView(NoneAtomNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

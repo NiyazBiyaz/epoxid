@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record PlainExceptStarBlockNode : ExceptStarBlockNode
 {
-    public sealed partial record PlainExceptStarBlockNode : ExceptStarBlockNode
+    public IExpressionNode Exception => (IExpressionNode)Children![2];
+    public BlockNode Block => (BlockNode)Children![4];
+    public override PlainExceptStarBlockView GetView(int position, IRedView? parent)
+        => new PlainExceptStarBlockView(this, position, parent);
+}
+
+public sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
+{
+    public PlainExceptStarBlockView(PlainExceptStarBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode Exception => (IExpressionNode)Children![2];
-        public BlockNode Block => (BlockNode)Children![4];
-        public override PlainExceptStarBlockView GetView(int position, IRedView? parent)
-            => new PlainExceptStarBlockView(this, position, parent);
     }
-    public sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
+
+    private IExpressionView? _field_exception = null;
+    public IExpressionView Exception
     {
-        public PlainExceptStarBlockView(PlainExceptStarBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_exception = null;
-        public IExpressionView Exception
-        {
-            get
+            if (_field_exception == null)
             {
-                if (_field_exception == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_exception = (IExpressionView)((PlainExceptStarBlockNode)base.Green).Exception!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_exception;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_exception = (IExpressionView)((PlainExceptStarBlockNode)base.Green).Exception!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_exception;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_block = (BlockView)((PlainExceptStarBlockNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_block = (BlockView)((PlainExceptStarBlockNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

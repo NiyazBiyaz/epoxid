@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record ImportFromRelativeNode : ImportFromNode
-    {
-        public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![3];
-        public override ImportFromRelativeView GetView(int position, IRedView? parent)
-            => new ImportFromRelativeView(this, position, parent);
-    }
-    public sealed partial class ImportFromRelativeView : ImportFromView
-    {
-        public ImportFromRelativeView(ImportFromRelativeNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ImportFromTargetsView? _field_targets = null;
-        public ImportFromTargetsView Targets
+public sealed partial record ImportFromRelativeNode : ImportFromNode
+{
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![3];
+    public override ImportFromRelativeView GetView(int position, IRedView? parent)
+        => new ImportFromRelativeView(this, position, parent);
+}
+
+public sealed partial class ImportFromRelativeView : ImportFromView
+{
+    public ImportFromRelativeView(ImportFromRelativeNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ImportFromTargetsView? _field_targets = null;
+    public ImportFromTargetsView Targets
+    {
+        get
         {
-            get
+            if (_field_targets == null)
             {
-                if (_field_targets == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_targets = (ImportFromTargetsView)((ImportFromRelativeNode)base.Green).Targets!.GetView(_positionOfField, this);
-                }
-                return (ImportFromTargetsView)_field_targets;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_targets = (ImportFromTargetsView)((ImportFromRelativeNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
+            return (ImportFromTargetsView)_field_targets;
         }
     }
 }

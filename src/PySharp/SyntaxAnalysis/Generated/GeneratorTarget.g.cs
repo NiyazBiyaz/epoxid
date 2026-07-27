@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record GeneratorTargetNode : TargetPrimaryNode
 {
-    public sealed partial record GeneratorTargetNode : TargetPrimaryNode
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public GeneratorExpressionNode Generator => (GeneratorExpressionNode)Children![1];
+    public override GeneratorTargetView GetView(int position, IRedView? parent)
+        => new GeneratorTargetView(this, position, parent);
+}
+
+public sealed partial class GeneratorTargetView : TargetPrimaryView
+{
+    public GeneratorTargetView(GeneratorTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-        public GeneratorExpressionNode Generator => (GeneratorExpressionNode)Children![1];
-        public override GeneratorTargetView GetView(int position, IRedView? parent)
-            => new GeneratorTargetView(this, position, parent);
     }
-    public sealed partial class GeneratorTargetView : TargetPrimaryView
+
+    private TargetPrimaryView? _field_primary = null;
+    public TargetPrimaryView Primary
     {
-        public GeneratorTargetView(GeneratorTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TargetPrimaryView? _field_primary = null;
-        public TargetPrimaryView Primary
-        {
-            get
+            if (_field_primary == null)
             {
-                if (_field_primary == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_primary = (TargetPrimaryView)((GeneratorTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
-                }
-                return (TargetPrimaryView)_field_primary;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_primary = (TargetPrimaryView)((GeneratorTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
             }
+            return (TargetPrimaryView)_field_primary;
         }
+    }
 
-        private GeneratorExpressionView? _field_generator = null;
-        public GeneratorExpressionView Generator
+    private GeneratorExpressionView? _field_generator = null;
+    public GeneratorExpressionView Generator
+    {
+        get
         {
-            get
+            if (_field_generator == null)
             {
-                if (_field_generator == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_generator = (GeneratorExpressionView)((GeneratorTargetNode)base.Green).Generator!.GetView(_positionOfField, this);
-                }
-                return (GeneratorExpressionView)_field_generator;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_generator = (GeneratorExpressionView)((GeneratorTargetNode)base.Green).Generator!.GetView(_positionOfField, this);
             }
+            return (GeneratorExpressionView)_field_generator;
         }
     }
 }

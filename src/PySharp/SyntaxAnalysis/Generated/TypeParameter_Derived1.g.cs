@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TypeParameter_Derived1Node : TypeParameterNode
 {
-    public sealed partial record TypeParameter_Derived1Node : TypeParameterNode
+    public TokenNode Token1 => (TokenNode)Children![1];
+    public TypeParameterStarredDefaultNode? TypeParameterStarredDefault => Children![2] as TypeParameterStarredDefaultNode;
+    public override TypeParameter_Derived1View GetView(int position, IRedView? parent)
+        => new TypeParameter_Derived1View(this, position, parent);
+}
+
+public sealed partial class TypeParameter_Derived1View : TypeParameterView
+{
+    public TypeParameter_Derived1View(TypeParameter_Derived1Node green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Token1 => (TokenNode)Children![1];
-        public TypeParameterStarredDefaultNode? TypeParameterStarredDefault => Children![2] as TypeParameterStarredDefaultNode;
-        public override TypeParameter_Derived1View GetView(int position, IRedView? parent)
-            => new TypeParameter_Derived1View(this, position, parent);
     }
-    public sealed partial class TypeParameter_Derived1View : TypeParameterView
+
+    private TokenView? _field_token1 = null;
+    public TokenView Token1
     {
-        public TypeParameter_Derived1View(TypeParameter_Derived1Node green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_token1 = null;
-        public TokenView Token1
-        {
-            get
+            if (_field_token1 == null)
             {
-                if (_field_token1 == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_token1 = (TokenView)((TypeParameter_Derived1Node)base.Green).Token1!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token1;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_token1 = (TokenView)((TypeParameter_Derived1Node)base.Green).Token1!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token1;
         }
+    }
 
-        private TypeParameterStarredDefaultView? _field_typeParameterStarredDefault = null;
-        public TypeParameterStarredDefaultView? TypeParameterStarredDefault
+    private TypeParameterStarredDefaultView? _field_typeParameterStarredDefault = null;
+    public TypeParameterStarredDefaultView? TypeParameterStarredDefault
+    {
+        get
         {
-            get
+            if (_field_typeParameterStarredDefault == null && ((TypeParameter_Derived1Node)base.Green).TypeParameterStarredDefault != null)
             {
-                if (_field_typeParameterStarredDefault == null && ((TypeParameter_Derived1Node)base.Green).TypeParameterStarredDefault != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_typeParameterStarredDefault = (TypeParameterStarredDefaultView)((TypeParameter_Derived1Node)base.Green).TypeParameterStarredDefault!.GetView(_positionOfField, this);
-                }
-                return (TypeParameterStarredDefaultView?)_field_typeParameterStarredDefault;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_typeParameterStarredDefault = (TypeParameterStarredDefaultView)((TypeParameter_Derived1Node)base.Green).TypeParameterStarredDefault!.GetView(_positionOfField, this);
             }
+            return (TypeParameterStarredDefaultView?)_field_typeParameterStarredDefault;
         }
     }
 }

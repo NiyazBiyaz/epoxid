@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StarBitwiseOrExpressionNode : GreenNode, IStarExpressionNode, IStarNamedExpressionNode
-    {
-        public IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
-        public override StarBitwiseOrExpressionView GetView(int position, IRedView? parent)
-            => new StarBitwiseOrExpressionView(this, position, parent);
-    }
-    public sealed partial class StarBitwiseOrExpressionView : RedView, IStarExpressionView, IStarNamedExpressionView
-    {
-        public StarBitwiseOrExpressionView(StarBitwiseOrExpressionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IBitwiseOrExpressionView? _field_value = null;
-        public IBitwiseOrExpressionView Value
+public sealed partial record StarBitwiseOrExpressionNode : GreenNode, IStarExpressionNode, IStarNamedExpressionNode
+{
+    public IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
+    public override StarBitwiseOrExpressionView GetView(int position, IRedView? parent)
+        => new StarBitwiseOrExpressionView(this, position, parent);
+}
+
+public sealed partial class StarBitwiseOrExpressionView : RedView, IStarExpressionView, IStarNamedExpressionView
+{
+    public StarBitwiseOrExpressionView(StarBitwiseOrExpressionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IBitwiseOrExpressionView? _field_value = null;
+    public IBitwiseOrExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IBitwiseOrExpressionView)((StarBitwiseOrExpressionNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IBitwiseOrExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IBitwiseOrExpressionView)((StarBitwiseOrExpressionNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IBitwiseOrExpressionView)_field_value;
         }
     }
 }

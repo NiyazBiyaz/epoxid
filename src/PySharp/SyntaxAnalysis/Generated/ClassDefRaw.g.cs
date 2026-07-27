@@ -8,78 +8,78 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ClassDefRawNode : GreenNode
 {
-    public sealed partial record ClassDefRawNode : GreenNode
+    public TokenNode Name => (TokenNode)Children![1];
+    public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
+    public ClassDefArgsNode? Arguments => Children![3] as ClassDefArgsNode;
+    public BlockNode Block => (BlockNode)Children![5];
+    public override ClassDefRawView GetView(int position, IRedView? parent)
+        => new ClassDefRawView(this, position, parent);
+}
+
+public sealed partial class ClassDefRawView : RedView
+{
+    public ClassDefRawView(ClassDefRawNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Name => (TokenNode)Children![1];
-        public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
-        public ClassDefArgsNode? Arguments => Children![3] as ClassDefArgsNode;
-        public BlockNode Block => (BlockNode)Children![5];
-        public override ClassDefRawView GetView(int position, IRedView? parent)
-            => new ClassDefRawView(this, position, parent);
     }
-    public sealed partial class ClassDefRawView : RedView
+
+    private TokenView? _field_name = null;
+    public TokenView Name
     {
-        public ClassDefRawView(ClassDefRawNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_name = null;
-        public TokenView Name
-        {
-            get
+            if (_field_name == null)
             {
-                if (_field_name == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_name = (TokenView)((ClassDefRawNode)base.Green).Name!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_name;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_name = (TokenView)((ClassDefRawNode)base.Green).Name!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_name;
         }
+    }
 
-        private TypeParametersView? _field_typeParameters = null;
-        public TypeParametersView? TypeParameters
+    private TypeParametersView? _field_typeParameters = null;
+    public TypeParametersView? TypeParameters
+    {
+        get
         {
-            get
+            if (_field_typeParameters == null && ((ClassDefRawNode)base.Green).TypeParameters != null)
             {
-                if (_field_typeParameters == null && ((ClassDefRawNode)base.Green).TypeParameters != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_typeParameters = (TypeParametersView)((ClassDefRawNode)base.Green).TypeParameters!.GetView(_positionOfField, this);
-                }
-                return (TypeParametersView?)_field_typeParameters;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_typeParameters = (TypeParametersView)((ClassDefRawNode)base.Green).TypeParameters!.GetView(_positionOfField, this);
             }
+            return (TypeParametersView?)_field_typeParameters;
         }
+    }
 
-        private ClassDefArgsView? _field_arguments = null;
-        public ClassDefArgsView? Arguments
+    private ClassDefArgsView? _field_arguments = null;
+    public ClassDefArgsView? Arguments
+    {
+        get
         {
-            get
+            if (_field_arguments == null && ((ClassDefRawNode)base.Green).Arguments != null)
             {
-                if (_field_arguments == null && ((ClassDefRawNode)base.Green).Arguments != null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_arguments = (ClassDefArgsView)((ClassDefRawNode)base.Green).Arguments!.GetView(_positionOfField, this);
-                }
-                return (ClassDefArgsView?)_field_arguments;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_arguments = (ClassDefArgsView)((ClassDefRawNode)base.Green).Arguments!.GetView(_positionOfField, this);
             }
+            return (ClassDefArgsView?)_field_arguments;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(5);
-                    _field_block = (BlockView)((ClassDefRawNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(5);
+                _field_block = (BlockView)((ClassDefRawNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

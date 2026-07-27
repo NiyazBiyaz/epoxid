@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AsyncForIfClauseNode : ForIfClauseNode
 {
-    public sealed partial record AsyncForIfClauseNode : ForIfClauseNode
+    public StarTargetsNode Variables => (StarTargetsNode)Children![2];
+    public DisjunctionNode Iterable => (DisjunctionNode)Children![4];
+    public NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![5];
+    public override AsyncForIfClauseView GetView(int position, IRedView? parent)
+        => new AsyncForIfClauseView(this, position, parent);
+}
+
+public sealed partial class AsyncForIfClauseView : ForIfClauseView
+{
+    public AsyncForIfClauseView(AsyncForIfClauseNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public StarTargetsNode Variables => (StarTargetsNode)Children![2];
-        public DisjunctionNode Iterable => (DisjunctionNode)Children![4];
-        public NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![5];
-        public override AsyncForIfClauseView GetView(int position, IRedView? parent)
-            => new AsyncForIfClauseView(this, position, parent);
     }
-    public sealed partial class AsyncForIfClauseView : ForIfClauseView
+
+    private StarTargetsView? _field_variables = null;
+    public StarTargetsView Variables
     {
-        public AsyncForIfClauseView(AsyncForIfClauseNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private StarTargetsView? _field_variables = null;
-        public StarTargetsView Variables
-        {
-            get
+            if (_field_variables == null)
             {
-                if (_field_variables == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_variables = (StarTargetsView)((AsyncForIfClauseNode)base.Green).Variables!.GetView(_positionOfField, this);
-                }
-                return (StarTargetsView)_field_variables;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_variables = (StarTargetsView)((AsyncForIfClauseNode)base.Green).Variables!.GetView(_positionOfField, this);
             }
+            return (StarTargetsView)_field_variables;
         }
+    }
 
-        private DisjunctionView? _field_iterable = null;
-        public DisjunctionView Iterable
+    private DisjunctionView? _field_iterable = null;
+    public DisjunctionView Iterable
+    {
+        get
         {
-            get
+            if (_field_iterable == null)
             {
-                if (_field_iterable == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_iterable = (DisjunctionView)((AsyncForIfClauseNode)base.Green).Iterable!.GetView(_positionOfField, this);
-                }
-                return (DisjunctionView)_field_iterable;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_iterable = (DisjunctionView)((AsyncForIfClauseNode)base.Green).Iterable!.GetView(_positionOfField, this);
             }
+            return (DisjunctionView)_field_iterable;
         }
+    }
 
-        private ViewArray<IfClauseView>? _field_conditions = null;
-        public ViewArray<IfClauseView> Conditions
+    private ViewArray<IfClauseView>? _field_conditions = null;
+    public ViewArray<IfClauseView> Conditions
+    {
+        get
         {
-            get
+            if (_field_conditions == null)
             {
-                if (_field_conditions == null)
-                {
-                    var _positionOfField = base.GetPositionFor(5);
-                    _field_conditions = (ViewArray<IfClauseView>)new ViewArray<IfClauseView>(((AsyncForIfClauseNode)base.Green).Conditions, _positionOfField, this);
-                }
-                return (ViewArray<IfClauseView>)_field_conditions;
+                var _positionOfField = base.GetPositionFor(5);
+                _field_conditions = (ViewArray<IfClauseView>)new ViewArray<IfClauseView>(((AsyncForIfClauseNode)base.Green).Conditions, _positionOfField, this);
             }
+            return (ViewArray<IfClauseView>)_field_conditions;
         }
     }
 }

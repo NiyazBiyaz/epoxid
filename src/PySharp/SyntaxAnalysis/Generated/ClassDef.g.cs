@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record ClassDefNode : GreenNode, ICompoundStatementNode
 {
-    public abstract partial record ClassDefNode : GreenNode, ICompoundStatementNode
+}
+
+public abstract partial class ClassDefView : RedView, ICompoundStatementView
+{
+    public ClassDefView(ClassDefNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class ClassDefView : RedView, ICompoundStatementView
-    {
-        public ClassDefView(ClassDefNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record CallWithArgumentsPrimaryNode : RawPrimaryNode
 {
-    public sealed partial record CallWithArgumentsPrimaryNode : RawPrimaryNode
+    public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
+    public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
+    public override CallWithArgumentsPrimaryView GetView(int position, IRedView? parent)
+        => new CallWithArgumentsPrimaryView(this, position, parent);
+}
+
+public sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
+{
+    public CallWithArgumentsPrimaryView(CallWithArgumentsPrimaryNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
-        public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
-        public override CallWithArgumentsPrimaryView GetView(int position, IRedView? parent)
-            => new CallWithArgumentsPrimaryView(this, position, parent);
     }
-    public sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
+
+    private RawPrimaryView? _field_function = null;
+    public RawPrimaryView Function
     {
-        public CallWithArgumentsPrimaryView(CallWithArgumentsPrimaryNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private RawPrimaryView? _field_function = null;
-        public RawPrimaryView Function
-        {
-            get
+            if (_field_function == null)
             {
-                if (_field_function == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_function = (RawPrimaryView)((CallWithArgumentsPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
-                }
-                return (RawPrimaryView)_field_function;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_function = (RawPrimaryView)((CallWithArgumentsPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
             }
+            return (RawPrimaryView)_field_function;
         }
+    }
 
-        private ArgumentsView? _field_arguments = null;
-        public ArgumentsView? Arguments
+    private ArgumentsView? _field_arguments = null;
+    public ArgumentsView? Arguments
+    {
+        get
         {
-            get
+            if (_field_arguments == null && ((CallWithArgumentsPrimaryNode)base.Green).Arguments != null)
             {
-                if (_field_arguments == null && ((CallWithArgumentsPrimaryNode)base.Green).Arguments != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_arguments = (ArgumentsView)((CallWithArgumentsPrimaryNode)base.Green).Arguments!.GetView(_positionOfField, this);
-                }
-                return (ArgumentsView?)_field_arguments;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_arguments = (ArgumentsView)((CallWithArgumentsPrimaryNode)base.Green).Arguments!.GetView(_positionOfField, this);
             }
+            return (ArgumentsView?)_field_arguments;
         }
     }
 }

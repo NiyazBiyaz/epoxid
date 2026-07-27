@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record SingleSubscriptAttributeTargetNode : GreenNode
-    {
-        public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    }
-    public abstract partial class SingleSubscriptAttributeTargetView : RedView
-    {
-        public SingleSubscriptAttributeTargetView(SingleSubscriptAttributeTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TargetPrimaryView? _field_primary = null;
-        public TargetPrimaryView Primary
+public abstract partial record SingleSubscriptAttributeTargetNode : GreenNode
+{
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+}
+
+public abstract partial class SingleSubscriptAttributeTargetView : RedView
+{
+    public SingleSubscriptAttributeTargetView(SingleSubscriptAttributeTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TargetPrimaryView? _field_primary = null;
+    public TargetPrimaryView Primary
+    {
+        get
         {
-            get
+            if (_field_primary == null)
             {
-                if (_field_primary == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_primary = (TargetPrimaryView)((SingleSubscriptAttributeTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
-                }
-                return (TargetPrimaryView)_field_primary;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_primary = (TargetPrimaryView)((SingleSubscriptAttributeTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
             }
+            return (TargetPrimaryView)_field_primary;
         }
     }
 }

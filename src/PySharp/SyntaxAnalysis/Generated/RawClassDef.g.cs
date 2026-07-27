@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record RawClassDefNode : ClassDefNode
-    {
-        public ClassDefRawNode Value => (ClassDefRawNode)Children![0];
-        public override RawClassDefView GetView(int position, IRedView? parent)
-            => new RawClassDefView(this, position, parent);
-    }
-    public sealed partial class RawClassDefView : ClassDefView
-    {
-        public RawClassDefView(RawClassDefNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ClassDefRawView? _field_value = null;
-        public ClassDefRawView Value
+public sealed partial record RawClassDefNode : ClassDefNode
+{
+    public ClassDefRawNode Value => (ClassDefRawNode)Children![0];
+    public override RawClassDefView GetView(int position, IRedView? parent)
+        => new RawClassDefView(this, position, parent);
+}
+
+public sealed partial class RawClassDefView : ClassDefView
+{
+    public RawClassDefView(RawClassDefNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ClassDefRawView? _field_value = null;
+    public ClassDefRawView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (ClassDefRawView)((RawClassDefNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (ClassDefRawView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (ClassDefRawView)((RawClassDefNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (ClassDefRawView)_field_value;
         }
     }
 }

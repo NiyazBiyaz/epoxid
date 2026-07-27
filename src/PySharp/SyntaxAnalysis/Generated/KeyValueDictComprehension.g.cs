@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record KeyValueDictComprehensionNode : DictComprehensionNode
 {
-    public sealed partial record KeyValueDictComprehensionNode : DictComprehensionNode
+    public IExpressionNode Key => (IExpressionNode)Children![1];
+    public IExpressionNode Value => (IExpressionNode)Children![3];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![4];
+    public override KeyValueDictComprehensionView GetView(int position, IRedView? parent)
+        => new KeyValueDictComprehensionView(this, position, parent);
+}
+
+public sealed partial class KeyValueDictComprehensionView : DictComprehensionView
+{
+    public KeyValueDictComprehensionView(KeyValueDictComprehensionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode Key => (IExpressionNode)Children![1];
-        public IExpressionNode Value => (IExpressionNode)Children![3];
-        public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![4];
-        public override KeyValueDictComprehensionView GetView(int position, IRedView? parent)
-            => new KeyValueDictComprehensionView(this, position, parent);
     }
-    public sealed partial class KeyValueDictComprehensionView : DictComprehensionView
+
+    private IExpressionView? _field_key = null;
+    public IExpressionView Key
     {
-        public KeyValueDictComprehensionView(KeyValueDictComprehensionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_key = null;
-        public IExpressionView Key
-        {
-            get
+            if (_field_key == null)
             {
-                if (_field_key == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_key = (IExpressionView)((KeyValueDictComprehensionNode)base.Green).Key!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_key;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_key = (IExpressionView)((KeyValueDictComprehensionNode)base.Green).Key!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_key;
         }
+    }
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_value = (IExpressionView)((KeyValueDictComprehensionNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_value = (IExpressionView)((KeyValueDictComprehensionNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
+    }
 
-        private ViewArray<ForIfClauseView>? _field_iterators = null;
-        public ViewArray<ForIfClauseView> Iterators
+    private ViewArray<ForIfClauseView>? _field_iterators = null;
+    public ViewArray<ForIfClauseView> Iterators
+    {
+        get
         {
-            get
+            if (_field_iterators == null)
             {
-                if (_field_iterators == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_iterators = (ViewArray<ForIfClauseView>)new ViewArray<ForIfClauseView>(((KeyValueDictComprehensionNode)base.Green).Iterators, _positionOfField, this);
-                }
-                return (ViewArray<ForIfClauseView>)_field_iterators;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_iterators = (ViewArray<ForIfClauseView>)new ViewArray<ForIfClauseView>(((KeyValueDictComprehensionNode)base.Green).Iterators, _positionOfField, this);
             }
+            return (ViewArray<ForIfClauseView>)_field_iterators;
         }
     }
 }

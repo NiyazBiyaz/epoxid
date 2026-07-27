@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TypeAliasNode : GreenNode, ISimpleStatementNode
 {
-    public sealed partial record TypeAliasNode : GreenNode, ISimpleStatementNode
+    public TokenNode Name => (TokenNode)Children![1];
+    public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
+    public IExpressionNode Value => (IExpressionNode)Children![4];
+    public override TypeAliasView GetView(int position, IRedView? parent)
+        => new TypeAliasView(this, position, parent);
+}
+
+public sealed partial class TypeAliasView : RedView, ISimpleStatementView
+{
+    public TypeAliasView(TypeAliasNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Name => (TokenNode)Children![1];
-        public TypeParametersNode? TypeParameters => Children![2] as TypeParametersNode;
-        public IExpressionNode Value => (IExpressionNode)Children![4];
-        public override TypeAliasView GetView(int position, IRedView? parent)
-            => new TypeAliasView(this, position, parent);
     }
-    public sealed partial class TypeAliasView : RedView, ISimpleStatementView
+
+    private TokenView? _field_name = null;
+    public TokenView Name
     {
-        public TypeAliasView(TypeAliasNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_name = null;
-        public TokenView Name
-        {
-            get
+            if (_field_name == null)
             {
-                if (_field_name == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_name = (TokenView)((TypeAliasNode)base.Green).Name!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_name;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_name = (TokenView)((TypeAliasNode)base.Green).Name!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_name;
         }
+    }
 
-        private TypeParametersView? _field_typeParameters = null;
-        public TypeParametersView? TypeParameters
+    private TypeParametersView? _field_typeParameters = null;
+    public TypeParametersView? TypeParameters
+    {
+        get
         {
-            get
+            if (_field_typeParameters == null && ((TypeAliasNode)base.Green).TypeParameters != null)
             {
-                if (_field_typeParameters == null && ((TypeAliasNode)base.Green).TypeParameters != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_typeParameters = (TypeParametersView)((TypeAliasNode)base.Green).TypeParameters!.GetView(_positionOfField, this);
-                }
-                return (TypeParametersView?)_field_typeParameters;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_typeParameters = (TypeParametersView)((TypeAliasNode)base.Green).TypeParameters!.GetView(_positionOfField, this);
             }
+            return (TypeParametersView?)_field_typeParameters;
         }
+    }
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_value = (IExpressionView)((TypeAliasNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_value = (IExpressionView)((TypeAliasNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
     }
 }

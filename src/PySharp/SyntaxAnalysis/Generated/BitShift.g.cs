@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record BitShiftNode : GreenNode, IBitShiftExpressionNode
 {
-    public sealed partial record BitShiftNode : GreenNode, IBitShiftExpressionNode
+    public IBitShiftExpressionNode Left => (IBitShiftExpressionNode)Children![0];
+    public ISumExpressionNode Right => (ISumExpressionNode)Children![2];
+    public TokenNode Operator => (TokenNode)Children![1];
+    public override BitShiftView GetView(int position, IRedView? parent)
+        => new BitShiftView(this, position, parent);
+}
+
+public sealed partial class BitShiftView : RedView, IBitShiftExpressionView
+{
+    public BitShiftView(BitShiftNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IBitShiftExpressionNode Left => (IBitShiftExpressionNode)Children![0];
-        public ISumExpressionNode Right => (ISumExpressionNode)Children![2];
-        public TokenNode Operator => (TokenNode)Children![1];
-        public override BitShiftView GetView(int position, IRedView? parent)
-            => new BitShiftView(this, position, parent);
     }
-    public sealed partial class BitShiftView : RedView, IBitShiftExpressionView
+
+    private IBitShiftExpressionView? _field_left = null;
+    public IBitShiftExpressionView Left
     {
-        public BitShiftView(BitShiftNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IBitShiftExpressionView? _field_left = null;
-        public IBitShiftExpressionView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (IBitShiftExpressionView)((BitShiftNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (IBitShiftExpressionView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (IBitShiftExpressionView)((BitShiftNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (IBitShiftExpressionView)_field_left;
         }
+    }
 
-        private ISumExpressionView? _field_right = null;
-        public ISumExpressionView Right
+    private ISumExpressionView? _field_right = null;
+    public ISumExpressionView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (ISumExpressionView)((BitShiftNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (ISumExpressionView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (ISumExpressionView)((BitShiftNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (ISumExpressionView)_field_right;
         }
+    }
 
-        private TokenView? _field_operator = null;
-        public TokenView Operator
+    private TokenView? _field_operator = null;
+    public TokenView Operator
+    {
+        get
         {
-            get
+            if (_field_operator == null)
             {
-                if (_field_operator == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_operator = (TokenView)((BitShiftNode)base.Green).Operator!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_operator;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_operator = (TokenView)((BitShiftNode)base.Green).Operator!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_operator;
         }
     }
 }

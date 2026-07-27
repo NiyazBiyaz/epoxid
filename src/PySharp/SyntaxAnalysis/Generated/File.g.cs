@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record FileNode : GreenNode
-    {
-        public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![0];
-        public override FileView GetView(int position, IRedView? parent)
-            => new FileView(this, position, parent);
-    }
-    public sealed partial class FileView : RedView
-    {
-        public FileView(FileNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<IStatementView>? _field_statements = null;
-        public ViewArray<IStatementView> Statements
+public sealed partial record FileNode : GreenNode
+{
+    public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![0];
+    public override FileView GetView(int position, IRedView? parent)
+        => new FileView(this, position, parent);
+}
+
+public sealed partial class FileView : RedView
+{
+    public FileView(FileNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<IStatementView>? _field_statements = null;
+    public ViewArray<IStatementView> Statements
+    {
+        get
         {
-            get
+            if (_field_statements == null)
             {
-                if (_field_statements == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_statements = (ViewArray<IStatementView>)new ViewArray<IStatementView>(((FileNode)base.Green).Statements, _positionOfField, this);
-                }
-                return (ViewArray<IStatementView>)_field_statements;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_statements = (ViewArray<IStatementView>)new ViewArray<IStatementView>(((FileNode)base.Green).Statements, _positionOfField, this);
             }
+            return (ViewArray<IStatementView>)_field_statements;
         }
     }
 }

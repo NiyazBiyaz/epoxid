@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record RaiseFromStatementNode : RaiseStatementNode
 {
-    public sealed partial record RaiseFromStatementNode : RaiseStatementNode
+    public IExpressionNode NewException => (IExpressionNode)Children![1];
+    public IExpressionNode OldExpression => (IExpressionNode)Children![3];
+    public override RaiseFromStatementView GetView(int position, IRedView? parent)
+        => new RaiseFromStatementView(this, position, parent);
+}
+
+public sealed partial class RaiseFromStatementView : RaiseStatementView
+{
+    public RaiseFromStatementView(RaiseFromStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode NewException => (IExpressionNode)Children![1];
-        public IExpressionNode OldExpression => (IExpressionNode)Children![3];
-        public override RaiseFromStatementView GetView(int position, IRedView? parent)
-            => new RaiseFromStatementView(this, position, parent);
     }
-    public sealed partial class RaiseFromStatementView : RaiseStatementView
+
+    private IExpressionView? _field_newException = null;
+    public IExpressionView NewException
     {
-        public RaiseFromStatementView(RaiseFromStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_newException = null;
-        public IExpressionView NewException
-        {
-            get
+            if (_field_newException == null)
             {
-                if (_field_newException == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_newException = (IExpressionView)((RaiseFromStatementNode)base.Green).NewException!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_newException;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_newException = (IExpressionView)((RaiseFromStatementNode)base.Green).NewException!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_newException;
         }
+    }
 
-        private IExpressionView? _field_oldExpression = null;
-        public IExpressionView OldExpression
+    private IExpressionView? _field_oldExpression = null;
+    public IExpressionView OldExpression
+    {
+        get
         {
-            get
+            if (_field_oldExpression == null)
             {
-                if (_field_oldExpression == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_oldExpression = (IExpressionView)((RaiseFromStatementNode)base.Green).OldExpression!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_oldExpression;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_oldExpression = (IExpressionView)((RaiseFromStatementNode)base.Green).OldExpression!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_oldExpression;
         }
     }
 }

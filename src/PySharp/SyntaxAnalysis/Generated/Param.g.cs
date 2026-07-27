@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ParamNode : GreenNode
 {
-    public sealed partial record ParamNode : GreenNode
+    public TokenNode Name => (TokenNode)Children![0];
+    public AnnotationNode? Annotation => Children![1] as AnnotationNode;
+    public override ParamView GetView(int position, IRedView? parent)
+        => new ParamView(this, position, parent);
+}
+
+public sealed partial class ParamView : RedView
+{
+    public ParamView(ParamNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Name => (TokenNode)Children![0];
-        public AnnotationNode? Annotation => Children![1] as AnnotationNode;
-        public override ParamView GetView(int position, IRedView? parent)
-            => new ParamView(this, position, parent);
     }
-    public sealed partial class ParamView : RedView
+
+    private TokenView? _field_name = null;
+    public TokenView Name
     {
-        public ParamView(ParamNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_name = null;
-        public TokenView Name
-        {
-            get
+            if (_field_name == null)
             {
-                if (_field_name == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_name = (TokenView)((ParamNode)base.Green).Name!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_name;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_name = (TokenView)((ParamNode)base.Green).Name!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_name;
         }
+    }
 
-        private AnnotationView? _field_annotation = null;
-        public AnnotationView? Annotation
+    private AnnotationView? _field_annotation = null;
+    public AnnotationView? Annotation
+    {
+        get
         {
-            get
+            if (_field_annotation == null && ((ParamNode)base.Green).Annotation != null)
             {
-                if (_field_annotation == null && ((ParamNode)base.Green).Annotation != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_annotation = (AnnotationView)((ParamNode)base.Green).Annotation!.GetView(_positionOfField, this);
-                }
-                return (AnnotationView?)_field_annotation;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_annotation = (AnnotationView)((ParamNode)base.Green).Annotation!.GetView(_positionOfField, this);
             }
+            return (AnnotationView?)_field_annotation;
         }
     }
 }

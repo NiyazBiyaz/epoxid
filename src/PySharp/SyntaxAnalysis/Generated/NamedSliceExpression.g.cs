@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record NamedSliceExpressionNode : SliceNode
-    {
-        public INamedExpressionNode Value => (INamedExpressionNode)Children![0];
-        public override NamedSliceExpressionView GetView(int position, IRedView? parent)
-            => new NamedSliceExpressionView(this, position, parent);
-    }
-    public sealed partial class NamedSliceExpressionView : SliceView
-    {
-        public NamedSliceExpressionView(NamedSliceExpressionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private INamedExpressionView? _field_value = null;
-        public INamedExpressionView Value
+public sealed partial record NamedSliceExpressionNode : SliceNode
+{
+    public INamedExpressionNode Value => (INamedExpressionNode)Children![0];
+    public override NamedSliceExpressionView GetView(int position, IRedView? parent)
+        => new NamedSliceExpressionView(this, position, parent);
+}
+
+public sealed partial class NamedSliceExpressionView : SliceView
+{
+    public NamedSliceExpressionView(NamedSliceExpressionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private INamedExpressionView? _field_value = null;
+    public INamedExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (INamedExpressionView)((NamedSliceExpressionNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (INamedExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (INamedExpressionView)((NamedSliceExpressionNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (INamedExpressionView)_field_value;
         }
     }
 }

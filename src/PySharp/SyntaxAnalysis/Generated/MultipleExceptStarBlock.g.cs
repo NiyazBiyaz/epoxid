@@ -8,74 +8,74 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record MultipleExceptStarBlockNode : ExceptStarBlockNode
 {
-    public sealed partial record MultipleExceptStarBlockNode : ExceptStarBlockNode
+    private global::System.Collections.Immutable.ImmutableArray<IExpressionNode>? _field_Exceptions = null;
+    public global::System.Collections.Immutable.ImmutableArray<IExpressionNode> Exceptions
     {
-        private global::System.Collections.Immutable.ImmutableArray<IExpressionNode>? _field_Exceptions = null;
-        public global::System.Collections.Immutable.ImmutableArray<IExpressionNode> Exceptions
+        get
         {
-            get
+            if (_field_Exceptions is null)
             {
-                if (_field_Exceptions is null)
-                {
-                    var _tmp = AstExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionNode>();
-                    _field_Exceptions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Exceptions.Value;
+                var _tmp = AstExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionNode>();
+                _field_Exceptions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Exceptions.Value;
         }
-        public NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![2];
-        public BlockNode Block => (BlockNode)Children![5];
-        public override MultipleExceptStarBlockView GetView(int position, IRedView? parent)
-            => new MultipleExceptStarBlockView(this, position, parent);
     }
-    public sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
+    public NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![2];
+    public BlockNode Block => (BlockNode)Children![5];
+    public override MultipleExceptStarBlockView GetView(int position, IRedView? parent)
+        => new MultipleExceptStarBlockView(this, position, parent);
+}
+
+public sealed partial class MultipleExceptStarBlockView : ExceptStarBlockView
+{
+    public MultipleExceptStarBlockView(MultipleExceptStarBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public MultipleExceptStarBlockView(MultipleExceptStarBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+    }
 
-        private ViewArray<RedView>? _ast_field_exceptions = null;
-        public ViewArray<RedView> AstExceptions
+    private ViewArray<RedView>? _ast_field_exceptions = null;
+    public ViewArray<RedView> AstExceptions
+    {
+        get
         {
-            get
+            if (_ast_field_exceptions == null)
             {
-                if (_ast_field_exceptions == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _ast_field_exceptions = new ViewArray<RedView>(((MultipleExceptStarBlockNode)base.Green).AstExceptions, _positionOfField, this);
-                }
-                return _ast_field_exceptions.Value;
+                var _positionOfField = base.GetPositionFor(2);
+                _ast_field_exceptions = new ViewArray<RedView>(((MultipleExceptStarBlockNode)base.Green).AstExceptions, _positionOfField, this);
             }
+            return _ast_field_exceptions.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<IExpressionView>? _field_exceptions = null;
-        public global::System.Collections.Immutable.ImmutableArray<IExpressionView> Exceptions
+    }
+    private global::System.Collections.Immutable.ImmutableArray<IExpressionView>? _field_exceptions = null;
+    public global::System.Collections.Immutable.ImmutableArray<IExpressionView> Exceptions
+    {
+        get
         {
-            get
+            if (_field_exceptions == null)
             {
-                if (_field_exceptions == null)
-                {
-                    var _tmp = AstExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionView>();
-                    _field_exceptions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_exceptions.Value;
+                var _tmp = AstExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionView>();
+                _field_exceptions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_exceptions.Value;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(5);
-                    _field_block = (BlockView)((MultipleExceptStarBlockNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(5);
+                _field_block = (BlockView)((MultipleExceptStarBlockNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

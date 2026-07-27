@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ListComprehensionNode : GreenNode, IAtomNode
 {
-    public sealed partial record ListComprehensionNode : GreenNode, IAtomNode
+    public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
+    public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
+    public override ListComprehensionView GetView(int position, IRedView? parent)
+        => new ListComprehensionView(this, position, parent);
+}
+
+public sealed partial class ListComprehensionView : RedView, IAtomView
+{
+    public ListComprehensionView(ListComprehensionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
-        public NodeArray<ForIfClauseNode> Iterators => (NodeArray<ForIfClauseNode>)Children![2];
-        public override ListComprehensionView GetView(int position, IRedView? parent)
-            => new ListComprehensionView(this, position, parent);
     }
-    public sealed partial class ListComprehensionView : RedView, IAtomView
+
+    private IStarNamedExpressionView? _field_expression = null;
+    public IStarNamedExpressionView Expression
     {
-        public ListComprehensionView(ListComprehensionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IStarNamedExpressionView? _field_expression = null;
-        public IStarNamedExpressionView Expression
-        {
-            get
+            if (_field_expression == null)
             {
-                if (_field_expression == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_expression = (IStarNamedExpressionView)((ListComprehensionNode)base.Green).Expression!.GetView(_positionOfField, this);
-                }
-                return (IStarNamedExpressionView)_field_expression;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_expression = (IStarNamedExpressionView)((ListComprehensionNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
+            return (IStarNamedExpressionView)_field_expression;
         }
+    }
 
-        private ViewArray<ForIfClauseView>? _field_iterators = null;
-        public ViewArray<ForIfClauseView> Iterators
+    private ViewArray<ForIfClauseView>? _field_iterators = null;
+    public ViewArray<ForIfClauseView> Iterators
+    {
+        get
         {
-            get
+            if (_field_iterators == null)
             {
-                if (_field_iterators == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_iterators = (ViewArray<ForIfClauseView>)new ViewArray<ForIfClauseView>(((ListComprehensionNode)base.Green).Iterators, _positionOfField, this);
-                }
-                return (ViewArray<ForIfClauseView>)_field_iterators;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_iterators = (ViewArray<ForIfClauseView>)new ViewArray<ForIfClauseView>(((ListComprehensionNode)base.Green).Iterators, _positionOfField, this);
             }
+            return (ViewArray<ForIfClauseView>)_field_iterators;
         }
     }
 }

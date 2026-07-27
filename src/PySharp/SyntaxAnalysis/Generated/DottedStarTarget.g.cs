@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record DottedStarTargetNode : TargetWithStarAtomNode
 {
-    public sealed partial record DottedStarTargetNode : TargetWithStarAtomNode
+    public TargetPrimaryNode Left => (TargetPrimaryNode)Children![0];
+    public TokenNode Right => (TokenNode)Children![2];
+    public override DottedStarTargetView GetView(int position, IRedView? parent)
+        => new DottedStarTargetView(this, position, parent);
+}
+
+public sealed partial class DottedStarTargetView : TargetWithStarAtomView
+{
+    public DottedStarTargetView(DottedStarTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TargetPrimaryNode Left => (TargetPrimaryNode)Children![0];
-        public TokenNode Right => (TokenNode)Children![2];
-        public override DottedStarTargetView GetView(int position, IRedView? parent)
-            => new DottedStarTargetView(this, position, parent);
     }
-    public sealed partial class DottedStarTargetView : TargetWithStarAtomView
+
+    private TargetPrimaryView? _field_left = null;
+    public TargetPrimaryView Left
     {
-        public DottedStarTargetView(DottedStarTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TargetPrimaryView? _field_left = null;
-        public TargetPrimaryView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (TargetPrimaryView)((DottedStarTargetNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (TargetPrimaryView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (TargetPrimaryView)((DottedStarTargetNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (TargetPrimaryView)_field_left;
         }
+    }
 
-        private TokenView? _field_right = null;
-        public TokenView Right
+    private TokenView? _field_right = null;
+    public TokenView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (TokenView)((DottedStarTargetNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (TokenView)((DottedStarTargetNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_right;
         }
     }
 }

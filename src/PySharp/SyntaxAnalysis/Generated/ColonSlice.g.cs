@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ColonSliceNode : SliceNode
 {
-    public sealed partial record ColonSliceNode : SliceNode
+    public IExpressionNode? Start => Children![0] as IExpressionNode;
+    public IExpressionNode? End => Children![2] as IExpressionNode;
+    public StepSliceParamNode? Step => Children![3] as StepSliceParamNode;
+    public override ColonSliceView GetView(int position, IRedView? parent)
+        => new ColonSliceView(this, position, parent);
+}
+
+public sealed partial class ColonSliceView : SliceView
+{
+    public ColonSliceView(ColonSliceNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode? Start => Children![0] as IExpressionNode;
-        public IExpressionNode? End => Children![2] as IExpressionNode;
-        public StepSliceParamNode? Step => Children![3] as StepSliceParamNode;
-        public override ColonSliceView GetView(int position, IRedView? parent)
-            => new ColonSliceView(this, position, parent);
     }
-    public sealed partial class ColonSliceView : SliceView
+
+    private IExpressionView? _field_start = null;
+    public IExpressionView? Start
     {
-        public ColonSliceView(ColonSliceNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_start = null;
-        public IExpressionView? Start
-        {
-            get
+            if (_field_start == null && ((ColonSliceNode)base.Green).Start != null)
             {
-                if (_field_start == null && ((ColonSliceNode)base.Green).Start != null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_start = (IExpressionView)((ColonSliceNode)base.Green).Start!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView?)_field_start;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_start = (IExpressionView)((ColonSliceNode)base.Green).Start!.GetView(_positionOfField, this);
             }
+            return (IExpressionView?)_field_start;
         }
+    }
 
-        private IExpressionView? _field_end = null;
-        public IExpressionView? End
+    private IExpressionView? _field_end = null;
+    public IExpressionView? End
+    {
+        get
         {
-            get
+            if (_field_end == null && ((ColonSliceNode)base.Green).End != null)
             {
-                if (_field_end == null && ((ColonSliceNode)base.Green).End != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_end = (IExpressionView)((ColonSliceNode)base.Green).End!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView?)_field_end;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_end = (IExpressionView)((ColonSliceNode)base.Green).End!.GetView(_positionOfField, this);
             }
+            return (IExpressionView?)_field_end;
         }
+    }
 
-        private StepSliceParamView? _field_step = null;
-        public StepSliceParamView? Step
+    private StepSliceParamView? _field_step = null;
+    public StepSliceParamView? Step
+    {
+        get
         {
-            get
+            if (_field_step == null && ((ColonSliceNode)base.Green).Step != null)
             {
-                if (_field_step == null && ((ColonSliceNode)base.Green).Step != null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_step = (StepSliceParamView)((ColonSliceNode)base.Green).Step!.GetView(_positionOfField, this);
-                }
-                return (StepSliceParamView?)_field_step;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_step = (StepSliceParamView)((ColonSliceNode)base.Green).Step!.GetView(_positionOfField, this);
             }
+            return (StepSliceParamView?)_field_step;
         }
     }
 }

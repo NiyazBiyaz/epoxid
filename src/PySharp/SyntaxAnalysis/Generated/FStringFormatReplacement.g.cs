@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record FStringFormatReplacementNode : FStringFormatSpecNode
-    {
-        public FStringReplacementFieldNode Value => (FStringReplacementFieldNode)Children![0];
-        public override FStringFormatReplacementView GetView(int position, IRedView? parent)
-            => new FStringFormatReplacementView(this, position, parent);
-    }
-    public sealed partial class FStringFormatReplacementView : FStringFormatSpecView
-    {
-        public FStringFormatReplacementView(FStringFormatReplacementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private FStringReplacementFieldView? _field_value = null;
-        public FStringReplacementFieldView Value
+public sealed partial record FStringFormatReplacementNode : FStringFormatSpecNode
+{
+    public FStringReplacementFieldNode Value => (FStringReplacementFieldNode)Children![0];
+    public override FStringFormatReplacementView GetView(int position, IRedView? parent)
+        => new FStringFormatReplacementView(this, position, parent);
+}
+
+public sealed partial class FStringFormatReplacementView : FStringFormatSpecView
+{
+    public FStringFormatReplacementView(FStringFormatReplacementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private FStringReplacementFieldView? _field_value = null;
+    public FStringReplacementFieldView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (FStringReplacementFieldView)((FStringFormatReplacementNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (FStringReplacementFieldView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (FStringReplacementFieldView)((FStringFormatReplacementNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (FStringReplacementFieldView)_field_value;
         }
     }
 }

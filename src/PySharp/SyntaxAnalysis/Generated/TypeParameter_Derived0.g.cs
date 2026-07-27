@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TypeParameter_Derived0Node : TypeParameterNode
 {
-    public sealed partial record TypeParameter_Derived0Node : TypeParameterNode
+    public TypeParameterBoundNode? TypeParameterBound => Children![1] as TypeParameterBoundNode;
+    public TypeParameterDefaultNode? TypeParameterDefault => Children![2] as TypeParameterDefaultNode;
+    public override TypeParameter_Derived0View GetView(int position, IRedView? parent)
+        => new TypeParameter_Derived0View(this, position, parent);
+}
+
+public sealed partial class TypeParameter_Derived0View : TypeParameterView
+{
+    public TypeParameter_Derived0View(TypeParameter_Derived0Node green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TypeParameterBoundNode? TypeParameterBound => Children![1] as TypeParameterBoundNode;
-        public TypeParameterDefaultNode? TypeParameterDefault => Children![2] as TypeParameterDefaultNode;
-        public override TypeParameter_Derived0View GetView(int position, IRedView? parent)
-            => new TypeParameter_Derived0View(this, position, parent);
     }
-    public sealed partial class TypeParameter_Derived0View : TypeParameterView
+
+    private TypeParameterBoundView? _field_typeParameterBound = null;
+    public TypeParameterBoundView? TypeParameterBound
     {
-        public TypeParameter_Derived0View(TypeParameter_Derived0Node green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TypeParameterBoundView? _field_typeParameterBound = null;
-        public TypeParameterBoundView? TypeParameterBound
-        {
-            get
+            if (_field_typeParameterBound == null && ((TypeParameter_Derived0Node)base.Green).TypeParameterBound != null)
             {
-                if (_field_typeParameterBound == null && ((TypeParameter_Derived0Node)base.Green).TypeParameterBound != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_typeParameterBound = (TypeParameterBoundView)((TypeParameter_Derived0Node)base.Green).TypeParameterBound!.GetView(_positionOfField, this);
-                }
-                return (TypeParameterBoundView?)_field_typeParameterBound;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_typeParameterBound = (TypeParameterBoundView)((TypeParameter_Derived0Node)base.Green).TypeParameterBound!.GetView(_positionOfField, this);
             }
+            return (TypeParameterBoundView?)_field_typeParameterBound;
         }
+    }
 
-        private TypeParameterDefaultView? _field_typeParameterDefault = null;
-        public TypeParameterDefaultView? TypeParameterDefault
+    private TypeParameterDefaultView? _field_typeParameterDefault = null;
+    public TypeParameterDefaultView? TypeParameterDefault
+    {
+        get
         {
-            get
+            if (_field_typeParameterDefault == null && ((TypeParameter_Derived0Node)base.Green).TypeParameterDefault != null)
             {
-                if (_field_typeParameterDefault == null && ((TypeParameter_Derived0Node)base.Green).TypeParameterDefault != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_typeParameterDefault = (TypeParameterDefaultView)((TypeParameter_Derived0Node)base.Green).TypeParameterDefault!.GetView(_positionOfField, this);
-                }
-                return (TypeParameterDefaultView?)_field_typeParameterDefault;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_typeParameterDefault = (TypeParameterDefaultView)((TypeParameter_Derived0Node)base.Green).TypeParameterDefault!.GetView(_positionOfField, this);
             }
+            return (TypeParameterDefaultView?)_field_typeParameterDefault;
         }
     }
 }

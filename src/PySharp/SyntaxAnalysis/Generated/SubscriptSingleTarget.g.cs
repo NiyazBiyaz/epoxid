@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record SubscriptSingleTargetNode : SingleTargetNode
-    {
-        public SingleSubscriptAttributeTargetNode Value => (SingleSubscriptAttributeTargetNode)Children![0];
-        public override SubscriptSingleTargetView GetView(int position, IRedView? parent)
-            => new SubscriptSingleTargetView(this, position, parent);
-    }
-    public sealed partial class SubscriptSingleTargetView : SingleTargetView
-    {
-        public SubscriptSingleTargetView(SubscriptSingleTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private SingleSubscriptAttributeTargetView? _field_value = null;
-        public SingleSubscriptAttributeTargetView Value
+public sealed partial record SubscriptSingleTargetNode : SingleTargetNode
+{
+    public SingleSubscriptAttributeTargetNode Value => (SingleSubscriptAttributeTargetNode)Children![0];
+    public override SubscriptSingleTargetView GetView(int position, IRedView? parent)
+        => new SubscriptSingleTargetView(this, position, parent);
+}
+
+public sealed partial class SubscriptSingleTargetView : SingleTargetView
+{
+    public SubscriptSingleTargetView(SubscriptSingleTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private SingleSubscriptAttributeTargetView? _field_value = null;
+    public SingleSubscriptAttributeTargetView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (SingleSubscriptAttributeTargetView)((SubscriptSingleTargetNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (SingleSubscriptAttributeTargetView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (SingleSubscriptAttributeTargetView)((SubscriptSingleTargetNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (SingleSubscriptAttributeTargetView)_field_value;
         }
     }
 }

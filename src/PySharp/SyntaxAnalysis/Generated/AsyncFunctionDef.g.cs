@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AsyncFunctionDefNode : FunctionDefRawNode
 {
-    public sealed partial record AsyncFunctionDefNode : FunctionDefRawNode
+    public override AsyncFunctionDefView GetView(int position, IRedView? parent)
+        => new AsyncFunctionDefView(this, position, parent);
+}
+
+public sealed partial class AsyncFunctionDefView : FunctionDefRawView
+{
+    public AsyncFunctionDefView(AsyncFunctionDefNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override AsyncFunctionDefView GetView(int position, IRedView? parent)
-            => new AsyncFunctionDefView(this, position, parent);
-    }
-    public sealed partial class AsyncFunctionDefView : FunctionDefRawView
-    {
-        public AsyncFunctionDefView(AsyncFunctionDefNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

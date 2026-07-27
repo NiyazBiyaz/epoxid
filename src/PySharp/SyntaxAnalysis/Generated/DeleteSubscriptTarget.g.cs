@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record DeleteSubscriptTargetNode : DeleteTargetNode
 {
-    public sealed partial record DeleteSubscriptTargetNode : DeleteTargetNode
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public SlicesNode Subscript => (SlicesNode)Children![2];
+    public override DeleteSubscriptTargetView GetView(int position, IRedView? parent)
+        => new DeleteSubscriptTargetView(this, position, parent);
+}
+
+public sealed partial class DeleteSubscriptTargetView : DeleteTargetView
+{
+    public DeleteSubscriptTargetView(DeleteSubscriptTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-        public SlicesNode Subscript => (SlicesNode)Children![2];
-        public override DeleteSubscriptTargetView GetView(int position, IRedView? parent)
-            => new DeleteSubscriptTargetView(this, position, parent);
     }
-    public sealed partial class DeleteSubscriptTargetView : DeleteTargetView
+
+    private TargetPrimaryView? _field_primary = null;
+    public TargetPrimaryView Primary
     {
-        public DeleteSubscriptTargetView(DeleteSubscriptTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TargetPrimaryView? _field_primary = null;
-        public TargetPrimaryView Primary
-        {
-            get
+            if (_field_primary == null)
             {
-                if (_field_primary == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_primary = (TargetPrimaryView)((DeleteSubscriptTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
-                }
-                return (TargetPrimaryView)_field_primary;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_primary = (TargetPrimaryView)((DeleteSubscriptTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
             }
+            return (TargetPrimaryView)_field_primary;
         }
+    }
 
-        private SlicesView? _field_subscript = null;
-        public SlicesView Subscript
+    private SlicesView? _field_subscript = null;
+    public SlicesView Subscript
+    {
+        get
         {
-            get
+            if (_field_subscript == null)
             {
-                if (_field_subscript == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_subscript = (SlicesView)((DeleteSubscriptTargetNode)base.Green).Subscript!.GetView(_positionOfField, this);
-                }
-                return (SlicesView)_field_subscript;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_subscript = (SlicesView)((DeleteSubscriptTargetNode)base.Green).Subscript!.GetView(_positionOfField, this);
             }
+            return (SlicesView)_field_subscript;
         }
     }
 }

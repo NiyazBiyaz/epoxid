@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record GroupNode : GreenNode, IAtomNode
 {
-    public abstract partial record GroupNode : GreenNode, IAtomNode
+}
+
+public abstract partial class GroupView : RedView, IAtomView
+{
+    public GroupView(GroupNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class GroupView : RedView, IAtomView
-    {
-        public GroupView(GroupNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

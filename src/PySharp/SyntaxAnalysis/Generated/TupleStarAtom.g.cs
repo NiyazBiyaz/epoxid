@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record TupleStarAtomNode : StarAtomNode
-    {
-        public StarTargetSequenceNode? Items => Children![1] as StarTargetSequenceNode;
-        public override TupleStarAtomView GetView(int position, IRedView? parent)
-            => new TupleStarAtomView(this, position, parent);
-    }
-    public sealed partial class TupleStarAtomView : StarAtomView
-    {
-        public TupleStarAtomView(TupleStarAtomNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private StarTargetSequenceView? _field_items = null;
-        public StarTargetSequenceView? Items
+public sealed partial record TupleStarAtomNode : StarAtomNode
+{
+    public StarTargetSequenceNode? Items => Children![1] as StarTargetSequenceNode;
+    public override TupleStarAtomView GetView(int position, IRedView? parent)
+        => new TupleStarAtomView(this, position, parent);
+}
+
+public sealed partial class TupleStarAtomView : StarAtomView
+{
+    public TupleStarAtomView(TupleStarAtomNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private StarTargetSequenceView? _field_items = null;
+    public StarTargetSequenceView? Items
+    {
+        get
         {
-            get
+            if (_field_items == null && ((TupleStarAtomNode)base.Green).Items != null)
             {
-                if (_field_items == null && ((TupleStarAtomNode)base.Green).Items != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_items = (StarTargetSequenceView)((TupleStarAtomNode)base.Green).Items!.GetView(_positionOfField, this);
-                }
-                return (StarTargetSequenceView?)_field_items;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_items = (StarTargetSequenceView)((TupleStarAtomNode)base.Green).Items!.GetView(_positionOfField, this);
             }
+            return (StarTargetSequenceView?)_field_items;
         }
     }
 }

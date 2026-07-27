@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record DimensionSliceNode : DimensionNode
-    {
-        public SliceNode Value => (SliceNode)Children![0];
-        public override DimensionSliceView GetView(int position, IRedView? parent)
-            => new DimensionSliceView(this, position, parent);
-    }
-    public sealed partial class DimensionSliceView : DimensionView
-    {
-        public DimensionSliceView(DimensionSliceNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private SliceView? _field_value = null;
-        public SliceView Value
+public sealed partial record DimensionSliceNode : DimensionNode
+{
+    public SliceNode Value => (SliceNode)Children![0];
+    public override DimensionSliceView GetView(int position, IRedView? parent)
+        => new DimensionSliceView(this, position, parent);
+}
+
+public sealed partial class DimensionSliceView : DimensionView
+{
+    public DimensionSliceView(DimensionSliceNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private SliceView? _field_value = null;
+    public SliceView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (SliceView)((DimensionSliceNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (SliceView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (SliceView)((DimensionSliceNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (SliceView)_field_value;
         }
     }
 }

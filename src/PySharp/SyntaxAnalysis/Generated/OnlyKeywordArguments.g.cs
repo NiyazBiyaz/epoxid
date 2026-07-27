@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record OnlyKeywordArgumentsNode : ArgumentsNode
-    {
-        public KwargsNode Value => (KwargsNode)Children![0];
-        public override OnlyKeywordArgumentsView GetView(int position, IRedView? parent)
-            => new OnlyKeywordArgumentsView(this, position, parent);
-    }
-    public sealed partial class OnlyKeywordArgumentsView : ArgumentsView
-    {
-        public OnlyKeywordArgumentsView(OnlyKeywordArgumentsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private KwargsView? _field_value = null;
-        public KwargsView Value
+public sealed partial record OnlyKeywordArgumentsNode : ArgumentsNode
+{
+    public KwargsNode Value => (KwargsNode)Children![0];
+    public override OnlyKeywordArgumentsView GetView(int position, IRedView? parent)
+        => new OnlyKeywordArgumentsView(this, position, parent);
+}
+
+public sealed partial class OnlyKeywordArgumentsView : ArgumentsView
+{
+    public OnlyKeywordArgumentsView(OnlyKeywordArgumentsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private KwargsView? _field_value = null;
+    public KwargsView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (KwargsView)((OnlyKeywordArgumentsNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (KwargsView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (KwargsView)((OnlyKeywordArgumentsNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (KwargsView)_field_value;
         }
     }
 }

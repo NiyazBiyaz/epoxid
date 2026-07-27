@@ -16,22 +16,12 @@ internal class BoundGrammar
     internal List<BoundRule> Rules { get; } = [];
     internal List<BoundType> Types { get; } = [];
 
-    internal string GenerateCode()
-    {
-        var gen = new CsGenerator(AccessModifier);
-
-        gen.AddParserSignature(ParserName, TopLevelNodeName);
-
-        gen.AddParserBody(MainRule.Name, TopLevelNodeName, Rules.Select(r => r.ToIr()), []);
-
-        gen.AddLine("#region Type definitions");
-
-        gen.AddTypes(Types.Select(t => t.ToIr()));
-
-        gen.AddLine("#endregion");
-
-        return gen.Dump();
-    }
+    internal GrammarIr ToIr() => new(
+        ParserName,
+        TopLevelNodeName,
+        MainRule.ToIr(),
+        Rules.Select(r => r.ToIr()),
+        Types.Select(t => t.ToIr()));
 }
 
 internal class BoundRule

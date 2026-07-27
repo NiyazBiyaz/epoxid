@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StarEtc_Derived3Node : StarEtcNode
-    {
-        public KeywordsNode Keywords => (KeywordsNode)Children![0];
-        public override StarEtc_Derived3View GetView(int position, IRedView? parent)
-            => new StarEtc_Derived3View(this, position, parent);
-    }
-    public sealed partial class StarEtc_Derived3View : StarEtcView
-    {
-        public StarEtc_Derived3View(StarEtc_Derived3Node green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private KeywordsView? _field_keywords = null;
-        public KeywordsView Keywords
+public sealed partial record StarEtc_Derived3Node : StarEtcNode
+{
+    public KeywordsNode Keywords => (KeywordsNode)Children![0];
+    public override StarEtc_Derived3View GetView(int position, IRedView? parent)
+        => new StarEtc_Derived3View(this, position, parent);
+}
+
+public sealed partial class StarEtc_Derived3View : StarEtcView
+{
+    public StarEtc_Derived3View(StarEtc_Derived3Node green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private KeywordsView? _field_keywords = null;
+    public KeywordsView Keywords
+    {
+        get
         {
-            get
+            if (_field_keywords == null)
             {
-                if (_field_keywords == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_keywords = (KeywordsView)((StarEtc_Derived3Node)base.Green).Keywords!.GetView(_positionOfField, this);
-                }
-                return (KeywordsView)_field_keywords;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_keywords = (KeywordsView)((StarEtc_Derived3Node)base.Green).Keywords!.GetView(_positionOfField, this);
             }
+            return (KeywordsView)_field_keywords;
         }
     }
 }

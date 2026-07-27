@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record SingleSubscriptTargetNode : SingleSubscriptAttributeTargetNode
-    {
-        public SlicesNode Subscript => (SlicesNode)Children![2];
-        public override SingleSubscriptTargetView GetView(int position, IRedView? parent)
-            => new SingleSubscriptTargetView(this, position, parent);
-    }
-    public sealed partial class SingleSubscriptTargetView : SingleSubscriptAttributeTargetView
-    {
-        public SingleSubscriptTargetView(SingleSubscriptTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private SlicesView? _field_subscript = null;
-        public SlicesView Subscript
+public sealed partial record SingleSubscriptTargetNode : SingleSubscriptAttributeTargetNode
+{
+    public SlicesNode Subscript => (SlicesNode)Children![2];
+    public override SingleSubscriptTargetView GetView(int position, IRedView? parent)
+        => new SingleSubscriptTargetView(this, position, parent);
+}
+
+public sealed partial class SingleSubscriptTargetView : SingleSubscriptAttributeTargetView
+{
+    public SingleSubscriptTargetView(SingleSubscriptTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private SlicesView? _field_subscript = null;
+    public SlicesView Subscript
+    {
+        get
         {
-            get
+            if (_field_subscript == null)
             {
-                if (_field_subscript == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_subscript = (SlicesView)((SingleSubscriptTargetNode)base.Green).Subscript!.GetView(_positionOfField, this);
-                }
-                return (SlicesView)_field_subscript;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_subscript = (SlicesView)((SingleSubscriptTargetNode)base.Green).Subscript!.GetView(_positionOfField, this);
             }
+            return (SlicesView)_field_subscript;
         }
     }
 }

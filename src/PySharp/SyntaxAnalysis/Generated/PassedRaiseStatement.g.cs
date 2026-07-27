@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record PassedRaiseStatementNode : RaiseStatementNode
 {
-    public sealed partial record PassedRaiseStatementNode : RaiseStatementNode
+    public override PassedRaiseStatementView GetView(int position, IRedView? parent)
+        => new PassedRaiseStatementView(this, position, parent);
+}
+
+public sealed partial class PassedRaiseStatementView : RaiseStatementView
+{
+    public PassedRaiseStatementView(PassedRaiseStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override PassedRaiseStatementView GetView(int position, IRedView? parent)
-            => new PassedRaiseStatementView(this, position, parent);
-    }
-    public sealed partial class PassedRaiseStatementView : RaiseStatementView
-    {
-        public PassedRaiseStatementView(PassedRaiseStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

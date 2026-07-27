@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record YieldStatementNode : GreenNode, ISimpleStatementNode
-    {
-        public YieldExpressionNode Expression => (YieldExpressionNode)Children![0];
-        public override YieldStatementView GetView(int position, IRedView? parent)
-            => new YieldStatementView(this, position, parent);
-    }
-    public sealed partial class YieldStatementView : RedView, ISimpleStatementView
-    {
-        public YieldStatementView(YieldStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private YieldExpressionView? _field_expression = null;
-        public YieldExpressionView Expression
+public sealed partial record YieldStatementNode : GreenNode, ISimpleStatementNode
+{
+    public YieldExpressionNode Expression => (YieldExpressionNode)Children![0];
+    public override YieldStatementView GetView(int position, IRedView? parent)
+        => new YieldStatementView(this, position, parent);
+}
+
+public sealed partial class YieldStatementView : RedView, ISimpleStatementView
+{
+    public YieldStatementView(YieldStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private YieldExpressionView? _field_expression = null;
+    public YieldExpressionView Expression
+    {
+        get
         {
-            get
+            if (_field_expression == null)
             {
-                if (_field_expression == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_expression = (YieldExpressionView)((YieldStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
-                }
-                return (YieldExpressionView)_field_expression;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_expression = (YieldExpressionView)((YieldStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
+            return (YieldExpressionView)_field_expression;
         }
     }
 }

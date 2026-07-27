@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ParamStarAnnotationNode : GreenNode
 {
-    public sealed partial record ParamStarAnnotationNode : GreenNode
+    public TokenNode Name => (TokenNode)Children![0];
+    public StarAnnotationNode Annotation => (StarAnnotationNode)Children![1];
+    public override ParamStarAnnotationView GetView(int position, IRedView? parent)
+        => new ParamStarAnnotationView(this, position, parent);
+}
+
+public sealed partial class ParamStarAnnotationView : RedView
+{
+    public ParamStarAnnotationView(ParamStarAnnotationNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Name => (TokenNode)Children![0];
-        public StarAnnotationNode Annotation => (StarAnnotationNode)Children![1];
-        public override ParamStarAnnotationView GetView(int position, IRedView? parent)
-            => new ParamStarAnnotationView(this, position, parent);
     }
-    public sealed partial class ParamStarAnnotationView : RedView
+
+    private TokenView? _field_name = null;
+    public TokenView Name
     {
-        public ParamStarAnnotationView(ParamStarAnnotationNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_name = null;
-        public TokenView Name
-        {
-            get
+            if (_field_name == null)
             {
-                if (_field_name == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_name = (TokenView)((ParamStarAnnotationNode)base.Green).Name!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_name;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_name = (TokenView)((ParamStarAnnotationNode)base.Green).Name!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_name;
         }
+    }
 
-        private StarAnnotationView? _field_annotation = null;
-        public StarAnnotationView Annotation
+    private StarAnnotationView? _field_annotation = null;
+    public StarAnnotationView Annotation
+    {
+        get
         {
-            get
+            if (_field_annotation == null)
             {
-                if (_field_annotation == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_annotation = (StarAnnotationView)((ParamStarAnnotationNode)base.Green).Annotation!.GetView(_positionOfField, this);
-                }
-                return (StarAnnotationView)_field_annotation;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_annotation = (StarAnnotationView)((ParamStarAnnotationNode)base.Green).Annotation!.GetView(_positionOfField, this);
             }
+            return (StarAnnotationView)_field_annotation;
         }
     }
 }

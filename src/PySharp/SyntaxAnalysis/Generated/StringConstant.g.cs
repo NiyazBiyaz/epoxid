@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StringConstantNode : GreenNode, IStringValueNode
-    {
-        public TokenNode Value => (TokenNode)Children![0];
-        public override StringConstantView GetView(int position, IRedView? parent)
-            => new StringConstantView(this, position, parent);
-    }
-    public sealed partial class StringConstantView : RedView, IStringValueView
-    {
-        public StringConstantView(StringConstantNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TokenView? _field_value = null;
-        public TokenView Value
+public sealed partial record StringConstantNode : GreenNode, IStringValueNode
+{
+    public TokenNode Value => (TokenNode)Children![0];
+    public override StringConstantView GetView(int position, IRedView? parent)
+        => new StringConstantView(this, position, parent);
+}
+
+public sealed partial class StringConstantView : RedView, IStringValueView
+{
+    public StringConstantView(StringConstantNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_value = null;
+    public TokenView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (TokenView)((StringConstantNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (TokenView)((StringConstantNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_value;
         }
     }
 }

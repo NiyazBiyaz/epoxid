@@ -8,74 +8,74 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record WithPositionalArgumentsNode : ArgumentsNode
 {
-    public sealed partial record WithPositionalArgumentsNode : ArgumentsNode
+    private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode>? _field_PositionalArgumentsPart = null;
+    public global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode> PositionalArgumentsPart
     {
-        private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode>? _field_PositionalArgumentsPart = null;
-        public global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode> PositionalArgumentsPart
+        get
         {
-            get
+            if (_field_PositionalArgumentsPart is null)
             {
-                if (_field_PositionalArgumentsPart is null)
-                {
-                    var _tmp = AstPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentNode>();
-                    _field_PositionalArgumentsPart = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_PositionalArgumentsPart.Value;
+                var _tmp = AstPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentNode>();
+                _field_PositionalArgumentsPart = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_PositionalArgumentsPart.Value;
         }
-        public NodeArray<GreenNode> AstPositionalArgumentsPart => (NodeArray<GreenNode>)Children![0];
-        public KeywordArgumentsPartNode? KeywordArgumentsPart => Children![1] as KeywordArgumentsPartNode;
-        public override WithPositionalArgumentsView GetView(int position, IRedView? parent)
-            => new WithPositionalArgumentsView(this, position, parent);
     }
-    public sealed partial class WithPositionalArgumentsView : ArgumentsView
+    public NodeArray<GreenNode> AstPositionalArgumentsPart => (NodeArray<GreenNode>)Children![0];
+    public KeywordArgumentsPartNode? KeywordArgumentsPart => Children![1] as KeywordArgumentsPartNode;
+    public override WithPositionalArgumentsView GetView(int position, IRedView? parent)
+        => new WithPositionalArgumentsView(this, position, parent);
+}
+
+public sealed partial class WithPositionalArgumentsView : ArgumentsView
+{
+    public WithPositionalArgumentsView(WithPositionalArgumentsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public WithPositionalArgumentsView(WithPositionalArgumentsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+    }
 
-        private ViewArray<RedView>? _ast_field_positionalArgumentsPart = null;
-        public ViewArray<RedView> AstPositionalArgumentsPart
+    private ViewArray<RedView>? _ast_field_positionalArgumentsPart = null;
+    public ViewArray<RedView> AstPositionalArgumentsPart
+    {
+        get
         {
-            get
+            if (_ast_field_positionalArgumentsPart == null)
             {
-                if (_ast_field_positionalArgumentsPart == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _ast_field_positionalArgumentsPart = new ViewArray<RedView>(((WithPositionalArgumentsNode)base.Green).AstPositionalArgumentsPart, _positionOfField, this);
-                }
-                return _ast_field_positionalArgumentsPart.Value;
+                var _positionOfField = base.GetPositionFor(0);
+                _ast_field_positionalArgumentsPart = new ViewArray<RedView>(((WithPositionalArgumentsNode)base.Green).AstPositionalArgumentsPart, _positionOfField, this);
             }
+            return _ast_field_positionalArgumentsPart.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView>? _field_positionalArgumentsPart = null;
-        public global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView> PositionalArgumentsPart
+    }
+    private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView>? _field_positionalArgumentsPart = null;
+    public global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentView> PositionalArgumentsPart
+    {
+        get
         {
-            get
+            if (_field_positionalArgumentsPart == null)
             {
-                if (_field_positionalArgumentsPart == null)
-                {
-                    var _tmp = AstPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentView>();
-                    _field_positionalArgumentsPart = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_positionalArgumentsPart.Value;
+                var _tmp = AstPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentView>();
+                _field_positionalArgumentsPart = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_positionalArgumentsPart.Value;
         }
+    }
 
-        private KeywordArgumentsPartView? _field_keywordArgumentsPart = null;
-        public KeywordArgumentsPartView? KeywordArgumentsPart
+    private KeywordArgumentsPartView? _field_keywordArgumentsPart = null;
+    public KeywordArgumentsPartView? KeywordArgumentsPart
+    {
+        get
         {
-            get
+            if (_field_keywordArgumentsPart == null && ((WithPositionalArgumentsNode)base.Green).KeywordArgumentsPart != null)
             {
-                if (_field_keywordArgumentsPart == null && ((WithPositionalArgumentsNode)base.Green).KeywordArgumentsPart != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_keywordArgumentsPart = (KeywordArgumentsPartView)((WithPositionalArgumentsNode)base.Green).KeywordArgumentsPart!.GetView(_positionOfField, this);
-                }
-                return (KeywordArgumentsPartView?)_field_keywordArgumentsPart;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_keywordArgumentsPart = (KeywordArgumentsPartView)((WithPositionalArgumentsNode)base.Green).KeywordArgumentsPart!.GetView(_positionOfField, this);
             }
+            return (KeywordArgumentsPartView?)_field_keywordArgumentsPart;
         }
     }
 }

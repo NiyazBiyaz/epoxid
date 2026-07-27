@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record CompareOperationNode : GreenNode
 {
-    public abstract partial record CompareOperationNode : GreenNode
+}
+
+public abstract partial class CompareOperationView : RedView
+{
+    public CompareOperationView(CompareOperationNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class CompareOperationView : RedView
-    {
-        public CompareOperationView(CompareOperationNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

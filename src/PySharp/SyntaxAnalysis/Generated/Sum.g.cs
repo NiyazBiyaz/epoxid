@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record SumNode : GreenNode, ISumExpressionNode
 {
-    public sealed partial record SumNode : GreenNode, ISumExpressionNode
+    public ISumExpressionNode Left => (ISumExpressionNode)Children![0];
+    public ITermExpressionNode Right => (ITermExpressionNode)Children![2];
+    public TokenNode Operator => (TokenNode)Children![1];
+    public override SumView GetView(int position, IRedView? parent)
+        => new SumView(this, position, parent);
+}
+
+public sealed partial class SumView : RedView, ISumExpressionView
+{
+    public SumView(SumNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public ISumExpressionNode Left => (ISumExpressionNode)Children![0];
-        public ITermExpressionNode Right => (ITermExpressionNode)Children![2];
-        public TokenNode Operator => (TokenNode)Children![1];
-        public override SumView GetView(int position, IRedView? parent)
-            => new SumView(this, position, parent);
     }
-    public sealed partial class SumView : RedView, ISumExpressionView
+
+    private ISumExpressionView? _field_left = null;
+    public ISumExpressionView Left
     {
-        public SumView(SumNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ISumExpressionView? _field_left = null;
-        public ISumExpressionView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (ISumExpressionView)((SumNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (ISumExpressionView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (ISumExpressionView)((SumNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (ISumExpressionView)_field_left;
         }
+    }
 
-        private ITermExpressionView? _field_right = null;
-        public ITermExpressionView Right
+    private ITermExpressionView? _field_right = null;
+    public ITermExpressionView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (ITermExpressionView)((SumNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (ITermExpressionView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (ITermExpressionView)((SumNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (ITermExpressionView)_field_right;
         }
+    }
 
-        private TokenView? _field_operator = null;
-        public TokenView Operator
+    private TokenView? _field_operator = null;
+    public TokenView Operator
+    {
+        get
         {
-            get
+            if (_field_operator == null)
             {
-                if (_field_operator == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_operator = (TokenView)((SumNode)base.Green).Operator!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_operator;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_operator = (TokenView)((SumNode)base.Green).Operator!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_operator;
         }
     }
 }

@@ -8,74 +8,74 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ParenthesizedWithStatementNode : WithStatementNode
 {
-    public sealed partial record ParenthesizedWithStatementNode : WithStatementNode
+    private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
+    public global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
     {
-        private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
-        public global::System.Collections.Immutable.ImmutableArray<WithItemNode> Items
+        get
         {
-            get
+            if (_field_Items is null)
             {
-                if (_field_Items is null)
-                {
-                    var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemNode>();
-                    _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Items.Value;
+                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemNode>();
+                _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Items.Value;
         }
-        public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
-        public BlockNode Block => (BlockNode)Children![6];
-        public override ParenthesizedWithStatementView GetView(int position, IRedView? parent)
-            => new ParenthesizedWithStatementView(this, position, parent);
     }
-    public sealed partial class ParenthesizedWithStatementView : WithStatementView
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
+    public BlockNode Block => (BlockNode)Children![6];
+    public override ParenthesizedWithStatementView GetView(int position, IRedView? parent)
+        => new ParenthesizedWithStatementView(this, position, parent);
+}
+
+public sealed partial class ParenthesizedWithStatementView : WithStatementView
+{
+    public ParenthesizedWithStatementView(ParenthesizedWithStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public ParenthesizedWithStatementView(ParenthesizedWithStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+    }
 
-        private ViewArray<RedView>? _ast_field_items = null;
-        public ViewArray<RedView> AstItems
+    private ViewArray<RedView>? _ast_field_items = null;
+    public ViewArray<RedView> AstItems
+    {
+        get
         {
-            get
+            if (_ast_field_items == null)
             {
-                if (_ast_field_items == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _ast_field_items = new ViewArray<RedView>(((ParenthesizedWithStatementNode)base.Green).AstItems, _positionOfField, this);
-                }
-                return _ast_field_items.Value;
+                var _positionOfField = base.GetPositionFor(2);
+                _ast_field_items = new ViewArray<RedView>(((ParenthesizedWithStatementNode)base.Green).AstItems, _positionOfField, this);
             }
+            return _ast_field_items.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<WithItemView>? _field_items = null;
-        public global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
+    }
+    private global::System.Collections.Immutable.ImmutableArray<WithItemView>? _field_items = null;
+    public global::System.Collections.Immutable.ImmutableArray<WithItemView> Items
+    {
+        get
         {
-            get
+            if (_field_items == null)
             {
-                if (_field_items == null)
-                {
-                    var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemView>();
-                    _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_items.Value;
+                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemView>();
+                _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_items.Value;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(6);
-                    _field_block = (BlockView)((ParenthesizedWithStatementNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(6);
+                _field_block = (BlockView)((ParenthesizedWithStatementNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

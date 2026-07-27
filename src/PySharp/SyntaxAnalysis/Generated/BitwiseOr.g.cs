@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record BitwiseOrNode : GreenNode, IBitwiseOrExpressionNode
 {
-    public sealed partial record BitwiseOrNode : GreenNode, IBitwiseOrExpressionNode
+    public IBitwiseOrExpressionNode Left => (IBitwiseOrExpressionNode)Children![0];
+    public IBitwiseXorExpressionNode Right => (IBitwiseXorExpressionNode)Children![2];
+    public override BitwiseOrView GetView(int position, IRedView? parent)
+        => new BitwiseOrView(this, position, parent);
+}
+
+public sealed partial class BitwiseOrView : RedView, IBitwiseOrExpressionView
+{
+    public BitwiseOrView(BitwiseOrNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IBitwiseOrExpressionNode Left => (IBitwiseOrExpressionNode)Children![0];
-        public IBitwiseXorExpressionNode Right => (IBitwiseXorExpressionNode)Children![2];
-        public override BitwiseOrView GetView(int position, IRedView? parent)
-            => new BitwiseOrView(this, position, parent);
     }
-    public sealed partial class BitwiseOrView : RedView, IBitwiseOrExpressionView
+
+    private IBitwiseOrExpressionView? _field_left = null;
+    public IBitwiseOrExpressionView Left
     {
-        public BitwiseOrView(BitwiseOrNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IBitwiseOrExpressionView? _field_left = null;
-        public IBitwiseOrExpressionView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (IBitwiseOrExpressionView)((BitwiseOrNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (IBitwiseOrExpressionView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (IBitwiseOrExpressionView)((BitwiseOrNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (IBitwiseOrExpressionView)_field_left;
         }
+    }
 
-        private IBitwiseXorExpressionView? _field_right = null;
-        public IBitwiseXorExpressionView Right
+    private IBitwiseXorExpressionView? _field_right = null;
+    public IBitwiseXorExpressionView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (IBitwiseXorExpressionView)((BitwiseOrNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (IBitwiseXorExpressionView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (IBitwiseXorExpressionView)((BitwiseOrNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (IBitwiseXorExpressionView)_field_right;
         }
     }
 }

@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TStringNode : GreenNode
 {
-    public sealed partial record TStringNode : GreenNode
+    public TokenNode Header => (TokenNode)Children![0];
+    public NodeArray<TStringValueNode> Values => (NodeArray<TStringValueNode>)Children![1];
+    public override TStringView GetView(int position, IRedView? parent)
+        => new TStringView(this, position, parent);
+}
+
+public sealed partial class TStringView : RedView
+{
+    public TStringView(TStringNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Header => (TokenNode)Children![0];
-        public NodeArray<TStringValueNode> Values => (NodeArray<TStringValueNode>)Children![1];
-        public override TStringView GetView(int position, IRedView? parent)
-            => new TStringView(this, position, parent);
     }
-    public sealed partial class TStringView : RedView
+
+    private TokenView? _field_header = null;
+    public TokenView Header
     {
-        public TStringView(TStringNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_header = null;
-        public TokenView Header
-        {
-            get
+            if (_field_header == null)
             {
-                if (_field_header == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_header = (TokenView)((TStringNode)base.Green).Header!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_header;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_header = (TokenView)((TStringNode)base.Green).Header!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_header;
         }
+    }
 
-        private ViewArray<TStringValueView>? _field_values = null;
-        public ViewArray<TStringValueView> Values
+    private ViewArray<TStringValueView>? _field_values = null;
+    public ViewArray<TStringValueView> Values
+    {
+        get
         {
-            get
+            if (_field_values == null)
             {
-                if (_field_values == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_values = (ViewArray<TStringValueView>)new ViewArray<TStringValueView>(((TStringNode)base.Green).Values, _positionOfField, this);
-                }
-                return (ViewArray<TStringValueView>)_field_values;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_values = (ViewArray<TStringValueView>)new ViewArray<TStringValueView>(((TStringNode)base.Green).Values, _positionOfField, this);
             }
+            return (ViewArray<TStringValueView>)_field_values;
         }
     }
 }

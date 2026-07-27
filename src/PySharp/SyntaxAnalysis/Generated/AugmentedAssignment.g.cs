@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AugmentedAssignmentNode : AssignmentNode
 {
-    public sealed partial record AugmentedAssignmentNode : AssignmentNode
+    public SingleTargetNode Target => (SingleTargetNode)Children![0];
+    public TokenNode Operator => (TokenNode)Children![1];
+    public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![2];
+    public override AugmentedAssignmentView GetView(int position, IRedView? parent)
+        => new AugmentedAssignmentView(this, position, parent);
+}
+
+public sealed partial class AugmentedAssignmentView : AssignmentView
+{
+    public AugmentedAssignmentView(AugmentedAssignmentNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public SingleTargetNode Target => (SingleTargetNode)Children![0];
-        public TokenNode Operator => (TokenNode)Children![1];
-        public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![2];
-        public override AugmentedAssignmentView GetView(int position, IRedView? parent)
-            => new AugmentedAssignmentView(this, position, parent);
     }
-    public sealed partial class AugmentedAssignmentView : AssignmentView
+
+    private SingleTargetView? _field_target = null;
+    public SingleTargetView Target
     {
-        public AugmentedAssignmentView(AugmentedAssignmentNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private SingleTargetView? _field_target = null;
-        public SingleTargetView Target
-        {
-            get
+            if (_field_target == null)
             {
-                if (_field_target == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_target = (SingleTargetView)((AugmentedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
-                }
-                return (SingleTargetView)_field_target;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_target = (SingleTargetView)((AugmentedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
             }
+            return (SingleTargetView)_field_target;
         }
+    }
 
-        private TokenView? _field_operator = null;
-        public TokenView Operator
+    private TokenView? _field_operator = null;
+    public TokenView Operator
+    {
+        get
         {
-            get
+            if (_field_operator == null)
             {
-                if (_field_operator == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_operator = (TokenView)((AugmentedAssignmentNode)base.Green).Operator!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_operator;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_operator = (TokenView)((AugmentedAssignmentNode)base.Green).Operator!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_operator;
         }
+    }
 
-        private IAnnotatedRhsView? _field_rhs = null;
-        public IAnnotatedRhsView Rhs
+    private IAnnotatedRhsView? _field_rhs = null;
+    public IAnnotatedRhsView Rhs
+    {
+        get
         {
-            get
+            if (_field_rhs == null)
             {
-                if (_field_rhs == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_rhs = (IAnnotatedRhsView)((AugmentedAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
-                }
-                return (IAnnotatedRhsView)_field_rhs;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_rhs = (IAnnotatedRhsView)((AugmentedAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
             }
+            return (IAnnotatedRhsView)_field_rhs;
         }
     }
 }

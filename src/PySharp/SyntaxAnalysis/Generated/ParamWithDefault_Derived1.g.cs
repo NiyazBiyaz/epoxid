@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ParamWithDefault_Derived1Node : ParamWithDefaultNode
 {
-    public sealed partial record ParamWithDefault_Derived1Node : ParamWithDefaultNode
+    public override ParamWithDefault_Derived1View GetView(int position, IRedView? parent)
+        => new ParamWithDefault_Derived1View(this, position, parent);
+}
+
+public sealed partial class ParamWithDefault_Derived1View : ParamWithDefaultView
+{
+    public ParamWithDefault_Derived1View(ParamWithDefault_Derived1Node green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override ParamWithDefault_Derived1View GetView(int position, IRedView? parent)
-            => new ParamWithDefault_Derived1View(this, position, parent);
-    }
-    public sealed partial class ParamWithDefault_Derived1View : ParamWithDefaultView
-    {
-        public ParamWithDefault_Derived1View(ParamWithDefault_Derived1Node green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

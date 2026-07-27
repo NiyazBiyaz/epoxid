@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record IndentedBlockNode : BlockNode
-    {
-        public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![2];
-        public override IndentedBlockView GetView(int position, IRedView? parent)
-            => new IndentedBlockView(this, position, parent);
-    }
-    public sealed partial class IndentedBlockView : BlockView
-    {
-        public IndentedBlockView(IndentedBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<IStatementView>? _field_statements = null;
-        public ViewArray<IStatementView> Statements
+public sealed partial record IndentedBlockNode : BlockNode
+{
+    public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![2];
+    public override IndentedBlockView GetView(int position, IRedView? parent)
+        => new IndentedBlockView(this, position, parent);
+}
+
+public sealed partial class IndentedBlockView : BlockView
+{
+    public IndentedBlockView(IndentedBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<IStatementView>? _field_statements = null;
+    public ViewArray<IStatementView> Statements
+    {
+        get
         {
-            get
+            if (_field_statements == null)
             {
-                if (_field_statements == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_statements = (ViewArray<IStatementView>)new ViewArray<IStatementView>(((IndentedBlockNode)base.Green).Statements, _positionOfField, this);
-                }
-                return (ViewArray<IStatementView>)_field_statements;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_statements = (ViewArray<IStatementView>)new ViewArray<IStatementView>(((IndentedBlockNode)base.Green).Statements, _positionOfField, this);
             }
+            return (ViewArray<IStatementView>)_field_statements;
         }
     }
 }

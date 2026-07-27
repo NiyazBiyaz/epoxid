@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record StarAtomNode : GreenNode
 {
-    public abstract partial record StarAtomNode : GreenNode
+}
+
+public abstract partial class StarAtomView : RedView
+{
+    public StarAtomView(StarAtomNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class StarAtomView : RedView
-    {
-        public StarAtomView(StarAtomNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StepSliceParamNode : GreenNode
-    {
-        public IExpressionNode? Value => Children![1] as IExpressionNode;
-        public override StepSliceParamView GetView(int position, IRedView? parent)
-            => new StepSliceParamView(this, position, parent);
-    }
-    public sealed partial class StepSliceParamView : RedView
-    {
-        public StepSliceParamView(StepSliceParamNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView? Value
+public sealed partial record StepSliceParamNode : GreenNode
+{
+    public IExpressionNode? Value => Children![1] as IExpressionNode;
+    public override StepSliceParamView GetView(int position, IRedView? parent)
+        => new StepSliceParamView(this, position, parent);
+}
+
+public sealed partial class StepSliceParamView : RedView
+{
+    public StepSliceParamView(StepSliceParamNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IExpressionView? _field_value = null;
+    public IExpressionView? Value
+    {
+        get
         {
-            get
+            if (_field_value == null && ((StepSliceParamNode)base.Green).Value != null)
             {
-                if (_field_value == null && ((StepSliceParamNode)base.Green).Value != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IExpressionView)((StepSliceParamNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView?)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IExpressionView)((StepSliceParamNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView?)_field_value;
         }
     }
 }

@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record IfElifStatementNode : IfStatementNode
-    {
-        public ElifStatementNode Elif => (ElifStatementNode)Children![4];
-        public override IfElifStatementView GetView(int position, IRedView? parent)
-            => new IfElifStatementView(this, position, parent);
-    }
-    public sealed partial class IfElifStatementView : IfStatementView
-    {
-        public IfElifStatementView(IfElifStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ElifStatementView? _field_elif = null;
-        public ElifStatementView Elif
+public sealed partial record IfElifStatementNode : IfStatementNode
+{
+    public ElifStatementNode Elif => (ElifStatementNode)Children![4];
+    public override IfElifStatementView GetView(int position, IRedView? parent)
+        => new IfElifStatementView(this, position, parent);
+}
+
+public sealed partial class IfElifStatementView : IfStatementView
+{
+    public IfElifStatementView(IfElifStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ElifStatementView? _field_elif = null;
+    public ElifStatementView Elif
+    {
+        get
         {
-            get
+            if (_field_elif == null)
             {
-                if (_field_elif == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_elif = (ElifStatementView)((IfElifStatementNode)base.Green).Elif!.GetView(_positionOfField, this);
-                }
-                return (ElifStatementView)_field_elif;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_elif = (ElifStatementView)((IfElifStatementNode)base.Green).Elif!.GetView(_positionOfField, this);
             }
+            return (ElifStatementView)_field_elif;
         }
     }
 }

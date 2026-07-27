@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record YieldFromExpressionNode : YieldExpressionNode
-    {
-        public IExpressionNode Expression => (IExpressionNode)Children![2];
-        public override YieldFromExpressionView GetView(int position, IRedView? parent)
-            => new YieldFromExpressionView(this, position, parent);
-    }
-    public sealed partial class YieldFromExpressionView : YieldExpressionView
-    {
-        public YieldFromExpressionView(YieldFromExpressionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IExpressionView? _field_expression = null;
-        public IExpressionView Expression
+public sealed partial record YieldFromExpressionNode : YieldExpressionNode
+{
+    public IExpressionNode Expression => (IExpressionNode)Children![2];
+    public override YieldFromExpressionView GetView(int position, IRedView? parent)
+        => new YieldFromExpressionView(this, position, parent);
+}
+
+public sealed partial class YieldFromExpressionView : YieldExpressionView
+{
+    public YieldFromExpressionView(YieldFromExpressionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IExpressionView? _field_expression = null;
+    public IExpressionView Expression
+    {
+        get
         {
-            get
+            if (_field_expression == null)
             {
-                if (_field_expression == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_expression = (IExpressionView)((YieldFromExpressionNode)base.Green).Expression!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_expression;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_expression = (IExpressionView)((YieldFromExpressionNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_expression;
         }
     }
 }

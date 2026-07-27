@@ -8,59 +8,59 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record LazyImportNameNode : GreenNode, IImportStatementNode
-    {
-        private global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode>? _field_Import = null;
-        public global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
-        {
-            get
-            {
-                if (_field_Import is null)
-                {
-                    var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedAsNameNode>();
-                    _field_Import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Import.Value;
-            }
-        }
-        public NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![2];
-        public override LazyImportNameView GetView(int position, IRedView? parent)
-            => new LazyImportNameView(this, position, parent);
-    }
-    public sealed partial class LazyImportNameView : RedView, IImportStatementView
-    {
-        public LazyImportNameView(LazyImportNameNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<RedView>? _ast_field_import = null;
-        public ViewArray<RedView> AstImport
+public sealed partial record LazyImportNameNode : GreenNode, IImportStatementNode
+{
+    private global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode>? _field_Import = null;
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
+    {
+        get
         {
-            get
+            if (_field_Import is null)
             {
-                if (_ast_field_import == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _ast_field_import = new ViewArray<RedView>(((LazyImportNameNode)base.Green).AstImport, _positionOfField, this);
-                }
-                return _ast_field_import.Value;
+                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedAsNameNode>();
+                _field_Import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Import.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<DottedAsNameView>? _field_import = null;
-        public global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
+    }
+    public NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![2];
+    public override LazyImportNameView GetView(int position, IRedView? parent)
+        => new LazyImportNameView(this, position, parent);
+}
+
+public sealed partial class LazyImportNameView : RedView, IImportStatementView
+{
+    public LazyImportNameView(LazyImportNameNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<RedView>? _ast_field_import = null;
+    public ViewArray<RedView> AstImport
+    {
+        get
         {
-            get
+            if (_ast_field_import == null)
             {
-                if (_field_import == null)
-                {
-                    var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedAsNameView>();
-                    _field_import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_import.Value;
+                var _positionOfField = base.GetPositionFor(2);
+                _ast_field_import = new ViewArray<RedView>(((LazyImportNameNode)base.Green).AstImport, _positionOfField, this);
             }
+            return _ast_field_import.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<DottedAsNameView>? _field_import = null;
+    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
+    {
+        get
+        {
+            if (_field_import == null)
+            {
+                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedAsNameView>();
+                _field_import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_import.Value;
         }
     }
 }

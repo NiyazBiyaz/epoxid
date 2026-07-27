@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record ReturnStatementNode : GreenNode, ISimpleStatementNode
-    {
-        public StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
-        public override ReturnStatementView GetView(int position, IRedView? parent)
-            => new ReturnStatementView(this, position, parent);
-    }
-    public sealed partial class ReturnStatementView : RedView, ISimpleStatementView
-    {
-        public ReturnStatementView(ReturnStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private StarExpressionsView? _field_expression = null;
-        public StarExpressionsView? Expression
+public sealed partial record ReturnStatementNode : GreenNode, ISimpleStatementNode
+{
+    public StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
+    public override ReturnStatementView GetView(int position, IRedView? parent)
+        => new ReturnStatementView(this, position, parent);
+}
+
+public sealed partial class ReturnStatementView : RedView, ISimpleStatementView
+{
+    public ReturnStatementView(ReturnStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private StarExpressionsView? _field_expression = null;
+    public StarExpressionsView? Expression
+    {
+        get
         {
-            get
+            if (_field_expression == null && ((ReturnStatementNode)base.Green).Expression != null)
             {
-                if (_field_expression == null && ((ReturnStatementNode)base.Green).Expression != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_expression = (StarExpressionsView)((ReturnStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
-                }
-                return (StarExpressionsView?)_field_expression;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_expression = (StarExpressionsView)((ReturnStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
+            return (StarExpressionsView?)_field_expression;
         }
     }
 }

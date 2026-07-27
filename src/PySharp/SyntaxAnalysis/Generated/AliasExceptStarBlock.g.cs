@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AliasExceptStarBlockNode : ExceptStarBlockNode
 {
-    public sealed partial record AliasExceptStarBlockNode : ExceptStarBlockNode
+    public IExpressionNode Exception => (IExpressionNode)Children![2];
+    public TokenNode Alias => (TokenNode)Children![4];
+    public BlockNode Block => (BlockNode)Children![6];
+    public override AliasExceptStarBlockView GetView(int position, IRedView? parent)
+        => new AliasExceptStarBlockView(this, position, parent);
+}
+
+public sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
+{
+    public AliasExceptStarBlockView(AliasExceptStarBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode Exception => (IExpressionNode)Children![2];
-        public TokenNode Alias => (TokenNode)Children![4];
-        public BlockNode Block => (BlockNode)Children![6];
-        public override AliasExceptStarBlockView GetView(int position, IRedView? parent)
-            => new AliasExceptStarBlockView(this, position, parent);
     }
-    public sealed partial class AliasExceptStarBlockView : ExceptStarBlockView
+
+    private IExpressionView? _field_exception = null;
+    public IExpressionView Exception
     {
-        public AliasExceptStarBlockView(AliasExceptStarBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_exception = null;
-        public IExpressionView Exception
-        {
-            get
+            if (_field_exception == null)
             {
-                if (_field_exception == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_exception = (IExpressionView)((AliasExceptStarBlockNode)base.Green).Exception!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_exception;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_exception = (IExpressionView)((AliasExceptStarBlockNode)base.Green).Exception!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_exception;
         }
+    }
 
-        private TokenView? _field_alias = null;
-        public TokenView Alias
+    private TokenView? _field_alias = null;
+    public TokenView Alias
+    {
+        get
         {
-            get
+            if (_field_alias == null)
             {
-                if (_field_alias == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_alias = (TokenView)((AliasExceptStarBlockNode)base.Green).Alias!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_alias;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_alias = (TokenView)((AliasExceptStarBlockNode)base.Green).Alias!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_alias;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(6);
-                    _field_block = (BlockView)((AliasExceptStarBlockNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(6);
+                _field_block = (BlockView)((AliasExceptStarBlockNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record DecoratedClassDefNode : ClassDefNode
 {
-    public sealed partial record DecoratedClassDefNode : ClassDefNode
+    public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
+    public ClassDefRawNode ClassDef => (ClassDefRawNode)Children![1];
+    public override DecoratedClassDefView GetView(int position, IRedView? parent)
+        => new DecoratedClassDefView(this, position, parent);
+}
+
+public sealed partial class DecoratedClassDefView : ClassDefView
+{
+    public DecoratedClassDefView(DecoratedClassDefNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
-        public ClassDefRawNode ClassDef => (ClassDefRawNode)Children![1];
-        public override DecoratedClassDefView GetView(int position, IRedView? parent)
-            => new DecoratedClassDefView(this, position, parent);
     }
-    public sealed partial class DecoratedClassDefView : ClassDefView
+
+    private ViewArray<DecoratorView>? _field_decorators = null;
+    public ViewArray<DecoratorView> Decorators
     {
-        public DecoratedClassDefView(DecoratedClassDefNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ViewArray<DecoratorView>? _field_decorators = null;
-        public ViewArray<DecoratorView> Decorators
-        {
-            get
+            if (_field_decorators == null)
             {
-                if (_field_decorators == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_decorators = (ViewArray<DecoratorView>)new ViewArray<DecoratorView>(((DecoratedClassDefNode)base.Green).Decorators, _positionOfField, this);
-                }
-                return (ViewArray<DecoratorView>)_field_decorators;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_decorators = (ViewArray<DecoratorView>)new ViewArray<DecoratorView>(((DecoratedClassDefNode)base.Green).Decorators, _positionOfField, this);
             }
+            return (ViewArray<DecoratorView>)_field_decorators;
         }
+    }
 
-        private ClassDefRawView? _field_classDef = null;
-        public ClassDefRawView ClassDef
+    private ClassDefRawView? _field_classDef = null;
+    public ClassDefRawView ClassDef
+    {
+        get
         {
-            get
+            if (_field_classDef == null)
             {
-                if (_field_classDef == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_classDef = (ClassDefRawView)((DecoratedClassDefNode)base.Green).ClassDef!.GetView(_positionOfField, this);
-                }
-                return (ClassDefRawView)_field_classDef;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_classDef = (ClassDefRawView)((DecoratedClassDefNode)base.Green).ClassDef!.GetView(_positionOfField, this);
             }
+            return (ClassDefRawView)_field_classDef;
         }
     }
 }

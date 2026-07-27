@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record DottedAsNameNode : GreenNode
 {
-    public sealed partial record DottedAsNameNode : GreenNode
+    public DottedNameNode Name => (DottedNameNode)Children![0];
+    public AsNameNode? Alias => Children![1] as AsNameNode;
+    public override DottedAsNameView GetView(int position, IRedView? parent)
+        => new DottedAsNameView(this, position, parent);
+}
+
+public sealed partial class DottedAsNameView : RedView
+{
+    public DottedAsNameView(DottedAsNameNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public DottedNameNode Name => (DottedNameNode)Children![0];
-        public AsNameNode? Alias => Children![1] as AsNameNode;
-        public override DottedAsNameView GetView(int position, IRedView? parent)
-            => new DottedAsNameView(this, position, parent);
     }
-    public sealed partial class DottedAsNameView : RedView
+
+    private DottedNameView? _field_name = null;
+    public DottedNameView Name
     {
-        public DottedAsNameView(DottedAsNameNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private DottedNameView? _field_name = null;
-        public DottedNameView Name
-        {
-            get
+            if (_field_name == null)
             {
-                if (_field_name == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_name = (DottedNameView)((DottedAsNameNode)base.Green).Name!.GetView(_positionOfField, this);
-                }
-                return (DottedNameView)_field_name;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_name = (DottedNameView)((DottedAsNameNode)base.Green).Name!.GetView(_positionOfField, this);
             }
+            return (DottedNameView)_field_name;
         }
+    }
 
-        private AsNameView? _field_alias = null;
-        public AsNameView? Alias
+    private AsNameView? _field_alias = null;
+    public AsNameView? Alias
+    {
+        get
         {
-            get
+            if (_field_alias == null && ((DottedAsNameNode)base.Green).Alias != null)
             {
-                if (_field_alias == null && ((DottedAsNameNode)base.Green).Alias != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_alias = (AsNameView)((DottedAsNameNode)base.Green).Alias!.GetView(_positionOfField, this);
-                }
-                return (AsNameView?)_field_alias;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_alias = (AsNameView)((DottedAsNameNode)base.Green).Alias!.GetView(_positionOfField, this);
             }
+            return (AsNameView?)_field_alias;
         }
     }
 }

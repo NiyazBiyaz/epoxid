@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record KeyValuePairNode : StarredOrKeyValueNode
 {
-    public sealed partial record KeyValuePairNode : StarredOrKeyValueNode
+    public IExpressionNode Key => (IExpressionNode)Children![0];
+    public IExpressionNode Value => (IExpressionNode)Children![2];
+    public override KeyValuePairView GetView(int position, IRedView? parent)
+        => new KeyValuePairView(this, position, parent);
+}
+
+public sealed partial class KeyValuePairView : StarredOrKeyValueView
+{
+    public KeyValuePairView(KeyValuePairNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode Key => (IExpressionNode)Children![0];
-        public IExpressionNode Value => (IExpressionNode)Children![2];
-        public override KeyValuePairView GetView(int position, IRedView? parent)
-            => new KeyValuePairView(this, position, parent);
     }
-    public sealed partial class KeyValuePairView : StarredOrKeyValueView
+
+    private IExpressionView? _field_key = null;
+    public IExpressionView Key
     {
-        public KeyValuePairView(KeyValuePairNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_key = null;
-        public IExpressionView Key
-        {
-            get
+            if (_field_key == null)
             {
-                if (_field_key == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_key = (IExpressionView)((KeyValuePairNode)base.Green).Key!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_key;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_key = (IExpressionView)((KeyValuePairNode)base.Green).Key!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_key;
         }
+    }
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_value = (IExpressionView)((KeyValuePairNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_value = (IExpressionView)((KeyValuePairNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
     }
 }

@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record DeleteAtomTargetNode : DeleteTargetNode
-    {
-        public DeleteTargetAtomNode Value => (DeleteTargetAtomNode)Children![0];
-        public override DeleteAtomTargetView GetView(int position, IRedView? parent)
-            => new DeleteAtomTargetView(this, position, parent);
-    }
-    public sealed partial class DeleteAtomTargetView : DeleteTargetView
-    {
-        public DeleteAtomTargetView(DeleteAtomTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private DeleteTargetAtomView? _field_value = null;
-        public DeleteTargetAtomView Value
+public sealed partial record DeleteAtomTargetNode : DeleteTargetNode
+{
+    public DeleteTargetAtomNode Value => (DeleteTargetAtomNode)Children![0];
+    public override DeleteAtomTargetView GetView(int position, IRedView? parent)
+        => new DeleteAtomTargetView(this, position, parent);
+}
+
+public sealed partial class DeleteAtomTargetView : DeleteTargetView
+{
+    public DeleteAtomTargetView(DeleteAtomTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private DeleteTargetAtomView? _field_value = null;
+    public DeleteTargetAtomView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (DeleteTargetAtomView)((DeleteAtomTargetNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (DeleteTargetAtomView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (DeleteTargetAtomView)((DeleteAtomTargetNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (DeleteTargetAtomView)_field_value;
         }
     }
 }

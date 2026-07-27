@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AnnotatedParenthesizedAssignmentNode : AssignmentNode
 {
-    public sealed partial record AnnotatedParenthesizedAssignmentNode : AssignmentNode
+    public SingleTargetNode Target => (SingleTargetNode)Children![1];
+    public IExpressionNode TypeHint => (IExpressionNode)Children![4];
+    public EqualAnnotatedRhsNode? Rhs => Children![5] as EqualAnnotatedRhsNode;
+    public override AnnotatedParenthesizedAssignmentView GetView(int position, IRedView? parent)
+        => new AnnotatedParenthesizedAssignmentView(this, position, parent);
+}
+
+public sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentView
+{
+    public AnnotatedParenthesizedAssignmentView(AnnotatedParenthesizedAssignmentNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public SingleTargetNode Target => (SingleTargetNode)Children![1];
-        public IExpressionNode TypeHint => (IExpressionNode)Children![4];
-        public EqualAnnotatedRhsNode? Rhs => Children![5] as EqualAnnotatedRhsNode;
-        public override AnnotatedParenthesizedAssignmentView GetView(int position, IRedView? parent)
-            => new AnnotatedParenthesizedAssignmentView(this, position, parent);
     }
-    public sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentView
+
+    private SingleTargetView? _field_target = null;
+    public SingleTargetView Target
     {
-        public AnnotatedParenthesizedAssignmentView(AnnotatedParenthesizedAssignmentNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private SingleTargetView? _field_target = null;
-        public SingleTargetView Target
-        {
-            get
+            if (_field_target == null)
             {
-                if (_field_target == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_target = (SingleTargetView)((AnnotatedParenthesizedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
-                }
-                return (SingleTargetView)_field_target;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_target = (SingleTargetView)((AnnotatedParenthesizedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
             }
+            return (SingleTargetView)_field_target;
         }
+    }
 
-        private IExpressionView? _field_typeHint = null;
-        public IExpressionView TypeHint
+    private IExpressionView? _field_typeHint = null;
+    public IExpressionView TypeHint
+    {
+        get
         {
-            get
+            if (_field_typeHint == null)
             {
-                if (_field_typeHint == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_typeHint = (IExpressionView)((AnnotatedParenthesizedAssignmentNode)base.Green).TypeHint!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_typeHint;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_typeHint = (IExpressionView)((AnnotatedParenthesizedAssignmentNode)base.Green).TypeHint!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_typeHint;
         }
+    }
 
-        private EqualAnnotatedRhsView? _field_rhs = null;
-        public EqualAnnotatedRhsView? Rhs
+    private EqualAnnotatedRhsView? _field_rhs = null;
+    public EqualAnnotatedRhsView? Rhs
+    {
+        get
         {
-            get
+            if (_field_rhs == null && ((AnnotatedParenthesizedAssignmentNode)base.Green).Rhs != null)
             {
-                if (_field_rhs == null && ((AnnotatedParenthesizedAssignmentNode)base.Green).Rhs != null)
-                {
-                    var _positionOfField = base.GetPositionFor(5);
-                    _field_rhs = (EqualAnnotatedRhsView)((AnnotatedParenthesizedAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
-                }
-                return (EqualAnnotatedRhsView?)_field_rhs;
+                var _positionOfField = base.GetPositionFor(5);
+                _field_rhs = (EqualAnnotatedRhsView)((AnnotatedParenthesizedAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
             }
+            return (EqualAnnotatedRhsView?)_field_rhs;
         }
     }
 }

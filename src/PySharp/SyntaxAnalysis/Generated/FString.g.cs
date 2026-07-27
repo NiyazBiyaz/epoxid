@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record FStringNode : GreenNode, IStringValueNode
 {
-    public sealed partial record FStringNode : GreenNode, IStringValueNode
+    public TokenNode Header => (TokenNode)Children![0];
+    public NodeArray<FStringValueNode> Values => (NodeArray<FStringValueNode>)Children![1];
+    public override FStringView GetView(int position, IRedView? parent)
+        => new FStringView(this, position, parent);
+}
+
+public sealed partial class FStringView : RedView, IStringValueView
+{
+    public FStringView(FStringNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Header => (TokenNode)Children![0];
-        public NodeArray<FStringValueNode> Values => (NodeArray<FStringValueNode>)Children![1];
-        public override FStringView GetView(int position, IRedView? parent)
-            => new FStringView(this, position, parent);
     }
-    public sealed partial class FStringView : RedView, IStringValueView
+
+    private TokenView? _field_header = null;
+    public TokenView Header
     {
-        public FStringView(FStringNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_header = null;
-        public TokenView Header
-        {
-            get
+            if (_field_header == null)
             {
-                if (_field_header == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_header = (TokenView)((FStringNode)base.Green).Header!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_header;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_header = (TokenView)((FStringNode)base.Green).Header!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_header;
         }
+    }
 
-        private ViewArray<FStringValueView>? _field_values = null;
-        public ViewArray<FStringValueView> Values
+    private ViewArray<FStringValueView>? _field_values = null;
+    public ViewArray<FStringValueView> Values
+    {
+        get
         {
-            get
+            if (_field_values == null)
             {
-                if (_field_values == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_values = (ViewArray<FStringValueView>)new ViewArray<FStringValueView>(((FStringNode)base.Green).Values, _positionOfField, this);
-                }
-                return (ViewArray<FStringValueView>)_field_values;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_values = (ViewArray<FStringValueView>)new ViewArray<FStringValueView>(((FStringNode)base.Green).Values, _positionOfField, this);
             }
+            return (ViewArray<FStringValueView>)_field_values;
         }
     }
 }

@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AttributeTargetNode : TargetPrimaryNode
 {
-    public sealed partial record AttributeTargetNode : TargetPrimaryNode
+    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
+    public TokenNode AttributeName => (TokenNode)Children![2];
+    public override AttributeTargetView GetView(int position, IRedView? parent)
+        => new AttributeTargetView(this, position, parent);
+}
+
+public sealed partial class AttributeTargetView : TargetPrimaryView
+{
+    public AttributeTargetView(AttributeTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-        public TokenNode AttributeName => (TokenNode)Children![2];
-        public override AttributeTargetView GetView(int position, IRedView? parent)
-            => new AttributeTargetView(this, position, parent);
     }
-    public sealed partial class AttributeTargetView : TargetPrimaryView
+
+    private TargetPrimaryView? _field_primary = null;
+    public TargetPrimaryView Primary
     {
-        public AttributeTargetView(AttributeTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TargetPrimaryView? _field_primary = null;
-        public TargetPrimaryView Primary
-        {
-            get
+            if (_field_primary == null)
             {
-                if (_field_primary == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_primary = (TargetPrimaryView)((AttributeTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
-                }
-                return (TargetPrimaryView)_field_primary;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_primary = (TargetPrimaryView)((AttributeTargetNode)base.Green).Primary!.GetView(_positionOfField, this);
             }
+            return (TargetPrimaryView)_field_primary;
         }
+    }
 
-        private TokenView? _field_attributeName = null;
-        public TokenView AttributeName
+    private TokenView? _field_attributeName = null;
+    public TokenView AttributeName
+    {
+        get
         {
-            get
+            if (_field_attributeName == null)
             {
-                if (_field_attributeName == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_attributeName = (TokenView)((AttributeTargetNode)base.Green).AttributeName!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_attributeName;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_attributeName = (TokenView)((AttributeTargetNode)base.Green).AttributeName!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_attributeName;
         }
     }
 }

@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record WhileStatementNode : GreenNode, ICompoundStatementNode
 {
-    public sealed partial record WhileStatementNode : GreenNode, ICompoundStatementNode
+    public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
+    public BlockNode Block => (BlockNode)Children![3];
+    public ElseBlockNode? Else => Children![4] as ElseBlockNode;
+    public override WhileStatementView GetView(int position, IRedView? parent)
+        => new WhileStatementView(this, position, parent);
+}
+
+public sealed partial class WhileStatementView : RedView, ICompoundStatementView
+{
+    public WhileStatementView(WhileStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
-        public BlockNode Block => (BlockNode)Children![3];
-        public ElseBlockNode? Else => Children![4] as ElseBlockNode;
-        public override WhileStatementView GetView(int position, IRedView? parent)
-            => new WhileStatementView(this, position, parent);
     }
-    public sealed partial class WhileStatementView : RedView, ICompoundStatementView
+
+    private INamedExpressionView? _field_condition = null;
+    public INamedExpressionView Condition
     {
-        public WhileStatementView(WhileStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private INamedExpressionView? _field_condition = null;
-        public INamedExpressionView Condition
-        {
-            get
+            if (_field_condition == null)
             {
-                if (_field_condition == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_condition = (INamedExpressionView)((WhileStatementNode)base.Green).Condition!.GetView(_positionOfField, this);
-                }
-                return (INamedExpressionView)_field_condition;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_condition = (INamedExpressionView)((WhileStatementNode)base.Green).Condition!.GetView(_positionOfField, this);
             }
+            return (INamedExpressionView)_field_condition;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_block = (BlockView)((WhileStatementNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_block = (BlockView)((WhileStatementNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
+    }
 
-        private ElseBlockView? _field_else = null;
-        public ElseBlockView? Else
+    private ElseBlockView? _field_else = null;
+    public ElseBlockView? Else
+    {
+        get
         {
-            get
+            if (_field_else == null && ((WhileStatementNode)base.Green).Else != null)
             {
-                if (_field_else == null && ((WhileStatementNode)base.Green).Else != null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_else = (ElseBlockView)((WhileStatementNode)base.Green).Else!.GetView(_positionOfField, this);
-                }
-                return (ElseBlockView?)_field_else;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_else = (ElseBlockView)((WhileStatementNode)base.Green).Else!.GetView(_positionOfField, this);
             }
+            return (ElseBlockView?)_field_else;
         }
     }
 }

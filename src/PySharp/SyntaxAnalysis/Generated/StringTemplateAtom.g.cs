@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StringTemplateAtomNode : StringAtomNode
-    {
-        public NodeArray<TStringNode> Parts => (NodeArray<TStringNode>)Children![0];
-        public override StringTemplateAtomView GetView(int position, IRedView? parent)
-            => new StringTemplateAtomView(this, position, parent);
-    }
-    public sealed partial class StringTemplateAtomView : StringAtomView
-    {
-        public StringTemplateAtomView(StringTemplateAtomNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<TStringView>? _field_parts = null;
-        public ViewArray<TStringView> Parts
+public sealed partial record StringTemplateAtomNode : StringAtomNode
+{
+    public NodeArray<TStringNode> Parts => (NodeArray<TStringNode>)Children![0];
+    public override StringTemplateAtomView GetView(int position, IRedView? parent)
+        => new StringTemplateAtomView(this, position, parent);
+}
+
+public sealed partial class StringTemplateAtomView : StringAtomView
+{
+    public StringTemplateAtomView(StringTemplateAtomNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<TStringView>? _field_parts = null;
+    public ViewArray<TStringView> Parts
+    {
+        get
         {
-            get
+            if (_field_parts == null)
             {
-                if (_field_parts == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_parts = (ViewArray<TStringView>)new ViewArray<TStringView>(((StringTemplateAtomNode)base.Green).Parts, _positionOfField, this);
-                }
-                return (ViewArray<TStringView>)_field_parts;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_parts = (ViewArray<TStringView>)new ViewArray<TStringView>(((StringTemplateAtomNode)base.Green).Parts, _positionOfField, this);
             }
+            return (ViewArray<TStringView>)_field_parts;
         }
     }
 }

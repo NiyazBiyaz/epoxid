@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record IfClauseNode : GreenNode
-    {
-        public DisjunctionNode Condition => (DisjunctionNode)Children![1];
-        public override IfClauseView GetView(int position, IRedView? parent)
-            => new IfClauseView(this, position, parent);
-    }
-    public sealed partial class IfClauseView : RedView
-    {
-        public IfClauseView(IfClauseNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private DisjunctionView? _field_condition = null;
-        public DisjunctionView Condition
+public sealed partial record IfClauseNode : GreenNode
+{
+    public DisjunctionNode Condition => (DisjunctionNode)Children![1];
+    public override IfClauseView GetView(int position, IRedView? parent)
+        => new IfClauseView(this, position, parent);
+}
+
+public sealed partial class IfClauseView : RedView
+{
+    public IfClauseView(IfClauseNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private DisjunctionView? _field_condition = null;
+    public DisjunctionView Condition
+    {
+        get
         {
-            get
+            if (_field_condition == null)
             {
-                if (_field_condition == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_condition = (DisjunctionView)((IfClauseNode)base.Green).Condition!.GetView(_positionOfField, this);
-                }
-                return (DisjunctionView)_field_condition;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_condition = (DisjunctionView)((IfClauseNode)base.Green).Condition!.GetView(_positionOfField, this);
             }
+            return (DisjunctionView)_field_condition;
         }
     }
 }

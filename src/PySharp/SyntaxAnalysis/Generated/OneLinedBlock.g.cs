@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record OneLinedBlockNode : BlockNode
-    {
-        public SimpleStatementsNode Statements => (SimpleStatementsNode)Children![0];
-        public override OneLinedBlockView GetView(int position, IRedView? parent)
-            => new OneLinedBlockView(this, position, parent);
-    }
-    public sealed partial class OneLinedBlockView : BlockView
-    {
-        public OneLinedBlockView(OneLinedBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private SimpleStatementsView? _field_statements = null;
-        public SimpleStatementsView Statements
+public sealed partial record OneLinedBlockNode : BlockNode
+{
+    public SimpleStatementsNode Statements => (SimpleStatementsNode)Children![0];
+    public override OneLinedBlockView GetView(int position, IRedView? parent)
+        => new OneLinedBlockView(this, position, parent);
+}
+
+public sealed partial class OneLinedBlockView : BlockView
+{
+    public OneLinedBlockView(OneLinedBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private SimpleStatementsView? _field_statements = null;
+    public SimpleStatementsView Statements
+    {
+        get
         {
-            get
+            if (_field_statements == null)
             {
-                if (_field_statements == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_statements = (SimpleStatementsView)((OneLinedBlockNode)base.Green).Statements!.GetView(_positionOfField, this);
-                }
-                return (SimpleStatementsView)_field_statements;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_statements = (SimpleStatementsView)((OneLinedBlockNode)base.Green).Statements!.GetView(_positionOfField, this);
             }
+            return (SimpleStatementsView)_field_statements;
         }
     }
 }

@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record TryStatementNode : GreenNode, ICompoundStatementNode
-    {
-        public BlockNode Try => (BlockNode)Children![2];
-    }
-    public abstract partial class TryStatementView : RedView, ICompoundStatementView
-    {
-        public TryStatementView(TryStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private BlockView? _field_try = null;
-        public BlockView Try
+public abstract partial record TryStatementNode : GreenNode, ICompoundStatementNode
+{
+    public BlockNode Try => (BlockNode)Children![2];
+}
+
+public abstract partial class TryStatementView : RedView, ICompoundStatementView
+{
+    public TryStatementView(TryStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private BlockView? _field_try = null;
+    public BlockView Try
+    {
+        get
         {
-            get
+            if (_field_try == null)
             {
-                if (_field_try == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_try = (BlockView)((TryStatementNode)base.Green).Try!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_try;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_try = (BlockView)((TryStatementNode)base.Green).Try!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_try;
         }
     }
 }

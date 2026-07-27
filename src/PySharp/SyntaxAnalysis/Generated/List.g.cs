@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record ListNode : GreenNode, IAtomNode
-    {
-        public StarNamedExpressionsNode? Items => Children![1] as StarNamedExpressionsNode;
-        public override ListView GetView(int position, IRedView? parent)
-            => new ListView(this, position, parent);
-    }
-    public sealed partial class ListView : RedView, IAtomView
-    {
-        public ListView(ListNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private StarNamedExpressionsView? _field_items = null;
-        public StarNamedExpressionsView? Items
+public sealed partial record ListNode : GreenNode, IAtomNode
+{
+    public StarNamedExpressionsNode? Items => Children![1] as StarNamedExpressionsNode;
+    public override ListView GetView(int position, IRedView? parent)
+        => new ListView(this, position, parent);
+}
+
+public sealed partial class ListView : RedView, IAtomView
+{
+    public ListView(ListNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private StarNamedExpressionsView? _field_items = null;
+    public StarNamedExpressionsView? Items
+    {
+        get
         {
-            get
+            if (_field_items == null && ((ListNode)base.Green).Items != null)
             {
-                if (_field_items == null && ((ListNode)base.Green).Items != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_items = (StarNamedExpressionsView)((ListNode)base.Green).Items!.GetView(_positionOfField, this);
-                }
-                return (StarNamedExpressionsView?)_field_items;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_items = (StarNamedExpressionsView)((ListNode)base.Green).Items!.GetView(_positionOfField, this);
             }
+            return (StarNamedExpressionsView?)_field_items;
         }
     }
 }

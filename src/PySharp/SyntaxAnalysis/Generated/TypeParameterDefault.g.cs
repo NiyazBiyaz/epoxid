@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record TypeParameterDefaultNode : GreenNode
-    {
-        public IExpressionNode Value => (IExpressionNode)Children![1];
-        public override TypeParameterDefaultView GetView(int position, IRedView? parent)
-            => new TypeParameterDefaultView(this, position, parent);
-    }
-    public sealed partial class TypeParameterDefaultView : RedView
-    {
-        public TypeParameterDefaultView(TypeParameterDefaultNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+public sealed partial record TypeParameterDefaultNode : GreenNode
+{
+    public IExpressionNode Value => (IExpressionNode)Children![1];
+    public override TypeParameterDefaultView GetView(int position, IRedView? parent)
+        => new TypeParameterDefaultView(this, position, parent);
+}
+
+public sealed partial class TypeParameterDefaultView : RedView
+{
+    public TypeParameterDefaultView(TypeParameterDefaultNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IExpressionView)((TypeParameterDefaultNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IExpressionView)((TypeParameterDefaultNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
     }
 }

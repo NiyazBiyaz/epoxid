@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
 {
-    public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
+    public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
+    public GeneratorExpressionNode Argument => (GeneratorExpressionNode)Children![1];
+    public override CallWithGeneratorPrimaryView GetView(int position, IRedView? parent)
+        => new CallWithGeneratorPrimaryView(this, position, parent);
+}
+
+public sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
+{
+    public CallWithGeneratorPrimaryView(CallWithGeneratorPrimaryNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
-        public GeneratorExpressionNode Argument => (GeneratorExpressionNode)Children![1];
-        public override CallWithGeneratorPrimaryView GetView(int position, IRedView? parent)
-            => new CallWithGeneratorPrimaryView(this, position, parent);
     }
-    public sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
+
+    private RawPrimaryView? _field_function = null;
+    public RawPrimaryView Function
     {
-        public CallWithGeneratorPrimaryView(CallWithGeneratorPrimaryNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private RawPrimaryView? _field_function = null;
-        public RawPrimaryView Function
-        {
-            get
+            if (_field_function == null)
             {
-                if (_field_function == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_function = (RawPrimaryView)((CallWithGeneratorPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
-                }
-                return (RawPrimaryView)_field_function;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_function = (RawPrimaryView)((CallWithGeneratorPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
             }
+            return (RawPrimaryView)_field_function;
         }
+    }
 
-        private GeneratorExpressionView? _field_argument = null;
-        public GeneratorExpressionView Argument
+    private GeneratorExpressionView? _field_argument = null;
+    public GeneratorExpressionView Argument
+    {
+        get
         {
-            get
+            if (_field_argument == null)
             {
-                if (_field_argument == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_argument = (GeneratorExpressionView)((CallWithGeneratorPrimaryNode)base.Green).Argument!.GetView(_positionOfField, this);
-                }
-                return (GeneratorExpressionView)_field_argument;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_argument = (GeneratorExpressionView)((CallWithGeneratorPrimaryNode)base.Green).Argument!.GetView(_positionOfField, this);
             }
+            return (GeneratorExpressionView)_field_argument;
         }
     }
 }

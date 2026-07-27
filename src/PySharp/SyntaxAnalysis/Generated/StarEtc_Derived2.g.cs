@@ -8,78 +8,78 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record StarEtc_Derived2Node : StarEtcNode
 {
-    public sealed partial record StarEtc_Derived2Node : StarEtcNode
+    public TokenNode Token => (TokenNode)Children![0];
+    public TokenNode Token1 => (TokenNode)Children![1];
+    public NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
+    public KeywordsNode? Keywords => Children![3] as KeywordsNode;
+    public override StarEtc_Derived2View GetView(int position, IRedView? parent)
+        => new StarEtc_Derived2View(this, position, parent);
+}
+
+public sealed partial class StarEtc_Derived2View : StarEtcView
+{
+    public StarEtc_Derived2View(StarEtc_Derived2Node green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Token => (TokenNode)Children![0];
-        public TokenNode Token1 => (TokenNode)Children![1];
-        public NodeArray<ParamMaybeDefaultNode> ParamMaybeDefault => (NodeArray<ParamMaybeDefaultNode>)Children![2];
-        public KeywordsNode? Keywords => Children![3] as KeywordsNode;
-        public override StarEtc_Derived2View GetView(int position, IRedView? parent)
-            => new StarEtc_Derived2View(this, position, parent);
     }
-    public sealed partial class StarEtc_Derived2View : StarEtcView
+
+    private TokenView? _field_token = null;
+    public TokenView Token
     {
-        public StarEtc_Derived2View(StarEtc_Derived2Node green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_token = null;
-        public TokenView Token
-        {
-            get
+            if (_field_token == null)
             {
-                if (_field_token == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_token = (TokenView)((StarEtc_Derived2Node)base.Green).Token!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_token = (TokenView)((StarEtc_Derived2Node)base.Green).Token!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token;
         }
+    }
 
-        private TokenView? _field_token1 = null;
-        public TokenView Token1
+    private TokenView? _field_token1 = null;
+    public TokenView Token1
+    {
+        get
         {
-            get
+            if (_field_token1 == null)
             {
-                if (_field_token1 == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_token1 = (TokenView)((StarEtc_Derived2Node)base.Green).Token1!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token1;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_token1 = (TokenView)((StarEtc_Derived2Node)base.Green).Token1!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token1;
         }
+    }
 
-        private ViewArray<ParamMaybeDefaultView>? _field_paramMaybeDefault = null;
-        public ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
+    private ViewArray<ParamMaybeDefaultView>? _field_paramMaybeDefault = null;
+    public ViewArray<ParamMaybeDefaultView> ParamMaybeDefault
+    {
+        get
         {
-            get
+            if (_field_paramMaybeDefault == null)
             {
-                if (_field_paramMaybeDefault == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_paramMaybeDefault = (ViewArray<ParamMaybeDefaultView>)new ViewArray<ParamMaybeDefaultView>(((StarEtc_Derived2Node)base.Green).ParamMaybeDefault, _positionOfField, this);
-                }
-                return (ViewArray<ParamMaybeDefaultView>)_field_paramMaybeDefault;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_paramMaybeDefault = (ViewArray<ParamMaybeDefaultView>)new ViewArray<ParamMaybeDefaultView>(((StarEtc_Derived2Node)base.Green).ParamMaybeDefault, _positionOfField, this);
             }
+            return (ViewArray<ParamMaybeDefaultView>)_field_paramMaybeDefault;
         }
+    }
 
-        private KeywordsView? _field_keywords = null;
-        public KeywordsView? Keywords
+    private KeywordsView? _field_keywords = null;
+    public KeywordsView? Keywords
+    {
+        get
         {
-            get
+            if (_field_keywords == null && ((StarEtc_Derived2Node)base.Green).Keywords != null)
             {
-                if (_field_keywords == null && ((StarEtc_Derived2Node)base.Green).Keywords != null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_keywords = (KeywordsView)((StarEtc_Derived2Node)base.Green).Keywords!.GetView(_positionOfField, this);
-                }
-                return (KeywordsView?)_field_keywords;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_keywords = (KeywordsView)((StarEtc_Derived2Node)base.Green).Keywords!.GetView(_positionOfField, this);
             }
+            return (KeywordsView?)_field_keywords;
         }
     }
 }

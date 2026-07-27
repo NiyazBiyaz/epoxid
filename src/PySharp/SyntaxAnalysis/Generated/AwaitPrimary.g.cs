@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record AwaitPrimaryNode : GreenNode, IPrimaryNode
-    {
-        public RawPrimaryNode Value => (RawPrimaryNode)Children![1];
-        public override AwaitPrimaryView GetView(int position, IRedView? parent)
-            => new AwaitPrimaryView(this, position, parent);
-    }
-    public sealed partial class AwaitPrimaryView : RedView, IPrimaryView
-    {
-        public AwaitPrimaryView(AwaitPrimaryNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private RawPrimaryView? _field_value = null;
-        public RawPrimaryView Value
+public sealed partial record AwaitPrimaryNode : GreenNode, IPrimaryNode
+{
+    public RawPrimaryNode Value => (RawPrimaryNode)Children![1];
+    public override AwaitPrimaryView GetView(int position, IRedView? parent)
+        => new AwaitPrimaryView(this, position, parent);
+}
+
+public sealed partial class AwaitPrimaryView : RedView, IPrimaryView
+{
+    public AwaitPrimaryView(AwaitPrimaryNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private RawPrimaryView? _field_value = null;
+    public RawPrimaryView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (RawPrimaryView)((AwaitPrimaryNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (RawPrimaryView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (RawPrimaryView)((AwaitPrimaryNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (RawPrimaryView)_field_value;
         }
     }
 }

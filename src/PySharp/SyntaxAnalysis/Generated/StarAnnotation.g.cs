@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StarAnnotationNode : GreenNode
-    {
-        public IStarExpressionNode Value => (IStarExpressionNode)Children![1];
-        public override StarAnnotationView GetView(int position, IRedView? parent)
-            => new StarAnnotationView(this, position, parent);
-    }
-    public sealed partial class StarAnnotationView : RedView
-    {
-        public StarAnnotationView(StarAnnotationNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IStarExpressionView? _field_value = null;
-        public IStarExpressionView Value
+public sealed partial record StarAnnotationNode : GreenNode
+{
+    public IStarExpressionNode Value => (IStarExpressionNode)Children![1];
+    public override StarAnnotationView GetView(int position, IRedView? parent)
+        => new StarAnnotationView(this, position, parent);
+}
+
+public sealed partial class StarAnnotationView : RedView
+{
+    public StarAnnotationView(StarAnnotationNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IStarExpressionView? _field_value = null;
+    public IStarExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IStarExpressionView)((StarAnnotationNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IStarExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IStarExpressionView)((StarAnnotationNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IStarExpressionView)_field_value;
         }
     }
 }

@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNode
 {
-    public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNode
+    public IBitwiseOrExpressionNode First => (IBitwiseOrExpressionNode)Children![0];
+    public NodeArray<CompareOperationNode> Rest => (NodeArray<CompareOperationNode>)Children![1];
+    public override ComparisonView GetView(int position, IRedView? parent)
+        => new ComparisonView(this, position, parent);
+}
+
+public sealed partial class ComparisonView : RedView, IInversionExpressionView
+{
+    public ComparisonView(ComparisonNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IBitwiseOrExpressionNode First => (IBitwiseOrExpressionNode)Children![0];
-        public NodeArray<CompareOperationNode> Rest => (NodeArray<CompareOperationNode>)Children![1];
-        public override ComparisonView GetView(int position, IRedView? parent)
-            => new ComparisonView(this, position, parent);
     }
-    public sealed partial class ComparisonView : RedView, IInversionExpressionView
+
+    private IBitwiseOrExpressionView? _field_first = null;
+    public IBitwiseOrExpressionView First
     {
-        public ComparisonView(ComparisonNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IBitwiseOrExpressionView? _field_first = null;
-        public IBitwiseOrExpressionView First
-        {
-            get
+            if (_field_first == null)
             {
-                if (_field_first == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_first = (IBitwiseOrExpressionView)((ComparisonNode)base.Green).First!.GetView(_positionOfField, this);
-                }
-                return (IBitwiseOrExpressionView)_field_first;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_first = (IBitwiseOrExpressionView)((ComparisonNode)base.Green).First!.GetView(_positionOfField, this);
             }
+            return (IBitwiseOrExpressionView)_field_first;
         }
+    }
 
-        private ViewArray<CompareOperationView>? _field_rest = null;
-        public ViewArray<CompareOperationView> Rest
+    private ViewArray<CompareOperationView>? _field_rest = null;
+    public ViewArray<CompareOperationView> Rest
+    {
+        get
         {
-            get
+            if (_field_rest == null)
             {
-                if (_field_rest == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_rest = (ViewArray<CompareOperationView>)new ViewArray<CompareOperationView>(((ComparisonNode)base.Green).Rest, _positionOfField, this);
-                }
-                return (ViewArray<CompareOperationView>)_field_rest;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_rest = (ViewArray<CompareOperationView>)new ViewArray<CompareOperationView>(((ComparisonNode)base.Green).Rest, _positionOfField, this);
             }
+            return (ViewArray<CompareOperationView>)_field_rest;
         }
     }
 }

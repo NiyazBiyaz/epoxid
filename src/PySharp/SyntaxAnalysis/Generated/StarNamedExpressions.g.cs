@@ -8,59 +8,59 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StarNamedExpressionsNode : GreenNode
-    {
-        private global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode>? _field_Items = null;
-        public global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode> Items
-        {
-            get
-            {
-                if (_field_Items is null)
-                {
-                    var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IStarNamedExpressionNode>();
-                    _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Items.Value;
-            }
-        }
-        public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
-        public override StarNamedExpressionsView GetView(int position, IRedView? parent)
-            => new StarNamedExpressionsView(this, position, parent);
-    }
-    public sealed partial class StarNamedExpressionsView : RedView
-    {
-        public StarNamedExpressionsView(StarNamedExpressionsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<RedView>? _ast_field_items = null;
-        public ViewArray<RedView> AstItems
+public sealed partial record StarNamedExpressionsNode : GreenNode
+{
+    private global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode>? _field_Items = null;
+    public global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionNode> Items
+    {
+        get
         {
-            get
+            if (_field_Items is null)
             {
-                if (_ast_field_items == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _ast_field_items = new ViewArray<RedView>(((StarNamedExpressionsNode)base.Green).AstItems, _positionOfField, this);
-                }
-                return _ast_field_items.Value;
+                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IStarNamedExpressionNode>();
+                _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Items.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView>? _field_items = null;
-        public global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView> Items
+    }
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public override StarNamedExpressionsView GetView(int position, IRedView? parent)
+        => new StarNamedExpressionsView(this, position, parent);
+}
+
+public sealed partial class StarNamedExpressionsView : RedView
+{
+    public StarNamedExpressionsView(StarNamedExpressionsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<RedView>? _ast_field_items = null;
+    public ViewArray<RedView> AstItems
+    {
+        get
         {
-            get
+            if (_ast_field_items == null)
             {
-                if (_field_items == null)
-                {
-                    var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IStarNamedExpressionView>();
-                    _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_items.Value;
+                var _positionOfField = base.GetPositionFor(0);
+                _ast_field_items = new ViewArray<RedView>(((StarNamedExpressionsNode)base.Green).AstItems, _positionOfField, this);
             }
+            return _ast_field_items.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView>? _field_items = null;
+    public global::System.Collections.Immutable.ImmutableArray<IStarNamedExpressionView> Items
+    {
+        get
+        {
+            if (_field_items == null)
+            {
+                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IStarNamedExpressionView>();
+                _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_items.Value;
         }
     }
 }

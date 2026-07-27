@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record AtomPrimaryNode : RawPrimaryNode
-    {
-        public IAtomNode Value => (IAtomNode)Children![0];
-        public override AtomPrimaryView GetView(int position, IRedView? parent)
-            => new AtomPrimaryView(this, position, parent);
-    }
-    public sealed partial class AtomPrimaryView : RawPrimaryView
-    {
-        public AtomPrimaryView(AtomPrimaryNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IAtomView? _field_value = null;
-        public IAtomView Value
+public sealed partial record AtomPrimaryNode : RawPrimaryNode
+{
+    public IAtomNode Value => (IAtomNode)Children![0];
+    public override AtomPrimaryView GetView(int position, IRedView? parent)
+        => new AtomPrimaryView(this, position, parent);
+}
+
+public sealed partial class AtomPrimaryView : RawPrimaryView
+{
+    public AtomPrimaryView(AtomPrimaryNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IAtomView? _field_value = null;
+    public IAtomView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (IAtomView)((AtomPrimaryNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IAtomView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (IAtomView)((AtomPrimaryNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IAtomView)_field_value;
         }
     }
 }

@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record TryFinallyStatementNode : TryStatementNode
-    {
-        public FinallyBlockNode Finally => (FinallyBlockNode)Children![3];
-        public override TryFinallyStatementView GetView(int position, IRedView? parent)
-            => new TryFinallyStatementView(this, position, parent);
-    }
-    public sealed partial class TryFinallyStatementView : TryStatementView
-    {
-        public TryFinallyStatementView(TryFinallyStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private FinallyBlockView? _field_finally = null;
-        public FinallyBlockView Finally
+public sealed partial record TryFinallyStatementNode : TryStatementNode
+{
+    public FinallyBlockNode Finally => (FinallyBlockNode)Children![3];
+    public override TryFinallyStatementView GetView(int position, IRedView? parent)
+        => new TryFinallyStatementView(this, position, parent);
+}
+
+public sealed partial class TryFinallyStatementView : TryStatementView
+{
+    public TryFinallyStatementView(TryFinallyStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private FinallyBlockView? _field_finally = null;
+    public FinallyBlockView Finally
+    {
+        get
         {
-            get
+            if (_field_finally == null)
             {
-                if (_field_finally == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_finally = (FinallyBlockView)((TryFinallyStatementNode)base.Green).Finally!.GetView(_positionOfField, this);
-                }
-                return (FinallyBlockView)_field_finally;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_finally = (FinallyBlockView)((TryFinallyStatementNode)base.Green).Finally!.GetView(_positionOfField, this);
             }
+            return (FinallyBlockView)_field_finally;
         }
     }
 }

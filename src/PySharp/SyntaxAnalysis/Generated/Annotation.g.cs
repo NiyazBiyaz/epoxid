@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record AnnotationNode : GreenNode
-    {
-        public IExpressionNode Value => (IExpressionNode)Children![1];
-        public override AnnotationView GetView(int position, IRedView? parent)
-            => new AnnotationView(this, position, parent);
-    }
-    public sealed partial class AnnotationView : RedView
-    {
-        public AnnotationView(AnnotationNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+public sealed partial record AnnotationNode : GreenNode
+{
+    public IExpressionNode Value => (IExpressionNode)Children![1];
+    public override AnnotationView GetView(int position, IRedView? parent)
+        => new AnnotationView(this, position, parent);
+}
+
+public sealed partial class AnnotationView : RedView
+{
+    public AnnotationView(AnnotationNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IExpressionView)((AnnotationNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IExpressionView)((AnnotationNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
     }
 }

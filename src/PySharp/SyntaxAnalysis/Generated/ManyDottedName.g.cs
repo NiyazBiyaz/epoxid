@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ManyDottedNameNode : DottedNameNode
 {
-    public sealed partial record ManyDottedNameNode : DottedNameNode
+    public DottedNameNode Left => (DottedNameNode)Children![0];
+    public TokenNode Right => (TokenNode)Children![2];
+    public override ManyDottedNameView GetView(int position, IRedView? parent)
+        => new ManyDottedNameView(this, position, parent);
+}
+
+public sealed partial class ManyDottedNameView : DottedNameView
+{
+    public ManyDottedNameView(ManyDottedNameNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public DottedNameNode Left => (DottedNameNode)Children![0];
-        public TokenNode Right => (TokenNode)Children![2];
-        public override ManyDottedNameView GetView(int position, IRedView? parent)
-            => new ManyDottedNameView(this, position, parent);
     }
-    public sealed partial class ManyDottedNameView : DottedNameView
+
+    private DottedNameView? _field_left = null;
+    public DottedNameView Left
     {
-        public ManyDottedNameView(ManyDottedNameNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private DottedNameView? _field_left = null;
-        public DottedNameView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (DottedNameView)((ManyDottedNameNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (DottedNameView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (DottedNameView)((ManyDottedNameNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (DottedNameView)_field_left;
         }
+    }
 
-        private TokenView? _field_right = null;
-        public TokenView Right
+    private TokenView? _field_right = null;
+    public TokenView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (TokenView)((ManyDottedNameNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (TokenView)((ManyDottedNameNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_right;
         }
     }
 }

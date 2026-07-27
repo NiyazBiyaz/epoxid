@@ -27,11 +27,6 @@ internal class Program
 
         root.Add(parserOutput);
 
-        Option<bool> forceOption = new("--force", "-f")
-        {
-            Description = "Force to overwrite parser file if it exists.",
-        };
-
         Option<bool> splitFilesOption = new("--split-files")
         {
             Description = "Create separate files for parser and each AST node.",
@@ -42,7 +37,6 @@ internal class Program
             Description = "Enable output code to have block namespaces.",
         };
 
-        root.Add(forceOption);
         root.Add(splitFilesOption);
         root.Add(blockNamespaceOption);
 
@@ -50,7 +44,6 @@ internal class Program
         {
             string? output = parseResult.GetValue(parserOutput);
             var grammarFile = parseResult.GetValue(grammarInput) ?? throw new NullReferenceException("Given argument is null.");
-            bool forced = parseResult.GetValue(forceOption);
             bool splitFiles = parseResult.GetValue(splitFilesOption);
             bool blockNamespace = parseResult.GetValue(blockNamespaceOption);
 
@@ -58,12 +51,6 @@ internal class Program
             {
                 Console.Error.WriteLine($"File '{grammarFile.FullName}' does not exists.");
                 Environment.Exit(1);
-            }
-
-            if (output != null && splitFiles)
-            {
-                if (!Directory.Exists(output))
-                    Directory.CreateDirectory(output);
             }
 
             string grammar = grammarFile.OpenText().ReadToEnd();
@@ -111,101 +98,57 @@ internal class Program
 
             var boundGrammar = binder.Grammar;
 
-            // TODO: move it to the CsGenerator
             if (splitFiles)
             {
-                foreach (var type in boundGrammar.Types)
+                if (output != null && !Directory.Exists(output))
                 {
-                    string outputPath = type.Name + ".g.cs";
-                    if (output != null)
-                        outputPath = Path.Combine(output, outputPath);
-
-                    var fileGenerator = new CsGenerator(boundGrammar.AccessModifier);
-
-                    fileGenerator.AddFileHeader(boundGrammar.UserHeader, grammarFile.Name);
-
-                    if (blockNamespace)
-                    {
-                        fileGenerator.AddLine($"namespace {boundGrammar.Namespace}");
-                        using (fileGenerator.CreateBlock())
-                        {
-                            fileGenerator.AddType(type.ToIr());
-                        }
-                    }
-                    else
-                    {
-                        fileGenerator.AddLine($"namespace {boundGrammar.Namespace};");
-                        fileGenerator.AddType(type.ToIr());
-                    }
-
-                    File.WriteAllText(outputPath, fileGenerator.Dump());
+                    Directory.CreateDirectory(output);
                 }
 
+                if (output != null)
                 {
-                    string outputPath = boundGrammar.ParserName + ".g.cs";
-                    if (output != null)
-                        outputPath = Path.Combine(output, outputPath);
+                    output += Path.DirectorySeparatorChar;
+                }
 
-                    var fileGenerator = new CsGenerator(boundGrammar.AccessModifier);
+                string parserOutput = output + boundGrammar.ParserName + ".g.cs";
 
-                    fileGenerator.AddFileHeader(boundGrammar.UserHeader, grammarFile.Name);
+                var grammarIr = boundGrammar.ToIr();
 
-                    if (blockNamespace)
-                    {
-                        fileGenerator.AddLine($"namespace {boundGrammar.Namespace}");
-                        using (fileGenerator.CreateBlock())
-                        {
-                            fileGenerator.AddParserSignature(boundGrammar.ParserName, boundGrammar.TopLevelNodeName);
-                            fileGenerator.AddParserBody(
-                                boundGrammar.MainRule.Name,
-                                boundGrammar.TopLevelNodeName,
-                                boundGrammar.Rules.Select(r => r.ToIr()),
-                                []);
-                        }
-                    }
-                    else
-                    {
-                        fileGenerator.AddLine($"namespace {boundGrammar.Namespace};");
-                        fileGenerator.AddParserSignature(boundGrammar.ParserName, boundGrammar.TopLevelNodeName);
-                        fileGenerator.AddParserBody(
-                            boundGrammar.MainRule.Name,
-                            boundGrammar.TopLevelNodeName,
-                            boundGrammar.Rules.Select(r => r.ToIr()),
-                            []);
-                    }
-                    File.WriteAllText(outputPath, fileGenerator.Dump());
+                var parserGenerator = new CsGenerator(boundGrammar.AccessModifier);
+
+                parserGenerator.AddFileHeader(boundGrammar.UserHeader, grammarFile.Name);
+                parserGenerator.SetupNamespace(boundGrammar.Namespace, blockNamespace);
+                parserGenerator.AddParser(grammarIr);
+
+                File.WriteAllText(parserOutput, parserGenerator.Dump());
+
+                foreach (var type in grammarIr.Types)
+                {
+                    string typeOutput = output + type.Name + ".g.cs";
+
+                    var typeGenerator = new CsGenerator(boundGrammar.AccessModifier);
+
+                    typeGenerator.AddFileHeader(boundGrammar.UserHeader, grammarFile.Name);
+                    typeGenerator.SetupNamespace(boundGrammar.Namespace, blockNamespace);
+                    typeGenerator.AddType(type);
+
+                    File.WriteAllText(typeOutput, typeGenerator.Dump());
                 }
             }
             else
             {
-                var fileGenerator = new CsGenerator(boundGrammar.AccessModifier);
+                output ??= boundGrammar.ParserName + ".g.cs";
 
-                fileGenerator.AddFileHeader(boundGrammar.UserHeader, grammarFile.Name);
-                string generatedGrammar = boundGrammar.GenerateCode();
+                var grammarIr = boundGrammar.ToIr();
 
-                if (blockNamespace)
-                {
-                    fileGenerator.AddLine($"namespace {boundGrammar.Namespace}");
-                    using (fileGenerator.CreateBlock())
-                    {
-                        fileGenerator.AddFileBody(generatedGrammar);
-                    }
-                }
-                else
-                {
-                    fileGenerator.AddLine($"namespace {boundGrammar.Namespace};");
-                    fileGenerator.AddFileBody(generatedGrammar);
-                }
+                var parserGenerator = new CsGenerator(boundGrammar.AccessModifier);
 
-                string outputPath = output ?? boundGrammar.ParserName + ".g.cs";
+                parserGenerator.AddFileHeader(boundGrammar.UserHeader, grammarFile.Name);
+                parserGenerator.SetupNamespace(boundGrammar.Namespace, blockNamespace);
+                parserGenerator.AddParser(grammarIr);
+                parserGenerator.AddTypes(grammarIr.Types);
 
-                if (File.Exists(outputPath))
-                {
-                    Console.Error.WriteLine($"File '{outputPath}' already exists. Use --force flag to overwrite it.");
-                    Environment.Exit(1);
-                }
-
-                File.WriteAllText(outputPath, fileGenerator.Dump());
+                File.WriteAllText(output, parserGenerator.Dump());
             }
         });
 

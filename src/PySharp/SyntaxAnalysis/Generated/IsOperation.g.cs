@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record IsOperationNode : CompareOperationNode
-    {
-        public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
-        public override IsOperationView GetView(int position, IRedView? parent)
-            => new IsOperationView(this, position, parent);
-    }
-    public sealed partial class IsOperationView : CompareOperationView
-    {
-        public IsOperationView(IsOperationNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IBitwiseOrExpressionView? _field_right = null;
-        public IBitwiseOrExpressionView Right
+public sealed partial record IsOperationNode : CompareOperationNode
+{
+    public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
+    public override IsOperationView GetView(int position, IRedView? parent)
+        => new IsOperationView(this, position, parent);
+}
+
+public sealed partial class IsOperationView : CompareOperationView
+{
+    public IsOperationView(IsOperationNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IBitwiseOrExpressionView? _field_right = null;
+    public IBitwiseOrExpressionView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_right = (IBitwiseOrExpressionView)((IsOperationNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (IBitwiseOrExpressionView)_field_right;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_right = (IBitwiseOrExpressionView)((IsOperationNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (IBitwiseOrExpressionView)_field_right;
         }
     }
 }

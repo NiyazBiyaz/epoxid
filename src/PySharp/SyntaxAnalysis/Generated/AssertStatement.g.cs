@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AssertStatementNode : GreenNode, ISimpleStatementNode
 {
-    public sealed partial record AssertStatementNode : GreenNode, ISimpleStatementNode
+    public IExpressionNode Guard => (IExpressionNode)Children![1];
+    public AssertMessageNode? Message => Children![2] as AssertMessageNode;
+    public override AssertStatementView GetView(int position, IRedView? parent)
+        => new AssertStatementView(this, position, parent);
+}
+
+public sealed partial class AssertStatementView : RedView, ISimpleStatementView
+{
+    public AssertStatementView(AssertStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode Guard => (IExpressionNode)Children![1];
-        public AssertMessageNode? Message => Children![2] as AssertMessageNode;
-        public override AssertStatementView GetView(int position, IRedView? parent)
-            => new AssertStatementView(this, position, parent);
     }
-    public sealed partial class AssertStatementView : RedView, ISimpleStatementView
+
+    private IExpressionView? _field_guard = null;
+    public IExpressionView Guard
     {
-        public AssertStatementView(AssertStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_guard = null;
-        public IExpressionView Guard
-        {
-            get
+            if (_field_guard == null)
             {
-                if (_field_guard == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_guard = (IExpressionView)((AssertStatementNode)base.Green).Guard!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_guard;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_guard = (IExpressionView)((AssertStatementNode)base.Green).Guard!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_guard;
         }
+    }
 
-        private AssertMessageView? _field_message = null;
-        public AssertMessageView? Message
+    private AssertMessageView? _field_message = null;
+    public AssertMessageView? Message
+    {
+        get
         {
-            get
+            if (_field_message == null && ((AssertStatementNode)base.Green).Message != null)
             {
-                if (_field_message == null && ((AssertStatementNode)base.Green).Message != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_message = (AssertMessageView)((AssertStatementNode)base.Green).Message!.GetView(_positionOfField, this);
-                }
-                return (AssertMessageView?)_field_message;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_message = (AssertMessageView)((AssertStatementNode)base.Green).Message!.GetView(_positionOfField, this);
             }
+            return (AssertMessageView?)_field_message;
         }
     }
 }

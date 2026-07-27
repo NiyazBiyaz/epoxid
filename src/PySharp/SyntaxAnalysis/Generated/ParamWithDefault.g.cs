@@ -8,46 +8,46 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record ParamWithDefaultNode : GreenNode
 {
-    public abstract partial record ParamWithDefaultNode : GreenNode
+    public ParamNode Param => (ParamNode)Children![0];
+    public DefaultValueNode DefaultValue => (DefaultValueNode)Children![1];
+}
+
+public abstract partial class ParamWithDefaultView : RedView
+{
+    public ParamWithDefaultView(ParamWithDefaultNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public ParamNode Param => (ParamNode)Children![0];
-        public DefaultValueNode DefaultValue => (DefaultValueNode)Children![1];
     }
-    public abstract partial class ParamWithDefaultView : RedView
+
+    private ParamView? _field_param = null;
+    public ParamView Param
     {
-        public ParamWithDefaultView(ParamWithDefaultNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ParamView? _field_param = null;
-        public ParamView Param
-        {
-            get
+            if (_field_param == null)
             {
-                if (_field_param == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_param = (ParamView)((ParamWithDefaultNode)base.Green).Param!.GetView(_positionOfField, this);
-                }
-                return (ParamView)_field_param;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_param = (ParamView)((ParamWithDefaultNode)base.Green).Param!.GetView(_positionOfField, this);
             }
+            return (ParamView)_field_param;
         }
+    }
 
-        private DefaultValueView? _field_defaultValue = null;
-        public DefaultValueView DefaultValue
+    private DefaultValueView? _field_defaultValue = null;
+    public DefaultValueView DefaultValue
+    {
+        get
         {
-            get
+            if (_field_defaultValue == null)
             {
-                if (_field_defaultValue == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_defaultValue = (DefaultValueView)((ParamWithDefaultNode)base.Green).DefaultValue!.GetView(_positionOfField, this);
-                }
-                return (DefaultValueView)_field_defaultValue;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_defaultValue = (DefaultValueView)((ParamWithDefaultNode)base.Green).DefaultValue!.GetView(_positionOfField, this);
             }
+            return (DefaultValueView)_field_defaultValue;
         }
     }
 }

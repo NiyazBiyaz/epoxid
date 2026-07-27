@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record EllipsisAtomNode : OneTokenAtomNode
 {
-    public sealed partial record EllipsisAtomNode : OneTokenAtomNode
+    public override EllipsisAtomView GetView(int position, IRedView? parent)
+        => new EllipsisAtomView(this, position, parent);
+}
+
+public sealed partial class EllipsisAtomView : OneTokenAtomView
+{
+    public EllipsisAtomView(EllipsisAtomNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override EllipsisAtomView GetView(int position, IRedView? parent)
-            => new EllipsisAtomView(this, position, parent);
-    }
-    public sealed partial class EllipsisAtomView : OneTokenAtomView
-    {
-        public EllipsisAtomView(EllipsisAtomNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

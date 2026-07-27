@@ -2,6 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace PySharp.SyntaxAnalysis.Generator;
 
+internal record GrammarIr(
+    string ParserName,
+    string TopLevelNodeName,
+    RuleIr MainRule,
+    IEnumerable<RuleIr> Rules,
+    IEnumerable<TypeIr> Types);
+
 internal record RuleIr(
     string SourceText,
     string Name,
@@ -9,7 +16,6 @@ internal record RuleIr(
     bool EnableMemo,
     bool IsLeftRecursive,
     IEnumerable<AlternativeIr> Alternatives);
-
 
 internal record VariableIr(string Name, bool IsArray, bool IsOptional, string? TypeName, bool TypeIsUnion)
 {

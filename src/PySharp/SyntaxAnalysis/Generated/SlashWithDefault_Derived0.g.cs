@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record SlashWithDefault_Derived0Node : SlashWithDefaultNode
-    {
-        public TokenNode Token1 => (TokenNode)Children![3];
-        public override SlashWithDefault_Derived0View GetView(int position, IRedView? parent)
-            => new SlashWithDefault_Derived0View(this, position, parent);
-    }
-    public sealed partial class SlashWithDefault_Derived0View : SlashWithDefaultView
-    {
-        public SlashWithDefault_Derived0View(SlashWithDefault_Derived0Node green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TokenView? _field_token1 = null;
-        public TokenView Token1
+public sealed partial record SlashWithDefault_Derived0Node : SlashWithDefaultNode
+{
+    public TokenNode Token1 => (TokenNode)Children![3];
+    public override SlashWithDefault_Derived0View GetView(int position, IRedView? parent)
+        => new SlashWithDefault_Derived0View(this, position, parent);
+}
+
+public sealed partial class SlashWithDefault_Derived0View : SlashWithDefaultView
+{
+    public SlashWithDefault_Derived0View(SlashWithDefault_Derived0Node green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_token1 = null;
+    public TokenView Token1
+    {
+        get
         {
-            get
+            if (_field_token1 == null)
             {
-                if (_field_token1 == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_token1 = (TokenView)((SlashWithDefault_Derived0Node)base.Green).Token1!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token1;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_token1 = (TokenView)((SlashWithDefault_Derived0Node)base.Green).Token1!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token1;
         }
     }
 }

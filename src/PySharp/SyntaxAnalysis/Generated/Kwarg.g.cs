@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record KwargNode : GreenNode, IKwargOrStarredNode, IKwargOrDoubleStarredNode
 {
-    public sealed partial record KwargNode : GreenNode, IKwargOrStarredNode, IKwargOrDoubleStarredNode
+    public TokenNode Keyword => (TokenNode)Children![0];
+    public IExpressionNode Value => (IExpressionNode)Children![2];
+    public override KwargView GetView(int position, IRedView? parent)
+        => new KwargView(this, position, parent);
+}
+
+public sealed partial class KwargView : RedView, IKwargOrStarredView, IKwargOrDoubleStarredView
+{
+    public KwargView(KwargNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Keyword => (TokenNode)Children![0];
-        public IExpressionNode Value => (IExpressionNode)Children![2];
-        public override KwargView GetView(int position, IRedView? parent)
-            => new KwargView(this, position, parent);
     }
-    public sealed partial class KwargView : RedView, IKwargOrStarredView, IKwargOrDoubleStarredView
+
+    private TokenView? _field_keyword = null;
+    public TokenView Keyword
     {
-        public KwargView(KwargNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_keyword = null;
-        public TokenView Keyword
-        {
-            get
+            if (_field_keyword == null)
             {
-                if (_field_keyword == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_keyword = (TokenView)((KwargNode)base.Green).Keyword!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_keyword;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_keyword = (TokenView)((KwargNode)base.Green).Keyword!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_keyword;
         }
+    }
 
-        private IExpressionView? _field_value = null;
-        public IExpressionView Value
+    private IExpressionView? _field_value = null;
+    public IExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_value = (IExpressionView)((KwargNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_value = (IExpressionView)((KwargNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_value;
         }
     }
 }

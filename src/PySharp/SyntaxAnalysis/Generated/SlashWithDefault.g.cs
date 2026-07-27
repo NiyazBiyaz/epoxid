@@ -8,61 +8,61 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record SlashWithDefaultNode : GreenNode
 {
-    public abstract partial record SlashWithDefaultNode : GreenNode
+    public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
+    public TokenNode Token => (TokenNode)Children![2];
+}
+
+public abstract partial class SlashWithDefaultView : RedView
+{
+    public SlashWithDefaultView(SlashWithDefaultNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
-        public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
-        public TokenNode Token => (TokenNode)Children![2];
     }
-    public abstract partial class SlashWithDefaultView : RedView
+
+    private ViewArray<ParamNoDefaultView>? _field_paramNoDefault = null;
+    public ViewArray<ParamNoDefaultView> ParamNoDefault
     {
-        public SlashWithDefaultView(SlashWithDefaultNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ViewArray<ParamNoDefaultView>? _field_paramNoDefault = null;
-        public ViewArray<ParamNoDefaultView> ParamNoDefault
-        {
-            get
+            if (_field_paramNoDefault == null)
             {
-                if (_field_paramNoDefault == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_paramNoDefault = (ViewArray<ParamNoDefaultView>)new ViewArray<ParamNoDefaultView>(((SlashWithDefaultNode)base.Green).ParamNoDefault, _positionOfField, this);
-                }
-                return (ViewArray<ParamNoDefaultView>)_field_paramNoDefault;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_paramNoDefault = (ViewArray<ParamNoDefaultView>)new ViewArray<ParamNoDefaultView>(((SlashWithDefaultNode)base.Green).ParamNoDefault, _positionOfField, this);
             }
+            return (ViewArray<ParamNoDefaultView>)_field_paramNoDefault;
         }
+    }
 
-        private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-        public ViewArray<ParamWithDefaultView> ParamWithDefault
+    private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
+    {
+        get
         {
-            get
+            if (_field_paramWithDefault == null)
             {
-                if (_field_paramWithDefault == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_paramWithDefault = (ViewArray<ParamWithDefaultView>)new ViewArray<ParamWithDefaultView>(((SlashWithDefaultNode)base.Green).ParamWithDefault, _positionOfField, this);
-                }
-                return (ViewArray<ParamWithDefaultView>)_field_paramWithDefault;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_paramWithDefault = (ViewArray<ParamWithDefaultView>)new ViewArray<ParamWithDefaultView>(((SlashWithDefaultNode)base.Green).ParamWithDefault, _positionOfField, this);
             }
+            return (ViewArray<ParamWithDefaultView>)_field_paramWithDefault;
         }
+    }
 
-        private TokenView? _field_token = null;
-        public TokenView Token
+    private TokenView? _field_token = null;
+    public TokenView Token
+    {
+        get
         {
-            get
+            if (_field_token == null)
             {
-                if (_field_token == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_token = (TokenView)((SlashWithDefaultNode)base.Green).Token!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_token = (TokenView)((SlashWithDefaultNode)base.Green).Token!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token;
         }
     }
 }

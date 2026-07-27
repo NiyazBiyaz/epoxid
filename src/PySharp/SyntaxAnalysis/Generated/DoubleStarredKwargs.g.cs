@@ -8,59 +8,59 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record DoubleStarredKwargsNode : KwargsNode
-    {
-        private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode>? _field_Items = null;
-        public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode> Items
-        {
-            get
-            {
-                if (_field_Items is null)
-                {
-                    var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IKwargOrDoubleStarredNode>();
-                    _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Items.Value;
-            }
-        }
-        public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
-        public override DoubleStarredKwargsView GetView(int position, IRedView? parent)
-            => new DoubleStarredKwargsView(this, position, parent);
-    }
-    public sealed partial class DoubleStarredKwargsView : KwargsView
-    {
-        public DoubleStarredKwargsView(DoubleStarredKwargsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<RedView>? _ast_field_items = null;
-        public ViewArray<RedView> AstItems
+public sealed partial record DoubleStarredKwargsNode : KwargsNode
+{
+    private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode>? _field_Items = null;
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredNode> Items
+    {
+        get
         {
-            get
+            if (_field_Items is null)
             {
-                if (_ast_field_items == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _ast_field_items = new ViewArray<RedView>(((DoubleStarredKwargsNode)base.Green).AstItems, _positionOfField, this);
-                }
-                return _ast_field_items.Value;
+                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IKwargOrDoubleStarredNode>();
+                _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Items.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView>? _field_items = null;
-        public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView> Items
+    }
+    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public override DoubleStarredKwargsView GetView(int position, IRedView? parent)
+        => new DoubleStarredKwargsView(this, position, parent);
+}
+
+public sealed partial class DoubleStarredKwargsView : KwargsView
+{
+    public DoubleStarredKwargsView(DoubleStarredKwargsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<RedView>? _ast_field_items = null;
+    public ViewArray<RedView> AstItems
+    {
+        get
         {
-            get
+            if (_ast_field_items == null)
             {
-                if (_field_items == null)
-                {
-                    var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IKwargOrDoubleStarredView>();
-                    _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_items.Value;
+                var _positionOfField = base.GetPositionFor(0);
+                _ast_field_items = new ViewArray<RedView>(((DoubleStarredKwargsNode)base.Green).AstItems, _positionOfField, this);
             }
+            return _ast_field_items.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView>? _field_items = null;
+    public global::System.Collections.Immutable.ImmutableArray<IKwargOrDoubleStarredView> Items
+    {
+        get
+        {
+            if (_field_items == null)
+            {
+                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<IKwargOrDoubleStarredView>();
+                _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_items.Value;
         }
     }
 }

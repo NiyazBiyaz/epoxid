@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TupleNode : GreenNode, IAtomNode
 {
-    public sealed partial record TupleNode : GreenNode, IAtomNode
+    public IStarNamedExpressionNode First => (IStarNamedExpressionNode)Children![1];
+    public StarNamedExpressionsNode? Rest => Children![3] as StarNamedExpressionsNode;
+    public override TupleView GetView(int position, IRedView? parent)
+        => new TupleView(this, position, parent);
+}
+
+public sealed partial class TupleView : RedView, IAtomView
+{
+    public TupleView(TupleNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IStarNamedExpressionNode First => (IStarNamedExpressionNode)Children![1];
-        public StarNamedExpressionsNode? Rest => Children![3] as StarNamedExpressionsNode;
-        public override TupleView GetView(int position, IRedView? parent)
-            => new TupleView(this, position, parent);
     }
-    public sealed partial class TupleView : RedView, IAtomView
+
+    private IStarNamedExpressionView? _field_first = null;
+    public IStarNamedExpressionView First
     {
-        public TupleView(TupleNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IStarNamedExpressionView? _field_first = null;
-        public IStarNamedExpressionView First
-        {
-            get
+            if (_field_first == null)
             {
-                if (_field_first == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_first = (IStarNamedExpressionView)((TupleNode)base.Green).First!.GetView(_positionOfField, this);
-                }
-                return (IStarNamedExpressionView)_field_first;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_first = (IStarNamedExpressionView)((TupleNode)base.Green).First!.GetView(_positionOfField, this);
             }
+            return (IStarNamedExpressionView)_field_first;
         }
+    }
 
-        private StarNamedExpressionsView? _field_rest = null;
-        public StarNamedExpressionsView? Rest
+    private StarNamedExpressionsView? _field_rest = null;
+    public StarNamedExpressionsView? Rest
+    {
+        get
         {
-            get
+            if (_field_rest == null && ((TupleNode)base.Green).Rest != null)
             {
-                if (_field_rest == null && ((TupleNode)base.Green).Rest != null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_rest = (StarNamedExpressionsView)((TupleNode)base.Green).Rest!.GetView(_positionOfField, this);
-                }
-                return (StarNamedExpressionsView?)_field_rest;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_rest = (StarNamedExpressionsView)((TupleNode)base.Green).Rest!.GetView(_positionOfField, this);
             }
+            return (StarNamedExpressionsView?)_field_rest;
         }
     }
 }

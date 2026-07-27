@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record FStringValueNode : GreenNode
 {
-    public abstract partial record FStringValueNode : GreenNode
+}
+
+public abstract partial class FStringValueView : RedView
+{
+    public FStringValueView(FStringValueNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class FStringValueView : RedView
-    {
-        public FStringValueView(FStringValueNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

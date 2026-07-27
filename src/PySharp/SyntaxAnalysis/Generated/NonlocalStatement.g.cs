@@ -8,59 +8,59 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record NonlocalStatementNode : GreenNode, ISimpleStatementNode
-    {
-        private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Variables = null;
-        public global::System.Collections.Immutable.ImmutableArray<TokenNode> Variables
-        {
-            get
-            {
-                if (_field_Variables is null)
-                {
-                    var _tmp = AstVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
-                    _field_Variables = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_Variables.Value;
-            }
-        }
-        public NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
-        public override NonlocalStatementView GetView(int position, IRedView? parent)
-            => new NonlocalStatementView(this, position, parent);
-    }
-    public sealed partial class NonlocalStatementView : RedView, ISimpleStatementView
-    {
-        public NonlocalStatementView(NonlocalStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<RedView>? _ast_field_variables = null;
-        public ViewArray<RedView> AstVariables
+public sealed partial record NonlocalStatementNode : GreenNode, ISimpleStatementNode
+{
+    private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Variables = null;
+    public global::System.Collections.Immutable.ImmutableArray<TokenNode> Variables
+    {
+        get
         {
-            get
+            if (_field_Variables is null)
             {
-                if (_ast_field_variables == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _ast_field_variables = new ViewArray<RedView>(((NonlocalStatementNode)base.Green).AstVariables, _positionOfField, this);
-                }
-                return _ast_field_variables.Value;
+                var _tmp = AstVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
+                _field_Variables = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
+            return _field_Variables.Value;
         }
-        private global::System.Collections.Immutable.ImmutableArray<TokenView>? _field_variables = null;
-        public global::System.Collections.Immutable.ImmutableArray<TokenView> Variables
+    }
+    public NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
+    public override NonlocalStatementView GetView(int position, IRedView? parent)
+        => new NonlocalStatementView(this, position, parent);
+}
+
+public sealed partial class NonlocalStatementView : RedView, ISimpleStatementView
+{
+    public NonlocalStatementView(NonlocalStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<RedView>? _ast_field_variables = null;
+    public ViewArray<RedView> AstVariables
+    {
+        get
         {
-            get
+            if (_ast_field_variables == null)
             {
-                if (_field_variables == null)
-                {
-                    var _tmp = AstVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
-                    _field_variables = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
-                }
-                return _field_variables.Value;
+                var _positionOfField = base.GetPositionFor(1);
+                _ast_field_variables = new ViewArray<RedView>(((NonlocalStatementNode)base.Green).AstVariables, _positionOfField, this);
             }
+            return _ast_field_variables.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<TokenView>? _field_variables = null;
+    public global::System.Collections.Immutable.ImmutableArray<TokenView> Variables
+    {
+        get
+        {
+            if (_field_variables == null)
+            {
+                var _tmp = AstVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
+                _field_variables = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_variables.Value;
         }
     }
 }

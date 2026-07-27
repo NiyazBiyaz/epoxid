@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ImportFromAllTargetsNode : ImportFromTargetsNode
 {
-    public sealed partial record ImportFromAllTargetsNode : ImportFromTargetsNode
+    public override ImportFromAllTargetsView GetView(int position, IRedView? parent)
+        => new ImportFromAllTargetsView(this, position, parent);
+}
+
+public sealed partial class ImportFromAllTargetsView : ImportFromTargetsView
+{
+    public ImportFromAllTargetsView(ImportFromAllTargetsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override ImportFromAllTargetsView GetView(int position, IRedView? parent)
-            => new ImportFromAllTargetsView(this, position, parent);
-    }
-    public sealed partial class ImportFromAllTargetsView : ImportFromTargetsView
-    {
-        public ImportFromAllTargetsView(ImportFromAllTargetsNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

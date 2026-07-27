@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record FactorNode : GreenNode, IFactorExpressionNode
 {
-    public sealed partial record FactorNode : GreenNode, IFactorExpressionNode
+    public TokenNode Operator => (TokenNode)Children![0];
+    public IFactorExpressionNode Value => (IFactorExpressionNode)Children![1];
+    public override FactorView GetView(int position, IRedView? parent)
+        => new FactorView(this, position, parent);
+}
+
+public sealed partial class FactorView : RedView, IFactorExpressionView
+{
+    public FactorView(FactorNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Operator => (TokenNode)Children![0];
-        public IFactorExpressionNode Value => (IFactorExpressionNode)Children![1];
-        public override FactorView GetView(int position, IRedView? parent)
-            => new FactorView(this, position, parent);
     }
-    public sealed partial class FactorView : RedView, IFactorExpressionView
+
+    private TokenView? _field_operator = null;
+    public TokenView Operator
     {
-        public FactorView(FactorNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_operator = null;
-        public TokenView Operator
-        {
-            get
+            if (_field_operator == null)
             {
-                if (_field_operator == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_operator = (TokenView)((FactorNode)base.Green).Operator!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_operator;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_operator = (TokenView)((FactorNode)base.Green).Operator!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_operator;
         }
+    }
 
-        private IFactorExpressionView? _field_value = null;
-        public IFactorExpressionView Value
+    private IFactorExpressionView? _field_value = null;
+    public IFactorExpressionView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_value = (IFactorExpressionView)((FactorNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (IFactorExpressionView)_field_value;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_value = (IFactorExpressionView)((FactorNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (IFactorExpressionView)_field_value;
         }
     }
 }

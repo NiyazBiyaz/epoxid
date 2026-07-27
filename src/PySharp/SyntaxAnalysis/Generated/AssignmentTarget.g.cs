@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record AssignmentTargetNode : GreenNode
-    {
-        public StarTargetsNode Value => (StarTargetsNode)Children![0];
-        public override AssignmentTargetView GetView(int position, IRedView? parent)
-            => new AssignmentTargetView(this, position, parent);
-    }
-    public sealed partial class AssignmentTargetView : RedView
-    {
-        public AssignmentTargetView(AssignmentTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private StarTargetsView? _field_value = null;
-        public StarTargetsView Value
+public sealed partial record AssignmentTargetNode : GreenNode
+{
+    public StarTargetsNode Value => (StarTargetsNode)Children![0];
+    public override AssignmentTargetView GetView(int position, IRedView? parent)
+        => new AssignmentTargetView(this, position, parent);
+}
+
+public sealed partial class AssignmentTargetView : RedView
+{
+    public AssignmentTargetView(AssignmentTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private StarTargetsView? _field_value = null;
+    public StarTargetsView Value
+    {
+        get
         {
-            get
+            if (_field_value == null)
             {
-                if (_field_value == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_value = (StarTargetsView)((AssignmentTargetNode)base.Green).Value!.GetView(_positionOfField, this);
-                }
-                return (StarTargetsView)_field_value;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_value = (StarTargetsView)((AssignmentTargetNode)base.Green).Value!.GetView(_positionOfField, this);
             }
+            return (StarTargetsView)_field_value;
         }
     }
 }

@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AnnotatedSubscriptAttributeAssignmentNode : AssignmentNode
 {
-    public sealed partial record AnnotatedSubscriptAttributeAssignmentNode : AssignmentNode
+    public SingleSubscriptAttributeTargetNode Target => (SingleSubscriptAttributeTargetNode)Children![0];
+    public IExpressionNode TypeHint => (IExpressionNode)Children![2];
+    public EqualAnnotatedRhsNode? Rhs => Children![3] as EqualAnnotatedRhsNode;
+    public override AnnotatedSubscriptAttributeAssignmentView GetView(int position, IRedView? parent)
+        => new AnnotatedSubscriptAttributeAssignmentView(this, position, parent);
+}
+
+public sealed partial class AnnotatedSubscriptAttributeAssignmentView : AssignmentView
+{
+    public AnnotatedSubscriptAttributeAssignmentView(AnnotatedSubscriptAttributeAssignmentNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public SingleSubscriptAttributeTargetNode Target => (SingleSubscriptAttributeTargetNode)Children![0];
-        public IExpressionNode TypeHint => (IExpressionNode)Children![2];
-        public EqualAnnotatedRhsNode? Rhs => Children![3] as EqualAnnotatedRhsNode;
-        public override AnnotatedSubscriptAttributeAssignmentView GetView(int position, IRedView? parent)
-            => new AnnotatedSubscriptAttributeAssignmentView(this, position, parent);
     }
-    public sealed partial class AnnotatedSubscriptAttributeAssignmentView : AssignmentView
+
+    private SingleSubscriptAttributeTargetView? _field_target = null;
+    public SingleSubscriptAttributeTargetView Target
     {
-        public AnnotatedSubscriptAttributeAssignmentView(AnnotatedSubscriptAttributeAssignmentNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private SingleSubscriptAttributeTargetView? _field_target = null;
-        public SingleSubscriptAttributeTargetView Target
-        {
-            get
+            if (_field_target == null)
             {
-                if (_field_target == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_target = (SingleSubscriptAttributeTargetView)((AnnotatedSubscriptAttributeAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
-                }
-                return (SingleSubscriptAttributeTargetView)_field_target;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_target = (SingleSubscriptAttributeTargetView)((AnnotatedSubscriptAttributeAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
             }
+            return (SingleSubscriptAttributeTargetView)_field_target;
         }
+    }
 
-        private IExpressionView? _field_typeHint = null;
-        public IExpressionView TypeHint
+    private IExpressionView? _field_typeHint = null;
+    public IExpressionView TypeHint
+    {
+        get
         {
-            get
+            if (_field_typeHint == null)
             {
-                if (_field_typeHint == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_typeHint = (IExpressionView)((AnnotatedSubscriptAttributeAssignmentNode)base.Green).TypeHint!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_typeHint;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_typeHint = (IExpressionView)((AnnotatedSubscriptAttributeAssignmentNode)base.Green).TypeHint!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_typeHint;
         }
+    }
 
-        private EqualAnnotatedRhsView? _field_rhs = null;
-        public EqualAnnotatedRhsView? Rhs
+    private EqualAnnotatedRhsView? _field_rhs = null;
+    public EqualAnnotatedRhsView? Rhs
+    {
+        get
         {
-            get
+            if (_field_rhs == null && ((AnnotatedSubscriptAttributeAssignmentNode)base.Green).Rhs != null)
             {
-                if (_field_rhs == null && ((AnnotatedSubscriptAttributeAssignmentNode)base.Green).Rhs != null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_rhs = (EqualAnnotatedRhsView)((AnnotatedSubscriptAttributeAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
-                }
-                return (EqualAnnotatedRhsView?)_field_rhs;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_rhs = (EqualAnnotatedRhsView)((AnnotatedSubscriptAttributeAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
             }
+            return (EqualAnnotatedRhsView?)_field_rhs;
         }
     }
 }

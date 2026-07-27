@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record SingleAttributeTargetNode : SingleSubscriptAttributeTargetNode
-    {
-        public TokenNode AttributeName => (TokenNode)Children![2];
-        public override SingleAttributeTargetView GetView(int position, IRedView? parent)
-            => new SingleAttributeTargetView(this, position, parent);
-    }
-    public sealed partial class SingleAttributeTargetView : SingleSubscriptAttributeTargetView
-    {
-        public SingleAttributeTargetView(SingleAttributeTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TokenView? _field_attributeName = null;
-        public TokenView AttributeName
+public sealed partial record SingleAttributeTargetNode : SingleSubscriptAttributeTargetNode
+{
+    public TokenNode AttributeName => (TokenNode)Children![2];
+    public override SingleAttributeTargetView GetView(int position, IRedView? parent)
+        => new SingleAttributeTargetView(this, position, parent);
+}
+
+public sealed partial class SingleAttributeTargetView : SingleSubscriptAttributeTargetView
+{
+    public SingleAttributeTargetView(SingleAttributeTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_attributeName = null;
+    public TokenView AttributeName
+    {
+        get
         {
-            get
+            if (_field_attributeName == null)
             {
-                if (_field_attributeName == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_attributeName = (TokenView)((SingleAttributeTargetNode)base.Green).AttributeName!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_attributeName;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_attributeName = (TokenView)((SingleAttributeTargetNode)base.Green).AttributeName!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_attributeName;
         }
     }
 }

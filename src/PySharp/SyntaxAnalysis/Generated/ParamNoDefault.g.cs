@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record ParamNoDefaultNode : GreenNode
-    {
-        public ParamNode Param => (ParamNode)Children![0];
-    }
-    public abstract partial class ParamNoDefaultView : RedView
-    {
-        public ParamNoDefaultView(ParamNoDefaultNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ParamView? _field_param = null;
-        public ParamView Param
+public abstract partial record ParamNoDefaultNode : GreenNode
+{
+    public ParamNode Param => (ParamNode)Children![0];
+}
+
+public abstract partial class ParamNoDefaultView : RedView
+{
+    public ParamNoDefaultView(ParamNoDefaultNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ParamView? _field_param = null;
+    public ParamView Param
+    {
+        get
         {
-            get
+            if (_field_param == null)
             {
-                if (_field_param == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_param = (ParamView)((ParamNoDefaultNode)base.Green).Param!.GetView(_positionOfField, this);
-                }
-                return (ParamView)_field_param;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_param = (ParamView)((ParamNoDefaultNode)base.Green).Param!.GetView(_positionOfField, this);
             }
+            return (ParamView)_field_param;
         }
     }
 }

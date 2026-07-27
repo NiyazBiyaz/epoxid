@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record PlainWithItemNode : WithItemNode
 {
-    public sealed partial record PlainWithItemNode : WithItemNode
+    public override PlainWithItemView GetView(int position, IRedView? parent)
+        => new PlainWithItemView(this, position, parent);
+}
+
+public sealed partial class PlainWithItemView : WithItemView
+{
+    public PlainWithItemView(PlainWithItemNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override PlainWithItemView GetView(int position, IRedView? parent)
-            => new PlainWithItemView(this, position, parent);
-    }
-    public sealed partial class PlainWithItemView : WithItemView
-    {
-        public PlainWithItemView(PlainWithItemNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

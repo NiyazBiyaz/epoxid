@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ImportFromNamesNode : ImportFromNode
 {
-    public sealed partial record ImportFromNamesNode : ImportFromNode
+    public DottedNameNode Path => (DottedNameNode)Children![2];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
+    public override ImportFromNamesView GetView(int position, IRedView? parent)
+        => new ImportFromNamesView(this, position, parent);
+}
+
+public sealed partial class ImportFromNamesView : ImportFromView
+{
+    public ImportFromNamesView(ImportFromNamesNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public DottedNameNode Path => (DottedNameNode)Children![2];
-        public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
-        public override ImportFromNamesView GetView(int position, IRedView? parent)
-            => new ImportFromNamesView(this, position, parent);
     }
-    public sealed partial class ImportFromNamesView : ImportFromView
+
+    private DottedNameView? _field_path = null;
+    public DottedNameView Path
     {
-        public ImportFromNamesView(ImportFromNamesNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private DottedNameView? _field_path = null;
-        public DottedNameView Path
-        {
-            get
+            if (_field_path == null)
             {
-                if (_field_path == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_path = (DottedNameView)((ImportFromNamesNode)base.Green).Path!.GetView(_positionOfField, this);
-                }
-                return (DottedNameView)_field_path;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_path = (DottedNameView)((ImportFromNamesNode)base.Green).Path!.GetView(_positionOfField, this);
             }
+            return (DottedNameView)_field_path;
         }
+    }
 
-        private ImportFromTargetsView? _field_targets = null;
-        public ImportFromTargetsView Targets
+    private ImportFromTargetsView? _field_targets = null;
+    public ImportFromTargetsView Targets
+    {
+        get
         {
-            get
+            if (_field_targets == null)
             {
-                if (_field_targets == null)
-                {
-                    var _positionOfField = base.GetPositionFor(4);
-                    _field_targets = (ImportFromTargetsView)((ImportFromNamesNode)base.Green).Targets!.GetView(_positionOfField, this);
-                }
-                return (ImportFromTargetsView)_field_targets;
+                var _positionOfField = base.GetPositionFor(4);
+                _field_targets = (ImportFromTargetsView)((ImportFromNamesNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
+            return (ImportFromTargetsView)_field_targets;
         }
     }
 }

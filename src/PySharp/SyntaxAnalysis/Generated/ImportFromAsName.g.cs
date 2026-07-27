@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record ImportFromAsNameNode : GreenNode
 {
-    public sealed partial record ImportFromAsNameNode : GreenNode
+    public TokenNode ToImport => (TokenNode)Children![0];
+    public AsNameNode? Alias => Children![1] as AsNameNode;
+    public override ImportFromAsNameView GetView(int position, IRedView? parent)
+        => new ImportFromAsNameView(this, position, parent);
+}
+
+public sealed partial class ImportFromAsNameView : RedView
+{
+    public ImportFromAsNameView(ImportFromAsNameNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode ToImport => (TokenNode)Children![0];
-        public AsNameNode? Alias => Children![1] as AsNameNode;
-        public override ImportFromAsNameView GetView(int position, IRedView? parent)
-            => new ImportFromAsNameView(this, position, parent);
     }
-    public sealed partial class ImportFromAsNameView : RedView
+
+    private TokenView? _field_toImport = null;
+    public TokenView ToImport
     {
-        public ImportFromAsNameView(ImportFromAsNameNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_toImport = null;
-        public TokenView ToImport
-        {
-            get
+            if (_field_toImport == null)
             {
-                if (_field_toImport == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_toImport = (TokenView)((ImportFromAsNameNode)base.Green).ToImport!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_toImport;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_toImport = (TokenView)((ImportFromAsNameNode)base.Green).ToImport!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_toImport;
         }
+    }
 
-        private AsNameView? _field_alias = null;
-        public AsNameView? Alias
+    private AsNameView? _field_alias = null;
+    public AsNameView? Alias
+    {
+        get
         {
-            get
+            if (_field_alias == null && ((ImportFromAsNameNode)base.Green).Alias != null)
             {
-                if (_field_alias == null && ((ImportFromAsNameNode)base.Green).Alias != null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_alias = (AsNameView)((ImportFromAsNameNode)base.Green).Alias!.GetView(_positionOfField, this);
-                }
-                return (AsNameView?)_field_alias;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_alias = (AsNameView)((ImportFromAsNameNode)base.Green).Alias!.GetView(_positionOfField, this);
             }
+            return (AsNameView?)_field_alias;
         }
     }
 }

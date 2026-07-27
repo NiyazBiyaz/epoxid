@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record WithItemNode : GreenNode
-    {
-        public IExpressionNode Expression => (IExpressionNode)Children![0];
-    }
-    public abstract partial class WithItemView : RedView
-    {
-        public WithItemView(WithItemNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private IExpressionView? _field_expression = null;
-        public IExpressionView Expression
+public abstract partial record WithItemNode : GreenNode
+{
+    public IExpressionNode Expression => (IExpressionNode)Children![0];
+}
+
+public abstract partial class WithItemView : RedView
+{
+    public WithItemView(WithItemNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private IExpressionView? _field_expression = null;
+    public IExpressionView Expression
+    {
+        get
         {
-            get
+            if (_field_expression == null)
             {
-                if (_field_expression == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_expression = (IExpressionView)((WithItemNode)base.Green).Expression!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_expression;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_expression = (IExpressionView)((WithItemNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_expression;
         }
     }
 }

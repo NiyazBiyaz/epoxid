@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record SliceNode : GreenNode
 {
-    public abstract partial record SliceNode : GreenNode
+}
+
+public abstract partial class SliceView : RedView
+{
+    public SliceView(SliceNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class SliceView : RedView
-    {
-        public SliceView(SliceNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record Parameters_Derived1Node : ParametersNode
 {
-    public sealed partial record Parameters_Derived1Node : ParametersNode
+    public SlashWithDefaultNode SlashWithDefault => (SlashWithDefaultNode)Children![0];
+    public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
+    public StarEtcNode? StarEtc => Children![2] as StarEtcNode;
+    public override Parameters_Derived1View GetView(int position, IRedView? parent)
+        => new Parameters_Derived1View(this, position, parent);
+}
+
+public sealed partial class Parameters_Derived1View : ParametersView
+{
+    public Parameters_Derived1View(Parameters_Derived1Node green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public SlashWithDefaultNode SlashWithDefault => (SlashWithDefaultNode)Children![0];
-        public NodeArray<ParamWithDefaultNode> ParamWithDefault => (NodeArray<ParamWithDefaultNode>)Children![1];
-        public StarEtcNode? StarEtc => Children![2] as StarEtcNode;
-        public override Parameters_Derived1View GetView(int position, IRedView? parent)
-            => new Parameters_Derived1View(this, position, parent);
     }
-    public sealed partial class Parameters_Derived1View : ParametersView
+
+    private SlashWithDefaultView? _field_slashWithDefault = null;
+    public SlashWithDefaultView SlashWithDefault
     {
-        public Parameters_Derived1View(Parameters_Derived1Node green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private SlashWithDefaultView? _field_slashWithDefault = null;
-        public SlashWithDefaultView SlashWithDefault
-        {
-            get
+            if (_field_slashWithDefault == null)
             {
-                if (_field_slashWithDefault == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_slashWithDefault = (SlashWithDefaultView)((Parameters_Derived1Node)base.Green).SlashWithDefault!.GetView(_positionOfField, this);
-                }
-                return (SlashWithDefaultView)_field_slashWithDefault;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_slashWithDefault = (SlashWithDefaultView)((Parameters_Derived1Node)base.Green).SlashWithDefault!.GetView(_positionOfField, this);
             }
+            return (SlashWithDefaultView)_field_slashWithDefault;
         }
+    }
 
-        private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
-        public ViewArray<ParamWithDefaultView> ParamWithDefault
+    private ViewArray<ParamWithDefaultView>? _field_paramWithDefault = null;
+    public ViewArray<ParamWithDefaultView> ParamWithDefault
+    {
+        get
         {
-            get
+            if (_field_paramWithDefault == null)
             {
-                if (_field_paramWithDefault == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_paramWithDefault = (ViewArray<ParamWithDefaultView>)new ViewArray<ParamWithDefaultView>(((Parameters_Derived1Node)base.Green).ParamWithDefault, _positionOfField, this);
-                }
-                return (ViewArray<ParamWithDefaultView>)_field_paramWithDefault;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_paramWithDefault = (ViewArray<ParamWithDefaultView>)new ViewArray<ParamWithDefaultView>(((Parameters_Derived1Node)base.Green).ParamWithDefault, _positionOfField, this);
             }
+            return (ViewArray<ParamWithDefaultView>)_field_paramWithDefault;
         }
+    }
 
-        private StarEtcView? _field_starEtc = null;
-        public StarEtcView? StarEtc
+    private StarEtcView? _field_starEtc = null;
+    public StarEtcView? StarEtc
+    {
+        get
         {
-            get
+            if (_field_starEtc == null && ((Parameters_Derived1Node)base.Green).StarEtc != null)
             {
-                if (_field_starEtc == null && ((Parameters_Derived1Node)base.Green).StarEtc != null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_starEtc = (StarEtcView)((Parameters_Derived1Node)base.Green).StarEtc!.GetView(_positionOfField, this);
-                }
-                return (StarEtcView?)_field_starEtc;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_starEtc = (StarEtcView)((Parameters_Derived1Node)base.Green).StarEtc!.GetView(_positionOfField, this);
             }
+            return (StarEtcView?)_field_starEtc;
         }
     }
 }

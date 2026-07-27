@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record ElseBlockNode : GreenNode
-    {
-        public BlockNode Block => (BlockNode)Children![2];
-        public override ElseBlockView GetView(int position, IRedView? parent)
-            => new ElseBlockView(this, position, parent);
-    }
-    public sealed partial class ElseBlockView : RedView
-    {
-        public ElseBlockView(ElseBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+public sealed partial record ElseBlockNode : GreenNode
+{
+    public BlockNode Block => (BlockNode)Children![2];
+    public override ElseBlockView GetView(int position, IRedView? parent)
+        => new ElseBlockView(this, position, parent);
+}
+
+public sealed partial class ElseBlockView : RedView
+{
+    public ElseBlockView(ElseBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_block = (BlockView)((ElseBlockNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_block = (BlockView)((ElseBlockNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

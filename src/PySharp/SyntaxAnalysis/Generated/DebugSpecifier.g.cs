@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record DebugSpecifierNode : GreenNode
 {
-    public sealed partial record DebugSpecifierNode : GreenNode
+    public override DebugSpecifierView GetView(int position, IRedView? parent)
+        => new DebugSpecifierView(this, position, parent);
+}
+
+public sealed partial class DebugSpecifierView : RedView
+{
+    public DebugSpecifierView(DebugSpecifierNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override DebugSpecifierView GetView(int position, IRedView? parent)
-            => new DebugSpecifierView(this, position, parent);
-    }
-    public sealed partial class DebugSpecifierView : RedView
-    {
-        public DebugSpecifierView(DebugSpecifierNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

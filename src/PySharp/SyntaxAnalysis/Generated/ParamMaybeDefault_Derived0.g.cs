@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record ParamMaybeDefault_Derived0Node : ParamMaybeDefaultNode
-    {
-        public TokenNode Token => (TokenNode)Children![2];
-        public override ParamMaybeDefault_Derived0View GetView(int position, IRedView? parent)
-            => new ParamMaybeDefault_Derived0View(this, position, parent);
-    }
-    public sealed partial class ParamMaybeDefault_Derived0View : ParamMaybeDefaultView
-    {
-        public ParamMaybeDefault_Derived0View(ParamMaybeDefault_Derived0Node green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TokenView? _field_token = null;
-        public TokenView Token
+public sealed partial record ParamMaybeDefault_Derived0Node : ParamMaybeDefaultNode
+{
+    public TokenNode Token => (TokenNode)Children![2];
+    public override ParamMaybeDefault_Derived0View GetView(int position, IRedView? parent)
+        => new ParamMaybeDefault_Derived0View(this, position, parent);
+}
+
+public sealed partial class ParamMaybeDefault_Derived0View : ParamMaybeDefaultView
+{
+    public ParamMaybeDefault_Derived0View(ParamMaybeDefault_Derived0Node green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_token = null;
+    public TokenView Token
+    {
+        get
         {
-            get
+            if (_field_token == null)
             {
-                if (_field_token == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_token = (TokenView)((ParamMaybeDefault_Derived0Node)base.Green).Token!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_token = (TokenView)((ParamMaybeDefault_Derived0Node)base.Green).Token!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token;
         }
     }
 }

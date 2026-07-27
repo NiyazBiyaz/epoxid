@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StarTargets_Derived0Node : StarTargetsNode
-    {
-        public StarTargetNode StarTarget => (StarTargetNode)Children![0];
-        public override StarTargets_Derived0View GetView(int position, IRedView? parent)
-            => new StarTargets_Derived0View(this, position, parent);
-    }
-    public sealed partial class StarTargets_Derived0View : StarTargetsView
-    {
-        public StarTargets_Derived0View(StarTargets_Derived0Node green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private StarTargetView? _field_starTarget = null;
-        public StarTargetView StarTarget
+public sealed partial record StarTargets_Derived0Node : StarTargetsNode
+{
+    public StarTargetNode StarTarget => (StarTargetNode)Children![0];
+    public override StarTargets_Derived0View GetView(int position, IRedView? parent)
+        => new StarTargets_Derived0View(this, position, parent);
+}
+
+public sealed partial class StarTargets_Derived0View : StarTargetsView
+{
+    public StarTargets_Derived0View(StarTargets_Derived0Node green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private StarTargetView? _field_starTarget = null;
+    public StarTargetView StarTarget
+    {
+        get
         {
-            get
+            if (_field_starTarget == null)
             {
-                if (_field_starTarget == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_starTarget = (StarTargetView)((StarTargets_Derived0Node)base.Green).StarTarget!.GetView(_positionOfField, this);
-                }
-                return (StarTargetView)_field_starTarget;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_starTarget = (StarTargetView)((StarTargets_Derived0Node)base.Green).StarTarget!.GetView(_positionOfField, this);
             }
+            return (StarTargetView)_field_starTarget;
         }
     }
 }

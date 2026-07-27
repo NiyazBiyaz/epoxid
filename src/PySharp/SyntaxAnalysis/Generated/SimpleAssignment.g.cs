@@ -8,48 +8,48 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record SimpleAssignmentNode : AssignmentNode
 {
-    public sealed partial record SimpleAssignmentNode : AssignmentNode
+    public TokenNode Target => (TokenNode)Children![0];
+    public EqualAnnotatedRhsNode Rhs => (EqualAnnotatedRhsNode)Children![1];
+    public override SimpleAssignmentView GetView(int position, IRedView? parent)
+        => new SimpleAssignmentView(this, position, parent);
+}
+
+public sealed partial class SimpleAssignmentView : AssignmentView
+{
+    public SimpleAssignmentView(SimpleAssignmentNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public TokenNode Target => (TokenNode)Children![0];
-        public EqualAnnotatedRhsNode Rhs => (EqualAnnotatedRhsNode)Children![1];
-        public override SimpleAssignmentView GetView(int position, IRedView? parent)
-            => new SimpleAssignmentView(this, position, parent);
     }
-    public sealed partial class SimpleAssignmentView : AssignmentView
+
+    private TokenView? _field_target = null;
+    public TokenView Target
     {
-        public SimpleAssignmentView(SimpleAssignmentNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private TokenView? _field_target = null;
-        public TokenView Target
-        {
-            get
+            if (_field_target == null)
             {
-                if (_field_target == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_target = (TokenView)((SimpleAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_target;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_target = (TokenView)((SimpleAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_target;
         }
+    }
 
-        private EqualAnnotatedRhsView? _field_rhs = null;
-        public EqualAnnotatedRhsView Rhs
+    private EqualAnnotatedRhsView? _field_rhs = null;
+    public EqualAnnotatedRhsView Rhs
+    {
+        get
         {
-            get
+            if (_field_rhs == null)
             {
-                if (_field_rhs == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_rhs = (EqualAnnotatedRhsView)((SimpleAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
-                }
-                return (EqualAnnotatedRhsView)_field_rhs;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_rhs = (EqualAnnotatedRhsView)((SimpleAssignmentNode)base.Green).Rhs!.GetView(_positionOfField, this);
             }
+            return (EqualAnnotatedRhsView)_field_rhs;
         }
     }
 }

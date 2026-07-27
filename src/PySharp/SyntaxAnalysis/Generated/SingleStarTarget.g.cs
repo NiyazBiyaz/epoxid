@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record SingleStarTargetNode : TargetWithStarAtomNode
-    {
-        public StarAtomNode Atom => (StarAtomNode)Children![0];
-        public override SingleStarTargetView GetView(int position, IRedView? parent)
-            => new SingleStarTargetView(this, position, parent);
-    }
-    public sealed partial class SingleStarTargetView : TargetWithStarAtomView
-    {
-        public SingleStarTargetView(SingleStarTargetNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private StarAtomView? _field_atom = null;
-        public StarAtomView Atom
+public sealed partial record SingleStarTargetNode : TargetWithStarAtomNode
+{
+    public StarAtomNode Atom => (StarAtomNode)Children![0];
+    public override SingleStarTargetView GetView(int position, IRedView? parent)
+        => new SingleStarTargetView(this, position, parent);
+}
+
+public sealed partial class SingleStarTargetView : TargetWithStarAtomView
+{
+    public SingleStarTargetView(SingleStarTargetNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private StarAtomView? _field_atom = null;
+    public StarAtomView Atom
+    {
+        get
         {
-            get
+            if (_field_atom == null)
             {
-                if (_field_atom == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_atom = (StarAtomView)((SingleStarTargetNode)base.Green).Atom!.GetView(_positionOfField, this);
-                }
-                return (StarAtomView)_field_atom;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_atom = (StarAtomView)((SingleStarTargetNode)base.Green).Atom!.GetView(_positionOfField, this);
             }
+            return (StarAtomView)_field_atom;
         }
     }
 }

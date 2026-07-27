@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record StringValueAtomNode : StringAtomNode
-    {
-        public NodeArray<IStringValueNode> Parts => (NodeArray<IStringValueNode>)Children![0];
-        public override StringValueAtomView GetView(int position, IRedView? parent)
-            => new StringValueAtomView(this, position, parent);
-    }
-    public sealed partial class StringValueAtomView : StringAtomView
-    {
-        public StringValueAtomView(StringValueAtomNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<IStringValueView>? _field_parts = null;
-        public ViewArray<IStringValueView> Parts
+public sealed partial record StringValueAtomNode : StringAtomNode
+{
+    public NodeArray<IStringValueNode> Parts => (NodeArray<IStringValueNode>)Children![0];
+    public override StringValueAtomView GetView(int position, IRedView? parent)
+        => new StringValueAtomView(this, position, parent);
+}
+
+public sealed partial class StringValueAtomView : StringAtomView
+{
+    public StringValueAtomView(StringValueAtomNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<IStringValueView>? _field_parts = null;
+    public ViewArray<IStringValueView> Parts
+    {
+        get
         {
-            get
+            if (_field_parts == null)
             {
-                if (_field_parts == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_parts = (ViewArray<IStringValueView>)new ViewArray<IStringValueView>(((StringValueAtomNode)base.Green).Parts, _positionOfField, this);
-                }
-                return (ViewArray<IStringValueView>)_field_parts;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_parts = (ViewArray<IStringValueView>)new ViewArray<IStringValueView>(((StringValueAtomNode)base.Green).Parts, _positionOfField, this);
             }
+            return (ViewArray<IStringValueView>)_field_parts;
         }
     }
 }

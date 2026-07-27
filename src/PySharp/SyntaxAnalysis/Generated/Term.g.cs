@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record TermNode : GreenNode, ITermExpressionNode
 {
-    public sealed partial record TermNode : GreenNode, ITermExpressionNode
+    public ITermExpressionNode Left => (ITermExpressionNode)Children![0];
+    public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
+    public TokenNode Operator => (TokenNode)Children![1];
+    public override TermView GetView(int position, IRedView? parent)
+        => new TermView(this, position, parent);
+}
+
+public sealed partial class TermView : RedView, ITermExpressionView
+{
+    public TermView(TermNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public ITermExpressionNode Left => (ITermExpressionNode)Children![0];
-        public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
-        public TokenNode Operator => (TokenNode)Children![1];
-        public override TermView GetView(int position, IRedView? parent)
-            => new TermView(this, position, parent);
     }
-    public sealed partial class TermView : RedView, ITermExpressionView
+
+    private ITermExpressionView? _field_left = null;
+    public ITermExpressionView Left
     {
-        public TermView(TermNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private ITermExpressionView? _field_left = null;
-        public ITermExpressionView Left
-        {
-            get
+            if (_field_left == null)
             {
-                if (_field_left == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_left = (ITermExpressionView)((TermNode)base.Green).Left!.GetView(_positionOfField, this);
-                }
-                return (ITermExpressionView)_field_left;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_left = (ITermExpressionView)((TermNode)base.Green).Left!.GetView(_positionOfField, this);
             }
+            return (ITermExpressionView)_field_left;
         }
+    }
 
-        private IFactorExpressionView? _field_right = null;
-        public IFactorExpressionView Right
+    private IFactorExpressionView? _field_right = null;
+    public IFactorExpressionView Right
+    {
+        get
         {
-            get
+            if (_field_right == null)
             {
-                if (_field_right == null)
-                {
-                    var _positionOfField = base.GetPositionFor(2);
-                    _field_right = (IFactorExpressionView)((TermNode)base.Green).Right!.GetView(_positionOfField, this);
-                }
-                return (IFactorExpressionView)_field_right;
+                var _positionOfField = base.GetPositionFor(2);
+                _field_right = (IFactorExpressionView)((TermNode)base.Green).Right!.GetView(_positionOfField, this);
             }
+            return (IFactorExpressionView)_field_right;
         }
+    }
 
-        private TokenView? _field_operator = null;
-        public TokenView Operator
+    private TokenView? _field_operator = null;
+    public TokenView Operator
+    {
+        get
         {
-            get
+            if (_field_operator == null)
             {
-                if (_field_operator == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_operator = (TokenView)((TermNode)base.Green).Operator!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_operator;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_operator = (TokenView)((TermNode)base.Green).Operator!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_operator;
         }
     }
 }

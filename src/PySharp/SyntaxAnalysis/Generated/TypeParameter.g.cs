@@ -8,31 +8,31 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public abstract partial record TypeParameterNode : GreenNode
-    {
-        public TokenNode Token => (TokenNode)Children![0];
-    }
-    public abstract partial class TypeParameterView : RedView
-    {
-        public TypeParameterView(TypeParameterNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private TokenView? _field_token = null;
-        public TokenView Token
+public abstract partial record TypeParameterNode : GreenNode
+{
+    public TokenNode Token => (TokenNode)Children![0];
+}
+
+public abstract partial class TypeParameterView : RedView
+{
+    public TypeParameterView(TypeParameterNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_token = null;
+    public TokenView Token
+    {
+        get
         {
-            get
+            if (_field_token == null)
             {
-                if (_field_token == null)
-                {
-                    var _positionOfField = base.GetPositionFor(0);
-                    _field_token = (TokenView)((TypeParameterNode)base.Green).Token!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_token;
+                var _positionOfField = base.GetPositionFor(0);
+                _field_token = (TokenView)((TypeParameterNode)base.Green).Token!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_token;
         }
     }
 }

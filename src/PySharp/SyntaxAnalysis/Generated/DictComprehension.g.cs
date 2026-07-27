@@ -8,16 +8,16 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public abstract partial record DictComprehensionNode : GreenNode, IAtomNode
 {
-    public abstract partial record DictComprehensionNode : GreenNode, IAtomNode
+}
+
+public abstract partial class DictComprehensionView : RedView, IAtomView
+{
+    public DictComprehensionView(DictComprehensionNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-    }
-    public abstract partial class DictComprehensionView : RedView, IAtomView
-    {
-        public DictComprehensionView(DictComprehensionNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

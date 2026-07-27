@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record BreakStatementNode : GreenNode, ISimpleStatementNode
 {
-    public sealed partial record BreakStatementNode : GreenNode, ISimpleStatementNode
+    public override BreakStatementView GetView(int position, IRedView? parent)
+        => new BreakStatementView(this, position, parent);
+}
+
+public sealed partial class BreakStatementView : RedView, ISimpleStatementView
+{
+    public BreakStatementView(BreakStatementNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override BreakStatementView GetView(int position, IRedView? parent)
-            => new BreakStatementView(this, position, parent);
-    }
-    public sealed partial class BreakStatementView : RedView, ISimpleStatementView
-    {
-        public BreakStatementView(BreakStatementNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

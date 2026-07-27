@@ -8,63 +8,63 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record AliasExceptBlockNode : ExceptBlockNode
 {
-    public sealed partial record AliasExceptBlockNode : ExceptBlockNode
+    public IExpressionNode Exception => (IExpressionNode)Children![1];
+    public TokenNode Alias => (TokenNode)Children![3];
+    public BlockNode Block => (BlockNode)Children![5];
+    public override AliasExceptBlockView GetView(int position, IRedView? parent)
+        => new AliasExceptBlockView(this, position, parent);
+}
+
+public sealed partial class AliasExceptBlockView : ExceptBlockView
+{
+    public AliasExceptBlockView(AliasExceptBlockNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public IExpressionNode Exception => (IExpressionNode)Children![1];
-        public TokenNode Alias => (TokenNode)Children![3];
-        public BlockNode Block => (BlockNode)Children![5];
-        public override AliasExceptBlockView GetView(int position, IRedView? parent)
-            => new AliasExceptBlockView(this, position, parent);
     }
-    public sealed partial class AliasExceptBlockView : ExceptBlockView
+
+    private IExpressionView? _field_exception = null;
+    public IExpressionView Exception
     {
-        public AliasExceptBlockView(AliasExceptBlockNode green, int position, IRedView? parent)
-            : base(green, position, parent)
+        get
         {
-        }
-
-        private IExpressionView? _field_exception = null;
-        public IExpressionView Exception
-        {
-            get
+            if (_field_exception == null)
             {
-                if (_field_exception == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_exception = (IExpressionView)((AliasExceptBlockNode)base.Green).Exception!.GetView(_positionOfField, this);
-                }
-                return (IExpressionView)_field_exception;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_exception = (IExpressionView)((AliasExceptBlockNode)base.Green).Exception!.GetView(_positionOfField, this);
             }
+            return (IExpressionView)_field_exception;
         }
+    }
 
-        private TokenView? _field_alias = null;
-        public TokenView Alias
+    private TokenView? _field_alias = null;
+    public TokenView Alias
+    {
+        get
         {
-            get
+            if (_field_alias == null)
             {
-                if (_field_alias == null)
-                {
-                    var _positionOfField = base.GetPositionFor(3);
-                    _field_alias = (TokenView)((AliasExceptBlockNode)base.Green).Alias!.GetView(_positionOfField, this);
-                }
-                return (TokenView)_field_alias;
+                var _positionOfField = base.GetPositionFor(3);
+                _field_alias = (TokenView)((AliasExceptBlockNode)base.Green).Alias!.GetView(_positionOfField, this);
             }
+            return (TokenView)_field_alias;
         }
+    }
 
-        private BlockView? _field_block = null;
-        public BlockView Block
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
         {
-            get
+            if (_field_block == null)
             {
-                if (_field_block == null)
-                {
-                    var _positionOfField = base.GetPositionFor(5);
-                    _field_block = (BlockView)((AliasExceptBlockNode)base.Green).Block!.GetView(_positionOfField, this);
-                }
-                return (BlockView)_field_block;
+                var _positionOfField = base.GetPositionFor(5);
+                _field_block = (BlockView)((AliasExceptBlockNode)base.Green).Block!.GetView(_positionOfField, this);
             }
+            return (BlockView)_field_block;
         }
     }
 }

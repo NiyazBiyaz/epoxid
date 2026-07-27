@@ -8,18 +8,18 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
+namespace PySharp.SyntaxAnalysis;
+
+public sealed partial record NormalFunctionDefNode : FunctionDefRawNode
 {
-    public sealed partial record NormalFunctionDefNode : FunctionDefRawNode
+    public override NormalFunctionDefView GetView(int position, IRedView? parent)
+        => new NormalFunctionDefView(this, position, parent);
+}
+
+public sealed partial class NormalFunctionDefView : FunctionDefRawView
+{
+    public NormalFunctionDefView(NormalFunctionDefNode green, int position, IRedView? parent)
+        : base(green, position, parent)
     {
-        public override NormalFunctionDefView GetView(int position, IRedView? parent)
-            => new NormalFunctionDefView(this, position, parent);
-    }
-    public sealed partial class NormalFunctionDefView : FunctionDefRawView
-    {
-        public NormalFunctionDefView(NormalFunctionDefNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
     }
 }

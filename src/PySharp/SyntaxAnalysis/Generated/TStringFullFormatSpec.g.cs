@@ -8,33 +8,33 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public sealed partial record TStringFullFormatSpecNode : GreenNode
-    {
-        public NodeArray<TStringFormatSpecNode> Specs => (NodeArray<TStringFormatSpecNode>)Children![1];
-        public override TStringFullFormatSpecView GetView(int position, IRedView? parent)
-            => new TStringFullFormatSpecView(this, position, parent);
-    }
-    public sealed partial class TStringFullFormatSpecView : RedView
-    {
-        public TStringFullFormatSpecView(TStringFullFormatSpecNode green, int position, IRedView? parent)
-            : base(green, position, parent)
-        {
-        }
+namespace PySharp.SyntaxAnalysis;
 
-        private ViewArray<TStringFormatSpecView>? _field_specs = null;
-        public ViewArray<TStringFormatSpecView> Specs
+public sealed partial record TStringFullFormatSpecNode : GreenNode
+{
+    public NodeArray<TStringFormatSpecNode> Specs => (NodeArray<TStringFormatSpecNode>)Children![1];
+    public override TStringFullFormatSpecView GetView(int position, IRedView? parent)
+        => new TStringFullFormatSpecView(this, position, parent);
+}
+
+public sealed partial class TStringFullFormatSpecView : RedView
+{
+    public TStringFullFormatSpecView(TStringFullFormatSpecNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<TStringFormatSpecView>? _field_specs = null;
+    public ViewArray<TStringFormatSpecView> Specs
+    {
+        get
         {
-            get
+            if (_field_specs == null)
             {
-                if (_field_specs == null)
-                {
-                    var _positionOfField = base.GetPositionFor(1);
-                    _field_specs = (ViewArray<TStringFormatSpecView>)new ViewArray<TStringFormatSpecView>(((TStringFullFormatSpecNode)base.Green).Specs, _positionOfField, this);
-                }
-                return (ViewArray<TStringFormatSpecView>)_field_specs;
+                var _positionOfField = base.GetPositionFor(1);
+                _field_specs = (ViewArray<TStringFormatSpecView>)new ViewArray<TStringFormatSpecView>(((TStringFullFormatSpecNode)base.Green).Specs, _positionOfField, this);
             }
+            return (ViewArray<TStringFormatSpecView>)_field_specs;
         }
     }
 }

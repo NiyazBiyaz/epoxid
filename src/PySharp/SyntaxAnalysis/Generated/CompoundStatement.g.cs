@@ -8,8 +8,8 @@ using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis
-{
-    public partial interface ICompoundStatementNode : IGreenNode, IStatementNode;
-    public partial interface ICompoundStatementView : IRedView, IStatementView;
-}
+namespace PySharp.SyntaxAnalysis;
+
+public partial interface ICompoundStatementNode : IGreenNode, IStatementNode;
+
+public partial interface ICompoundStatementView : IRedView, IStatementView;
