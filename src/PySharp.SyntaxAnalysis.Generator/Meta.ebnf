@@ -3,10 +3,9 @@
 using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
-
-namespace PySharp.SyntaxAnalysis.Generator;
 """
 @parser_name "GrammarParser"
+@namespace "PySharp.SyntaxAnalysis.Generator"
 
 @main
 Grammar: Metadata* Rule* EndOfFile -> new(Metadata=metadata_Star, Rules=rule_Star)

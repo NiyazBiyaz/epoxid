@@ -1,17 +1,22 @@
+# The file is a 'translation' from the Python grammar of CPython.
 # Copyright (c) 2001 Python Software Foundation; All Rights Reserved
+
+# Grammar metadata
+# ================
 
 @header '''\
 using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
-
-namespace PySharp.SyntaxAnalysis;
 '''
 @parser_name 'PythonParser'
 @access 'public'
+@namespace 'PySharp.SyntaxAnalysis'
 
-# Starting rule
-# =============
+# === Grammar Start ===
+
+# Starting rules
+# ==============
 
 @main
 File: Statement* EndOfFile -> new(Statements=statement_Star)

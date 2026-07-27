@@ -470,14 +470,19 @@ internal class CsGenerator(string accessModifier)
                 addBlankLine();
             addBlank = true;
 
-            if (type.Kind == TypeKind.Node)
-            {
-                AddNodeType(type);
-            }
-            else
-            {
-                AddUnionType(type);
-            }
+            AddType(type);
+        }
+    }
+
+    internal void AddType(TypeIr type)
+    {
+        if (type.Kind == TypeKind.Node)
+        {
+            AddNodeType(type);
+        }
+        else
+        {
+            AddUnionType(type);
         }
     }
 
@@ -783,5 +788,20 @@ internal class CsGenerator(string accessModifier)
 
             endLine();
         }
+    }
+
+    internal Block CreateBlock() => new(this);
+
+    internal readonly struct Block : IDisposable
+    {
+        private readonly CsGenerator generator;
+
+        internal Block(CsGenerator generator)
+        {
+            this.generator = generator;
+            generator.open();
+        }
+
+        public void Dispose() => generator.close();
     }
 }

@@ -10,6 +10,7 @@ internal class BoundGrammar
     internal string ParserName { get; set; } = null!;
     internal string TopLevelNodeName { get; set; } = null!;
     internal string UserHeader { get; set; } = null!;
+    internal string Namespace { get; set; } = null!;
     internal string AccessModifier { get; set; } = null!;
     internal BoundRule MainRule { get; set; } = null!;
     internal List<BoundRule> Rules { get; } = [];

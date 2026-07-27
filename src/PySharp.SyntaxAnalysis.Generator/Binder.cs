@@ -19,6 +19,7 @@ internal class Binder
         meta_header = "header",
         meta_parser_name = "parser_name",
         meta_access_modifier = "access",
+        meta_namespace = "namespace",
         decor_main = "main",
         decor_union = "union",
         decor_token_union = "inline",
@@ -29,7 +30,7 @@ internal class Binder
 
     internal void ReadMetadata(IEnumerable<MetadataView> metadata)
     {
-        string? userHeader = null, parserName = null, accessModifier = null;
+        string? userHeader = null, parserName = null, accessModifier = null, @namespace = null;
         foreach (var meta in metadata)
         {
             switch (meta.Key.RawString)
@@ -37,9 +38,11 @@ internal class Binder
                 case meta_header:
                     userHeader = StringParser.ParseQuoted(meta.Value.RawString);
                     break;
+
                 case meta_parser_name:
                     parserName = StringParser.ParseQuoted(meta.Value.RawString);
                     break;
+
                 case meta_access_modifier:
                     accessModifier = StringParser.ParseQuoted(meta.Value.RawString);
 
@@ -50,6 +53,12 @@ internal class Binder
                         };
 
                     break;
+
+                case meta_namespace:
+                    @namespace = StringParser.ParseQuoted(meta.Value.RawString);
+
+                    break;
+
                 default:
                     throw new InvalidNameException($"Unexpected metadata name: {meta.Key}.")
                     {
@@ -62,11 +71,14 @@ internal class Binder
             throw new IncompleteMetadataException(meta_header) { Line = metadata.Last().EndPosition2D.Line };
         if (parserName is null)
             throw new IncompleteMetadataException(meta_parser_name) { Line = metadata.Last().EndPosition2D.Line };
+        if (@namespace is null)
+            throw new IncompleteMetadataException(meta_namespace) { Line = metadata.Last().EndPosition2D.Line };
 
         accessModifier ??= "internal";
 
         Grammar.UserHeader = userHeader;
         Grammar.ParserName = parserName;
+        Grammar.Namespace = @namespace;
         Grammar.AccessModifier = accessModifier;
     }
 

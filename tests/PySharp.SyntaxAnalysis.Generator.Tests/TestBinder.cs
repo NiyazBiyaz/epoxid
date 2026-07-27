@@ -13,6 +13,7 @@ public class TestBinder
         const string src = """
         @header "Bau-bauder"
         @parser_name "BauParser"
+        @namespace "Bau.Bau"
         """;
         var gram = getView(src);
         var binder = new Binder();
@@ -27,7 +28,7 @@ public class TestBinder
         string src = """
         @bauder "Bau-bauder"
         @parser_name "BauParser"
-        @top_level_node "BauNode"
+        @namespace "Bau.Bau"
         """;
         var gram = getView(src);
         var binder = new Binder();
@@ -36,7 +37,7 @@ public class TestBinder
         src = """
         @header "Bau-bauder"
         @bauser_name "BauParser"
-        @top_level_node "BauNode"
+        @namespace "Bau.Bau"
         """;
         gram = getView(src);
         binder = new Binder();
@@ -45,7 +46,7 @@ public class TestBinder
         src = """
         @header "Bau-bauder"
         @parser_name "BauParser"
-        @bau_level_node "BauNode"
+        @bauspace "Bau.Bau"
         """;
         gram = getView(src);
         binder = new Binder();
@@ -56,6 +57,7 @@ public class TestBinder
     public void TestReadMetadata_Missing()
     {
         string src = """
+        @namespace "Bau.Bau"
         @parser_name "BauParser"
         """;
         var gram = getView(src);
@@ -63,7 +65,16 @@ public class TestBinder
         Assert.Throws<IncompleteMetadataException>(() => binder.ReadMetadata(gram.Metadata));
 
         src = """
+        @namespace "Bau.Bau"
         @header "Bau-bauder"
+        """;
+        gram = getView(src);
+        binder = new Binder();
+        Assert.Throws<IncompleteMetadataException>(() => { binder.ReadMetadata(gram.Metadata); });
+
+        src = """
+        @header "Bau-bauder"
+        @parser_name "BauParser"
         """;
         gram = getView(src);
         binder = new Binder();
