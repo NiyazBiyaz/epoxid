@@ -42,7 +42,7 @@ public class Interpreter
             if (kwargs.Count > seenCount)
                 throw new Exception("Unknown keyword parameters.");
 
-            bool needSep = true;
+            bool needSep = false;
             foreach (var obj in args)
             {
                 if (needSep)
