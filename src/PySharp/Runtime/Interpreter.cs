@@ -4,63 +4,13 @@ using PySharp.Runtime.Objects;
 using PySharp.SyntaxAnalysis;
 using PySharp.SyntaxAnalysis.Common;
 using PySharp.SyntaxAnalysis.Common.Ast;
+using PySharp.SyntaxAnalysis.Tokens;
 
 namespace PySharp.Runtime;
 
-public class Interpreter
+public partial class Interpreter
 {
     private readonly Stack<Scope> scopes = [];
-
-    public void LoadBuiltins()
-    {
-        var builtins = new Scope();
-
-        var functionPrint = new PsNativeFunction("print", (args, kwargs) =>
-        {
-            // Simple 'print' implementation on C# side.
-            int seenCount = 0;
-
-            if (!kwargs.TryGetValue((PsString)"end", out var end))
-                end = (PsString)"\n";
-
-            else
-                seenCount++;
-
-            // NSY
-            // if (!kwargs.TryGetValue((PsString)"file", out var file))
-            //     file = Stdout;
-            //
-            // else
-            //     seenCount++;
-
-            if (!kwargs.TryGetValue((PsString)"sep", out var sep))
-                sep = (PsString)" ";
-
-            else
-                seenCount++;
-
-            if (kwargs.Count > seenCount)
-                throw new Exception("Unknown keyword parameters.");
-
-            bool needSep = false;
-            foreach (var obj in args)
-            {
-                if (needSep)
-                    Console.Write(sep);
-
-                Console.Write(obj);
-
-                needSep = true;
-            }
-            Console.Write(end);
-
-            return PsConstants.None;
-        });
-
-        builtins.Bind(functionPrint.DunderName, functionPrint);
-
-        scopes.Push(builtins);
-    }
 
     public void InterpretFile(FileView file)
     {
@@ -75,6 +25,7 @@ public class Interpreter
             {
                 case SingleSimpleStatementView singleStatement:
                     InterpretSimpleStatement(singleStatement.Value);
+
                     break;
 
                 case SeparatedSimpleStatementsView simpleStatements:
@@ -84,8 +35,7 @@ public class Interpreter
                     break;
 
                 default:
-                    notImplemented(statement);
-                    break;
+                    throw notImplemented(statement);
             }
         }
     }
@@ -188,6 +138,26 @@ public class Interpreter
         return arithmetic switch
         {
             RawPrimaryView rawPrimary => evaluateRawPrimary(rawPrimary),
+
+            SumView sum => sum.Operator.Type switch
+            {
+                TokenType.Plus => AddObjects(evaluateArithmetic(sum.Left), evaluateArithmetic(sum.Right)),
+                TokenType.Minus => SubtractObjects(evaluateArithmetic(sum.Left), evaluateArithmetic(sum.Right)),
+                _ => throw new ArgumentOutOfRangeException(),
+            },
+
+            TermView term => term.Operator.Type switch
+            {
+                TokenType.Star => MultiplyObjects(evaluateArithmetic(term.Left), evaluateArithmetic(term.Right)),
+                TokenType.Slash => TrueDivideObjects(evaluateArithmetic(term.Left), evaluateArithmetic(term.Right)),
+                TokenType.DoubleSlash => throw notImplemented(term.Operator), // Integer division
+                TokenType.Percent => throw notImplemented(term.Operator), // Module
+                TokenType.At => throw notImplemented(term.Operator), // Matrix multiplication
+                _ => throw new ArgumentOutOfRangeException(),
+            },
+
+            PowerView pow => PowerObjects(evaluateArithmetic(pow.Left), evaluateArithmetic(pow.Right)),
+
             _ => throw notImplemented(arithmetic),
         };
     }
@@ -220,7 +190,7 @@ public class Interpreter
             case CallWithArgumentsPrimaryView callPrimary:
                 var func = evaluateRawPrimary(callPrimary.Function);
                 var arguments = evaluateArguments(callPrimary.Arguments);
-                return callFunction(func, arguments.arguments, arguments.keywordArguments);
+                return CallFunction(func, arguments.arguments, arguments.keywordArguments);
 
             default:
                 throw notImplemented(rawPrimary);
@@ -254,11 +224,11 @@ public class Interpreter
         return (PsString)builder.ToString();
     }
 
-    private (PsTuple arguments, PsDict keywordArguments) evaluateArguments(ArgumentsView? arguments)
+    private (PsTuple arguments, PsDict? keywordArguments) evaluateArguments(ArgumentsView? arguments)
     {
         if (arguments == null)
         {
-            return (new PsTuple([]), new PsDict([]));
+            return (new PsTuple([]), null);
         }
 
         switch (arguments)
@@ -279,21 +249,11 @@ public class Interpreter
                     throw notImplemented(withPositional.KeywordArgumentsPart);
                 }
 
-                return (new PsTuple(positional.ToArray()), new PsDict([]));
+                return (new PsTuple(positional.ToArray()), null);
 
             default:
                 throw notImplemented(arguments);
         }
-    }
-
-    private PsObject callFunction(PsObject func, PsTuple args, PsDict kwargs)
-    {
-        if (func is not PsNativeFunction nativeFunc)
-        {
-            throw new NotImplementedException($"Non-native functions is not supported yet: {func}");
-        }
-
-        return nativeFunc.Call(args, kwargs);
     }
 
     private PsObject? getVariableFromEnvironment(ReadOnlySpan<char> variableName)

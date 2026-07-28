@@ -39,8 +39,14 @@ public static class PsConstants
         NoneType = new("NoneType", [Object], Type);
         EllipsisType = new("EllipsisType", [Object], Type);
 
-        Function = new("function", [Object], Type);
-        NativeFunction = new("built_in_function_or_method", [Object], Type);
+        Function = new("function", [Object], Type)
+        {
+            DunderCall = PsFunction.DunderCallImplementation,
+        };
+        NativeFunction = new("built_in_function_or_method", [Object], Type)
+        {
+            DunderCall = PsBuiltinFunction.DunderCallImplementation,
+        };
 
         True = (PsBool)true;
         False = (PsBool)false;

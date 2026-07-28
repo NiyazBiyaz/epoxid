@@ -17,4 +17,20 @@ public class PsType : PsObject
         DunderName = name;
         DunderBases = bases;
     }
+
+    #region Methods slots
+
+    public Func<PsObject, PsObject, PsObject?, PsObject>? DunderCall { get; set; }
+
+    public Func<PsObject, PsObject, PsObject>? DunderAdd { get; set; }
+
+    public Func<PsObject, PsObject, PsObject>? DunderSub { get; set; }
+
+    public Func<PsObject, PsObject, PsObject>? DunderMul { get; set; }
+
+    public Func<PsObject, PsObject, PsObject>? DunderTrueDiv { get; set; }
+
+    public Func<PsObject, PsObject, PsObject>? DunderPow { get; set; }
+
+    #endregion
 }
