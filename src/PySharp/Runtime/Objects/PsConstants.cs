@@ -28,9 +28,27 @@ public static class PsConstants
         Object.DunderClass = Type;
         Type.DunderClass = Type;
 
-        Str = new("str", [Object], Type);
-        Float = new("float", [Object], Type);
-        Int = new("int", [Object], Type);
+        Str = new("str", [Object], Type)
+        {
+            DunderAdd = PsString.DunderAddImplementation,
+            DunderMul = PsString.DunderMulImplementation,
+        };
+        Float = new("float", [Object], Type)
+        {
+            DunderAdd = PsFloat.DunderAddImplementation,
+            DunderSub = PsFloat.DunderSubImplementation,
+            DunderMul = PsFloat.DunderMulImplementation,
+            DunderTrueDiv = PsFloat.DunderTrueDivImplementation,
+            DunderPow = PsFloat.DunderPowImplementation,
+        };
+        Int = new("int", [Object], Type)
+        {
+            DunderAdd = PsInteger.DunderAddImplementation,
+            DunderSub = PsInteger.DunderSubImplementation,
+            DunderMul = PsInteger.DunderMulImplementation,
+            DunderTrueDiv = PsInteger.DunderTrueDivImplementation,
+            DunderPow = PsInteger.DunderPowImplementation,
+        };
         Bool = new("bool", [Int], Type);
 
         Tuple = new("tuple", [Object], Type);

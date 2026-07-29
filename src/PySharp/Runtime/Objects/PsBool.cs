@@ -1,17 +1,16 @@
 namespace PySharp.Runtime.Objects;
 
-public class PsBool : PsObject
+public class PsBool : PsInteger
 {
-    private readonly bool value;
+    internal new bool Value => base.Value != 0;
 
     public PsBool(bool value)
-        : base(PsConstants.Bool)
+        : base(PsConstants.Bool, value ? 1 : 0)
     {
-        this.value = value;
     }
 
-    public static explicit operator bool(PsBool psBool) => psBool.value;
+    public static explicit operator bool(PsBool psBool) => psBool.Value;
     public static explicit operator PsBool(bool clrBool) => new(clrBool);
 
-    public override string ToString() => value.ToString();
+    public override string ToString() => Value.ToString();
 }

@@ -14,12 +14,14 @@ public partial class Interpreter
         return func.DunderClass.DunderCall(func, args, kwargs);
     }
 
+    // TODO: MRO
+
     internal static PsObject AddObjects(PsObject left, PsObject right)
     {
         if (left.DunderClass.DunderAdd == null)
         {
             // TODO: __radd__
-            throw new Exception($"TypeError: cannot add '{right.DunderClass.DunderName}' object to '{left.DunderClass.DunderName}' object.");
+            throw new Exception($"TypeError: unsupported operand type(s) for +: '{left.DunderClass.DunderName}' and '{right.DunderClass.DunderName}'");
         }
 
         return left.DunderClass.DunderAdd(left, right);
@@ -30,7 +32,7 @@ public partial class Interpreter
         if (left.DunderClass.DunderSub == null)
         {
             // TODO: __rsub__
-            throw new Exception($"TypeError: cannot subtract '{right.DunderClass.DunderName}' object from '{left.DunderClass.DunderName}' object.");
+            throw new Exception($"TypeError: unsupported operand type(s) for -: '{left.DunderClass.DunderName}' and '{right.DunderClass.DunderName}'");
         }
 
         return left.DunderClass.DunderSub(left, right);
@@ -41,7 +43,7 @@ public partial class Interpreter
         if (left.DunderClass.DunderMul == null)
         {
             // TODO: __rmul__
-            throw new Exception($"TypeError: cannot multiply '{left.DunderClass.DunderName}' object by '{right.DunderClass.DunderName}' object.");
+            throw new Exception($"TypeError: unsupported operand type(s) for *: '{left.DunderClass.DunderName}' and '{right.DunderClass.DunderName}'");
         }
 
         return left.DunderClass.DunderMul(left, right);
@@ -52,7 +54,7 @@ public partial class Interpreter
         if (left.DunderClass.DunderTrueDiv == null)
         {
             // TODO: __rtruediv__
-            throw new Exception($"TypeError: cannot divide '{left.DunderClass.DunderName}' object by '{right.DunderClass.DunderName}' object.");
+            throw new Exception($"TypeError: unsupported operand type(s) for /: '{left.DunderClass.DunderName}' and '{right.DunderClass.DunderName}'");
         }
 
         return left.DunderClass.DunderTrueDiv(left, right);
@@ -63,7 +65,7 @@ public partial class Interpreter
         if (left.DunderClass.DunderPow == null)
         {
             // TODO: __rpow__
-            throw new Exception($"TypeError: cannot power '{left.DunderClass.DunderName}' object to '{right.DunderClass.DunderName}' object.");
+            throw new Exception($"TypeError: unsupported operand type(s) for **: '{left.DunderClass.DunderName}' and '{right.DunderClass.DunderName}'");
         }
 
         return left.DunderClass.DunderPow(left, right);

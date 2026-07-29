@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using PySharp.Runtime.Objects;
 
@@ -45,13 +44,13 @@ public static class NumberParser
 
         _ when number.ContainsAny("eE.") => new PsFloat(double.Parse(number, CultureInfo.InvariantCulture)),
 
-        ['0', 'x'] => new PsInteger(BigInteger.Parse(number, CultureInfo.InvariantCulture)),
+        ['0', 'x'] => new PsInteger(long.Parse(number, NumberStyles.HexNumber, CultureInfo.InvariantCulture)),
 
-        ['0', 'b'] => new PsInteger(BigInteger.Parse(number, CultureInfo.InvariantCulture)),
+        ['0', 'b'] => new PsInteger(long.Parse(number, NumberStyles.BinaryNumber, CultureInfo.InvariantCulture)),
 
         ['0', 'o'] => throw new NotImplementedException("Octal numbers cannot be parsed yet."),
 
-        _ => new PsInteger(BigInteger.Parse(number, CultureInfo.InvariantCulture)),
+        _ => new PsInteger(long.Parse(number, CultureInfo.InvariantCulture)),
     };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
