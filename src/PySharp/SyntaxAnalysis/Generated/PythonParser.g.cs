@@ -215,6 +215,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @union
     // SimpleStatement:
     //     | Assignment
+    //     | StarExpression !','
     //     | StarExpressions
     //     | &'type'       TypeAlias
     //     | &ImportStart  ImportStatement
@@ -245,6 +246,29 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("Assignment");
+        }
+        base.Reset(_mark);
+        {
+            // StarExpression !','
+            base.LogAlternativeEntered("StarExpression !','");
+            IGreenNode? star_expression;
+            if ((star_expression = rule_StarExpression()) is not null
+                &&
+                _LookaheadHelper_comma()
+            )
+            {
+                base.LogAlternativeSucceed("StarExpression !','");
+                _res = (IStarExpressionNode?)star_expression;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("StarExpression !','");
+            bool _LookaheadHelper_comma()
+            {
+                int _mark = base.Mark();
+                bool _wasParsed = Expect(TokenType.Comma) != null;
+                base.Reset(_mark);
+                return _wasParsed == false;
+            }
         }
         base.Reset(_mark);
         {
@@ -11250,10 +11274,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     private readonly IMemoContainer<ArgumentsNode> _memo_Arguments = CreateContainer<ArgumentsNode>();
     // @memo
     // Arguments:
-    //     | PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> WithPositionalArguments(
+    //     | PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> ArgumentsWithPositional(
     //         PositionalArgumentsPart=positional_argument_Gather, KeywordArgumentsPart=keyword_arguments_part)
     //
-    //     | Kwargs -',' -> OnlyKeywordArguments(Value=kwargs)
+    //     | Kwargs -',' -> ArgumentsWithOnlyKeywords(Value=kwargs)
     ArgumentsNode? rule_Arguments()
     {
         base.LogIncreaseLevel();
@@ -11268,7 +11292,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         ArgumentsNode? _res = null;
         {
-            // PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> WithPositionalArguments(
+            // PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> ArgumentsWithPositional(
             //         PositionalArgumentsPart=positional_argument_Gather, KeywordArgumentsPart=keyword_arguments_part)
             base.LogAlternativeEntered("PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -','");
             INodeArray<GreenNode>? positional_argument_Gather;
@@ -11282,7 +11306,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -','");
-                _res = new WithPositionalArgumentsNode()
+                _res = new ArgumentsWithPositionalNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         positional_argument_Gather,
@@ -11318,7 +11342,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Kwargs -',' -> OnlyKeywordArguments(Value=kwargs)
+            // Kwargs -',' -> ArgumentsWithOnlyKeywords(Value=kwargs)
             base.LogAlternativeEntered("Kwargs -','");
             IGreenNode? kwargs;
             IGreenNode? comma;
@@ -11328,7 +11352,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("Kwargs -','");
-                _res = new OnlyKeywordArgumentsNode()
+                _res = new ArgumentsWithOnlyKeywordsNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         kwargs,

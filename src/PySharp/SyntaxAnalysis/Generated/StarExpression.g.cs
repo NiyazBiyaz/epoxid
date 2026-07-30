@@ -10,6 +10,6 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-public partial interface IStarExpressionNode : IGreenNode, IKwargOrStarredNode;
+public partial interface IStarExpressionNode : IGreenNode, ISimpleStatementNode, IKwargOrStarredNode;
 
-public partial interface IStarExpressionView : IRedView, IKwargOrStarredView;
+public partial interface IStarExpressionView : IRedView, ISimpleStatementView, IKwargOrStarredView;

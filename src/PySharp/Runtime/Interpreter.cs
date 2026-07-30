@@ -51,20 +51,9 @@ public partial class Interpreter
                     throw notImplemented(annotatedAssignment);
                 }
 
-                if (rhs.Value is not StarExpressionsView starExpressions)
+                if (rhs.Value is not IExpressionView expr)
                 {
                     throw notImplemented(rhs.Value);
-                }
-                if (starExpressions.Values.Length != 1)
-                {
-                    throw notImplemented(starExpressions.AstValues);
-                }
-
-                var starExpressionOrExpression = starExpressions.Values[0];
-
-                if (starExpressionOrExpression is not IExpressionView expr)
-                {
-                    throw notImplemented(starExpressionOrExpression);
                 }
 
                 PsObject exprValue = InterpretExpression(expr);
@@ -81,20 +70,9 @@ public partial class Interpreter
                     throw notImplemented(simpleAssignment);
                 }
 
-                if (rhs.Value is not StarExpressionsView starExpressions)
+                if (rhs.Value is not IExpressionView expr)
                 {
                     throw notImplemented(rhs.Value);
-                }
-                if (starExpressions.Values.Length != 1)
-                {
-                    throw notImplemented(starExpressions.AstValues);
-                }
-
-                var starExpressionOrExpression = starExpressions.Values[0];
-
-                if (starExpressionOrExpression is not IExpressionView expr)
-                {
-                    throw notImplemented(starExpressionOrExpression);
                 }
 
                 PsObject exprValue = InterpretExpression(expr);
@@ -104,18 +82,9 @@ public partial class Interpreter
                 break;
             }
 
-            case StarExpressionsView starExpressionsView:
+            case IExpressionView expr:
             {
-                foreach (var starExpression in starExpressionsView.Values)
-                {
-                    if (starExpression is not IExpressionView expr)
-                    {
-                        throw notImplemented(starExpression);
-                    }
-
-                    InterpretExpression(expr);
-                }
-
+                InterpretExpression(expr);
                 break;
             }
 
@@ -233,7 +202,7 @@ public partial class Interpreter
 
         switch (arguments)
         {
-            case WithPositionalArgumentsView withPositional:
+            case ArgumentsWithPositionalView withPositional:
                 List<PsObject> positional = [];
                 foreach (var pos in withPositional.PositionalArgumentsPart)
                 {

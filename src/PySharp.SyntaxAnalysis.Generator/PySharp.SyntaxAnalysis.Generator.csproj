@@ -7,7 +7,6 @@
     <Nullable>enable</Nullable>
     <AssemblyName>pegennet</AssemblyName>
     <PublishSingleFile>true</PublishSingleFile>
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>

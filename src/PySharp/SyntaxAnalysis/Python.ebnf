@@ -36,6 +36,7 @@ SimpleStatements:
 @union
 SimpleStatement:
     | Assignment
+    | StarExpression !','
     | StarExpressions
     | &'type'       TypeAlias
     | &ImportStart  ImportStatement
@@ -704,10 +705,10 @@ DictComprehension:
 
 @memo
 Arguments:
-    | PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> WithPositionalArguments(
+    | PositionalArgument+.',' [',' Kwargs -> KeywordArgumentsPart(Value=kwargs)] -',' -> ArgumentsWithPositional(
         PositionalArgumentsPart=positional_argument_Gather, KeywordArgumentsPart=keyword_arguments_part)
 
-    | Kwargs -',' -> OnlyKeywordArguments(Value=kwargs)
+    | Kwargs -',' -> ArgumentsWithOnlyKeywords(Value=kwargs)
 
 @union
 PositionalArgument:

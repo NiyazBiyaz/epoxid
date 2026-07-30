@@ -1,4 +1,5 @@
-CUR_DIR=$(pwd)
+dotnet build ./src/PySharp.SyntaxAnalysis.Generator -c Release
 cd ./src/PySharp/SyntaxAnalysis
-dotnet run --project ../../PySharp.SyntaxAnalysis.Generator -- Python.ebnf -o Generated --split-files
-cd $CUR_DIR
+rm -rf ./Generated
+../../PySharp.SyntaxAnalysis.Generator/bin/Release/net10.0/pegennet Python.ebnf -o Generated --split-files
+cd ../../..

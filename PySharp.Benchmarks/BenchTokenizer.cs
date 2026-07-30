@@ -21,7 +21,7 @@ public class BenchTokenizer
         var buffer = new StringBuffer(source_with_f_strings);
         var sync = SynchronizationPoint.ClearPoint(buffer);
 
-        var tokenizer = new Tokenizer(sync, true);
+        var tokenizer = new Tokenizer(sync);
 
         while (!tokenizer.ShouldStop)
             tokenizer.ReadNext(out _);
@@ -33,7 +33,7 @@ public class BenchTokenizer
         var buffer = new StringBuffer(source_without_f_strings);
         var sync = SynchronizationPoint.ClearPoint(buffer);
 
-        var tokenizer = new Tokenizer(sync, true);
+        var tokenizer = new Tokenizer(sync);
 
         while (!tokenizer.ShouldStop)
             tokenizer.ReadNext(out _);
