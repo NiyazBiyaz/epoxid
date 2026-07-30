@@ -40,11 +40,11 @@ public static class NumberParser
 
     public static long ParseInteger(ReadOnlySpan<char> number) => number switch
     {
-        ['0', 'x'] => long.Parse(number, NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+        ['0', 'x', ..] => long.Parse(number[2..], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
 
-        ['0', 'b'] => long.Parse(number, NumberStyles.BinaryNumber, CultureInfo.InvariantCulture),
+        ['0', 'b', ..] => long.Parse(number[2..], NumberStyles.BinaryNumber, CultureInfo.InvariantCulture),
 
-        ['0', 'o'] => throw new NotImplementedException("Octal numbers cannot be parsed yet."),
+        ['0', 'o', ..] => throw new NotImplementedException("Octal numbers cannot be parsed yet."),
 
         _ => long.Parse(number, CultureInfo.InvariantCulture),
     };
@@ -55,7 +55,6 @@ public static class NumberParser
 
     public static NumberType GetNumberType(ReadOnlySpan<char> number) => number switch
     {
-        ['0', 'x'] or ['0', 'b'] or ['0', 'o'] => NumberType.Integer,
         _ when number.ContainsAny("jJ") => NumberType.Complex,
         _ when number.ContainsAny("eE.") => NumberType.Float,
         _ => NumberType.Integer,
