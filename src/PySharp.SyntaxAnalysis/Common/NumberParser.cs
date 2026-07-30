@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using PySharp.Runtime.Objects;
 
 namespace PySharp.SyntaxAnalysis.Common;
 
@@ -38,19 +38,27 @@ public static class NumberParser
         return result;
     }
 
-    public static PsObject ParseNumber(ReadOnlySpan<char> number) => number switch
+    public static long ParseInteger(ReadOnlySpan<char> number) => number switch
     {
-        _ when number.ContainsAny("jJ") => throw new NotImplementedException("Complex number cannot be parsed yet."),
+        ['0', 'x'] => long.Parse(number, NumberStyles.HexNumber, CultureInfo.InvariantCulture),
 
-        _ when number.ContainsAny("eE.") => new PsFloat(double.Parse(number, CultureInfo.InvariantCulture)),
-
-        ['0', 'x'] => new PsInteger(long.Parse(number, NumberStyles.HexNumber, CultureInfo.InvariantCulture)),
-
-        ['0', 'b'] => new PsInteger(long.Parse(number, NumberStyles.BinaryNumber, CultureInfo.InvariantCulture)),
+        ['0', 'b'] => long.Parse(number, NumberStyles.BinaryNumber, CultureInfo.InvariantCulture),
 
         ['0', 'o'] => throw new NotImplementedException("Octal numbers cannot be parsed yet."),
 
-        _ => new PsInteger(long.Parse(number, CultureInfo.InvariantCulture)),
+        _ => long.Parse(number, CultureInfo.InvariantCulture),
+    };
+
+    public static double ParseFloat(ReadOnlySpan<char> number) => double.Parse(number, CultureInfo.InvariantCulture);
+
+    public static Complex ParseComplex(ReadOnlySpan<char> number) => Complex.Parse(number, CultureInfo.InvariantCulture);
+
+    public static NumberType GetNumberType(ReadOnlySpan<char> number) => number switch
+    {
+        ['0', 'x'] or ['0', 'b'] or ['0', 'o'] => NumberType.Integer,
+        _ when number.ContainsAny("jJ") => NumberType.Complex,
+        _ when number.ContainsAny("eE.") => NumberType.Float,
+        _ => NumberType.Integer,
     };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,4 +69,11 @@ public static class NumberParser
         >= 'A' and <= 'F' => ch - 'A' + 10,
         _ => null,
     };
+}
+
+public enum NumberType
+{
+    Integer,
+    Float,
+    Complex,
 }

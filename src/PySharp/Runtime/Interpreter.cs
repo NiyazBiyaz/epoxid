@@ -138,7 +138,13 @@ public partial class Interpreter
             case AtomPrimaryView atomPrimary:
                 return atomPrimary.Value switch
                 {
-                    NumberAtomView number => NumberParser.ParseNumber(number.Value.RawString),
+                    NumberAtomView number => NumberParser.GetNumberType(number.Value.RawString) switch
+                    {
+                        NumberType.Integer => (PsInteger)NumberParser.ParseInteger(number.Value.RawString),
+                        NumberType.Float => (PsFloat)NumberParser.ParseFloat(number.Value.RawString),
+                        NumberType.Complex => throw new NotImplementedException(), //(PsComplex)NumberParser.ParseComplex(number.Value.RawString),
+                        _ => throw new UnreachableException(),
+                    },
 
                     NameAtomView name => getVariableFromEnvironment(name.Value.RawString)
                         ?? throw new Exception($"Variable '{name.Value.RawString}' is undefined."),

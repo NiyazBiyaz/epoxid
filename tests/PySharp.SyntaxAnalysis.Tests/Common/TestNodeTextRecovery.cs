@@ -1,7 +1,7 @@
 using PySharp.SyntaxAnalysis.Common.Ast;
 using static PySharp.SyntaxAnalysis.Tokens.TokenType;
 
-namespace PySharp.Tests.SyntaxAnalysis.Common;
+namespace PySharp.SyntaxAnalysis.Tests.Common;
 
 public class TestNodeTextRecovery()
 {

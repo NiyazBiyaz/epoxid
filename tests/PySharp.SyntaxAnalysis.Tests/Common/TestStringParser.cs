@@ -1,6 +1,6 @@
 using PySharp.SyntaxAnalysis.Common;
 
-namespace PySharp.Tests.SyntaxAnalysis.Common;
+namespace PySharp.SyntaxAnalysis.Tests.Common;
 
 public class TestStringParser
 {

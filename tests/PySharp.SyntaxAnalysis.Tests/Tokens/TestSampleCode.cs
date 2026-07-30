@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using PySharp.SyntaxAnalysis.Tokens;
 
-namespace PySharp.Tests.SyntaxAnalysis.Tokens;
+namespace PySharp.SyntaxAnalysis.Tests.Tokens;
 
 public class TestSampleCode
 {

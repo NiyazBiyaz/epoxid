@@ -2,7 +2,7 @@ using System.Diagnostics;
 using PySharp.SyntaxAnalysis.Tokens;
 using static PySharp.SyntaxAnalysis.Tokens.TokenType;
 
-namespace PySharp.Tests.SyntaxAnalysis.Tokens;
+namespace PySharp.SyntaxAnalysis.Tests.Tokens;
 
 public class TestTokenizer
 {
