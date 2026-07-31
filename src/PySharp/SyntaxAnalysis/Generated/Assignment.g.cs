@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(AnnotatedAssignmentNode), typeof(SimpleAssignmentNode), typeof(AnnotatedParenthesizedAssignmentNode), typeof(AnnotatedSubscriptAttributeAssignmentNode), typeof(CascadeAssignmentNode), typeof(AugmentedAssignmentNode))]
 public abstract partial record AssignmentNode : GreenNode, ISimpleStatementNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(AnnotatedAssignmentView), typeof(SimpleAssignmentView), typeof(AnnotatedParenthesizedAssignmentView), typeof(AnnotatedSubscriptAttributeAssignmentView), typeof(CascadeAssignmentView), typeof(AugmentedAssignmentView))]
 public abstract partial class AssignmentView : RedView, ISimpleStatementView
 {
     public AssignmentView(AssignmentNode green, int position, IRedView? parent)

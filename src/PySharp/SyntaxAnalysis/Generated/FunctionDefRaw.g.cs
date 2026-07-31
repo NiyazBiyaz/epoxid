@@ -10,6 +10,7 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalFunctionDefNode), typeof(AsyncFunctionDefNode))]
 public abstract partial record FunctionDefRawNode : GreenNode
 {
     public TokenNode Name => (TokenNode)Children![1];
@@ -19,6 +20,7 @@ public abstract partial record FunctionDefRawNode : GreenNode
     public BlockNode Block => (BlockNode)Children![8];
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalFunctionDefView), typeof(AsyncFunctionDefView))]
 public abstract partial class FunctionDefRawView : RedView
 {
     public FunctionDefRawView(FunctionDefRawNode green, int position, IRedView? parent)

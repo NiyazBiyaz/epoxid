@@ -10,6 +10,8 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(StringConstantNode), typeof(FStringNode))]
 public partial interface IStringValueNode : IGreenNode;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(StringConstantView), typeof(FStringView))]
 public partial interface IStringValueView : IRedView;

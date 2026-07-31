@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DeleteAttributeTargetNode), typeof(DeleteSubscriptTargetNode), typeof(DeleteAtomTargetNode))]
 public abstract partial record DeleteTargetNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DeleteAttributeTargetView), typeof(DeleteSubscriptTargetView), typeof(DeleteAtomTargetView))]
 public abstract partial class DeleteTargetView : RedView
 {
     public DeleteTargetView(DeleteTargetNode green, int position, IRedView? parent)

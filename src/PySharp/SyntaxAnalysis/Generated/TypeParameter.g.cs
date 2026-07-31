@@ -10,11 +10,13 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record TypeParameterNode : GreenNode
 {
     public TokenNode Token => (TokenNode)Children![0];
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class TypeParameterView : RedView
 {
     public TypeParameterView(TypeParameterNode green, int position, IRedView? parent)

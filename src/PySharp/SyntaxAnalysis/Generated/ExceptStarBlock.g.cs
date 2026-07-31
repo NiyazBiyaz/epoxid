@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(PlainExceptStarBlockNode), typeof(AliasExceptStarBlockNode), typeof(MultipleExceptStarBlockNode))]
 public abstract partial record ExceptStarBlockNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(PlainExceptStarBlockView), typeof(AliasExceptStarBlockView), typeof(MultipleExceptStarBlockView))]
 public abstract partial class ExceptStarBlockView : RedView
 {
     public ExceptStarBlockView(ExceptStarBlockNode green, int position, IRedView? parent)

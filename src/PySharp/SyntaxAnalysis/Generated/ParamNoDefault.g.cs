@@ -10,11 +10,13 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record ParamNoDefaultNode : GreenNode
 {
     public ParamNode Param => (ParamNode)Children![0];
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class ParamNoDefaultView : RedView
 {
     public ParamNoDefaultView(ParamNoDefaultNode green, int position, IRedView? parent)

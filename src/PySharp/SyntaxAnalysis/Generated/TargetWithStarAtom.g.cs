@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DottedStarTargetNode), typeof(SubscriptStarTargetNode), typeof(SingleStarTargetNode))]
 public abstract partial record TargetWithStarAtomNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DottedStarTargetView), typeof(SubscriptStarTargetView), typeof(SingleStarTargetView))]
 public abstract partial class TargetWithStarAtomView : RedView
 {
     public TargetWithStarAtomView(TargetWithStarAtomNode green, int position, IRedView? parent)

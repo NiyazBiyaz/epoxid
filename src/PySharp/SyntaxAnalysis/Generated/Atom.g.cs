@@ -10,6 +10,8 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(OneTokenAtomNode), typeof(StringAtomNode), typeof(GeneratorExpressionNode), typeof(TupleNode), typeof(GroupNode), typeof(ListComprehensionNode), typeof(ListNode), typeof(DictComprehensionNode), typeof(SetComprehensionNode), typeof(DictNode), typeof(SetNode))]
 public partial interface IAtomNode : IGreenNode;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(OneTokenAtomView), typeof(StringAtomView), typeof(GeneratorExpressionView), typeof(TupleView), typeof(GroupView), typeof(ListComprehensionView), typeof(ListView), typeof(DictComprehensionView), typeof(SetComprehensionView), typeof(DictView), typeof(SetView))]
 public partial interface IAtomView : IRedView;

@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(EqOperationNode), typeof(NotEqOperationNode), typeof(LtEqOperationNode), typeof(LtOperationNode), typeof(GtEqOperationNode), typeof(GtOperationNode), typeof(NotInOperationNode), typeof(InOperationNode), typeof(IsNotOperationNode), typeof(IsOperationNode))]
 public abstract partial record CompareOperationNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(EqOperationView), typeof(NotEqOperationView), typeof(LtEqOperationView), typeof(LtOperationView), typeof(GtEqOperationView), typeof(GtOperationView), typeof(NotInOperationView), typeof(InOperationView), typeof(IsNotOperationView), typeof(IsOperationView))]
 public abstract partial class CompareOperationView : RedView
 {
     public CompareOperationView(CompareOperationNode green, int position, IRedView? parent)

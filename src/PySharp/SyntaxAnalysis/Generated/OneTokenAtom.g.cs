@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NameAtomNode), typeof(TrueAtomNode), typeof(FalseAtomNode), typeof(NoneAtomNode), typeof(NumberAtomNode), typeof(EllipsisAtomNode))]
 public abstract partial record OneTokenAtomNode : GreenNode, IAtomNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NameAtomView), typeof(TrueAtomView), typeof(FalseAtomView), typeof(NoneAtomView), typeof(NumberAtomView), typeof(EllipsisAtomView))]
 public abstract partial class OneTokenAtomView : RedView, IAtomView
 {
     public OneTokenAtomView(OneTokenAtomNode green, int position, IRedView? parent)

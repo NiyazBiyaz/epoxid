@@ -10,11 +10,13 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedWithItemNode), typeof(PlainWithItemNode))]
 public abstract partial record WithItemNode : GreenNode
 {
     public IExpressionNode Expression => (IExpressionNode)Children![0];
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedWithItemView), typeof(PlainWithItemView))]
 public abstract partial class WithItemView : RedView
 {
     public WithItemView(WithItemNode green, int position, IRedView? parent)

@@ -10,12 +10,14 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record SlashNoDefaultNode : GreenNode
 {
     public NodeArray<ParamNoDefaultNode> ParamNoDefault => (NodeArray<ParamNoDefaultNode>)Children![0];
     public TokenNode Token => (TokenNode)Children![1];
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class SlashNoDefaultView : RedView
 {
     public SlashNoDefaultView(SlashNoDefaultNode green, int position, IRedView? parent)

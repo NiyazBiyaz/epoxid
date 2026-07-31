@@ -80,7 +80,9 @@ internal record TypeIr(
     string Name,
     string? BaseName,
     bool? IsAbstract,
-    IEnumerable<string> UnionMembership);
+    IEnumerable<string> UnionMembership,
+    IEnumerable<TypeIr>? UnionMembers,
+    IEnumerable<TypeIr>? Inheritors);
 
 internal record FieldIr
 {

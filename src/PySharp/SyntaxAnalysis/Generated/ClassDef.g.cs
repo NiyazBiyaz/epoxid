@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DecoratedClassDefNode), typeof(RawClassDefNode))]
 public abstract partial record ClassDefNode : GreenNode, ICompoundStatementNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DecoratedClassDefView), typeof(RawClassDefView))]
 public abstract partial class ClassDefView : RedView, ICompoundStatementView
 {
     public ClassDefView(ClassDefNode green, int position, IRedView? parent)

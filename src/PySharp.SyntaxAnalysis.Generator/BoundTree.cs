@@ -352,12 +352,15 @@ internal abstract class BoundType
         Name,
         (this as BoundRuleType)?.Base?.Name,
         (this as BoundRuleType)?.IsAbstract,
-        UnionMembership.Select(u => u.Name)
+        UnionMembership.Select(u => u.Name),
+        (this as BoundUnionType)?.Members.Select(m => m.ToIr()),
+        (this as BoundRuleType)?.Inheritors.Select(i => i.ToIr())
     );
 }
 
 internal sealed class BoundRuleType : BoundType
 {
+    internal List<BoundRuleType> Inheritors { get; } = [];
     internal required BoundRuleType? Base { get; init; }
     internal required bool IsAbstract { get; init; }
     internal List<BoundField> Fields { get; set; } = null!;

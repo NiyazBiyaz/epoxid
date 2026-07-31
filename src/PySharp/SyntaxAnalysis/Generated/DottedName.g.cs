@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ManyDottedNameNode), typeof(SingleDottedNameNode))]
 public abstract partial record DottedNameNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ManyDottedNameView), typeof(SingleDottedNameView))]
 public abstract partial class DottedNameView : RedView
 {
     public DottedNameView(DottedNameNode green, int position, IRedView? parent)

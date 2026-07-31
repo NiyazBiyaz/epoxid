@@ -555,6 +555,8 @@ internal class Binder
                         IsAbstract = false,
                         Name = namedAction.Name.RawString,
                     };
+
+                    ((BoundRuleType)rule.Type).Inheritors.Add(type);
                 }
 
                 if (astAlt.Action is null && rule.Alternatives.Count > 1)

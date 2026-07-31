@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\PySharp.SyntaxAnalysis\PySharp.SyntaxAnalysis.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>pysharp</AssemblyName>
@@ -11,4 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PySharp.SyntaxAnalysis\PySharp.SyntaxAnalysis.csproj" />
+    <ProjectReference Include="..\PySharp.SyntaxAnalysis.Generator.Analyzers\PySharp.SyntaxAnalysis.Generator.Analyzers.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>
+  </ItemGroup>
+
 </Project>

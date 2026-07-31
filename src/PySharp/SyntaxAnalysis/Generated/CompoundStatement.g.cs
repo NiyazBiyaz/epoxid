@@ -10,6 +10,8 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(FunctionDefNode), typeof(IfStatementNode), typeof(ClassDefNode), typeof(WithStatementNode), typeof(ForStatementNode), typeof(TryStatementNode), typeof(WhileStatementNode))]
 public partial interface ICompoundStatementNode : IGreenNode, IStatementNode;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(FunctionDefView), typeof(IfStatementView), typeof(ClassDefView), typeof(WithStatementView), typeof(ForStatementView), typeof(TryStatementView), typeof(WhileStatementView))]
 public partial interface ICompoundStatementView : IRedView, IStatementView;

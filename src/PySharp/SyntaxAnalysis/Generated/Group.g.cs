@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedGroupExpressionNode), typeof(YieldGroupExpressionNode))]
 public abstract partial record GroupNode : GreenNode, IAtomNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedGroupExpressionView), typeof(YieldGroupExpressionView))]
 public abstract partial class GroupView : RedView, IAtomView
 {
     public GroupView(GroupNode green, int position, IRedView? parent)

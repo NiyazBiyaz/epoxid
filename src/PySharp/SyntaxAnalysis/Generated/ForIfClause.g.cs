@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(AsyncForIfClauseNode), typeof(NormalForIfClauseNode))]
 public abstract partial record ForIfClauseNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(AsyncForIfClauseView), typeof(NormalForIfClauseView))]
 public abstract partial class ForIfClauseView : RedView
 {
     public ForIfClauseView(ForIfClauseNode green, int position, IRedView? parent)

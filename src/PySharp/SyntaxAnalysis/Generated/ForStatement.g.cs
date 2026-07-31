@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalForStatementNode), typeof(AsyncForStatementNode))]
 public abstract partial record ForStatementNode : GreenNode, ICompoundStatementNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalForStatementView), typeof(AsyncForStatementView))]
 public abstract partial class ForStatementView : RedView, ICompoundStatementView
 {
     public ForStatementView(ForStatementNode green, int position, IRedView? parent)

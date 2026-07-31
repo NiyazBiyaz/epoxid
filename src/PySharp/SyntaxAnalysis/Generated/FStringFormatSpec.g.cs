@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(FStringFormatLiteralNode), typeof(FStringFormatReplacementNode))]
 public abstract partial record FStringFormatSpecNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(FStringFormatLiteralView), typeof(FStringFormatReplacementView))]
 public abstract partial class FStringFormatSpecView : RedView
 {
     public FStringFormatSpecView(FStringFormatSpecNode green, int position, IRedView? parent)

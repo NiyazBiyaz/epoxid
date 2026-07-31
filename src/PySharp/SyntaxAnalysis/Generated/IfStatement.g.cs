@@ -10,12 +10,14 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(IfElifStatementNode), typeof(IfMaybeElseStatementNode))]
 public abstract partial record IfStatementNode : GreenNode, ICompoundStatementNode
 {
     public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
     public BlockNode Block => (BlockNode)Children![3];
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(IfElifStatementView), typeof(IfMaybeElseStatementView))]
 public abstract partial class IfStatementView : RedView, ICompoundStatementView
 {
     public IfStatementView(IfStatementNode green, int position, IRedView? parent)

@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(YieldFromExpressionNode), typeof(YieldStarExpressionNode))]
 public abstract partial record YieldExpressionNode : GreenNode, IAnnotatedRhsNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(YieldFromExpressionView), typeof(YieldStarExpressionView))]
 public abstract partial class YieldExpressionView : RedView, IAnnotatedRhsView
 {
     public YieldExpressionView(YieldExpressionNode green, int position, IRedView? parent)

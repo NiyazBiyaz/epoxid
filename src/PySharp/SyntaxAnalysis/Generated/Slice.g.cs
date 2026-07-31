@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedSliceExpressionNode), typeof(ColonSliceNode))]
 public abstract partial record SliceNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedSliceExpressionView), typeof(ColonSliceView))]
 public abstract partial class SliceView : RedView
 {
     public SliceView(SliceNode green, int position, IRedView? parent)

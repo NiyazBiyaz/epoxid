@@ -5,6 +5,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/src/">
+    <Project Path="src/PySharp.SyntaxAnalysis.Generator.Analyzers/PySharp.SyntaxAnalysis.Generator.Analyzers.csproj" />
     <Project Path="src/PySharp.SyntaxAnalysis.Generator/PySharp.SyntaxAnalysis.Generator.csproj" />
     <Project Path="src/PySharp.SyntaxAnalysis/PySharp.SyntaxAnalysis.csproj" />
     <Project Path="src/PySharp/PySharp.csproj" />

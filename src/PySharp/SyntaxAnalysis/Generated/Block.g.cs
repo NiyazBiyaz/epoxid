@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(IndentedBlockNode), typeof(OneLinedBlockNode))]
 public abstract partial record BlockNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(IndentedBlockView), typeof(OneLinedBlockView))]
 public abstract partial class BlockView : RedView
 {
     public BlockView(BlockNode green, int position, IRedView? parent)

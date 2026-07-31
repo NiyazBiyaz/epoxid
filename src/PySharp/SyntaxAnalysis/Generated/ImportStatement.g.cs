@@ -10,6 +10,8 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(ImportNameNode), typeof(LazyImportNameNode), typeof(ImportFromNode), typeof(LazyImportFromNode))]
 public partial interface IImportStatementNode : IGreenNode, ISimpleStatementNode;
 
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(ImportNameView), typeof(LazyImportNameView), typeof(ImportFromView), typeof(LazyImportFromView))]
 public partial interface IImportStatementView : IRedView, ISimpleStatementView;

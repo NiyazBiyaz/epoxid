@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ImportFromParenthesizedTargetsNode), typeof(ImportFromFlatTargetsNode), typeof(ImportFromAllTargetsNode))]
 public abstract partial record ImportFromTargetsNode : GreenNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ImportFromParenthesizedTargetsView), typeof(ImportFromFlatTargetsView), typeof(ImportFromAllTargetsView))]
 public abstract partial class ImportFromTargetsView : RedView
 {
     public ImportFromTargetsView(ImportFromTargetsNode green, int position, IRedView? parent)

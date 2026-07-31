@@ -10,10 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(KeyValueDictComprehensionNode), typeof(UnpackingDictComprehensionNode))]
 public abstract partial record DictComprehensionNode : GreenNode, IAtomNode
 {
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(KeyValueDictComprehensionView), typeof(UnpackingDictComprehensionView))]
 public abstract partial class DictComprehensionView : RedView, IAtomView
 {
     public DictComprehensionView(DictComprehensionNode green, int position, IRedView? parent)
