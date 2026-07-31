@@ -57,26 +57,6 @@ git pull
 dotnet test
 ```
 
-#### Folders structure
-
-```
-pysharp
-├── docs
-├── PySharp.Benchmarks                          -- Speed tests
-├── src
-│   ├── PySharp                                 -- Main project of the language
-│   │   ├── Runtime                             -- Runtime library
-│   │   │   └── Objects                         -- Py# object model
-│   │   └── SyntaxAnalysis                      -- Syntax analysis library
-│   │       ├── Common                          -- Non-specialized syntax library
-│   │       └── Tokens                          -- Tokenizer
-│   └── PySharp.SyntaxAnalysis.Generator        -- PegenNet (PEG parser generator)
-├── tests
-│   ├── PySharp.SyntaxAnalysis.Generator.Tests  -- Tests for the PegenNet
-│   └── PySharp.Tests                           -- Tests of the main project
-└── Tools
-```
-
 ---
 
 ## License
