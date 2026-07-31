@@ -12,6 +12,11 @@ public partial class Interpreter
 {
     private readonly Stack<Scope> scopes = [];
 
+    // It should be PyObject, but later.
+    public TextWriter Stdout { get; set; } = Console.Out;
+    public TextReader Stdin { get; set; } = Console.In;
+    public TextWriter Stderr { get; set; } = Console.Error;
+
     public void InterpretFile(FileView file)
     {
         Debug.Assert(file != null);

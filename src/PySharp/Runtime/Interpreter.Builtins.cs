@@ -14,7 +14,7 @@ public partial class Interpreter
         scopes.Push(builtins);
     }
 
-    private static PsNone print(PsObject self, PsTuple args, PsDict? kwargs)
+    private PsNone print(PsObject self, PsTuple args, PsDict? kwargs)
     {
         // Simple 'print' implementation on C# side.
         int seenCount = 0;
@@ -47,13 +47,13 @@ public partial class Interpreter
         foreach (var obj in args)
         {
             if (needSep)
-                Console.Write(sep);
+                Stdout.Write(sep);
 
-            Console.Write(obj);
+            Stdout.Write(obj);
 
             needSep = true;
         }
-        Console.Write(end);
+        Stdout.Write(end);
 
         return PsConstants.None;
     }

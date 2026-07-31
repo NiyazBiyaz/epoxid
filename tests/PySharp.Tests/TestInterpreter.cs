@@ -8,16 +8,18 @@ namespace PySharp.Tests;
 public class TestInterpreter
 {
     [Fact]
-    public void TestBauBau_AllOkay()
+    public void TestPrintFunction()
     {
         const string src = """
         print("bau bau!")
 
         """;
         var file = getView(src);
-        var interpreter = getInterpreter();
+        var interpreter = getInterpreterStdout(out var stdout);
 
         interpreter.InterpretFile(file);
+
+        Assert.Equal("bau bau!\n", stdout.ToString());
     }
 
     private static FileView getView(string src)
@@ -45,6 +47,13 @@ public class TestInterpreter
     {
         var inter = new Interpreter();
         inter.LoadBuiltins();
+        return inter;
+    }
+
+    private static Interpreter getInterpreterStdout(out StringWriter stdout)
+    {
+        var inter = getInterpreter();
+        inter.Stdout = stdout = new StringWriter();
         return inter;
     }
 }
