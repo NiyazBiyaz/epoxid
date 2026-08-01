@@ -11,6 +11,7 @@
     <Project Path="src/PySharp/PySharp.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/PySharp.SyntaxAnalysis.Generator.Analyzers.Tests/PySharp.SyntaxAnalysis.Generator.Analyzers.Tests.csproj" />
     <Project Path="tests/PySharp.SyntaxAnalysis.Generator.Tests/PySharp.SyntaxAnalysis.Generator.Tests.csproj" />
     <Project Path="tests/PySharp.SyntaxAnalysis.Tests/PySharp.SyntaxAnalysis.Tests.csproj" />
     <Project Path="tests/PySharp.Tests/PySharp.Tests.csproj" />
