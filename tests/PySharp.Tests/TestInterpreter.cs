@@ -14,12 +14,45 @@ public class TestInterpreter
         print("bau bau!")
 
         """;
+        assertOutput(src, "bau bau!");
+    }
+
+    [Fact]
+    public void Test_VariablesAndPrimitiveArithmetic()
+    {
+        const string src = """
+        fluffy = 35
+        fuzzy = 34
+        bauBau = fluffy + fuzzy
+        ponDeRing = bauBau / 3
+        fwmc = ponDeRing * 2
+        print(bauBau, ponDeRing, fwmc, 69 - 17)
+
+        """;
+        assertOutput(src, "69 23.0 46.0 52");
+    }
+
+    [Fact]
+    public void Test_PrimitiveStringOperations()
+    {
+        const string src = """
+        bau = "Bau"
+        bauBauBau = bau * 3
+        waga = "w" + "aga"
+        print(bauBauBau, waga)
+
+        """;
+        assertOutput(src, "BauBauBau waga");
+    }
+
+    private static void assertOutput(string src, string expected, bool includeNewLine = true)
+    {
         var file = getView(src);
         var interpreter = getInterpreterStdout(out var stdout);
 
         interpreter.InterpretFile(file);
 
-        Assert.Equal("bau bau!\n", stdout.ToString());
+        Assert.Equal(expected + (includeNewLine ? "\n" : ""), stdout.ToString());
     }
 
     private static FileView getView(string src)
