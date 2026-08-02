@@ -3,10 +3,10 @@ using Microsoft.CodeAnalysis;
 
 namespace PySharp.SyntaxAnalysis.Generator.Analyzers;
 
-public sealed class SwitchableAstNode(ITypeSymbol type, IEnumerable<SwitchableAstNode> children)
+public sealed class SwitchableAst(ITypeSymbol type, IEnumerable<SwitchableAst> children)
 {
     private readonly ITypeSymbol type = type;
-    private readonly ImmutableArray<SwitchableAstNode> children = children.ToImmutableArray();
+    private readonly ImmutableArray<SwitchableAst> children = children.ToImmutableArray();
 
     private IEnumerable<ITypeSymbol> childrenTypes => children.Select(c => c.type);
 

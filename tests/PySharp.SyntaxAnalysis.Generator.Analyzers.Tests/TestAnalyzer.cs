@@ -1,5 +1,5 @@
 using Test = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<
-    PySharp.SyntaxAnalysis.Generator.Analyzers.SwitchOnAstAnalyzer,
+    PySharp.SyntaxAnalysis.Generator.Analyzers.AstSwitchAnalyzer,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace PySharp.SyntaxAnalysis.Generator.Analyzers.Tests;
@@ -10,13 +10,13 @@ public class TestAnalyzer
     public async Task Test_PGNT001_OmittedInterfaceImplementor()
     {
         const string src = """
-        {|PGNT001:switch|} (bauBau)
+        {|PGNT001:switch (bauBau)
         {
             case FuzzyView:
                 break;
             default:
                 break;
-        }
+        }|}
         """;
         var test = prepareTest(wrap(src));
         await test.RunAsync(TestContext.Current.CancellationToken);
@@ -26,7 +26,7 @@ public class TestAnalyzer
     public async Task Test_PGNT001_OmittedInSecondGeneration()
     {
         const string src = """
-        {|PGNT001:switch|} (bauBau)
+        {|PGNT001:switch (bauBau)
         {
             case FuzzyView:
                 break;
@@ -34,7 +34,7 @@ public class TestAnalyzer
                 break;
             default:
                 break;
-        }
+        }|}
         """;
         var test = prepareTest(wrap(src));
         await test.RunAsync(TestContext.Current.CancellationToken);
@@ -44,11 +44,11 @@ public class TestAnalyzer
     public async Task Test_PGNT001_WorksForExpression()
     {
         const string src = """
-        var haeh = bauBau {|PGNT001:switch|}
+        var haeh = {|PGNT001:bauBau switch
         {
             FuzzyView f => f,
             _ => throw new System.Exception("Bau bau!"),
-        };
+        }|};
         """;
         var test = prepareTest(wrap(src));
         await test.RunAsync(TestContext.Current.CancellationToken);

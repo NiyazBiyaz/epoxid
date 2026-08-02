@@ -6,15 +6,20 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace PySharp.SyntaxAnalysis.Generator.Analyzers;
 
+// Ok.
+#pragma warning disable RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
+#pragma warning restore RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
+public class AstSwitchAnalyzer : DiagnosticAnalyzer
 {
     private const string wild_union_name = "PySharp.SyntaxAnalysis.WildUnionAttribute";
     private const string base_rule_name = "PySharp.SyntaxAnalysis.BaseRuleAttribute";
 
+    internal const string PGNT001 = "PGNT001";
+
     private static readonly DiagnosticDescriptor unmatched_ast_components = new(
 #pragma warning disable RS2008 // Enable analyzer release tracking // Ah?
-        id: "PGNT001",
+        id: PGNT001,
 #pragma warning restore RS2008 // Enable analyzer release tracking
         title: "Unmatched AST component types",
         messageFormat: "Unmatched AST component types ({0})",
@@ -50,7 +55,7 @@ public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
         if (!switchableAstTrees.Any())
             return;
 
-        var switchableAst = new SwitchableAstNode(typeSymbol, switchableAstTrees);
+        var switchableAst = new SwitchableAst(typeSymbol, switchableAstTrees);
 
         var cases = switchExpression
             .Arms
@@ -67,7 +72,7 @@ public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
         if (!cases.Any())
             return;
 
-        analyzeCore(context, switchExpression.SwitchKeyword, cases, switchableAst);
+        analyzeCore(context, switchExpression, cases, switchableAst);
     }
 
     private static void analyzeStatement(SyntaxNodeAnalysisContext context)
@@ -85,7 +90,7 @@ public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
         if (!switchableAstTrees.Any())
             return;
 
-        var switchableAst = new SwitchableAstNode(typeSymbol, switchableAstTrees);
+        var switchableAst = new SwitchableAst(typeSymbol, switchableAstTrees);
 
         var declarationCases = switchStatement
             .Sections
@@ -107,14 +112,14 @@ public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
         if (!cases.Any())
             return;
 
-        analyzeCore(context, switchStatement.SwitchKeyword, cases, switchableAst);
+        analyzeCore(context, switchStatement, cases, switchableAst);
     }
 
     private static void analyzeCore(
         SyntaxNodeAnalysisContext context,
-        SyntaxToken switchKeyword,
+        SyntaxNode switchNode,
         IEnumerable<ExpressionSyntax> cases,
-        SwitchableAstNode switchableAst)
+        SwitchableAst switchableAst)
     {
         var coveredTypes = new List<ITypeSymbol>();
         foreach (var c in cases)
@@ -134,13 +139,16 @@ public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
 
         var uncoveredNames = uncovered.Select(t => t.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart));
 
-        context.ReportDiagnostic(Diagnostic.Create(
+        var diagnostic = Diagnostic.Create(
             unmatched_ast_components,
-            switchKeyword.GetLocation(),
-            string.Join(", ", uncoveredNames)));
+            switchNode.GetLocation(),
+            properties: uncoveredNames.ToImmutableDictionary(un => un)!,
+            string.Join(", ", uncoveredNames));
+
+        context.ReportDiagnostic(diagnostic);
     }
 
-    private static IEnumerable<SwitchableAstNode> computeSwitchableAstTree(ITypeSymbol typeSymbol)
+    private static IEnumerable<SwitchableAst> computeSwitchableAstTree(ITypeSymbol typeSymbol)
     {
         if (typeSymbol.IsSealed)
             // Sealed classes can't be used for switch on types, so skip
@@ -161,7 +169,7 @@ public class SwitchOnAstAnalyzer : DiagnosticAnalyzer
                 foreach (var typed in typedConstants)
                 {
                     if (typed.Kind == TypedConstantKind.Type && typed.Value is ITypeSymbol type)
-                        yield return new SwitchableAstNode(type, computeSwitchableAstTree(type));
+                        yield return new SwitchableAst(type, computeSwitchableAstTree(type));
                 }
             }
         }

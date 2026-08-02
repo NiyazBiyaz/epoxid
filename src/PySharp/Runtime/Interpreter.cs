@@ -175,7 +175,6 @@ public partial class Interpreter
             default:
                 throw notImplemented(rawPrimary);
         }
-        ;
     }
 
     private PsString evaluateString(StringAtomView str)
