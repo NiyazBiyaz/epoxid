@@ -1518,6 +1518,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @union
     // AnnotatedRhs:
     //     | YieldExpression
+    //     | StarExpression !','
     //     | StarExpressions
     IAnnotatedRhsNode? rule_AnnotatedRhs()
     {
@@ -1536,6 +1537,29 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("YieldExpression");
+        }
+        base.Reset(_mark);
+        {
+            // StarExpression !','
+            base.LogAlternativeEntered("StarExpression !','");
+            IGreenNode? star_expression;
+            if ((star_expression = rule_StarExpression()) is not null
+                &&
+                _LookaheadHelper_comma()
+            )
+            {
+                base.LogAlternativeSucceed("StarExpression !','");
+                _res = (IStarExpressionNode?)star_expression;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("StarExpression !','");
+            bool _LookaheadHelper_comma()
+            {
+                int _mark = base.Mark();
+                bool _wasParsed = Expect(TokenType.Comma) != null;
+                base.Reset(_mark);
+                return _wasParsed == false;
+            }
         }
         base.Reset(_mark);
         {

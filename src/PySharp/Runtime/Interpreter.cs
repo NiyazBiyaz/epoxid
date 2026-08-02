@@ -249,5 +249,5 @@ public partial class Interpreter
     }
 
     private static NotImplementedException notImplemented(IRedView view) => new NotImplementedException(
-        $"Error {view.Position2D}-{view.EndPosition2D}: This instruction is not supported yet.");
+        $"Error {view.Position2D}-{view.EndPosition2D}: This instruction ({view.GetType().Name}) is not supported yet.");
 }

@@ -114,6 +114,7 @@ AugAssign:
 @union
 AnnotatedRhs:
     | YieldExpression
+    | StarExpression !','
     | StarExpressions
 
 ReturnStatement: 'return' -StarExpressions -> new(Expression=star_expressions)
