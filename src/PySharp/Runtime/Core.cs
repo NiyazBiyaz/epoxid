@@ -2,7 +2,7 @@ using PySharp.Runtime.Objects;
 
 namespace PySharp.Runtime;
 
-public partial class Interpreter
+internal static class Core
 {
     internal static PsObject CallFunction(PsObject func, PsObject args, PsObject? kwargs)
     {

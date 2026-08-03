@@ -49,7 +49,7 @@ public partial class Interpreter
                 var condition = ifStatement.Condition;
                 bool fold = false;
 
-                if (fold = ConvertBool(InterpretExpression(condition)))
+                if (fold = Core.ConvertBool(InterpretExpression(condition)))
                 {
                     InterpretBlock(ifStatement.Block);
                 }
@@ -209,8 +209,8 @@ public partial class Interpreter
 
             PsObject result = value switch
             {
-                EqOperationView => EqualObjects(left, right),
-                NotEqOperationView => NotEqualObjects(left, right),
+                EqOperationView => Core.EqualObjects(left, right),
+                NotEqOperationView => Core.NotEqualObjects(left, right),
 
                 NotInOperationView view => throw notImplemented(view),
                 GtOperationView view => throw notImplemented(view),
@@ -223,7 +223,7 @@ public partial class Interpreter
                 _ => throw new InvalidOperationException(),
             };
 
-            fold &= ConvertBool(result);
+            fold &= Core.ConvertBool(result);
 
             if (!fold)
                 break;
@@ -242,22 +242,22 @@ public partial class Interpreter
 
             SumView sum => sum.Operator.Type switch
             {
-                TokenType.Plus => AddObjects(evaluateArithmetic(sum.Left), evaluateArithmetic(sum.Right)),
-                TokenType.Minus => SubtractObjects(evaluateArithmetic(sum.Left), evaluateArithmetic(sum.Right)),
+                TokenType.Plus => Core.AddObjects(evaluateArithmetic(sum.Left), evaluateArithmetic(sum.Right)),
+                TokenType.Minus => Core.SubtractObjects(evaluateArithmetic(sum.Left), evaluateArithmetic(sum.Right)),
                 _ => throw new ArgumentOutOfRangeException(),
             },
 
             TermView term => term.Operator.Type switch
             {
-                TokenType.Star => MultiplyObjects(evaluateArithmetic(term.Left), evaluateArithmetic(term.Right)),
-                TokenType.Slash => TrueDivideObjects(evaluateArithmetic(term.Left), evaluateArithmetic(term.Right)),
+                TokenType.Star => Core.MultiplyObjects(evaluateArithmetic(term.Left), evaluateArithmetic(term.Right)),
+                TokenType.Slash => Core.TrueDivideObjects(evaluateArithmetic(term.Left), evaluateArithmetic(term.Right)),
                 TokenType.DoubleSlash => throw notImplemented(term.Operator), // Integer division
                 TokenType.Percent => throw notImplemented(term.Operator), // Module
                 TokenType.At => throw notImplemented(term.Operator), // Matrix multiplication
                 _ => throw new ArgumentOutOfRangeException(),
             },
 
-            PowerView pow => PowerObjects(evaluateArithmetic(pow.Left), evaluateArithmetic(pow.Right)),
+            PowerView pow => Core.PowerObjects(evaluateArithmetic(pow.Left), evaluateArithmetic(pow.Right)),
 
             _ => throw notImplemented(arithmetic),
         };
@@ -297,7 +297,7 @@ public partial class Interpreter
             case CallWithArgumentsPrimaryView callPrimary:
                 var func = evaluateRawPrimary(callPrimary.Function);
                 var arguments = evaluateArguments(callPrimary.Arguments);
-                return CallFunction(func, arguments.arguments, arguments.keywordArguments);
+                return Core.CallFunction(func, arguments.arguments, arguments.keywordArguments);
 
             default:
                 throw notImplemented(rawPrimary);
