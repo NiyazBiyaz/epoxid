@@ -80,6 +80,7 @@ internal class Program
             try
             {
                 binder.ReadMetadata(grammarView.Metadata);
+                binder.ReadKeywords(grammarView);
                 binder.RegisterRules(grammarView.Rules);
                 binder.PopulateRules();
                 binder.CreateTypes();

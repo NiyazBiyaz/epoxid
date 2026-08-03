@@ -8,7 +8,7 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 @namespace "PySharp.SyntaxAnalysis.Generator"
 
 @main
-Grammar: Metadata* Rule* EndOfFile -> new(Metadata=metadata_Star, Rules=rule_Star)
+Grammar: Metadata* -Keywords Rule* EndOfFile -> new(Keywords=keywords, Metadata=metadata_Star, Rules=rule_Star)
 
 Metadata: "@" Name StringLiteral NewLine -> new(Key=name, Value=string_literal)
 
@@ -44,3 +44,5 @@ Action:
     | "->" Name "(" [Target+."," -> Arguments(Value=target_Gather)] ")" -> NamedAction(Name=name, Arguments=arguments)
 
 Target: Name "=" Name -> new(Field=name, Variable=name1)
+
+Keywords: "@" "keywords" "=" "[" Name+."," -"," "]" NewLine -> new(Keywords=name_Gather)

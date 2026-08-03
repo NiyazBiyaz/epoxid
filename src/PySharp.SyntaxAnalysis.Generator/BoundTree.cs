@@ -15,13 +15,15 @@ internal class BoundGrammar
     internal BoundRule MainRule { get; set; } = null!;
     internal List<BoundRule> Rules { get; } = [];
     internal List<BoundType> Types { get; } = [];
+    internal List<string> Keywords { get; } = [];
 
     internal GrammarIr ToIr() => new(
         ParserName,
         TopLevelNodeName,
         MainRule.ToIr(),
         Rules.Select(r => r.ToIr()),
-        Types.Select(t => t.ToIr()));
+        Types.Select(t => t.ToIr()),
+        Keywords);
 }
 
 internal class BoundRule

@@ -1,0 +1,29 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    SingleSimpleStatementNode {
+      Slot[0]: AtomPrimaryNode {
+        Slot[0]: TrueAtomNode {
+          Slot[0]: Token(Type: Name, RawString: `True`),
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: AtomPrimaryNode {
+        Slot[0]: FalseAtomNode {
+          Slot[0]: Token(Type: Name, RawString: `False`),
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: AtomPrimaryNode {
+        Slot[0]: NoneAtomNode {
+          Slot[0]: Token(Type: Name, RawString: `None`),
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

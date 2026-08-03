@@ -12,7 +12,45 @@ namespace PySharp.SyntaxAnalysis;
 
 public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<FileNode>(_tokenStream)
 {
-    protected override HashSet<string> Keywords => [];
+    protected override HashSet<string> Keywords => [
+        "False",
+        "None",
+        "True",
+        "and",
+        "as",
+        "assert",
+        "async",
+        "await",
+        "break",
+        "case",
+        "class",
+        "continue",
+        "def",
+        "del",
+        "elif",
+        "else",
+        "except",
+        "finally",
+        "for",
+        "from",
+        "global",
+        "if",
+        "import",
+        "in",
+        "is",
+        "lambda",
+        "match",
+        "nonlocal",
+        "not",
+        "or",
+        "pass",
+        "raise",
+        "return",
+        "try",
+        "while",
+        "with",
+        "yield",
+    ];
 
     public override FileNode? Parse() => rule_File();
 

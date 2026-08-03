@@ -7,7 +7,8 @@ internal record GrammarIr(
     string TopLevelNodeName,
     RuleIr MainRule,
     IEnumerable<RuleIr> Rules,
-    IEnumerable<TypeIr> Types);
+    IEnumerable<TypeIr> Types,
+    IEnumerable<string> Keywords);
 
 internal record RuleIr(
     string SourceText,

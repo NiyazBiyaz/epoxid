@@ -54,7 +54,7 @@ internal class CsGenerator(string accessModifier)
     internal void AddParser(GrammarIr ir)
     {
         addParserSignature(ir.ParserName, ir.TopLevelNodeName);
-        addParserBody(ir.MainRule.Name, ir.TopLevelNodeName, ir.Rules, []);
+        addParserBody(ir.MainRule.Name, ir.TopLevelNodeName, ir.Rules, ir.Keywords);
     }
 
     internal void AddTypes(IEnumerable<TypeIr> typeIrs)

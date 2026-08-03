@@ -18,7 +18,7 @@ internal partial class GrammarParser(ITokenNodeStream _tokenStream) : BaseParser
 
     #region Grammar
     // @main
-    // Grammar: Metadata* Rule* EndOfFile -> new(Metadata=metadata_Star, Rules=rule_Star)
+    // Grammar: Metadata* -Keywords Rule* EndOfFile -> new(Keywords=keywords, Metadata=metadata_Star, Rules=rule_Star)
     GrammarNode? rule_Grammar()
     {
         base.LogIncreaseLevel();
@@ -26,30 +26,34 @@ internal partial class GrammarParser(ITokenNodeStream _tokenStream) : BaseParser
         int _mark = base.Mark();
         GrammarNode? _res = null;
         {
-            // Metadata* Rule* EndOfFile -> new(Metadata=metadata_Star, Rules=rule_Star)
-            base.LogAlternativeEntered("Metadata* Rule* EndOfFile");
+            // Metadata* -Keywords Rule* EndOfFile -> new(Keywords=keywords, Metadata=metadata_Star, Rules=rule_Star)
+            base.LogAlternativeEntered("Metadata* -Keywords Rule* EndOfFile");
             INodeArray<MetadataNode>? metadata_Star;
+            IGreenNode? keywords;
             INodeArray<RuleNode>? rule_Star;
             IGreenNode? end_of_file;
             if ((metadata_Star = _RepeatHelper_metadata_Star()) is not null
+                &&
+                ((keywords = rule_Keywords()) is not null || true) // Optional
                 &&
                 (rule_Star = _RepeatHelper_rule_Star()) is not null
                 &&
                 (end_of_file = Expect(TokenType.EndOfFile)) is not null
             )
             {
-                base.LogAlternativeSucceed("Metadata* Rule* EndOfFile");
+                base.LogAlternativeSucceed("Metadata* -Keywords Rule* EndOfFile");
                 _res = new GrammarNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         metadata_Star,
+                        keywords ?? VoidNode.Instance,
                         rule_Star,
                         end_of_file,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("Metadata* Rule* EndOfFile");
+            base.LogAlternativeFailed("Metadata* -Keywords Rule* EndOfFile");
             NodeArray<MetadataNode>? _RepeatHelper_metadata_Star()
             {
                 MetadataNode? _node = rule_Metadata();
@@ -1049,20 +1053,122 @@ internal partial class GrammarParser(ITokenNodeStream _tokenStream) : BaseParser
         return _res;
     }
     #endregion // Target
+
+    #region Keywords
+    // Keywords: "@" "keywords" "=" "[" Name+."," -"," "]" NewLine -> new(Keywords=name_Gather)
+    KeywordsNode? rule_Keywords()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("Keywords");
+        int _mark = base.Mark();
+        KeywordsNode? _res = null;
+        {
+            // "@" "keywords" "=" "[" Name+."," -"," "]" NewLine -> new(Keywords=name_Gather)
+            base.LogAlternativeEntered("\"@\" \"keywords\" \"=\" \"[\" Name+.\",\" -\",\" \"]\" NewLine");
+            IGreenNode? at;
+            IGreenNode? _string_token;
+            IGreenNode? equal;
+            IGreenNode? left_square_bracket;
+            INodeArray<GreenNode>? name_Gather;
+            IGreenNode? comma;
+            IGreenNode? right_square_bracket;
+            IGreenNode? new_line;
+            if ((at = Expect(TokenType.At)) is not null
+                &&
+                (_string_token = Expect("keywords")) is not null
+                &&
+                (equal = Expect(TokenType.Equal)) is not null
+                &&
+                (left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
+                &&
+                (name_Gather = _GatherHelper_name_Gather()) is not null
+                &&
+                ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
+                &&
+                (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
+                &&
+                (new_line = Expect(TokenType.NewLine)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("\"@\" \"keywords\" \"=\" \"[\" Name+.\",\" -\",\" \"]\" NewLine");
+                _res = new KeywordsNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        at,
+                        _string_token,
+                        equal,
+                        left_square_bracket,
+                        name_Gather,
+                        comma ?? VoidNode.Instance,
+                        right_square_bracket,
+                        new_line,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("\"@\" \"keywords\" \"=\" \"[\" Name+.\",\" -\",\" \"]\" NewLine");
+            NodeArray<GreenNode>? _GatherHelper_name_Gather()
+            {
+                GreenNode? _node = Expect(TokenType.Name);
+                GreenNode? _separator;
+                if (_node == null) return null;
+                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
+                while (true)
+                {
+                    int _mark = base.Mark();
+                    _separator = Expect(TokenType.Comma);
+                    if (_separator == null) break;
+                    _node = Expect(TokenType.Name);
+                    if (_node == null)
+                    {
+                        base.Reset(_mark);
+                        break;
+                    }
+                    _gathered.Add((GreenNode)_separator);
+                    _gathered.Add((GreenNode)_node);
+                }
+                return [.. _gathered];
+            }
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("Keywords");
+    _Return:
+        base.LogRuleExiting("Keywords");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // Keywords
 }
-#region Type definitions
+
+#region Type definitions.
 internal sealed partial record GrammarNode : GreenNode
 {
+    internal KeywordsNode? Keywords => Children![1] as KeywordsNode;
     internal NodeArray<MetadataNode> Metadata => (NodeArray<MetadataNode>)Children![0];
-    internal NodeArray<RuleNode> Rules => (NodeArray<RuleNode>)Children![1];
+    internal NodeArray<RuleNode> Rules => (NodeArray<RuleNode>)Children![2];
     public override GrammarView GetView(int position, IRedView? parent)
         => new GrammarView(this, position, parent);
 }
+
 internal sealed partial class GrammarView : RedView
 {
     internal GrammarView(GrammarNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private KeywordsView? _field_keywords = null;
+    internal KeywordsView? Keywords
+    {
+        get
+        {
+            if (_field_keywords == null && ((GrammarNode)base.Green).Keywords != null)
+            {
+                var _positionOfField = base.GetPositionFor(1);
+                _field_keywords = (KeywordsView)((GrammarNode)base.Green).Keywords!.GetView(_positionOfField, this);
+            }
+            return (KeywordsView?)_field_keywords;
+        }
     }
 
     private ViewArray<MetadataView>? _field_metadata = null;
@@ -1086,7 +1192,7 @@ internal sealed partial class GrammarView : RedView
         {
             if (_field_rules == null)
             {
-                var _positionOfField = base.GetPositionFor(1);
+                var _positionOfField = base.GetPositionFor(2);
                 _field_rules = (ViewArray<RuleView>)new ViewArray<RuleView>(((GrammarNode)base.Green).Rules, _positionOfField, this);
             }
             return (ViewArray<RuleView>)_field_rules;
@@ -1101,6 +1207,7 @@ internal sealed partial record MetadataNode : GreenNode
     public override MetadataView GetView(int position, IRedView? parent)
         => new MetadataView(this, position, parent);
 }
+
 internal sealed partial class MetadataView : RedView
 {
     internal MetadataView(MetadataNode green, int position, IRedView? parent)
@@ -1137,11 +1244,14 @@ internal sealed partial class MetadataView : RedView
     }
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ArmedRuleNode), typeof(SingleAlternativeRuleNode))]
 internal abstract partial record RuleNode : GreenNode
 {
     internal NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
     internal TokenNode Name => (TokenNode)Children![1];
 }
+
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ArmedRuleView), typeof(SingleAlternativeRuleView))]
 internal abstract partial class RuleView : RedView
 {
     internal RuleView(RuleNode green, int position, IRedView? parent)
@@ -1184,6 +1294,7 @@ internal sealed partial record ArmedRuleNode : RuleNode
     public override ArmedRuleView GetView(int position, IRedView? parent)
         => new ArmedRuleView(this, position, parent);
 }
+
 internal sealed partial class ArmedRuleView : RuleView
 {
     internal ArmedRuleView(ArmedRuleNode green, int position, IRedView? parent)
@@ -1212,6 +1323,7 @@ internal sealed partial record SingleAlternativeRuleNode : RuleNode
     public override SingleAlternativeRuleView GetView(int position, IRedView? parent)
         => new SingleAlternativeRuleView(this, position, parent);
 }
+
 internal sealed partial class SingleAlternativeRuleView : RuleView
 {
     internal SingleAlternativeRuleView(SingleAlternativeRuleNode green, int position, IRedView? parent)
@@ -1240,6 +1352,7 @@ internal sealed partial record ArmNode : GreenNode
     public override ArmView GetView(int position, IRedView? parent)
         => new ArmView(this, position, parent);
 }
+
 internal sealed partial class ArmView : RedView
 {
     internal ArmView(ArmNode green, int position, IRedView? parent)
@@ -1268,6 +1381,7 @@ internal sealed partial record DecoratorNode : GreenNode
     public override DecoratorView GetView(int position, IRedView? parent)
         => new DecoratorView(this, position, parent);
 }
+
 internal sealed partial class DecoratorView : RedView
 {
     internal DecoratorView(DecoratorNode green, int position, IRedView? parent)
@@ -1297,6 +1411,7 @@ internal sealed partial record AlternativeNode : GreenNode
     public override AlternativeView GetView(int position, IRedView? parent)
         => new AlternativeView(this, position, parent);
 }
+
 internal sealed partial class AlternativeView : RedView
 {
     internal AlternativeView(AlternativeNode green, int position, IRedView? parent)
@@ -1339,6 +1454,7 @@ internal sealed partial record GroupDecoratorNode : GreenNode
     public override GroupDecoratorView GetView(int position, IRedView? parent)
         => new GroupDecoratorView(this, position, parent);
 }
+
 internal sealed partial class GroupDecoratorView : RedView
 {
     internal GroupDecoratorView(GroupDecoratorNode green, int position, IRedView? parent)
@@ -1361,9 +1477,12 @@ internal sealed partial class GroupDecoratorView : RedView
     }
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(OptionalGroupNode), typeof(PositiveLookaheadNode), typeof(NegativeLookaheadNode), typeof(OptionalNode), typeof(GatherNode), typeof(RepeatOneMoreNode), typeof(RepeatZeroMoreNode), typeof(AtomMoleculeNode), typeof(CutNode))]
 internal abstract partial record MoleculeNode : GreenNode
 {
 }
+
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(OptionalGroupView), typeof(PositiveLookaheadView), typeof(NegativeLookaheadView), typeof(OptionalView), typeof(GatherView), typeof(RepeatOneMoreView), typeof(RepeatZeroMoreView), typeof(AtomMoleculeView), typeof(CutView))]
 internal abstract partial class MoleculeView : RedView
 {
     internal MoleculeView(MoleculeNode green, int position, IRedView? parent)
@@ -1392,6 +1511,7 @@ internal sealed partial record OptionalGroupNode : MoleculeNode
     public override OptionalGroupView GetView(int position, IRedView? parent)
         => new OptionalGroupView(this, position, parent);
 }
+
 internal sealed partial class OptionalGroupView : MoleculeView
 {
     internal OptionalGroupView(OptionalGroupNode green, int position, IRedView? parent)
@@ -1447,6 +1567,7 @@ internal sealed partial record PositiveLookaheadNode : MoleculeNode
     public override PositiveLookaheadView GetView(int position, IRedView? parent)
         => new PositiveLookaheadView(this, position, parent);
 }
+
 internal sealed partial class PositiveLookaheadView : MoleculeView
 {
     internal PositiveLookaheadView(PositiveLookaheadNode green, int position, IRedView? parent)
@@ -1475,6 +1596,7 @@ internal sealed partial record NegativeLookaheadNode : MoleculeNode
     public override NegativeLookaheadView GetView(int position, IRedView? parent)
         => new NegativeLookaheadView(this, position, parent);
 }
+
 internal sealed partial class NegativeLookaheadView : MoleculeView
 {
     internal NegativeLookaheadView(NegativeLookaheadNode green, int position, IRedView? parent)
@@ -1503,6 +1625,7 @@ internal sealed partial record OptionalNode : MoleculeNode
     public override OptionalView GetView(int position, IRedView? parent)
         => new OptionalView(this, position, parent);
 }
+
 internal sealed partial class OptionalView : MoleculeView
 {
     internal OptionalView(OptionalNode green, int position, IRedView? parent)
@@ -1532,6 +1655,7 @@ internal sealed partial record GatherNode : MoleculeNode
     public override GatherView GetView(int position, IRedView? parent)
         => new GatherView(this, position, parent);
 }
+
 internal sealed partial class GatherView : MoleculeView
 {
     internal GatherView(GatherNode green, int position, IRedView? parent)
@@ -1574,6 +1698,7 @@ internal sealed partial record RepeatOneMoreNode : MoleculeNode
     public override RepeatOneMoreView GetView(int position, IRedView? parent)
         => new RepeatOneMoreView(this, position, parent);
 }
+
 internal sealed partial class RepeatOneMoreView : MoleculeView
 {
     internal RepeatOneMoreView(RepeatOneMoreNode green, int position, IRedView? parent)
@@ -1602,6 +1727,7 @@ internal sealed partial record RepeatZeroMoreNode : MoleculeNode
     public override RepeatZeroMoreView GetView(int position, IRedView? parent)
         => new RepeatZeroMoreView(this, position, parent);
 }
+
 internal sealed partial class RepeatZeroMoreView : MoleculeView
 {
     internal RepeatZeroMoreView(RepeatZeroMoreNode green, int position, IRedView? parent)
@@ -1630,6 +1756,7 @@ internal sealed partial record AtomMoleculeNode : MoleculeNode
     public override AtomMoleculeView GetView(int position, IRedView? parent)
         => new AtomMoleculeView(this, position, parent);
 }
+
 internal sealed partial class AtomMoleculeView : MoleculeView
 {
     internal AtomMoleculeView(AtomMoleculeNode green, int position, IRedView? parent)
@@ -1657,6 +1784,7 @@ internal sealed partial record CutNode : MoleculeNode
     public override CutView GetView(int position, IRedView? parent)
         => new CutView(this, position, parent);
 }
+
 internal sealed partial class CutView : MoleculeView
 {
     internal CutView(CutNode green, int position, IRedView? parent)
@@ -1665,9 +1793,12 @@ internal sealed partial class CutView : MoleculeView
     }
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(GroupAtomNode), typeof(NameAtomNode), typeof(StringAtomNode))]
 internal abstract partial record AtomNode : GreenNode
 {
 }
+
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(GroupAtomView), typeof(NameAtomView), typeof(StringAtomView))]
 internal abstract partial class AtomView : RedView
 {
     internal AtomView(AtomNode green, int position, IRedView? parent)
@@ -1696,6 +1827,7 @@ internal sealed partial record GroupAtomNode : AtomNode
     public override GroupAtomView GetView(int position, IRedView? parent)
         => new GroupAtomView(this, position, parent);
 }
+
 internal sealed partial class GroupAtomView : AtomView
 {
     internal GroupAtomView(GroupAtomNode green, int position, IRedView? parent)
@@ -1751,6 +1883,7 @@ internal sealed partial record NameAtomNode : AtomNode
     public override NameAtomView GetView(int position, IRedView? parent)
         => new NameAtomView(this, position, parent);
 }
+
 internal sealed partial class NameAtomView : AtomView
 {
     internal NameAtomView(NameAtomNode green, int position, IRedView? parent)
@@ -1779,6 +1912,7 @@ internal sealed partial record StringAtomNode : AtomNode
     public override StringAtomView GetView(int position, IRedView? parent)
         => new StringAtomView(this, position, parent);
 }
+
 internal sealed partial class StringAtomView : AtomView
 {
     internal StringAtomView(StringAtomNode green, int position, IRedView? parent)
@@ -1801,10 +1935,13 @@ internal sealed partial class StringAtomView : AtomView
     }
 }
 
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(InferredActionNode), typeof(NamedActionNode))]
 internal abstract partial record ActionNode : GreenNode
 {
     internal ArgumentsNode? Arguments => Children![3] as ArgumentsNode;
 }
+
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(InferredActionView), typeof(NamedActionView))]
 internal abstract partial class ActionView : RedView
 {
     internal ActionView(ActionNode green, int position, IRedView? parent)
@@ -1832,6 +1969,7 @@ internal sealed partial record InferredActionNode : ActionNode
     public override InferredActionView GetView(int position, IRedView? parent)
         => new InferredActionView(this, position, parent);
 }
+
 internal sealed partial class InferredActionView : ActionView
 {
     internal InferredActionView(InferredActionNode green, int position, IRedView? parent)
@@ -1846,6 +1984,7 @@ internal sealed partial record NamedActionNode : ActionNode
     public override NamedActionView GetView(int position, IRedView? parent)
         => new NamedActionView(this, position, parent);
 }
+
 internal sealed partial class NamedActionView : ActionView
 {
     internal NamedActionView(NamedActionNode green, int position, IRedView? parent)
@@ -1887,6 +2026,7 @@ internal sealed partial record ArgumentsNode : GreenNode
     public override ArgumentsView GetView(int position, IRedView? parent)
         => new ArgumentsView(this, position, parent);
 }
+
 internal sealed partial class ArgumentsView : RedView
 {
     internal ArgumentsView(ArgumentsNode green, int position, IRedView? parent)
@@ -1929,6 +2069,7 @@ internal sealed partial record TargetNode : GreenNode
     public override TargetView GetView(int position, IRedView? parent)
         => new TargetView(this, position, parent);
 }
+
 internal sealed partial class TargetView : RedView
 {
     internal TargetView(TargetNode green, int position, IRedView? parent)
@@ -1961,6 +2102,61 @@ internal sealed partial class TargetView : RedView
                 _field_variable = (TokenView)((TargetNode)base.Green).Variable!.GetView(_positionOfField, this);
             }
             return (TokenView)_field_variable;
+        }
+    }
+}
+
+internal sealed partial record KeywordsNode : GreenNode
+{
+    private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Keywords = null;
+    internal global::System.Collections.Immutable.ImmutableArray<TokenNode> Keywords
+    {
+        get
+        {
+            if (_field_Keywords is null)
+            {
+                var _tmp = AstKeywords.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
+                _field_Keywords = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_Keywords.Value;
+        }
+    }
+    internal NodeArray<GreenNode> AstKeywords => (NodeArray<GreenNode>)Children![4];
+    public override KeywordsView GetView(int position, IRedView? parent)
+        => new KeywordsView(this, position, parent);
+}
+
+internal sealed partial class KeywordsView : RedView
+{
+    internal KeywordsView(KeywordsNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private ViewArray<RedView>? _ast_field_keywords = null;
+    internal ViewArray<RedView> AstKeywords
+    {
+        get
+        {
+            if (_ast_field_keywords == null)
+            {
+                var _positionOfField = base.GetPositionFor(4);
+                _ast_field_keywords = new ViewArray<RedView>(((KeywordsNode)base.Green).AstKeywords, _positionOfField, this);
+            }
+            return _ast_field_keywords.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<TokenView>? _field_keywords = null;
+    internal global::System.Collections.Immutable.ImmutableArray<TokenView> Keywords
+    {
+        get
+        {
+            if (_field_keywords == null)
+            {
+                var _tmp = AstKeywords.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
+                _field_keywords = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_keywords.Value;
         }
     }
 }

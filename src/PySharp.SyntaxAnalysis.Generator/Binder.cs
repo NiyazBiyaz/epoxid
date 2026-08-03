@@ -82,6 +82,14 @@ internal class Binder
         Grammar.AccessModifier = accessModifier;
     }
 
+    internal void ReadKeywords(GrammarView grammar)
+    {
+        if (grammar.Keywords == null)
+            return;
+
+        Grammar.Keywords.AddRange(grammar.Keywords.Keywords.Select(kwd => kwd.RawString));
+    }
+
     internal void RegisterRules(IEnumerable<RuleView> rules)
     {
         Debug.Assert(stage == BinderStage.Empty);
