@@ -45,10 +45,79 @@ public class TestInterpreter
         assertOutput(src, "BauBauBau waga");
     }
 
+    [Fact]
+    public void TestInputFunction()
+    {
+        const string src = """
+        bau = input()
+        print(bau)
+
+        """;
+        assertForInput(src, "Bau bau!", "Bau bau!");
+    }
+
+    [Fact]
+    public void TestInputFunction_WithHint()
+    {
+        const string src = """
+        bau = input("Baau baaau")
+        print(bau)
+
+        """;
+        assertForInput(src, "Baau baaauBau bau!", "Bau bau!");
+    }
+
+    [Theory]
+    [InlineData("yes", "bau bau!")]
+    [InlineData("nah", "Hoeh? B-but... BAU BAU!")]
+    public void Test_IfElseStatement(string answer, string action)
+    {
+        const string src = """
+        doBauBau = input("Do you want bau bau? ") == "yes"
+
+        if doBauBau:
+            print("bau bau!")
+        else:
+            print("Hoeh? B-but... BAU BAU!")
+
+        """;
+        assertForInput(src, "Do you want bau bau? " + action, answer);
+    }
+
+    [Fact]
+    public void Test_BooleanConversion()
+    {
+        const string src = """
+        b = 1 + 2
+        if b:
+            print("bau")
+
+        a = ""
+        if a:
+            print("baubau")
+
+        u = 3.0
+        if u - b:
+            print("baubaubau")
+
+        """;
+        assertOutput(src, "bau");
+    }
+
     private static void assertOutput(string src, string expected, bool includeNewLine = true)
     {
         var file = getView(src);
         var interpreter = getInterpreterStdout(out var stdout);
+
+        interpreter.InterpretFile(file);
+
+        Assert.Equal(expected + (includeNewLine ? "\n" : ""), stdout.ToString());
+    }
+
+    private static void assertForInput(string src, string expected, string input, bool includeNewLine = true)
+    {
+        var file = getView(src);
+        var interpreter = getInterpreterStdoutWithStdin(out var stdout, input + (includeNewLine ? "\n" : ""));
 
         interpreter.InterpretFile(file);
 
@@ -87,6 +156,14 @@ public class TestInterpreter
     {
         var inter = getInterpreter();
         inter.Stdout = stdout = new StringWriter();
+        return inter;
+    }
+
+    private static Interpreter getInterpreterStdoutWithStdin(out StringWriter stdout, string input)
+    {
+        var inter = getInterpreter();
+        inter.Stdout = stdout = new StringWriter();
+        inter.Stdin = new StringReader(input);
         return inter;
     }
 }

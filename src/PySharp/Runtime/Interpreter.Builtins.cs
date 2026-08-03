@@ -58,7 +58,7 @@ public partial class Interpreter
         return PsConstants.None;
     }
 
-    private static PsString input(PsObject self, PsTuple args, PsDict? kwargs)
+    private PsString input(PsObject self, PsTuple args, PsDict? kwargs)
     {
         if (kwargs != null)
         {
@@ -66,15 +66,15 @@ public partial class Interpreter
         }
         else if (args.Count > 1)
         {
-            throw new ArgumentException("'input' function accepts one or zero positional arguments.", nameof(kwargs));
+            throw new ArgumentException("'input' function accepts one or zero positional arguments.", nameof(args));
         }
 
         if (args.Count == 1)
         {
-            Console.Write(args[0]);
+            Stdout.Write(args[0]);
         }
 
-        var input = Console.ReadLine() ?? throw new Exception("EOFError()");
+        var input = Stdin.ReadLine() ?? throw new Exception("EOFError()");
 
         return (PsString)input;
     }

@@ -24,6 +24,9 @@ public class PsInteger : PsObject
     public static explicit operator long(PsInteger integer) => integer.Value;
     public static explicit operator PsInteger(long integer) => new(integer);
 
+    public static bool operator ==(PsInteger left, long right) => left.Value == right;
+    public static bool operator !=(PsInteger left, long right) => left.Value != right;
+
     public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 
     internal static PsObject DunderAddImplementation(PsObject self, PsObject other)
@@ -94,5 +97,43 @@ public class PsInteger : PsObject
         }
 
         throw new Exception($"TypeError: unsupported operand type(s) for **: 'int' and '{other.DunderClass.DunderName}'");
+    }
+
+    internal static PsBool DunderBoolImplementation(PsObject self)
+        => ((PsInteger)self).Value != 0 ? PsConstants.True : PsConstants.False;
+
+    internal static new PsBool DunderEqImplementation(PsObject self, PsObject other)
+    {
+        var selfI = (PsInteger)self;
+        return other switch
+        {
+            PsInteger otherI => (PsBool)(selfI.Value == otherI.Value),
+            PsFloat otherF => (PsBool)(selfI.Value == otherF.Value),
+            // Maybe another types exists that int can interact with, idk actually, but CPython doing just False
+            _ => (PsBool)false,
+        };
+    }
+
+    internal static new PsBool DunderNeImplementation(PsObject self, PsObject other)
+    {
+        var selfI = (PsInteger)self;
+        return other switch
+        {
+            PsInteger otherI => (PsBool)(selfI.Value != otherI.Value),
+            PsFloat otherF => (PsBool)(selfI.Value != otherF.Value),
+            // As above, but True
+            _ => (PsBool)true,
+        };
+    }
+
+    public override bool Equals(object? obj) => base.Equals(obj);
+
+    public override int GetHashCode()
+    {
+        var hash = new HashCode();
+        hash.Add(Value);
+        hash.Add(DunderClass);
+
+        return hash.ToHashCode();
     }
 }

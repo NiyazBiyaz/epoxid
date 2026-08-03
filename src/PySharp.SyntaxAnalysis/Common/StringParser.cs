@@ -29,15 +29,21 @@ public static class StringParser
         }
 
         if (cursor == literal.Length)
+            throw new ArgumentException("No opening quotes found.");
+
+        (int quoteCount, char quote) = literal[cursor..] switch
+        {
+            ['\'', '\'', '\'', ..] => (3, '\''),
+            ['\"', '\"', '\"', ..] => (3, '\"'),
+            ['\'', ..] => (1, '\''),
+            ['\"', ..] => (1, '\"'),
+            _ => throw new ArgumentException("Invalid string opening format."),
+        };
+
+        if (literal[cursor..].Length == quoteCount * 2)
             return "";
 
-        char quote = literal[cursor];
-        int quoteCount = 0;
-        while (literal[cursor] == quote)
-        {
-            cursor += 1;
-            quoteCount += 1;
-        }
+        cursor += quoteCount;
 
         var workingSlice = literal[cursor..^quoteCount];
         string result;

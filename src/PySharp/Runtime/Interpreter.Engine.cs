@@ -70,4 +70,40 @@ public partial class Interpreter
 
         return left.DunderClass.DunderPow(left, right);
     }
+
+    internal static bool ConvertBool(PsObject obj)
+    {
+        if (obj.DunderClass.DunderBool != null)
+        {
+            var result = obj.DunderClass.DunderBool(obj);
+            return (bool)(PsBool)result;
+        }
+        if (obj.DunderClass.DunderLen != null)
+        {
+            var result = obj.DunderClass.DunderLen(obj);
+            return ((PsInteger)result).Value != 0;
+        }
+
+        return true;
+    }
+
+    internal static PsObject EqualObjects(PsObject left, PsObject right)
+    {
+        if (left.DunderClass.DunderEq == null)
+        {
+            throw new Exception($"TypeError: unsupported operand type for ==: '{left.DunderClass.DunderName}'");
+        }
+
+        return left.DunderClass.DunderEq(left, right);
+    }
+
+    internal static PsObject NotEqualObjects(PsObject left, PsObject right)
+    {
+        if (left.DunderClass.DunderNe == null)
+        {
+            throw new Exception($"TypeError: unsupported operand type for ==: '{left.DunderClass.DunderName}'");
+        }
+
+        return left.DunderClass.DunderNe(left, right);
+    }
 }

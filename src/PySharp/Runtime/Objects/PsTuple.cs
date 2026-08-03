@@ -21,4 +21,6 @@ public class PsTuple : PsObject, IReadOnlyList<PsObject>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public static readonly PsTuple Empty = new([]);
+
+    internal static PsInteger DunderLenImplementation(PsObject self) => (PsInteger)((PsTuple)self).items.Length;
 }

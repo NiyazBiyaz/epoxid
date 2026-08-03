@@ -32,5 +32,13 @@ public class PsType : PsObject
 
     public Func<PsObject, PsObject, PsObject>? DunderPow { get; set; }
 
+    public Func<PsObject, PsObject>? DunderBool { get; set; }
+
+    public Func<PsObject, PsObject>? DunderLen { get; set; }
+
+    public Func<PsObject, PsObject, PsObject>? DunderEq { get; set; } = DunderEqImplementation;
+
+    public Func<PsObject, PsObject, PsObject>? DunderNe { get; set; } = DunderNeImplementation;
+
     #endregion
 }

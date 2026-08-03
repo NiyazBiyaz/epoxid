@@ -32,6 +32,9 @@ public static class PsConstants
         {
             DunderAdd = PsString.DunderAddImplementation,
             DunderMul = PsString.DunderMulImplementation,
+            DunderLen = PsString.DunderLenImplementation,
+            DunderEq = PsString.DunderEqImplementation,
+            DunderNe = PsString.DunderNeImplementation,
         };
         Float = new("float", [Object], Type)
         {
@@ -40,6 +43,9 @@ public static class PsConstants
             DunderMul = PsFloat.DunderMulImplementation,
             DunderTrueDiv = PsFloat.DunderTrueDivImplementation,
             DunderPow = PsFloat.DunderPowImplementation,
+            DunderBool = PsFloat.DunderBoolImplementation,
+            DunderEq = PsFloat.DunderEqImplementation,
+            DunderNe = PsFloat.DunderNeImplementation,
         };
         Int = new("int", [Object], Type)
         {
@@ -48,13 +54,28 @@ public static class PsConstants
             DunderMul = PsInteger.DunderMulImplementation,
             DunderTrueDiv = PsInteger.DunderTrueDivImplementation,
             DunderPow = PsInteger.DunderPowImplementation,
+            DunderBool = PsInteger.DunderBoolImplementation,
+            DunderEq = PsFloat.DunderEqImplementation,
+            DunderNe = PsFloat.DunderNeImplementation,
         };
-        Bool = new("bool", [Int], Type);
+        Bool = new("bool", [Int], Type)
+        {
+            DunderBool = PsBool.DunderBoolImplementation,
+        };
 
-        Tuple = new("tuple", [Object], Type);
-        Dict = new("dict", [Object], Type);
+        Tuple = new("tuple", [Object], Type)
+        {
+            DunderLen = PsTuple.DunderLenImplementation,
+        };
+        Dict = new("dict", [Object], Type)
+        {
+            DunderLen = PsDict.DunderLenImplementation,
+        };
 
-        NoneType = new("NoneType", [Object], Type);
+        NoneType = new("NoneType", [Object], Type)
+        {
+            DunderBool = PsNone.DunderBoolImplementation,
+        };
         EllipsisType = new("EllipsisType", [Object], Type);
 
         Function = new("function", [Object], Type)
@@ -66,8 +87,8 @@ public static class PsConstants
             DunderCall = PsBuiltinFunction.DunderCallImplementation,
         };
 
-        True = (PsBool)true;
-        False = (PsBool)false;
+        True = new(true);
+        False = new(false);
         None = new PsNone();
         Ellipsis = new PsEllipsis();
     }

@@ -13,4 +13,8 @@ public class PsObject
     {
         DunderClass = null!;
     }
+
+    internal static PsBool DunderEqImplementation(PsObject self, PsObject other) => (PsBool)self.Equals(other);
+
+    internal static PsBool DunderNeImplementation(PsObject self, PsObject other) => (PsBool)!self.Equals(other);
 }

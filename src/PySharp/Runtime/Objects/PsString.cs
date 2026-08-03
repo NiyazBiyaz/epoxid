@@ -60,4 +60,28 @@ public class PsString : PsObject
             _ => throw new Exception($"TypeError: unsupported operand type(s) for *: 'str' and '{other.DunderClass.DunderName}'")
         };
     }
+
+    internal static PsInteger DunderLenImplementation(PsObject self) => (PsInteger)((PsString)self).Value.Length;
+
+    internal static new PsBool DunderEqImplementation(PsObject self, PsObject other)
+    {
+        var selfS = (PsString)self;
+        return other switch
+        {
+            PsString otherS => (PsBool)selfS.Value.SequenceEqual(otherS.Value),
+            // Maybe another types exists that str can interact with, idk actually, but CPython doing just False
+            _ => (PsBool)false,
+        };
+    }
+
+    internal static new PsBool DunderNeImplementation(PsObject self, PsObject other)
+    {
+        var selfS = (PsString)self;
+        return other switch
+        {
+            PsString otherS => (PsBool)!selfS.Value.SequenceEqual(otherS.Value),
+            // As above, but True
+            _ => (PsBool)true,
+        };
+    }
 }

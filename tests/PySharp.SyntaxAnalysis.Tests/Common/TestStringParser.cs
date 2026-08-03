@@ -115,4 +115,11 @@ public class TestStringParser
         bool actual = StringParser.HasPrefix(input);
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public void Test_EmptyString()
+    {
+        string actual = StringParser.ParseQuoted("\"\"");
+        Assert.Equal("", actual);
+    }
 }

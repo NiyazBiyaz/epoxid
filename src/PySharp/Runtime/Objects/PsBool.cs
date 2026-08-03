@@ -10,7 +10,9 @@ public class PsBool : PsInteger
     }
 
     public static explicit operator bool(PsBool psBool) => psBool.Value;
-    public static explicit operator PsBool(bool clrBool) => new(clrBool);
+    public static explicit operator PsBool(bool clrBool) => clrBool ? PsConstants.True : PsConstants.False;
 
     public override string ToString() => Value.ToString();
+
+    internal new static PsBool DunderBoolImplementation(PsObject self) => (PsBool)self;
 }

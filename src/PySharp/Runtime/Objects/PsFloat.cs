@@ -74,4 +74,31 @@ public class PsFloat : PsObject
             _ => throw new Exception($"TypeError: unsupported operand type(s) for **: 'float' and '{other.DunderClass.DunderName}'"),
         };
     }
+
+    internal static PsBool DunderBoolImplementation(PsObject self)
+        => ((PsFloat)self).Value != 0d ? PsConstants.True : PsConstants.False;
+
+    internal static new PsBool DunderEqImplementation(PsObject self, PsObject other)
+    {
+        var selfF = (PsFloat)self;
+        return other switch
+        {
+            PsFloat otherF => (PsBool)(selfF.Value == otherF.Value),
+            PsInteger otherI => (PsBool)(selfF.Value == otherI.Value),
+            // Maybe another types exists that float can interact with, idk actually, but CPython doing just False
+            _ => (PsBool)false,
+        };
+    }
+
+    internal static new PsBool DunderNeImplementation(PsObject self, PsObject other)
+    {
+        var selfF = (PsFloat)self;
+        return other switch
+        {
+            PsFloat otherF => (PsBool)(selfF.Value != otherF.Value),
+            PsInteger otherI => (PsBool)(selfF.Value != otherI.Value),
+            // As above, but True
+            _ => (PsBool)true,
+        };
+    }
 }

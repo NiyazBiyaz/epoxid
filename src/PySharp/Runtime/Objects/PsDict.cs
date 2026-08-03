@@ -48,4 +48,6 @@ public class PsDict : PsObject, IDictionary<PsObject, PsObject>
     public bool TryGetValue(PsObject key, [MaybeNullWhen(false)] out PsObject value) => items.TryGetValue(key, out value);
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    internal static PsInteger DunderLenImplementation(PsObject self) => (PsInteger)((PsDict)self).items.Count;
 }

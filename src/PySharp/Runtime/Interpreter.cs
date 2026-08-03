@@ -26,22 +26,59 @@ public partial class Interpreter
 
         foreach (var statement in file.Statements)
         {
-            switch (statement)
-            {
-                case SingleSimpleStatementView singleStatement:
-                    InterpretSimpleStatement(singleStatement.Value);
+            InterpretStatement(statement);
+        }
+    }
 
-                    break;
+    public void InterpretStatement(IStatementView statement)
+    {
+        switch (statement)
+        {
+            case SingleSimpleStatementView singleStatement:
+                InterpretSimpleStatement(singleStatement.Value);
 
-                case SeparatedSimpleStatementsView simpleStatements:
-                    foreach (var stmt in simpleStatements.Values)
-                        InterpretSimpleStatement(stmt);
+                break;
 
-                    break;
+            case SeparatedSimpleStatementsView simpleStatements:
+                foreach (var stmt in simpleStatements.Values)
+                    InterpretSimpleStatement(stmt);
 
-                default:
-                    throw notImplemented(statement);
-            }
+                break;
+
+            case IfStatementView ifStatement:
+                var condition = ifStatement.Condition;
+                bool fold = false;
+
+                if (fold = ConvertBool(InterpretExpression(condition)))
+                {
+                    InterpretBlock(ifStatement.Block);
+                }
+
+                if (!fold)
+                {
+                    switch (ifStatement)
+                    {
+                        case IfMaybeElseStatementView maybeElse:
+                            if (maybeElse.Else != null)
+                                InterpretBlock(maybeElse.Else.Block);
+                            break;
+
+                        case IfElifStatementView:
+                        default:
+                            throw notImplemented(ifStatement);
+                    }
+                }
+
+                break;
+
+            case FunctionDefView:
+            case ForStatementView:
+            case WithStatementView:
+            case ClassDefView:
+            case TryStatementView:
+            case WhileStatementView:
+            default:
+                throw notImplemented(statement);
         }
     }
 
@@ -98,13 +135,103 @@ public partial class Interpreter
         }
     }
 
-    public PsObject InterpretExpression(IExpressionView expr)
+    public PsObject InterpretExpression(INamedExpressionView namedExpr)
     {
-        return expr switch
+        switch (namedExpr)
         {
-            IBitwiseOrExpressionView arithmetic => evaluateArithmetic(arithmetic),
-            _ => throw notImplemented(expr),
-        };
+            case IExpressionView expr:
+                return expr switch
+                {
+                    IBitwiseOrExpressionView arithmetic => evaluateArithmetic(arithmetic),
+
+                    // TODO: change grammar or use proper ast walking
+                    DisjunctionView disjunction => disjunction.Values.First().Values.First() switch
+                    {
+                        ComparisonView comparison => evaluateComparison(comparison),
+
+                        InversionView inversion => throw notImplemented(inversion),
+
+                        _ => throw new InvalidOperationException(),
+                    },
+
+                    _ => throw notImplemented(expr),
+                };
+
+            case AssignmentExpressionView assignmentExpression:
+                var value = InterpretExpression(assignmentExpression.Value);
+                scopes.Peek().Bind(assignmentExpression.Target.RawString, value);
+                return value;
+
+            default:
+                throw new ArgumentException("Wrong expression type", nameof(namedExpr));
+        }
+    }
+
+    public void InterpretBlock(BlockView block)
+    {
+        switch (block)
+        {
+            case OneLinedBlockView oneLined:
+                InterpretStatement(oneLined.Statements);
+                break;
+
+            case IndentedBlockView indented:
+                foreach (var stmt in indented.Statements)
+                    InterpretStatement(stmt);
+
+                break;
+        }
+    }
+
+    private PsObject evaluateComparison(ComparisonView comparison)
+    {
+        PsObject left = evaluateArithmetic(comparison.First), right;
+
+        bool fold = true;
+
+        foreach (var value in comparison.Rest)
+        {
+            right = evaluateArithmetic(value switch
+            {
+                // Maybe extend by interface?
+                NotInOperationView view => view.Right,
+                EqOperationView view => view.Right,
+                GtOperationView view => view.Right,
+                LtOperationView view => view.Right,
+                GtEqOperationView view => view.Right,
+                NotEqOperationView view => view.Right,
+                IsOperationView view => view.Right,
+                InOperationView view => view.Right,
+                IsNotOperationView view => view.Right,
+                LtEqOperationView view => view.Right,
+                _ => throw new InvalidOperationException(),
+            });
+
+            PsObject result = value switch
+            {
+                EqOperationView => EqualObjects(left, right),
+                NotEqOperationView => NotEqualObjects(left, right),
+
+                NotInOperationView view => throw notImplemented(view),
+                GtOperationView view => throw notImplemented(view),
+                LtOperationView view => throw notImplemented(view),
+                GtEqOperationView view => throw notImplemented(view),
+                IsOperationView view => throw notImplemented(view),
+                InOperationView view => throw notImplemented(view),
+                IsNotOperationView view => throw notImplemented(view),
+                LtEqOperationView view => throw notImplemented(view),
+                _ => throw new InvalidOperationException(),
+            };
+
+            fold &= ConvertBool(result);
+
+            if (!fold)
+                break;
+
+            left = right;
+        }
+
+        return (PsBool)fold;
     }
 
     private PsObject evaluateArithmetic(IBitwiseOrExpressionView arithmetic)
