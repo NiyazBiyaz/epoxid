@@ -104,6 +104,18 @@ public class TestInterpreter
         assertOutput(src, "bau");
     }
 
+    [Fact]
+    public void Test_IntegerEquality()
+    {
+        const string src = """
+        a = 123
+        b = 123
+        print(a == b)
+
+        """;
+        assertOutput(src, "True");
+    }
+
     private static void assertOutput(string src, string expected, bool includeNewLine = true)
     {
         var file = getView(src);

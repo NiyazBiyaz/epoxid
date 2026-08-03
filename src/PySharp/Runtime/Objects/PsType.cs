@@ -20,25 +20,25 @@ public class PsType : PsObject
 
     #region Methods slots
 
-    public Func<PsObject, PsObject, PsObject?, PsObject>? DunderCall { get; set; }
+    public TernaryFunction? DunderCall { get; set; }
 
-    public Func<PsObject, PsObject, PsObject>? DunderAdd { get; set; }
+    public BinaryFunction? DunderAdd { get; set; }
 
-    public Func<PsObject, PsObject, PsObject>? DunderSub { get; set; }
+    public BinaryFunction? DunderSub { get; set; }
 
-    public Func<PsObject, PsObject, PsObject>? DunderMul { get; set; }
+    public BinaryFunction? DunderMul { get; set; }
 
-    public Func<PsObject, PsObject, PsObject>? DunderTrueDiv { get; set; }
+    public BinaryFunction? DunderTrueDiv { get; set; }
 
-    public Func<PsObject, PsObject, PsObject>? DunderPow { get; set; }
+    public BinaryFunction? DunderPow { get; set; }
 
-    public Func<PsObject, PsObject>? DunderBool { get; set; }
+    public UnaryFunction? DunderBool { get; set; }
 
-    public Func<PsObject, PsObject>? DunderLen { get; set; }
+    public UnaryFunction? DunderLen { get; set; }
 
-    public Func<PsObject, PsObject, PsObject>? DunderEq { get; set; } = DunderEqImplementation;
+    public BinaryFunction? DunderEq { get; set; } = DunderEqImplementation;
 
-    public Func<PsObject, PsObject, PsObject>? DunderNe { get; set; } = DunderNeImplementation;
+    public BinaryFunction? DunderNe { get; set; } = DunderNeImplementation;
 
     #endregion
 }

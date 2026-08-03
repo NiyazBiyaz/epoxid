@@ -55,8 +55,8 @@ public static class PsConstants
             DunderTrueDiv = PsInteger.DunderTrueDivImplementation,
             DunderPow = PsInteger.DunderPowImplementation,
             DunderBool = PsInteger.DunderBoolImplementation,
-            DunderEq = PsFloat.DunderEqImplementation,
-            DunderNe = PsFloat.DunderNeImplementation,
+            DunderEq = PsInteger.DunderEqImplementation,
+            DunderNe = PsInteger.DunderNeImplementation,
         };
         Bool = new("bool", [Int], Type)
         {
