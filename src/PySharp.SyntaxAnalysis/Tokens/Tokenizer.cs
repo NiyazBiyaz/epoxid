@@ -468,6 +468,7 @@ public partial class Tokenizer : BaseTokenizer, ITokenizer
                 Advance(span);
                 Advance(span);
                 CreateToken(out token, TokenType.Ellipsis);
+                return true;
             }
 
             CreateToken(out token, TokenType.Dot);
@@ -858,7 +859,10 @@ public partial class Tokenizer : BaseTokenizer, ITokenizer
         }
 
         if (prefixErrMsg is string msg)
+        {
             ErrorToken(out token, TokenizerError.InvalidLiteral, msg);
+            return;
+        }
 
         CreateToken(out token, TokenType.StringLiteral);
     }

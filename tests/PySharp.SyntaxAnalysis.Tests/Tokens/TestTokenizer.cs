@@ -1906,6 +1906,7 @@ public class TestTokenizer
             var exp = expected[i];
             var res = result[i];
             Assert.Equal(exp.Lexeme, res.Lexeme);
+            Assert.Equal(exp.Type, res.Type);
         }
 
         return tokenizer;
