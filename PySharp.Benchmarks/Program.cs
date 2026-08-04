@@ -6,6 +6,6 @@ public static class Program
 {
     public static void Main()
     {
-        var summary = BenchmarkRunner.Run<BenchTokenizer>();
+        var summary = BenchmarkRunner.Run([typeof(BenchTokenizer), typeof(BenchParser)]);
     }
 }

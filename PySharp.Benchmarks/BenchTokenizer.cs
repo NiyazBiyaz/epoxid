@@ -6,19 +6,22 @@ namespace PySharp.Benchmarks;
 [MemoryDiagnoser]
 public class BenchTokenizer
 {
-    private static readonly string source_with_f_strings;
-    private static readonly string source_without_f_strings;
+    private static readonly string pkgutil;
+    private static readonly string tokens_generate;
 
     static BenchTokenizer()
     {
-        source_with_f_strings = File.ReadAllText("/your/personal/path/to/file/with/fstrings");
-        source_without_f_strings = File.ReadAllText("/your/personal/path/to/file/without/fstrings");
+        string path = "Data/pkgutil";
+        pkgutil = File.ReadAllText(path);
+
+        path = "Data/tokens_generate_from_file";
+        tokens_generate = File.ReadAllText(path);
     }
 
     [Benchmark]
-    public void TestTokenizeFStrings()
+    public void TestTokenizeBeeg()
     {
-        var buffer = new StringBuffer(source_with_f_strings);
+        var buffer = new StringBuffer(pkgutil);
         var sync = SynchronizationPoint.ClearPoint(buffer);
 
         var tokenizer = new Tokenizer(sync);
@@ -28,9 +31,9 @@ public class BenchTokenizer
     }
 
     [Benchmark]
-    public void TestTokenizeRegular()
+    public void TestTokenizeSmol()
     {
-        var buffer = new StringBuffer(source_without_f_strings);
+        var buffer = new StringBuffer(tokens_generate);
         var sync = SynchronizationPoint.ClearPoint(buffer);
 
         var tokenizer = new Tokenizer(sync);
