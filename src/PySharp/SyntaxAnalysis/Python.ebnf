@@ -76,9 +76,9 @@ SimpleStatements:
 @union
 SimpleStatement:
     | Assignment
-    | StarExpressionVariant
     | &'type'       TypeAlias
     | &ImportStart  ImportStatement
+    | StarExpressionVariant
     | &'return'     ReturnStatement
     | &'raise'      RaiseStatement
     | &'pass'       PassStatement

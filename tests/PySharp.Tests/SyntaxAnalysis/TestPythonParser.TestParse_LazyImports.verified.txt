@@ -1,0 +1,155 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    SingleSimpleStatementNode {
+      Slot[0]: LazyImportNameNode {
+        Slot[0]: Token(Type: Name, RawString: `lazy`),
+        Slot[1]: Token(Type: Name, RawString: `import`),
+        Slot[2]: NodeArray() [
+          DottedNameNode {
+            Slot[0]: SingleImportUnitNode {
+              Slot[0]: Token(Type: Name, RawString: `bau`),
+            },
+            Slot[1]: VoidNode(),
+          },
+        ],
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: LazyImportNameNode {
+        Slot[0]: Token(Type: Name, RawString: `lazy`),
+        Slot[1]: Token(Type: Name, RawString: `import`),
+        Slot[2]: NodeArray() [
+          DottedNameNode {
+            Slot[0]: DottedImportUnitNode {
+              Slot[0]: SingleImportUnitNode {
+                Slot[0]: Token(Type: Name, RawString: `bau`),
+              },
+              Slot[1]: Token(Type: Dot, RawString: `.`),
+              Slot[2]: Token(Type: Name, RawString: `bau`),
+            },
+            Slot[1]: AsNameNode {
+              Slot[0]: Token(Type: Name, RawString: `as`),
+              Slot[1]: Token(Type: Name, RawString: `Bau`),
+            },
+          },
+        ],
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: LazyImportFromModuleNode {
+        Slot[0]: Token(Type: Name, RawString: `lazy`),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
+        ],
+        Slot[3]: SingleImportUnitNode {
+          Slot[0]: Token(Type: Name, RawString: `fwmc`),
+        },
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromNamesNode {
+          Slot[0]: NodeArray() [
+            AliasedNameNode {
+              Slot[0]: Token(Type: Name, RawString: `fuzzy`),
+              Slot[1]: AsNameNode {
+                Slot[0]: Token(Type: Name, RawString: `as`),
+                Slot[1]: Token(Type: Name, RawString: `moco`),
+              },
+            },
+            Token(Type: Comma, RawString: `,`),
+            AliasedNameNode {
+              Slot[0]: Token(Type: Name, RawString: `fluffy`),
+              Slot[1]: AsNameNode {
+                Slot[0]: Token(Type: Name, RawString: `as`),
+                Slot[1]: Token(Type: Name, RawString: `fuwa`),
+              },
+            },
+          ],
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: LazyImportFromModuleNode {
+        Slot[0]: Token(Type: Name, RawString: `lazy`),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
+        ],
+        Slot[3]: SingleImportUnitNode {
+          Slot[0]: Token(Type: Name, RawString: `fwmc`),
+        },
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromGroupNode {
+          Slot[0]: Token(Type: LeftParen, RawString: `(`),
+          Slot[1]: NodeArray() [
+            AliasedNameNode {
+              Slot[0]: Token(Type: Name, RawString: `fuwa`),
+              Slot[1]: VoidNode(),
+            },
+            Token(Type: Comma, RawString: `,`),
+            AliasedNameNode {
+              Slot[0]: Token(Type: Name, RawString: `moco`),
+              Slot[1]: VoidNode(),
+            },
+          ],
+          Slot[2]: Token(Type: Comma, RawString: `,`),
+          Slot[3]: Token(Type: RightParen, RawString: `)`),
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: LazyImportFromModuleNode {
+        Slot[0]: Token(Type: Name, RawString: `lazy`),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
+          Token(Type: Dot, RawString: `.`),
+        ],
+        Slot[3]: SingleImportUnitNode {
+          Slot[0]: Token(Type: Name, RawString: `pondering`),
+        },
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromNamesNode {
+          Slot[0]: NodeArray() [
+            AliasedNameNode {
+              Slot[0]: Token(Type: Name, RawString: `baubau`),
+              Slot[1]: VoidNode(),
+            },
+          ],
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: LazyImportFromModuleNode {
+        Slot[0]: Token(Type: Name, RawString: `lazy`),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
+          Token(Type: Ellipsis, RawString: `...`),
+          Token(Type: Dot, RawString: `.`),
+        ],
+        Slot[3]: DottedImportUnitNode {
+          Slot[0]: SingleImportUnitNode {
+            Slot[0]: Token(Type: Name, RawString: `halo`),
+          },
+          Slot[1]: Token(Type: Dot, RawString: `.`),
+          Slot[2]: Token(Type: Name, RawString: `halo`),
+        },
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromNamesNode {
+          Slot[0]: NodeArray() [
+            AliasedNameNode {
+              Slot[0]: Token(Type: Name, RawString: `baubau`),
+              Slot[1]: AsNameNode {
+                Slot[0]: Token(Type: Name, RawString: `as`),
+                Slot[1]: Token(Type: Name, RawString: `bauBau`),
+              },
+            },
+          ],
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

@@ -9,6 +9,8 @@ public class TestPythonParser
 {
     static TestPythonParser()
     {
+        // It works just awful for me. In some stupid reason it want to use neovim, and even in this situation can't
+        // just normally launch it to show me two files. lol.
         DiffRunner.Disabled = true;
     }
 
@@ -170,6 +172,27 @@ public class TestPythonParser
         )
         from .pondering import baubau
         from ....halo.halo import baubau as bauBau
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestParse_LazyImports()
+    {
+        const string src = """
+        lazy import bau
+        lazy import bau.bau as Bau
+        lazy from fwmc import fuzzy as moco, fluffy as fuwa
+        lazy from fwmc import (
+            fuwa,
+            moco,
+        )
+        lazy from .pondering import baubau
+        lazy from ....halo.halo import baubau as bauBau
 
         """;
         var parser = getParser(src);

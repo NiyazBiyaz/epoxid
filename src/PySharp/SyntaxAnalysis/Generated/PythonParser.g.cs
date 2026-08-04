@@ -253,9 +253,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @union
     // SimpleStatement:
     //     | Assignment
-    //     | StarExpressionVariant
     //     | &'type'       TypeAlias
     //     | &ImportStart  ImportStatement
+    //     | StarExpressionVariant
     //     | &'return'     ReturnStatement
     //     | &'raise'      RaiseStatement
     //     | &'pass'       PassStatement
@@ -283,19 +283,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("Assignment");
-        }
-        base.Reset(_mark);
-        {
-            // StarExpressionVariant
-            base.LogAlternativeEntered("StarExpressionVariant");
-            IGreenNode? star_expression_variant;
-            if ((star_expression_variant = rule_StarExpressionVariant()) is not null)
-            {
-                base.LogAlternativeSucceed("StarExpressionVariant");
-                _res = (IStarExpressionVariantNode?)star_expression_variant;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("StarExpressionVariant");
         }
         base.Reset(_mark);
         {
@@ -342,6 +329,19 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 base.Reset(_mark);
                 return _wasParsed == true;
             }
+        }
+        base.Reset(_mark);
+        {
+            // StarExpressionVariant
+            base.LogAlternativeEntered("StarExpressionVariant");
+            IGreenNode? star_expression_variant;
+            if ((star_expression_variant = rule_StarExpressionVariant()) is not null)
+            {
+                base.LogAlternativeSucceed("StarExpressionVariant");
+                _res = (IStarExpressionVariantNode?)star_expression_variant;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("StarExpressionVariant");
         }
         base.Reset(_mark);
         {

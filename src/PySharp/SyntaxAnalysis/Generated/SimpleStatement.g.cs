@@ -10,8 +10,8 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-[global::PySharp.SyntaxAnalysis.WildUnion(typeof(AssignmentNode), typeof(IStarExpressionVariantNode), typeof(TypeAliasNode), typeof(IImportStatementNode), typeof(ReturnStatementNode), typeof(RaiseStatementNode), typeof(PassStatementNode), typeof(DeleteStatementNode), typeof(YieldStatementNode), typeof(AssertStatementNode), typeof(BreakStatementNode), typeof(ContinueStatementNode), typeof(GlobalStatementNode), typeof(NonlocalStatementNode))]
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(AssignmentNode), typeof(TypeAliasNode), typeof(IImportStatementNode), typeof(IStarExpressionVariantNode), typeof(ReturnStatementNode), typeof(RaiseStatementNode), typeof(PassStatementNode), typeof(DeleteStatementNode), typeof(YieldStatementNode), typeof(AssertStatementNode), typeof(BreakStatementNode), typeof(ContinueStatementNode), typeof(GlobalStatementNode), typeof(NonlocalStatementNode))]
 public partial interface ISimpleStatementNode : IGreenNode;
 
-[global::PySharp.SyntaxAnalysis.WildUnion(typeof(AssignmentView), typeof(IStarExpressionVariantView), typeof(TypeAliasView), typeof(IImportStatementView), typeof(ReturnStatementView), typeof(RaiseStatementView), typeof(PassStatementView), typeof(DeleteStatementView), typeof(YieldStatementView), typeof(AssertStatementView), typeof(BreakStatementView), typeof(ContinueStatementView), typeof(GlobalStatementView), typeof(NonlocalStatementView))]
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(AssignmentView), typeof(TypeAliasView), typeof(IImportStatementView), typeof(IStarExpressionVariantView), typeof(ReturnStatementView), typeof(RaiseStatementView), typeof(PassStatementView), typeof(DeleteStatementView), typeof(YieldStatementView), typeof(AssertStatementView), typeof(BreakStatementView), typeof(ContinueStatementView), typeof(GlobalStatementView), typeof(NonlocalStatementView))]
 public partial interface ISimpleStatementView : IRedView;
