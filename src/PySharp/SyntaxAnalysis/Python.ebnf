@@ -76,8 +76,7 @@ SimpleStatements:
 @union
 SimpleStatement:
     | Assignment
-    | StarExpression !','
-    | StarExpressions
+    | StarExpressionVariant
     | &'type'       TypeAlias
     | &ImportStart  ImportStatement
     | &'return'     ReturnStatement
@@ -129,7 +128,8 @@ Assignment:
     | SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedSubscriptAttributeAssignment(
         Target=single_subscript_attribute_target, TypeHint=expression, Rhs=equal_annotated_rhs)
 
-    | (StarTargets '=' -> AssignmentTarget(Value=star_targets))+ AnnotatedRhs !'=' -> CascadeAssignment(Targets=assignment_target_Plus, Rhs=annotated_rhs)
+    | (AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'=' -> CascadeAssignment(
+        Targets=cascade_target_Plus, Rhs=annotated_rhs)
 
     | SingleTarget AugAssign ~ AnnotatedRhs -> AugmentedAssignment(Target=single_target, Operator=aug_assign, Rhs=annotated_rhs)
 
@@ -154,10 +154,9 @@ AugAssign:
 @union
 AnnotatedRhs:
     | YieldExpression
-    | StarExpression !','
-    | StarExpressions
+    | StarExpressionVariant
 
-ReturnStatement: 'return' -StarExpressions -> new(Expression=star_expressions)
+ReturnStatement: 'return' -StarExpressionVariant -> new(Expression=star_expression_variant)
 
 RaiseStatement:
     | 'raise' Expression 'from' Expression -> RaiseFromStatement(NewException=expression, OldExpression=expression1)
@@ -332,12 +331,10 @@ DefaultValue: '=' Expression -> new(Value=expression)
 # ------------
 
 IfStatement:
-    | 'if' NamedExpression ':' Block ElifStatement -> IfElifStatement(Condition=named_expression, Block=block, Elif=elif_statement)
-    | 'if' NamedExpression ':' Block -ElseBlock -> IfMaybeElseStatement(Condition=named_expression, Block=block, Else=else_block)
+    | 'if' NamedExpression ':' Block ElifStatement* -ElseBlock -> new(
+        Condition=named_expression, Block=block, Elifs=elif_statement_Star, Else=else_block)
 
-ElifStatement:
-    | 'elif' NamedExpression ':' Block ElifStatement -> ElifElifStatement(Condition=named_expression, Block=block, Elif=elif_statement)
-    | 'elif' NamedExpression ':' Block -ElseBlock -> ElifMaybeElseStatement(Condition=named_expression, Block=block, Else=else_block)
+ElifStatement: 'elif' NamedExpression ':' Block -> new(Condition=named_expression, Block=block)
 
 ElseBlock: 'else' ':' Block -> new(Block=block)
 
@@ -350,11 +347,11 @@ WhileStatement: 'while' NamedExpression ':' Block -ElseBlock -> new(Condition=na
 # -------------
 
 ForStatement:
-    | 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock -> NormalForStatement(
-        Targets=star_targets, Expression=star_expressions, Block=block, Else=else_block)
+    | 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
+        Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
 
-    | 'async' 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock -> AsyncForStatement(
-        Targets=star_targets, Expression=star_expressions, Block=block, Else=else_block)
+    | 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
+        Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
 
 # With statement
 # --------------
@@ -366,7 +363,7 @@ WithStatement:
     | 'async' 'with' WithItem+.',' ':' Block -> OneLinedAsyncWithStatement(Items=with_item_Gather, Block=block)
 
 WithItem:
-    | Expression 'as' StarTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=star_target)
+    | Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=assignment_target)
     | Expression -> PlainWithItem(Expression=expression)
 
 # Try statement
@@ -437,6 +434,11 @@ IfExpression: Disjunction 'if' Disjunction 'else' Expression
 YieldExpression:
     | 'yield' 'from' Expression -> YieldFromExpression(Expression=expression)
     | 'yield' -StarExpressions -> YieldStarExpression(Expression=star_expressions)
+
+@union
+StarExpressionVariant:
+    | StarExpression !','
+    | StarExpressions
 
 StarExpressions: StarExpression+.',' -',' -> new(Values=star_expression_Gather)
 
@@ -725,11 +727,11 @@ StarredOrKeyValue:
 # -----------------------------
 
 ForIfClause:
-    | 'async' 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
-        Variables=star_targets, Iterable=disjunction, Conditions=if_clause_Star)
+    | 'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
+        Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
     
-    | 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
-        Variables=star_targets, Iterable=disjunction, Conditions=if_clause_Star)
+    | 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
+        Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
 
 ListComprehension: '[' StarNamedExpression ForIfClause+ ']' -> new(Expression=star_named_expression, Iterators=for_if_clause_Plus)
 
@@ -783,31 +785,40 @@ Kwarg: Name '=' Expression -> new(Keyword=name, Value=expression)
 # Assignment targets
 # ==================
 
-StarTargets:
-    | StarTarget !','
-    | StarTarget+.',' -','
+@union
+AssignmentTargetVariant:
+    | AssignmentTarget !','
+    | AssignmentTargets
 
-StarTarget:
-    | '*' TargetWithStarAtom -> ActuallyStarTarget(Target=target_with_star_atom)
-    | TargetWithStarAtom -> NotStarTarget(Target=target_with_star_atom)
+AssignmentTargets: AssignmentTarget+.',' -',' -> new(Targets=assignment_target_Gather)
 
-TargetWithStarAtom:
-    | TargetPrimary '.' Name !TargetPrimaryContinuation -> DottedStarTarget(Left=target_primary, Right=name)
-    | TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> SubscriptStarTarget(Primary=target_primary, Subscript=slices)
-    | StarAtom -> SingleStarTarget(Atom=star_atom)
+@union
+AssignmentTarget:
+    | StarredAssignmentTarget
+    | AssignmentTargetUnit
 
-StarAtom:
-    | Name -> NameStarAtom(Value=name)
-    # | '(' TargetWithStarAtom ')'  # Deleted because not needed actually
-    | '(' -StarTargetSequence ')' -> TupleStarAtom(Items=star_target_sequence)
-    | '[' -StarTargetSequence ']' -> ListStarAtom(Items=star_target_sequence)
+StarredAssignmentTarget: '*' AssignmentTargetUnit -> new(Target=assignment_target_unit)
 
-StarTargetSequence: StarTarget+.',' -',' -> new(Items=star_target_Gather)
+@union
+AssignmentTargetUnit:
+    | DottedTargetUnit
+    | SubscriptTargetUnit
+    | AssignmentTargetAtom
+
+DottedTargetUnit: TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
+
+SubscriptTargetUnit: TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Primary=target_primary, Subscript=slices)
+
+AssignmentTargetAtom:
+    | Name -> NameTargetAtom(Value=name)
+    | '(' AssignmentTargetUnit ')' -> GroupedTargetAtom(Target=assignment_target_unit)
+    | '(' -AssignmentTargets ')' -> TupleTargetAtom(Items=assignment_targets)
+    | '[' -AssignmentTargets ']' -> ListTargetAtom(Items=assignment_targets)
 
 SingleTarget:
-    | SingleSubscriptAttributeTarget -> SubscriptSingleTarget(Value=single_subscript_attribute_target)
+    | SingleSubscriptAttributeTarget -> CompositeSingleTarget(Value=single_subscript_attribute_target)
     | Name -> NameSingleTarget(Value=name)
-    # | '(' SingleTarget ')'  # Deleted because not needed actually
+    | '(' SingleTarget ')' -> GroupedTarget(Target=single_target)
 
 SingleSubscriptAttributeTarget:
     | TargetPrimary '.' Name !TargetPrimaryContinuation -> SingleAttributeTarget(Primary=target_primary, AttributeName=name)
@@ -835,7 +846,6 @@ TargetPrimaryContinuation:
 DeleteTarget:
     | TargetPrimary '.' Name !TargetPrimaryContinuation -> DeleteAttributeTarget(Primary=target_primary, AttributeName=name)
     | TargetPrimary '[' Slices ']' &TargetPrimaryContinuation -> DeleteSubscriptTarget(Primary=target_primary, Subscript=slices)
-    | DeleteTargetAtom -> DeleteAtomTarget(Value=delete_target_atom)
+    | Name -> DeleteAtomTarget(Value=name)
 
-DeleteTargetAtom: Name -> new(Value=name)
-# Rest is not supported because not needed actually
+# In Python also was another delete targets, but support it later

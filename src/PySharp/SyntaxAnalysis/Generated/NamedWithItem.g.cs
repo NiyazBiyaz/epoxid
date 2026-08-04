@@ -12,7 +12,7 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record NamedWithItemNode : WithItemNode
 {
-    public StarTargetNode Target => (StarTargetNode)Children![2];
+    public IAssignmentTargetNode Target => (IAssignmentTargetNode)Children![2];
     public override NamedWithItemView GetView(int position, IRedView? parent)
         => new NamedWithItemView(this, position, parent);
 }
@@ -24,17 +24,17 @@ public sealed partial class NamedWithItemView : WithItemView
     {
     }
 
-    private StarTargetView? _field_target = null;
-    public StarTargetView Target
+    private IAssignmentTargetView? _field_target = null;
+    public IAssignmentTargetView Target
     {
         get
         {
             if (_field_target == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _field_target = (StarTargetView)((NamedWithItemNode)base.Green).Target!.GetView(_positionOfField, this);
+                _field_target = (IAssignmentTargetView)((NamedWithItemNode)base.Green).Target!.GetView(_positionOfField, this);
             }
-            return (StarTargetView)_field_target;
+            return (IAssignmentTargetView)_field_target;
         }
     }
 }

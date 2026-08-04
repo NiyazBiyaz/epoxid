@@ -12,8 +12,8 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record AsyncForStatementNode : ForStatementNode
 {
-    public StarTargetsNode Targets => (StarTargetsNode)Children![2];
-    public StarExpressionsNode Expression => (StarExpressionsNode)Children![4];
+    public IAssignmentTargetVariantNode Targets => (IAssignmentTargetVariantNode)Children![2];
+    public IStarExpressionVariantNode Expression => (IStarExpressionVariantNode)Children![4];
     public BlockNode Block => (BlockNode)Children![6];
     public ElseBlockNode? Else => Children![7] as ElseBlockNode;
     public override AsyncForStatementView GetView(int position, IRedView? parent)
@@ -27,31 +27,31 @@ public sealed partial class AsyncForStatementView : ForStatementView
     {
     }
 
-    private StarTargetsView? _field_targets = null;
-    public StarTargetsView Targets
+    private IAssignmentTargetVariantView? _field_targets = null;
+    public IAssignmentTargetVariantView Targets
     {
         get
         {
             if (_field_targets == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _field_targets = (StarTargetsView)((AsyncForStatementNode)base.Green).Targets!.GetView(_positionOfField, this);
+                _field_targets = (IAssignmentTargetVariantView)((AsyncForStatementNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
-            return (StarTargetsView)_field_targets;
+            return (IAssignmentTargetVariantView)_field_targets;
         }
     }
 
-    private StarExpressionsView? _field_expression = null;
-    public StarExpressionsView Expression
+    private IStarExpressionVariantView? _field_expression = null;
+    public IStarExpressionVariantView Expression
     {
         get
         {
             if (_field_expression == null)
             {
                 var _positionOfField = base.GetPositionFor(4);
-                _field_expression = (StarExpressionsView)((AsyncForStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
+                _field_expression = (IStarExpressionVariantView)((AsyncForStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
-            return (StarExpressionsView)_field_expression;
+            return (IStarExpressionVariantView)_field_expression;
         }
     }
 

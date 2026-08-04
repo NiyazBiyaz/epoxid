@@ -12,7 +12,7 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record ReturnStatementNode : GreenNode, ISimpleStatementNode
 {
-    public StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
+    public IStarExpressionVariantNode? Expression => Children![1] as IStarExpressionVariantNode;
     public override ReturnStatementView GetView(int position, IRedView? parent)
         => new ReturnStatementView(this, position, parent);
 }
@@ -24,17 +24,17 @@ public sealed partial class ReturnStatementView : RedView, ISimpleStatementView
     {
     }
 
-    private StarExpressionsView? _field_expression = null;
-    public StarExpressionsView? Expression
+    private IStarExpressionVariantView? _field_expression = null;
+    public IStarExpressionVariantView? Expression
     {
         get
         {
             if (_field_expression == null && ((ReturnStatementNode)base.Green).Expression != null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_expression = (StarExpressionsView)((ReturnStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
+                _field_expression = (IStarExpressionVariantView)((ReturnStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
-            return (StarExpressionsView?)_field_expression;
+            return (IStarExpressionVariantView?)_field_expression;
         }
     }
 }

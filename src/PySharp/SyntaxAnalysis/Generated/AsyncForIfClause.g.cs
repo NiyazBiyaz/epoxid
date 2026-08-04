@@ -12,7 +12,7 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record AsyncForIfClauseNode : ForIfClauseNode
 {
-    public StarTargetsNode Variables => (StarTargetsNode)Children![2];
+    public IAssignmentTargetVariantNode Variables => (IAssignmentTargetVariantNode)Children![2];
     public DisjunctionNode Iterable => (DisjunctionNode)Children![4];
     public NodeArray<IfClauseNode> Conditions => (NodeArray<IfClauseNode>)Children![5];
     public override AsyncForIfClauseView GetView(int position, IRedView? parent)
@@ -26,17 +26,17 @@ public sealed partial class AsyncForIfClauseView : ForIfClauseView
     {
     }
 
-    private StarTargetsView? _field_variables = null;
-    public StarTargetsView Variables
+    private IAssignmentTargetVariantView? _field_variables = null;
+    public IAssignmentTargetVariantView Variables
     {
         get
         {
             if (_field_variables == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _field_variables = (StarTargetsView)((AsyncForIfClauseNode)base.Green).Variables!.GetView(_positionOfField, this);
+                _field_variables = (IAssignmentTargetVariantView)((AsyncForIfClauseNode)base.Green).Variables!.GetView(_positionOfField, this);
             }
-            return (StarTargetsView)_field_variables;
+            return (IAssignmentTargetVariantView)_field_variables;
         }
     }
 

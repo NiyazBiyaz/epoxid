@@ -253,8 +253,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @union
     // SimpleStatement:
     //     | Assignment
-    //     | StarExpression !','
-    //     | StarExpressions
+    //     | StarExpressionVariant
     //     | &'type'       TypeAlias
     //     | &ImportStart  ImportStatement
     //     | &'return'     ReturnStatement
@@ -287,39 +286,16 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // StarExpression !','
-            base.LogAlternativeEntered("StarExpression !','");
-            IGreenNode? star_expression;
-            if ((star_expression = rule_StarExpression()) is not null
-                &&
-                _LookaheadHelper_comma()
-            )
+            // StarExpressionVariant
+            base.LogAlternativeEntered("StarExpressionVariant");
+            IGreenNode? star_expression_variant;
+            if ((star_expression_variant = rule_StarExpressionVariant()) is not null)
             {
-                base.LogAlternativeSucceed("StarExpression !','");
-                _res = (IStarExpressionNode?)star_expression;
+                base.LogAlternativeSucceed("StarExpressionVariant");
+                _res = (IStarExpressionVariantNode?)star_expression_variant;
                 goto _Return;
             }
-            base.LogAlternativeFailed("StarExpression !','");
-            bool _LookaheadHelper_comma()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.Comma) != null;
-                base.Reset(_mark);
-                return _wasParsed == false;
-            }
-        }
-        base.Reset(_mark);
-        {
-            // StarExpressions
-            base.LogAlternativeEntered("StarExpressions");
-            IGreenNode? star_expressions;
-            if ((star_expressions = rule_StarExpressions()) is not null)
-            {
-                base.LogAlternativeSucceed("StarExpressions");
-                _res = (StarExpressionsNode?)star_expressions;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("StarExpressions");
+            base.LogAlternativeFailed("StarExpressionVariant");
         }
         base.Reset(_mark);
         {
@@ -1054,7 +1030,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     //     | SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedSubscriptAttributeAssignment(
     //         Target=single_subscript_attribute_target, TypeHint=expression, Rhs=equal_annotated_rhs)
     //
-    //     | (StarTargets '=' -> AssignmentTarget(Value=star_targets))+ AnnotatedRhs !'=' -> CascadeAssignment(Targets=assignment_target_Plus, Rhs=annotated_rhs)
+    //     | (AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'=' -> CascadeAssignment(
+    //         Targets=cascade_target_Plus, Rhs=annotated_rhs)
     //
     //     | SingleTarget AugAssign ~ AnnotatedRhs -> AugmentedAssignment(Target=single_target, Operator=aug_assign, Rhs=annotated_rhs)
     AssignmentNode? rule_Assignment()
@@ -1191,34 +1168,35 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // (StarTargets '=' -> AssignmentTarget(Value=star_targets))+ AnnotatedRhs !'=' -> CascadeAssignment(Targets=assignment_target_Plus, Rhs=annotated_rhs)
-            base.LogAlternativeEntered("(StarTargets '=' -> AssignmentTarget(Value=star_targets))+ AnnotatedRhs !'='");
-            INodeArray<AssignmentTargetNode>? assignment_target_Plus;
+            // (AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'=' -> CascadeAssignment(
+            //         Targets=cascade_target_Plus, Rhs=annotated_rhs)
+            base.LogAlternativeEntered("(AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'='");
+            INodeArray<CascadeTargetNode>? cascade_target_Plus;
             IGreenNode? annotated_rhs;
-            if ((assignment_target_Plus = _RepeatHelper_assignment_target_Plus()) is not null
+            if ((cascade_target_Plus = _RepeatHelper_cascade_target_Plus()) is not null
                 &&
                 (annotated_rhs = rule_AnnotatedRhs()) is not null
                 &&
                 _LookaheadHelper_equal()
             )
             {
-                base.LogAlternativeSucceed("(StarTargets '=' -> AssignmentTarget(Value=star_targets))+ AnnotatedRhs !'='");
+                base.LogAlternativeSucceed("(AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'='");
                 _res = new CascadeAssignmentNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        assignment_target_Plus,
+                        cascade_target_Plus,
                         annotated_rhs,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("(StarTargets '=' -> AssignmentTarget(Value=star_targets))+ AnnotatedRhs !'='");
-            NodeArray<AssignmentTargetNode>? _RepeatHelper_assignment_target_Plus()
+            base.LogAlternativeFailed("(AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'='");
+            NodeArray<CascadeTargetNode>? _RepeatHelper_cascade_target_Plus()
             {
-                AssignmentTargetNode? _node = rule_AssignmentTarget();
+                CascadeTargetNode? _node = rule_CascadeTarget();
                 if (_node == null) return null;
-                global::System.Collections.Generic.List<AssignmentTargetNode> _result = [_node];
-                while ((_node = rule_AssignmentTarget()) != null)
+                global::System.Collections.Generic.List<CascadeTargetNode> _result = [_node];
+                while ((_node = rule_CascadeTarget()) != null)
                 {
                     _result.Add(_node);
                 }
@@ -1275,44 +1253,44 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // Assignment
 
-    #region AssignmentTarget
-    // (StarTargets '=' -> AssignmentTarget(Value=star_targets))
-    AssignmentTargetNode? rule_AssignmentTarget()
+    #region CascadeTarget
+    // (AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))
+    CascadeTargetNode? rule_CascadeTarget()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("AssignmentTarget");
+        base.LogRuleEntered("CascadeTarget");
         int _mark = base.Mark();
-        AssignmentTargetNode? _res = null;
+        CascadeTargetNode? _res = null;
         {
-            // StarTargets '=' -> AssignmentTarget(Value=star_targets)
-            base.LogAlternativeEntered("StarTargets '='");
-            IGreenNode? star_targets;
+            // AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant)
+            base.LogAlternativeEntered("AssignmentTargetVariant '='");
+            IGreenNode? assignment_target_variant;
             IGreenNode? equal;
-            if ((star_targets = rule_StarTargets()) is not null
+            if ((assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
                 (equal = Expect(TokenType.Equal)) is not null
             )
             {
-                base.LogAlternativeSucceed("StarTargets '='");
-                _res = new AssignmentTargetNode()
+                base.LogAlternativeSucceed("AssignmentTargetVariant '='");
+                _res = new CascadeTargetNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        star_targets,
+                        assignment_target_variant,
                         equal,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("StarTargets '='");
+            base.LogAlternativeFailed("AssignmentTargetVariant '='");
         }
         base.Reset(_mark);
-        base.LogRuleFailed("AssignmentTarget");
+        base.LogRuleFailed("CascadeTarget");
     _Return:
-        base.LogRuleExiting("AssignmentTarget");
+        base.LogRuleExiting("CascadeTarget");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // AssignmentTarget
+    #endregion // CascadeTarget
 
     #region EqualAnnotatedRhs
     // EqualAnnotatedRhs: '=' AnnotatedRhs -> new(Value=annotated_rhs)
@@ -1556,8 +1534,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @union
     // AnnotatedRhs:
     //     | YieldExpression
-    //     | StarExpression !','
-    //     | StarExpressions
+    //     | StarExpressionVariant
     IAnnotatedRhsNode? rule_AnnotatedRhs()
     {
         base.LogIncreaseLevel();
@@ -1578,39 +1555,16 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // StarExpression !','
-            base.LogAlternativeEntered("StarExpression !','");
-            IGreenNode? star_expression;
-            if ((star_expression = rule_StarExpression()) is not null
-                &&
-                _LookaheadHelper_comma()
-            )
+            // StarExpressionVariant
+            base.LogAlternativeEntered("StarExpressionVariant");
+            IGreenNode? star_expression_variant;
+            if ((star_expression_variant = rule_StarExpressionVariant()) is not null)
             {
-                base.LogAlternativeSucceed("StarExpression !','");
-                _res = (IStarExpressionNode?)star_expression;
+                base.LogAlternativeSucceed("StarExpressionVariant");
+                _res = (IStarExpressionVariantNode?)star_expression_variant;
                 goto _Return;
             }
-            base.LogAlternativeFailed("StarExpression !','");
-            bool _LookaheadHelper_comma()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.Comma) != null;
-                base.Reset(_mark);
-                return _wasParsed == false;
-            }
-        }
-        base.Reset(_mark);
-        {
-            // StarExpressions
-            base.LogAlternativeEntered("StarExpressions");
-            IGreenNode? star_expressions;
-            if ((star_expressions = rule_StarExpressions()) is not null)
-            {
-                base.LogAlternativeSucceed("StarExpressions");
-                _res = (StarExpressionsNode?)star_expressions;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("StarExpressions");
+            base.LogAlternativeFailed("StarExpressionVariant");
         }
         base.Reset(_mark);
         base.LogRuleFailed("AnnotatedRhs");
@@ -1622,7 +1576,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // AnnotatedRhs
 
     #region ReturnStatement
-    // ReturnStatement: 'return' -StarExpressions -> new(Expression=star_expressions)
+    // ReturnStatement: 'return' -StarExpressionVariant -> new(Expression=star_expression_variant)
     ReturnStatementNode? rule_ReturnStatement()
     {
         base.LogIncreaseLevel();
@@ -1630,26 +1584,26 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ReturnStatementNode? _res = null;
         {
-            // 'return' -StarExpressions -> new(Expression=star_expressions)
-            base.LogAlternativeEntered("'return' -StarExpressions");
+            // 'return' -StarExpressionVariant -> new(Expression=star_expression_variant)
+            base.LogAlternativeEntered("'return' -StarExpressionVariant");
             IGreenNode? _string_token;
-            IGreenNode? star_expressions;
+            IGreenNode? star_expression_variant;
             if ((_string_token = Expect("return")) is not null
                 &&
-                ((star_expressions = rule_StarExpressions()) is not null || true) // Optional
+                ((star_expression_variant = rule_StarExpressionVariant()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("'return' -StarExpressions");
+                base.LogAlternativeSucceed("'return' -StarExpressionVariant");
                 _res = new ReturnStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
-                        star_expressions ?? VoidNode.Instance,
+                        star_expression_variant ?? VoidNode.Instance,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'return' -StarExpressions");
+            base.LogAlternativeFailed("'return' -StarExpressionVariant");
         }
         base.Reset(_mark);
         base.LogRuleFailed("ReturnStatement");
@@ -4765,8 +4719,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region IfStatement
     // IfStatement:
-    //     | 'if' NamedExpression ':' Block ElifStatement -> IfElifStatement(Condition=named_expression, Block=block, Elif=elif_statement)
-    //     | 'if' NamedExpression ':' Block -ElseBlock -> IfMaybeElseStatement(Condition=named_expression, Block=block, Else=else_block)
+    //     | 'if' NamedExpression ':' Block ElifStatement* -ElseBlock -> new(
+    //         Condition=named_expression, Block=block, Elifs=elif_statement_Star, Else=else_block)
     IfStatementNode? rule_IfStatement()
     {
         base.LogIncreaseLevel();
@@ -4774,47 +4728,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         IfStatementNode? _res = null;
         {
-            // 'if' NamedExpression ':' Block ElifStatement -> IfElifStatement(Condition=named_expression, Block=block, Elif=elif_statement)
-            base.LogAlternativeEntered("'if' NamedExpression ':' Block ElifStatement");
+            // 'if' NamedExpression ':' Block ElifStatement* -ElseBlock -> new(
+            //         Condition=named_expression, Block=block, Elifs=elif_statement_Star, Else=else_block)
+            base.LogAlternativeEntered("'if' NamedExpression ':' Block ElifStatement* -ElseBlock");
             IGreenNode? _string_token;
             IGreenNode? named_expression;
             IGreenNode? colon;
             IGreenNode? block;
-            IGreenNode? elif_statement;
-            if ((_string_token = Expect("if")) is not null
-                &&
-                (named_expression = rule_NamedExpression()) is not null
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-                &&
-                (elif_statement = rule_ElifStatement()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'if' NamedExpression ':' Block ElifStatement");
-                _res = new IfElifStatementNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        named_expression,
-                        colon,
-                        block,
-                        elif_statement,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'if' NamedExpression ':' Block ElifStatement");
-        }
-        base.Reset(_mark);
-        {
-            // 'if' NamedExpression ':' Block -ElseBlock -> IfMaybeElseStatement(Condition=named_expression, Block=block, Else=else_block)
-            base.LogAlternativeEntered("'if' NamedExpression ':' Block -ElseBlock");
-            IGreenNode? _string_token;
-            IGreenNode? named_expression;
-            IGreenNode? colon;
-            IGreenNode? block;
+            INodeArray<ElifStatementNode>? elif_statement_Star;
             IGreenNode? else_block;
             if ((_string_token = Expect("if")) is not null
                 &&
@@ -4824,23 +4745,37 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 &&
                 (block = rule_Block()) is not null
                 &&
+                (elif_statement_Star = _RepeatHelper_elif_statement_Star()) is not null
+                &&
                 ((else_block = rule_ElseBlock()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("'if' NamedExpression ':' Block -ElseBlock");
-                _res = new IfMaybeElseStatementNode()
+                base.LogAlternativeSucceed("'if' NamedExpression ':' Block ElifStatement* -ElseBlock");
+                _res = new IfStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         named_expression,
                         colon,
                         block,
+                        elif_statement_Star,
                         else_block ?? VoidNode.Instance,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'if' NamedExpression ':' Block -ElseBlock");
+            base.LogAlternativeFailed("'if' NamedExpression ':' Block ElifStatement* -ElseBlock");
+            NodeArray<ElifStatementNode>? _RepeatHelper_elif_statement_Star()
+            {
+                ElifStatementNode? _node = rule_ElifStatement();
+                if (_node == null) return [];
+                global::System.Collections.Generic.List<ElifStatementNode> _result = [_node];
+                while ((_node = rule_ElifStatement()) != null)
+                {
+                    _result.Add(_node);
+                }
+                return [.. _result];
+            }
         }
         base.Reset(_mark);
         base.LogRuleFailed("IfStatement");
@@ -4852,9 +4787,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // IfStatement
 
     #region ElifStatement
-    // ElifStatement:
-    //     | 'elif' NamedExpression ':' Block ElifStatement -> ElifElifStatement(Condition=named_expression, Block=block, Elif=elif_statement)
-    //     | 'elif' NamedExpression ':' Block -ElseBlock -> ElifMaybeElseStatement(Condition=named_expression, Block=block, Else=else_block)
+    // ElifStatement: 'elif' NamedExpression ':' Block -> new(Condition=named_expression, Block=block)
     ElifStatementNode? rule_ElifStatement()
     {
         base.LogIncreaseLevel();
@@ -4862,13 +4795,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ElifStatementNode? _res = null;
         {
-            // 'elif' NamedExpression ':' Block ElifStatement -> ElifElifStatement(Condition=named_expression, Block=block, Elif=elif_statement)
-            base.LogAlternativeEntered("'elif' NamedExpression ':' Block ElifStatement");
+            // 'elif' NamedExpression ':' Block -> new(Condition=named_expression, Block=block)
+            base.LogAlternativeEntered("'elif' NamedExpression ':' Block");
             IGreenNode? _string_token;
             IGreenNode? named_expression;
             IGreenNode? colon;
             IGreenNode? block;
-            IGreenNode? elif_statement;
             if ((_string_token = Expect("elif")) is not null
                 &&
                 (named_expression = rule_NamedExpression()) is not null
@@ -4876,59 +4808,21 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
                 (block = rule_Block()) is not null
-                &&
-                (elif_statement = rule_ElifStatement()) is not null
             )
             {
-                base.LogAlternativeSucceed("'elif' NamedExpression ':' Block ElifStatement");
-                _res = new ElifElifStatementNode()
+                base.LogAlternativeSucceed("'elif' NamedExpression ':' Block");
+                _res = new ElifStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         named_expression,
                         colon,
                         block,
-                        elif_statement,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'elif' NamedExpression ':' Block ElifStatement");
-        }
-        base.Reset(_mark);
-        {
-            // 'elif' NamedExpression ':' Block -ElseBlock -> ElifMaybeElseStatement(Condition=named_expression, Block=block, Else=else_block)
-            base.LogAlternativeEntered("'elif' NamedExpression ':' Block -ElseBlock");
-            IGreenNode? _string_token;
-            IGreenNode? named_expression;
-            IGreenNode? colon;
-            IGreenNode? block;
-            IGreenNode? else_block;
-            if ((_string_token = Expect("elif")) is not null
-                &&
-                (named_expression = rule_NamedExpression()) is not null
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-                &&
-                ((else_block = rule_ElseBlock()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("'elif' NamedExpression ':' Block -ElseBlock");
-                _res = new ElifMaybeElseStatementNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        named_expression,
-                        colon,
-                        block,
-                        else_block ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'elif' NamedExpression ':' Block -ElseBlock");
+            base.LogAlternativeFailed("'elif' NamedExpression ':' Block");
         }
         base.Reset(_mark);
         base.LogRuleFailed("ElifStatement");
@@ -5035,11 +4929,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ForStatement
     // ForStatement:
-    //     | 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock -> NormalForStatement(
-    //         Targets=star_targets, Expression=star_expressions, Block=block, Else=else_block)
+    //     | 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
+    //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
     //
-    //     | 'async' 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock -> AsyncForStatement(
-    //         Targets=star_targets, Expression=star_expressions, Block=block, Else=else_block)
+    //     | 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
+    //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
     //
     //
     //
@@ -5051,25 +4945,25 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         ForStatementNode? _res = null;
         bool _cut = false;
         {
-            // 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock -> NormalForStatement(
-            //         Targets=star_targets, Expression=star_expressions, Block=block, Else=else_block)
-            base.LogAlternativeEntered("'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock");
+            // 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
+            //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
+            base.LogAlternativeEntered("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
             IGreenNode? _string_token;
-            IGreenNode? star_targets;
+            IGreenNode? assignment_target_variant;
             IGreenNode? _string_token1;
-            IGreenNode? star_expressions;
+            IGreenNode? star_expression_variant;
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? else_block;
             if ((_string_token = Expect("for")) is not null
                 &&
-                (star_targets = rule_StarTargets()) is not null
+                (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
                 (_string_token1 = Expect("in")) is not null
                 &&
                 (_cut = true)
                 &&
-                (star_expressions = rule_StarExpressions()) is not null
+                (star_expression_variant = rule_StarExpressionVariant()) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -5078,14 +4972,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 ((else_block = rule_ElseBlock()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock");
+                base.LogAlternativeSucceed("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
                 _res = new NormalForStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
-                        star_targets,
+                        assignment_target_variant,
                         _string_token1,
-                        star_expressions,
+                        star_expression_variant,
                         colon,
                         block,
                         else_block ?? VoidNode.Instance,
@@ -5093,7 +4987,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock");
+            base.LogAlternativeFailed("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
         }
         base.Reset(_mark);
         if (_cut)
@@ -5102,14 +4996,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             goto _Return;
         }
         {
-            // 'async' 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock -> AsyncForStatement(
-            //         Targets=star_targets, Expression=star_expressions, Block=block, Else=else_block)
-            base.LogAlternativeEntered("'async' 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock");
+            // 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
+            //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
+            base.LogAlternativeEntered("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
             IGreenNode? _string_token;
             IGreenNode? _string_token1;
-            IGreenNode? star_targets;
+            IGreenNode? assignment_target_variant;
             IGreenNode? _string_token2;
-            IGreenNode? star_expressions;
+            IGreenNode? star_expression_variant;
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? else_block;
@@ -5117,13 +5011,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 &&
                 (_string_token1 = Expect("for")) is not null
                 &&
-                (star_targets = rule_StarTargets()) is not null
+                (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
                 (_string_token2 = Expect("in")) is not null
                 &&
                 (_cut = true)
                 &&
-                (star_expressions = rule_StarExpressions()) is not null
+                (star_expression_variant = rule_StarExpressionVariant()) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -5132,15 +5026,15 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 ((else_block = rule_ElseBlock()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("'async' 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock");
+                base.LogAlternativeSucceed("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
                 _res = new AsyncForStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         _string_token1,
-                        star_targets,
+                        assignment_target_variant,
                         _string_token2,
-                        star_expressions,
+                        star_expression_variant,
                         colon,
                         block,
                         else_block ?? VoidNode.Instance,
@@ -5148,7 +5042,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'async' 'for' StarTargets 'in' ~ StarExpressions ':' Block -ElseBlock");
+            base.LogAlternativeFailed("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
         }
         base.Reset(_mark);
         if (_cut)
@@ -5430,7 +5324,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region WithItem
     // WithItem:
-    //     | Expression 'as' StarTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=star_target)
+    //     | Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=assignment_target)
     //     | Expression -> PlainWithItem(Expression=expression)
     //
     //
@@ -5442,32 +5336,32 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         WithItemNode? _res = null;
         {
-            // Expression 'as' StarTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=star_target)
-            base.LogAlternativeEntered("Expression 'as' StarTarget &(@inline ',' | ')' | ':')");
+            // Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=assignment_target)
+            base.LogAlternativeEntered("Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':')");
             IGreenNode? expression;
             IGreenNode? _string_token;
-            IGreenNode? star_target;
+            IGreenNode? assignment_target;
             if ((expression = rule_Expression()) is not null
                 &&
                 (_string_token = Expect("as")) is not null
                 &&
-                (star_target = rule_StarTarget()) is not null
+                (assignment_target = rule_AssignmentTarget()) is not null
                 &&
                 _LookaheadHelper__token_inline_group5()
             )
             {
-                base.LogAlternativeSucceed("Expression 'as' StarTarget &(@inline ',' | ')' | ':')");
+                base.LogAlternativeSucceed("Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':')");
                 _res = new NamedWithItemNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         expression,
                         _string_token,
-                        star_target,
+                        assignment_target,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("Expression 'as' StarTarget &(@inline ',' | ')' | ':')");
+            base.LogAlternativeFailed("Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':')");
             bool _LookaheadHelper__token_inline_group5()
             {
                 int _mark = base.Mark();
@@ -6626,6 +6520,61 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // YieldExpression
+
+    #region StarExpressionVariant
+    // @union
+    // StarExpressionVariant:
+    //     | StarExpression !','
+    //     | StarExpressions
+    IStarExpressionVariantNode? rule_StarExpressionVariant()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("StarExpressionVariant");
+        int _mark = base.Mark();
+        IStarExpressionVariantNode? _res = null;
+        {
+            // StarExpression !','
+            base.LogAlternativeEntered("StarExpression !','");
+            IGreenNode? star_expression;
+            if ((star_expression = rule_StarExpression()) is not null
+                &&
+                _LookaheadHelper_comma()
+            )
+            {
+                base.LogAlternativeSucceed("StarExpression !','");
+                _res = (IStarExpressionNode?)star_expression;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("StarExpression !','");
+            bool _LookaheadHelper_comma()
+            {
+                int _mark = base.Mark();
+                bool _wasParsed = Expect(TokenType.Comma) != null;
+                base.Reset(_mark);
+                return _wasParsed == false;
+            }
+        }
+        base.Reset(_mark);
+        {
+            // StarExpressions
+            base.LogAlternativeEntered("StarExpressions");
+            IGreenNode? star_expressions;
+            if ((star_expressions = rule_StarExpressions()) is not null)
+            {
+                base.LogAlternativeSucceed("StarExpressions");
+                _res = (StarExpressionsNode?)star_expressions;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("StarExpressions");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("StarExpressionVariant");
+    _Return:
+        base.LogRuleExiting("StarExpressionVariant");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // StarExpressionVariant
 
     #region StarExpressions
     // StarExpressions: StarExpression+.',' -',' -> new(Values=star_expression_Gather)
@@ -10870,11 +10819,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ForIfClause
     // ForIfClause:
-    //     | 'async' 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
-    //         Variables=star_targets, Iterable=disjunction, Conditions=if_clause_Star)
+    //     | 'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
+    //         Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
     //
-    //     | 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
-    //         Variables=star_targets, Iterable=disjunction, Conditions=if_clause_Star)
+    //     | 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
+    //         Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
     ForIfClauseNode? rule_ForIfClause()
     {
         base.LogIncreaseLevel();
@@ -10883,12 +10832,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         ForIfClauseNode? _res = null;
         bool _cut = false;
         {
-            // 'async' 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
-            //         Variables=star_targets, Iterable=disjunction, Conditions=if_clause_Star)
-            base.LogAlternativeEntered("'async' 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
+            // 'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
+            //         Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
+            base.LogAlternativeEntered("'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
             IGreenNode? _string_token;
             IGreenNode? _string_token1;
-            IGreenNode? star_targets;
+            IGreenNode? assignment_target_variant;
             IGreenNode? _string_token2;
             IGreenNode? disjunction;
             INodeArray<IfClauseNode>? if_clause_Star;
@@ -10896,7 +10845,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 &&
                 (_string_token1 = Expect("for")) is not null
                 &&
-                (star_targets = rule_StarTargets()) is not null
+                (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
                 (_string_token2 = Expect("in")) is not null
                 &&
@@ -10907,13 +10856,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 (if_clause_Star = _RepeatHelper_if_clause_Star()) is not null
             )
             {
-                base.LogAlternativeSucceed("'async' 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
+                base.LogAlternativeSucceed("'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
                 _res = new AsyncForIfClauseNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         _string_token1,
-                        star_targets,
+                        assignment_target_variant,
                         _string_token2,
                         disjunction,
                         if_clause_Star,
@@ -10921,7 +10870,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'async' 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
+            base.LogAlternativeFailed("'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
             NodeArray<IfClauseNode>? _RepeatHelper_if_clause_Star()
             {
                 IfClauseNode? _node = rule_IfClause();
@@ -10941,17 +10890,17 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             goto _Return;
         }
         {
-            // 'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
-            //         Variables=star_targets, Iterable=disjunction, Conditions=if_clause_Star)
-            base.LogAlternativeEntered("'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
+            // 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
+            //         Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
+            base.LogAlternativeEntered("'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
             IGreenNode? _string_token;
-            IGreenNode? star_targets;
+            IGreenNode? assignment_target_variant;
             IGreenNode? _string_token1;
             IGreenNode? disjunction;
             INodeArray<IfClauseNode>? if_clause_Star;
             if ((_string_token = Expect("for")) is not null
                 &&
-                (star_targets = rule_StarTargets()) is not null
+                (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
                 (_string_token1 = Expect("in")) is not null
                 &&
@@ -10962,12 +10911,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 (if_clause_Star = _RepeatHelper_if_clause_Star()) is not null
             )
             {
-                base.LogAlternativeSucceed("'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
+                base.LogAlternativeSucceed("'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
                 _res = new NormalForIfClauseNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
-                        star_targets,
+                        assignment_target_variant,
                         _string_token1,
                         disjunction,
                         if_clause_Star,
@@ -10975,7 +10924,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'for' StarTargets 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
+            base.LogAlternativeFailed("'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
             NodeArray<IfClauseNode>? _RepeatHelper_if_clause_Star()
             {
                 IfClauseNode? _node = rule_IfClause();
@@ -11925,35 +11874,31 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // Kwarg
 
-    #region StarTargets
-    // StarTargets:
-    //     | StarTarget !','
-    //     | StarTarget+.',' -','
-    StarTargetsNode? rule_StarTargets()
+    #region AssignmentTargetVariant
+    // @union
+    // AssignmentTargetVariant:
+    //     | AssignmentTarget !','
+    //     | AssignmentTargets
+    IAssignmentTargetVariantNode? rule_AssignmentTargetVariant()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("StarTargets");
+        base.LogRuleEntered("AssignmentTargetVariant");
         int _mark = base.Mark();
-        StarTargetsNode? _res = null;
+        IAssignmentTargetVariantNode? _res = null;
         {
-            // StarTarget !','
-            base.LogAlternativeEntered("StarTarget !','");
-            IGreenNode? star_target;
-            if ((star_target = rule_StarTarget()) is not null
+            // AssignmentTarget !','
+            base.LogAlternativeEntered("AssignmentTarget !','");
+            IGreenNode? assignment_target;
+            if ((assignment_target = rule_AssignmentTarget()) is not null
                 &&
                 _LookaheadHelper_comma()
             )
             {
-                base.LogAlternativeSucceed("StarTarget !','");
-                _res = new StarTargets_Derived0Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        star_target,
-                    ]),
-                };
+                base.LogAlternativeSucceed("AssignmentTarget !','");
+                _res = (IAssignmentTargetNode?)assignment_target;
                 goto _Return;
             }
-            base.LogAlternativeFailed("StarTarget !','");
+            base.LogAlternativeFailed("AssignmentTarget !','");
             bool _LookaheadHelper_comma()
             {
                 int _mark = base.Mark();
@@ -11964,29 +11909,58 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // StarTarget+.',' -','
-            base.LogAlternativeEntered("StarTarget+.',' -','");
-            INodeArray<GreenNode>? star_target_Gather;
+            // AssignmentTargets
+            base.LogAlternativeEntered("AssignmentTargets");
+            IGreenNode? assignment_targets;
+            if ((assignment_targets = rule_AssignmentTargets()) is not null)
+            {
+                base.LogAlternativeSucceed("AssignmentTargets");
+                _res = (AssignmentTargetsNode?)assignment_targets;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("AssignmentTargets");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("AssignmentTargetVariant");
+    _Return:
+        base.LogRuleExiting("AssignmentTargetVariant");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // AssignmentTargetVariant
+
+    #region AssignmentTargets
+    // AssignmentTargets: AssignmentTarget+.',' -',' -> new(Targets=assignment_target_Gather)
+    AssignmentTargetsNode? rule_AssignmentTargets()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("AssignmentTargets");
+        int _mark = base.Mark();
+        AssignmentTargetsNode? _res = null;
+        {
+            // AssignmentTarget+.',' -',' -> new(Targets=assignment_target_Gather)
+            base.LogAlternativeEntered("AssignmentTarget+.',' -','");
+            INodeArray<GreenNode>? assignment_target_Gather;
             IGreenNode? comma;
-            if ((star_target_Gather = _GatherHelper_star_target_Gather()) is not null
+            if ((assignment_target_Gather = _GatherHelper_assignment_target_Gather()) is not null
                 &&
                 ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("StarTarget+.',' -','");
-                _res = new StarTargets_Derived1Node()
+                base.LogAlternativeSucceed("AssignmentTarget+.',' -','");
+                _res = new AssignmentTargetsNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        star_target_Gather,
+                        assignment_target_Gather,
                         comma ?? VoidNode.Instance,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("StarTarget+.',' -','");
-            NodeArray<GreenNode>? _GatherHelper_star_target_Gather()
+            base.LogAlternativeFailed("AssignmentTarget+.',' -','");
+            NodeArray<GreenNode>? _GatherHelper_assignment_target_Gather()
             {
-                GreenNode? _node = rule_StarTarget();
+                IGreenNode? _node = rule_AssignmentTarget();
                 GreenNode? _separator;
                 if (_node == null) return null;
                 global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
@@ -11995,7 +11969,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                     int _mark = base.Mark();
                     _separator = Expect(TokenType.Comma);
                     if (_separator == null) break;
-                    _node = rule_StarTarget();
+                    _node = rule_AssignmentTarget();
                     if (_node == null)
                     {
                         base.Reset(_mark);
@@ -12008,86 +11982,167 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
-        base.LogRuleFailed("StarTargets");
+        base.LogRuleFailed("AssignmentTargets");
     _Return:
-        base.LogRuleExiting("StarTargets");
+        base.LogRuleExiting("AssignmentTargets");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // StarTargets
+    #endregion // AssignmentTargets
 
-    #region StarTarget
-    // StarTarget:
-    //     | '*' TargetWithStarAtom -> ActuallyStarTarget(Target=target_with_star_atom)
-    //     | TargetWithStarAtom -> NotStarTarget(Target=target_with_star_atom)
-    StarTargetNode? rule_StarTarget()
+    #region AssignmentTarget
+    // @union
+    // AssignmentTarget:
+    //     | StarredAssignmentTarget
+    //     | AssignmentTargetUnit
+    IAssignmentTargetNode? rule_AssignmentTarget()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("StarTarget");
+        base.LogRuleEntered("AssignmentTarget");
         int _mark = base.Mark();
-        StarTargetNode? _res = null;
+        IAssignmentTargetNode? _res = null;
         {
-            // '*' TargetWithStarAtom -> ActuallyStarTarget(Target=target_with_star_atom)
-            base.LogAlternativeEntered("'*' TargetWithStarAtom");
+            // StarredAssignmentTarget
+            base.LogAlternativeEntered("StarredAssignmentTarget");
+            IGreenNode? starred_assignment_target;
+            if ((starred_assignment_target = rule_StarredAssignmentTarget()) is not null)
+            {
+                base.LogAlternativeSucceed("StarredAssignmentTarget");
+                _res = (StarredAssignmentTargetNode?)starred_assignment_target;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("StarredAssignmentTarget");
+        }
+        base.Reset(_mark);
+        {
+            // AssignmentTargetUnit
+            base.LogAlternativeEntered("AssignmentTargetUnit");
+            IGreenNode? assignment_target_unit;
+            if ((assignment_target_unit = rule_AssignmentTargetUnit()) is not null)
+            {
+                base.LogAlternativeSucceed("AssignmentTargetUnit");
+                _res = (IAssignmentTargetUnitNode?)assignment_target_unit;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("AssignmentTargetUnit");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("AssignmentTarget");
+    _Return:
+        base.LogRuleExiting("AssignmentTarget");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // AssignmentTarget
+
+    #region StarredAssignmentTarget
+    // StarredAssignmentTarget: '*' AssignmentTargetUnit -> new(Target=assignment_target_unit)
+    StarredAssignmentTargetNode? rule_StarredAssignmentTarget()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("StarredAssignmentTarget");
+        int _mark = base.Mark();
+        StarredAssignmentTargetNode? _res = null;
+        {
+            // '*' AssignmentTargetUnit -> new(Target=assignment_target_unit)
+            base.LogAlternativeEntered("'*' AssignmentTargetUnit");
             IGreenNode? star;
-            IGreenNode? target_with_star_atom;
+            IGreenNode? assignment_target_unit;
             if ((star = Expect(TokenType.Star)) is not null
                 &&
-                (target_with_star_atom = rule_TargetWithStarAtom()) is not null
+                (assignment_target_unit = rule_AssignmentTargetUnit()) is not null
             )
             {
-                base.LogAlternativeSucceed("'*' TargetWithStarAtom");
-                _res = new ActuallyStarTargetNode()
+                base.LogAlternativeSucceed("'*' AssignmentTargetUnit");
+                _res = new StarredAssignmentTargetNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         star,
-                        target_with_star_atom,
+                        assignment_target_unit,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'*' TargetWithStarAtom");
+            base.LogAlternativeFailed("'*' AssignmentTargetUnit");
         }
         base.Reset(_mark);
-        {
-            // TargetWithStarAtom -> NotStarTarget(Target=target_with_star_atom)
-            base.LogAlternativeEntered("TargetWithStarAtom");
-            IGreenNode? target_with_star_atom;
-            if ((target_with_star_atom = rule_TargetWithStarAtom()) is not null)
-            {
-                base.LogAlternativeSucceed("TargetWithStarAtom");
-                _res = new NotStarTargetNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        target_with_star_atom,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("TargetWithStarAtom");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("StarTarget");
+        base.LogRuleFailed("StarredAssignmentTarget");
     _Return:
-        base.LogRuleExiting("StarTarget");
+        base.LogRuleExiting("StarredAssignmentTarget");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // StarTarget
+    #endregion // StarredAssignmentTarget
 
-    #region TargetWithStarAtom
-    // TargetWithStarAtom:
-    //     | TargetPrimary '.' Name !TargetPrimaryContinuation -> DottedStarTarget(Left=target_primary, Right=name)
-    //     | TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> SubscriptStarTarget(Primary=target_primary, Subscript=slices)
-    //     | StarAtom -> SingleStarTarget(Atom=star_atom)
-    TargetWithStarAtomNode? rule_TargetWithStarAtom()
+    #region AssignmentTargetUnit
+    // @union
+    // AssignmentTargetUnit:
+    //     | DottedTargetUnit
+    //     | SubscriptTargetUnit
+    //     | AssignmentTargetAtom
+    IAssignmentTargetUnitNode? rule_AssignmentTargetUnit()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("TargetWithStarAtom");
+        base.LogRuleEntered("AssignmentTargetUnit");
         int _mark = base.Mark();
-        TargetWithStarAtomNode? _res = null;
+        IAssignmentTargetUnitNode? _res = null;
         {
-            // TargetPrimary '.' Name !TargetPrimaryContinuation -> DottedStarTarget(Left=target_primary, Right=name)
+            // DottedTargetUnit
+            base.LogAlternativeEntered("DottedTargetUnit");
+            IGreenNode? dotted_target_unit;
+            if ((dotted_target_unit = rule_DottedTargetUnit()) is not null)
+            {
+                base.LogAlternativeSucceed("DottedTargetUnit");
+                _res = (DottedTargetUnitNode?)dotted_target_unit;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("DottedTargetUnit");
+        }
+        base.Reset(_mark);
+        {
+            // SubscriptTargetUnit
+            base.LogAlternativeEntered("SubscriptTargetUnit");
+            IGreenNode? subscript_target_unit;
+            if ((subscript_target_unit = rule_SubscriptTargetUnit()) is not null)
+            {
+                base.LogAlternativeSucceed("SubscriptTargetUnit");
+                _res = (SubscriptTargetUnitNode?)subscript_target_unit;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("SubscriptTargetUnit");
+        }
+        base.Reset(_mark);
+        {
+            // AssignmentTargetAtom
+            base.LogAlternativeEntered("AssignmentTargetAtom");
+            IGreenNode? assignment_target_atom;
+            if ((assignment_target_atom = rule_AssignmentTargetAtom()) is not null)
+            {
+                base.LogAlternativeSucceed("AssignmentTargetAtom");
+                _res = (AssignmentTargetAtomNode?)assignment_target_atom;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("AssignmentTargetAtom");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("AssignmentTargetUnit");
+    _Return:
+        base.LogRuleExiting("AssignmentTargetUnit");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // AssignmentTargetUnit
+
+    #region DottedTargetUnit
+    // DottedTargetUnit: TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
+    DottedTargetUnitNode? rule_DottedTargetUnit()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("DottedTargetUnit");
+        int _mark = base.Mark();
+        DottedTargetUnitNode? _res = null;
+        {
+            // TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
             base.LogAlternativeEntered("TargetPrimary '.' Name !TargetPrimaryContinuation");
             IGreenNode? target_primary;
             IGreenNode? dot;
@@ -12102,7 +12157,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("TargetPrimary '.' Name !TargetPrimaryContinuation");
-                _res = new DottedStarTargetNode()
+                _res = new DottedTargetUnitNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         target_primary,
@@ -12122,8 +12177,24 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
+        base.LogRuleFailed("DottedTargetUnit");
+    _Return:
+        base.LogRuleExiting("DottedTargetUnit");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // DottedTargetUnit
+
+    #region SubscriptTargetUnit
+    // SubscriptTargetUnit: TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Primary=target_primary, Subscript=slices)
+    SubscriptTargetUnitNode? rule_SubscriptTargetUnit()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("SubscriptTargetUnit");
+        int _mark = base.Mark();
+        SubscriptTargetUnitNode? _res = null;
         {
-            // TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> SubscriptStarTarget(Primary=target_primary, Subscript=slices)
+            // TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Primary=target_primary, Subscript=slices)
             base.LogAlternativeEntered("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
             IGreenNode? target_primary;
             IGreenNode? left_square_bracket;
@@ -12141,7 +12212,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
-                _res = new SubscriptStarTargetNode()
+                _res = new SubscriptTargetUnitNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         target_primary,
@@ -12162,52 +12233,34 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
-        {
-            // StarAtom -> SingleStarTarget(Atom=star_atom)
-            base.LogAlternativeEntered("StarAtom");
-            IGreenNode? star_atom;
-            if ((star_atom = rule_StarAtom()) is not null)
-            {
-                base.LogAlternativeSucceed("StarAtom");
-                _res = new SingleStarTargetNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        star_atom,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("StarAtom");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("TargetWithStarAtom");
+        base.LogRuleFailed("SubscriptTargetUnit");
     _Return:
-        base.LogRuleExiting("TargetWithStarAtom");
+        base.LogRuleExiting("SubscriptTargetUnit");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // TargetWithStarAtom
+    #endregion // SubscriptTargetUnit
 
-    #region StarAtom
-    // StarAtom:
-    //     | Name -> NameStarAtom(Value=name)
-    //
-    //     | '(' -StarTargetSequence ')' -> TupleStarAtom(Items=star_target_sequence)
-    //     | '[' -StarTargetSequence ']' -> ListStarAtom(Items=star_target_sequence)
-    StarAtomNode? rule_StarAtom()
+    #region AssignmentTargetAtom
+    // AssignmentTargetAtom:
+    //     | Name -> NameTargetAtom(Value=name)
+    //     | '(' AssignmentTargetUnit ')' -> GroupedTargetAtom(Target=assignment_target_unit)
+    //     | '(' -AssignmentTargets ')' -> TupleTargetAtom(Items=assignment_targets)
+    //     | '[' -AssignmentTargets ']' -> ListTargetAtom(Items=assignment_targets)
+    AssignmentTargetAtomNode? rule_AssignmentTargetAtom()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("StarAtom");
+        base.LogRuleEntered("AssignmentTargetAtom");
         int _mark = base.Mark();
-        StarAtomNode? _res = null;
+        AssignmentTargetAtomNode? _res = null;
         {
-            // Name -> NameStarAtom(Value=name)
+            // Name -> NameTargetAtom(Value=name)
             base.LogAlternativeEntered("Name");
             IGreenNode? name;
             if ((name = Expect(TokenType.Name)) is not null)
             {
                 base.LogAlternativeSucceed("Name");
-                _res = new NameStarAtomNode()
+                _res = new NameTargetAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         name,
@@ -12219,133 +12272,99 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // '(' -StarTargetSequence ')' -> TupleStarAtom(Items=star_target_sequence)
-            base.LogAlternativeEntered("'(' -StarTargetSequence ')'");
+            // '(' AssignmentTargetUnit ')' -> GroupedTargetAtom(Target=assignment_target_unit)
+            base.LogAlternativeEntered("'(' AssignmentTargetUnit ')'");
             IGreenNode? left_paren;
-            IGreenNode? star_target_sequence;
+            IGreenNode? assignment_target_unit;
             IGreenNode? right_paren;
             if ((left_paren = Expect(TokenType.LeftParen)) is not null
                 &&
-                ((star_target_sequence = rule_StarTargetSequence()) is not null || true) // Optional
+                (assignment_target_unit = rule_AssignmentTargetUnit()) is not null
                 &&
                 (right_paren = Expect(TokenType.RightParen)) is not null
             )
             {
-                base.LogAlternativeSucceed("'(' -StarTargetSequence ')'");
-                _res = new TupleStarAtomNode()
+                base.LogAlternativeSucceed("'(' AssignmentTargetUnit ')'");
+                _res = new GroupedTargetAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         left_paren,
-                        star_target_sequence ?? VoidNode.Instance,
+                        assignment_target_unit,
                         right_paren,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'(' -StarTargetSequence ')'");
+            base.LogAlternativeFailed("'(' AssignmentTargetUnit ')'");
         }
         base.Reset(_mark);
         {
-            // '[' -StarTargetSequence ']' -> ListStarAtom(Items=star_target_sequence)
-            base.LogAlternativeEntered("'[' -StarTargetSequence ']'");
+            // '(' -AssignmentTargets ')' -> TupleTargetAtom(Items=assignment_targets)
+            base.LogAlternativeEntered("'(' -AssignmentTargets ')'");
+            IGreenNode? left_paren;
+            IGreenNode? assignment_targets;
+            IGreenNode? right_paren;
+            if ((left_paren = Expect(TokenType.LeftParen)) is not null
+                &&
+                ((assignment_targets = rule_AssignmentTargets()) is not null || true) // Optional
+                &&
+                (right_paren = Expect(TokenType.RightParen)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("'(' -AssignmentTargets ')'");
+                _res = new TupleTargetAtomNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        left_paren,
+                        assignment_targets ?? VoidNode.Instance,
+                        right_paren,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'(' -AssignmentTargets ')'");
+        }
+        base.Reset(_mark);
+        {
+            // '[' -AssignmentTargets ']' -> ListTargetAtom(Items=assignment_targets)
+            base.LogAlternativeEntered("'[' -AssignmentTargets ']'");
             IGreenNode? left_square_bracket;
-            IGreenNode? star_target_sequence;
+            IGreenNode? assignment_targets;
             IGreenNode? right_square_bracket;
             if ((left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
                 &&
-                ((star_target_sequence = rule_StarTargetSequence()) is not null || true) // Optional
+                ((assignment_targets = rule_AssignmentTargets()) is not null || true) // Optional
                 &&
                 (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
             )
             {
-                base.LogAlternativeSucceed("'[' -StarTargetSequence ']'");
-                _res = new ListStarAtomNode()
+                base.LogAlternativeSucceed("'[' -AssignmentTargets ']'");
+                _res = new ListTargetAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         left_square_bracket,
-                        star_target_sequence ?? VoidNode.Instance,
+                        assignment_targets ?? VoidNode.Instance,
                         right_square_bracket,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'[' -StarTargetSequence ']'");
+            base.LogAlternativeFailed("'[' -AssignmentTargets ']'");
         }
         base.Reset(_mark);
-        base.LogRuleFailed("StarAtom");
+        base.LogRuleFailed("AssignmentTargetAtom");
     _Return:
-        base.LogRuleExiting("StarAtom");
+        base.LogRuleExiting("AssignmentTargetAtom");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // StarAtom
-
-    #region StarTargetSequence
-    // StarTargetSequence: StarTarget+.',' -',' -> new(Items=star_target_Gather)
-    StarTargetSequenceNode? rule_StarTargetSequence()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("StarTargetSequence");
-        int _mark = base.Mark();
-        StarTargetSequenceNode? _res = null;
-        {
-            // StarTarget+.',' -',' -> new(Items=star_target_Gather)
-            base.LogAlternativeEntered("StarTarget+.',' -','");
-            INodeArray<GreenNode>? star_target_Gather;
-            IGreenNode? comma;
-            if ((star_target_Gather = _GatherHelper_star_target_Gather()) is not null
-                &&
-                ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("StarTarget+.',' -','");
-                _res = new StarTargetSequenceNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        star_target_Gather,
-                        comma ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("StarTarget+.',' -','");
-            NodeArray<GreenNode>? _GatherHelper_star_target_Gather()
-            {
-                GreenNode? _node = rule_StarTarget();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_StarTarget();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("StarTargetSequence");
-    _Return:
-        base.LogRuleExiting("StarTargetSequence");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // StarTargetSequence
+    #endregion // AssignmentTargetAtom
 
     #region SingleTarget
     // SingleTarget:
-    //     | SingleSubscriptAttributeTarget -> SubscriptSingleTarget(Value=single_subscript_attribute_target)
+    //     | SingleSubscriptAttributeTarget -> CompositeSingleTarget(Value=single_subscript_attribute_target)
     //     | Name -> NameSingleTarget(Value=name)
-    //
+    //     | '(' SingleTarget ')' -> GroupedTarget(Target=single_target)
     SingleTargetNode? rule_SingleTarget()
     {
         base.LogIncreaseLevel();
@@ -12353,13 +12372,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         SingleTargetNode? _res = null;
         {
-            // SingleSubscriptAttributeTarget -> SubscriptSingleTarget(Value=single_subscript_attribute_target)
+            // SingleSubscriptAttributeTarget -> CompositeSingleTarget(Value=single_subscript_attribute_target)
             base.LogAlternativeEntered("SingleSubscriptAttributeTarget");
             IGreenNode? single_subscript_attribute_target;
             if ((single_subscript_attribute_target = rule_SingleSubscriptAttributeTarget()) is not null)
             {
                 base.LogAlternativeSucceed("SingleSubscriptAttributeTarget");
-                _res = new SubscriptSingleTargetNode()
+                _res = new CompositeSingleTargetNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         single_subscript_attribute_target,
@@ -12386,6 +12405,33 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("Name");
+        }
+        base.Reset(_mark);
+        {
+            // '(' SingleTarget ')' -> GroupedTarget(Target=single_target)
+            base.LogAlternativeEntered("'(' SingleTarget ')'");
+            IGreenNode? left_paren;
+            IGreenNode? single_target;
+            IGreenNode? right_paren;
+            if ((left_paren = Expect(TokenType.LeftParen)) is not null
+                &&
+                (single_target = rule_SingleTarget()) is not null
+                &&
+                (right_paren = Expect(TokenType.RightParen)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("'(' SingleTarget ')'");
+                _res = new GroupedTargetNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        left_paren,
+                        single_target,
+                        right_paren,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'(' SingleTarget ')'");
         }
         base.Reset(_mark);
         base.LogRuleFailed("SingleTarget");
@@ -12791,7 +12837,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // DeleteTarget:
     //     | TargetPrimary '.' Name !TargetPrimaryContinuation -> DeleteAttributeTarget(Primary=target_primary, AttributeName=name)
     //     | TargetPrimary '[' Slices ']' &TargetPrimaryContinuation -> DeleteSubscriptTarget(Primary=target_primary, Subscript=slices)
-    //     | DeleteTargetAtom -> DeleteAtomTarget(Value=delete_target_atom)
+    //     | Name -> DeleteAtomTarget(Value=name)
+    //
+    //
     DeleteTargetNode? rule_DeleteTarget()
     {
         base.LogIncreaseLevel();
@@ -12882,21 +12930,21 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // DeleteTargetAtom -> DeleteAtomTarget(Value=delete_target_atom)
-            base.LogAlternativeEntered("DeleteTargetAtom");
-            IGreenNode? delete_target_atom;
-            if ((delete_target_atom = rule_DeleteTargetAtom()) is not null)
+            // Name -> DeleteAtomTarget(Value=name)
+            base.LogAlternativeEntered("Name");
+            IGreenNode? name;
+            if ((name = Expect(TokenType.Name)) is not null)
             {
-                base.LogAlternativeSucceed("DeleteTargetAtom");
+                base.LogAlternativeSucceed("Name");
                 _res = new DeleteAtomTargetNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        delete_target_atom,
+                        name,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("DeleteTargetAtom");
+            base.LogAlternativeFailed("Name");
         }
         base.Reset(_mark);
         base.LogRuleFailed("DeleteTarget");
@@ -12908,38 +12956,4 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // DeleteTarget
-
-    #region DeleteTargetAtom
-    // DeleteTargetAtom: Name -> new(Value=name)
-    DeleteTargetAtomNode? rule_DeleteTargetAtom()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("DeleteTargetAtom");
-        int _mark = base.Mark();
-        DeleteTargetAtomNode? _res = null;
-        {
-            // Name -> new(Value=name)
-            base.LogAlternativeEntered("Name");
-            IGreenNode? name;
-            if ((name = Expect(TokenType.Name)) is not null)
-            {
-                base.LogAlternativeSucceed("Name");
-                _res = new DeleteTargetAtomNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        name,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Name");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("DeleteTargetAtom");
-    _Return:
-        base.LogRuleExiting("DeleteTargetAtom");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // DeleteTargetAtom
 }

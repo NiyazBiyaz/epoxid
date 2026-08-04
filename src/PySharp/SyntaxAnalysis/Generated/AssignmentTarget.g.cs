@@ -10,31 +10,8 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-public sealed partial record AssignmentTargetNode : GreenNode
-{
-    public StarTargetsNode Value => (StarTargetsNode)Children![0];
-    public override AssignmentTargetView GetView(int position, IRedView? parent)
-        => new AssignmentTargetView(this, position, parent);
-}
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(StarredAssignmentTargetNode), typeof(IAssignmentTargetUnitNode))]
+public partial interface IAssignmentTargetNode : IGreenNode, IAssignmentTargetVariantNode;
 
-public sealed partial class AssignmentTargetView : RedView
-{
-    public AssignmentTargetView(AssignmentTargetNode green, int position, IRedView? parent)
-        : base(green, position, parent)
-    {
-    }
-
-    private StarTargetsView? _field_value = null;
-    public StarTargetsView Value
-    {
-        get
-        {
-            if (_field_value == null)
-            {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_value = (StarTargetsView)((AssignmentTargetNode)base.Green).Value!.GetView(_positionOfField, this);
-            }
-            return (StarTargetsView)_field_value;
-        }
-    }
-}
+[global::PySharp.SyntaxAnalysis.WildUnion(typeof(StarredAssignmentTargetView), typeof(IAssignmentTargetUnitView))]
+public partial interface IAssignmentTargetView : IRedView, IAssignmentTargetVariantView;

@@ -10,15 +10,17 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(IfElifStatementNode), typeof(IfMaybeElseStatementNode))]
-public abstract partial record IfStatementNode : GreenNode, ICompoundStatementNode
+public sealed partial record IfStatementNode : GreenNode, ICompoundStatementNode
 {
     public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
     public BlockNode Block => (BlockNode)Children![3];
+    public NodeArray<ElifStatementNode> Elifs => (NodeArray<ElifStatementNode>)Children![4];
+    public ElseBlockNode? Else => Children![5] as ElseBlockNode;
+    public override IfStatementView GetView(int position, IRedView? parent)
+        => new IfStatementView(this, position, parent);
 }
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(IfElifStatementView), typeof(IfMaybeElseStatementView))]
-public abstract partial class IfStatementView : RedView, ICompoundStatementView
+public sealed partial class IfStatementView : RedView, ICompoundStatementView
 {
     public IfStatementView(IfStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
@@ -50,6 +52,34 @@ public abstract partial class IfStatementView : RedView, ICompoundStatementView
                 _field_block = (BlockView)((IfStatementNode)base.Green).Block!.GetView(_positionOfField, this);
             }
             return (BlockView)_field_block;
+        }
+    }
+
+    private ViewArray<ElifStatementView>? _field_elifs = null;
+    public ViewArray<ElifStatementView> Elifs
+    {
+        get
+        {
+            if (_field_elifs == null)
+            {
+                var _positionOfField = base.GetPositionFor(4);
+                _field_elifs = (ViewArray<ElifStatementView>)new ViewArray<ElifStatementView>(((IfStatementNode)base.Green).Elifs, _positionOfField, this);
+            }
+            return (ViewArray<ElifStatementView>)_field_elifs;
+        }
+    }
+
+    private ElseBlockView? _field_else = null;
+    public ElseBlockView? Else
+    {
+        get
+        {
+            if (_field_else == null && ((IfStatementNode)base.Green).Else != null)
+            {
+                var _positionOfField = base.GetPositionFor(5);
+                _field_else = (ElseBlockView)((IfStatementNode)base.Green).Else!.GetView(_positionOfField, this);
+            }
+            return (ElseBlockView?)_field_else;
         }
     }
 }

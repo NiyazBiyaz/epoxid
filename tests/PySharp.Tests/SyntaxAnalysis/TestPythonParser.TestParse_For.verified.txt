@@ -1,0 +1,87 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    NormalForStatementNode {
+      Slot[0]: Token(Type: Name, RawString: `for`),
+      Slot[1]: NameTargetAtomNode {
+        Slot[0]: Token(Type: Name, RawString: `i`),
+      },
+      Slot[2]: Token(Type: Name, RawString: `in`),
+      Slot[3]: CallWithArgumentsPrimaryNode {
+        Slot[0]: AtomPrimaryNode {
+          Slot[0]: NameAtomNode {
+            Slot[0]: Token(Type: Name, RawString: `range`),
+          },
+        },
+        Slot[1]: Token(Type: LeftParen, RawString: `(`),
+        Slot[2]: ArgumentsWithPositionalNode {
+          Slot[0]: NodeArray() [
+            AtomPrimaryNode {
+              Slot[0]: NumberAtomNode {
+                Slot[0]: Token(Type: Number, RawString: `10`),
+              },
+            },
+          ],
+          Slot[1]: VoidNode(),
+          Slot[2]: VoidNode(),
+        },
+        Slot[3]: Token(Type: RightParen, RawString: `)`),
+      },
+      Slot[4]: Token(Type: Colon, RawString: `:`),
+      Slot[5]: IndentedBlockNode {
+        Slot[0]: Token(Type: NewLine, RawString: `\n`),
+        Slot[1]: Token(Type: Indent, RawString: `    `),
+        Slot[2]: NodeArray() [
+          SingleSimpleStatementNode {
+            Slot[0]: CallWithArgumentsPrimaryNode {
+              Slot[0]: AtomPrimaryNode {
+                Slot[0]: NameAtomNode {
+                  Slot[0]: Token(Type: Name, RawString: `bau`),
+                },
+              },
+              Slot[1]: Token(Type: LeftParen, RawString: `(`),
+              Slot[2]: ArgumentsWithPositionalNode {
+                Slot[0]: NodeArray() [
+                  AtomPrimaryNode {
+                    Slot[0]: NameAtomNode {
+                      Slot[0]: Token(Type: Name, RawString: `i`),
+                    },
+                  },
+                ],
+                Slot[1]: VoidNode(),
+                Slot[2]: VoidNode(),
+              },
+              Slot[3]: Token(Type: RightParen, RawString: `)`),
+            },
+            Slot[1]: Token(Type: NewLine, RawString: `\n`),
+          },
+        ],
+        Slot[3]: Token(Type: Dedent, RawString: ``),
+      },
+      Slot[6]: ElseBlockNode {
+        Slot[0]: Token(Type: Name, RawString: `else`),
+        Slot[1]: Token(Type: Colon, RawString: `:`),
+        Slot[2]: IndentedBlockNode {
+          Slot[0]: Token(Type: NewLine, RawString: `\n`),
+          Slot[1]: Token(Type: Indent, RawString: `    `),
+          Slot[2]: NodeArray() [
+            SingleSimpleStatementNode {
+              Slot[0]: CallWithArgumentsPrimaryNode {
+                Slot[0]: AtomPrimaryNode {
+                  Slot[0]: NameAtomNode {
+                    Slot[0]: Token(Type: Name, RawString: `baubau`),
+                  },
+                },
+                Slot[1]: Token(Type: LeftParen, RawString: `(`),
+                Slot[2]: VoidNode(),
+                Slot[3]: Token(Type: RightParen, RawString: `)`),
+              },
+              Slot[1]: Token(Type: NewLine, RawString: `\n`),
+            },
+          ],
+          Slot[3]: Token(Type: Dedent, RawString: ``),
+        },
+      },
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

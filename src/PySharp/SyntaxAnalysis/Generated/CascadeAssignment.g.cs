@@ -12,7 +12,7 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record CascadeAssignmentNode : AssignmentNode
 {
-    public NodeArray<AssignmentTargetNode> Targets => (NodeArray<AssignmentTargetNode>)Children![0];
+    public NodeArray<CascadeTargetNode> Targets => (NodeArray<CascadeTargetNode>)Children![0];
     public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![1];
     public override CascadeAssignmentView GetView(int position, IRedView? parent)
         => new CascadeAssignmentView(this, position, parent);
@@ -25,17 +25,17 @@ public sealed partial class CascadeAssignmentView : AssignmentView
     {
     }
 
-    private ViewArray<AssignmentTargetView>? _field_targets = null;
-    public ViewArray<AssignmentTargetView> Targets
+    private ViewArray<CascadeTargetView>? _field_targets = null;
+    public ViewArray<CascadeTargetView> Targets
     {
         get
         {
             if (_field_targets == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_targets = (ViewArray<AssignmentTargetView>)new ViewArray<AssignmentTargetView>(((CascadeAssignmentNode)base.Green).Targets, _positionOfField, this);
+                _field_targets = (ViewArray<CascadeTargetView>)new ViewArray<CascadeTargetView>(((CascadeAssignmentNode)base.Green).Targets, _positionOfField, this);
             }
-            return (ViewArray<AssignmentTargetView>)_field_targets;
+            return (ViewArray<CascadeTargetView>)_field_targets;
         }
     }
 

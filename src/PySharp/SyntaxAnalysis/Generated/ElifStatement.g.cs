@@ -10,15 +10,15 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ElifElifStatementNode), typeof(ElifMaybeElseStatementNode))]
-public abstract partial record ElifStatementNode : GreenNode
+public sealed partial record ElifStatementNode : GreenNode
 {
     public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
     public BlockNode Block => (BlockNode)Children![3];
+    public override ElifStatementView GetView(int position, IRedView? parent)
+        => new ElifStatementView(this, position, parent);
 }
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ElifElifStatementView), typeof(ElifMaybeElseStatementView))]
-public abstract partial class ElifStatementView : RedView
+public sealed partial class ElifStatementView : RedView
 {
     public ElifStatementView(ElifStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)

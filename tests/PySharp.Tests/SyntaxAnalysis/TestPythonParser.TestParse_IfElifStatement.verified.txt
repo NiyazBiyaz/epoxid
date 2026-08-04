@@ -1,0 +1,66 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    IfStatementNode {
+      Slot[0]: Token(Type: Name, RawString: `if`),
+      Slot[1]: AtomPrimaryNode {
+        Slot[0]: NameAtomNode {
+          Slot[0]: Token(Type: Name, RawString: `fluffy`),
+        },
+      },
+      Slot[2]: Token(Type: Colon, RawString: `:`),
+      Slot[3]: IndentedBlockNode {
+        Slot[0]: Token(Type: NewLine, RawString: `\n`),
+        Slot[1]: Token(Type: Indent, RawString: `    `),
+        Slot[2]: NodeArray() [
+          SingleSimpleStatementNode {
+            Slot[0]: CallWithArgumentsPrimaryNode {
+              Slot[0]: AtomPrimaryNode {
+                Slot[0]: NameAtomNode {
+                  Slot[0]: Token(Type: Name, RawString: `bau`),
+                },
+              },
+              Slot[1]: Token(Type: LeftParen, RawString: `(`),
+              Slot[2]: VoidNode(),
+              Slot[3]: Token(Type: RightParen, RawString: `)`),
+            },
+            Slot[1]: Token(Type: NewLine, RawString: `\n`),
+          },
+        ],
+        Slot[3]: Token(Type: Dedent, RawString: ``),
+      },
+      Slot[4]: NodeArray() [
+        ElifStatementNode {
+          Slot[0]: Token(Type: Name, RawString: `elif`),
+          Slot[1]: AtomPrimaryNode {
+            Slot[0]: NameAtomNode {
+              Slot[0]: Token(Type: Name, RawString: `fuzzy`),
+            },
+          },
+          Slot[2]: Token(Type: Colon, RawString: `:`),
+          Slot[3]: IndentedBlockNode {
+            Slot[0]: Token(Type: NewLine, RawString: `\n`),
+            Slot[1]: Token(Type: Indent, RawString: `    `),
+            Slot[2]: NodeArray() [
+              SingleSimpleStatementNode {
+                Slot[0]: CallWithArgumentsPrimaryNode {
+                  Slot[0]: AtomPrimaryNode {
+                    Slot[0]: NameAtomNode {
+                      Slot[0]: Token(Type: Name, RawString: `baubau`),
+                    },
+                  },
+                  Slot[1]: Token(Type: LeftParen, RawString: `(`),
+                  Slot[2]: VoidNode(),
+                  Slot[3]: Token(Type: RightParen, RawString: `)`),
+                },
+                Slot[1]: Token(Type: NewLine, RawString: `\n`),
+              },
+            ],
+            Slot[3]: Token(Type: Dedent, RawString: ``),
+          },
+        },
+      ],
+      Slot[5]: VoidNode(),
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

@@ -56,16 +56,9 @@ public partial class Interpreter
 
                 if (!fold)
                 {
-                    switch (ifStatement)
+                    if (ifStatement.Else != null)
                     {
-                        case IfMaybeElseStatementView maybeElse:
-                            if (maybeElse.Else != null)
-                                InterpretBlock(maybeElse.Else.Block);
-                            break;
-
-                        case IfElifStatementView:
-                        default:
-                            throw notImplemented(ifStatement);
+                        InterpretBlock(ifStatement.Else.Block);
                     }
                 }
 

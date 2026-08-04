@@ -12,7 +12,7 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record DeleteAtomTargetNode : DeleteTargetNode
 {
-    public DeleteTargetAtomNode Value => (DeleteTargetAtomNode)Children![0];
+    public TokenNode Value => (TokenNode)Children![0];
     public override DeleteAtomTargetView GetView(int position, IRedView? parent)
         => new DeleteAtomTargetView(this, position, parent);
 }
@@ -24,17 +24,17 @@ public sealed partial class DeleteAtomTargetView : DeleteTargetView
     {
     }
 
-    private DeleteTargetAtomView? _field_value = null;
-    public DeleteTargetAtomView Value
+    private TokenView? _field_value = null;
+    public TokenView Value
     {
         get
         {
             if (_field_value == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_value = (DeleteTargetAtomView)((DeleteAtomTargetNode)base.Green).Value!.GetView(_positionOfField, this);
+                _field_value = (TokenView)((DeleteAtomTargetNode)base.Green).Value!.GetView(_positionOfField, this);
             }
-            return (DeleteTargetAtomView)_field_value;
+            return (TokenView)_field_value;
         }
     }
 }
