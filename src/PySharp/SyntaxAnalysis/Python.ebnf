@@ -193,20 +193,22 @@ ImportStatement:
 # CPython uses the `?` (`-` here) and NULL check for lazy. But it feels more like a hack, so make different rules for that.
 # If changed: don't forget to change lazy also because it's just copypaste.
 
-ImportName: 'import' DottedAsName+.',' -> new(Import=dotted_as_name_Gather)
+ImportName: 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
 
-LazyImportName: 'lazy' 'import' DottedAsName+.',' -> new(Import=dotted_as_name_Gather)
+LazyImportName: 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
+
+DottedName: ImportUnit ['as' Name -> AsName(Value=name)] -> new(Name=import_unit, Alias=as_name)
 
 ImportFrom:
-    | 'from' RelativeImportDots* DottedName 'import' ImportFromTargets -> ImportFromNames(
-        RelativePath=relative_import_dots_Star, Path=dotted_name, Targets=import_from_targets)
+    | 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
+        RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
 
     | 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
 
 LazyImportFrom:
-    | 'lazy' 'from' RelativeImportDots* DottedAsName+.',' 'import' ImportFromTargets -> LazyImportFromNames(
-        RelativePath=relative_import_dots_Star, Path=dotted_as_name_Gather, Targets=import_from_targets)
+    | 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
+        RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
 
     | 'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> LazyImportFromRelative(
         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
@@ -217,18 +219,16 @@ RelativeImportDots:
     | '...'  # Necessary because it tokenized as Ellipsis
 
 ImportFromTargets:
-    | '(' ImportFromAsName+.',' -',' ')' -> ImportFromParenthesizedTargets(Value=import_from_as_name_Gather)
-    | ImportFromAsName+.',' !',' -> ImportFromFlatTargets(Value=import_from_as_name_Gather)
-    | '*' -> ImportFromAllTargets()
+    | '(' AliasedName+.',' -',' ')' -> ImportFromGroup(Targets=aliased_name_Gather)
+    | AliasedName+.',' !',' -> ImportFromNames(Targets=aliased_name_Gather)
+    | '*' -> ImportAll()
 
-ImportFromAsName: Name ['as' Name -> AsName(Value=name)] -> new(ToImport=name, Alias=as_name)
-
-DottedAsName: DottedName ['as' Name -> AsName(Value=name)] -> new(Name=dotted_name, Alias=as_name)
+AliasedName: Name ['as' Name -> AsName(Value=name)] -> new(Name=name, Alias=as_name)
 
 @memo
-DottedName:
-    | DottedName '.' Name -> ManyDottedName(Left=dotted_name, Right=name)
-    | Name -> SingleDottedName(Value=name)
+ImportUnit:
+    | ImportUnit '.' Name -> DottedImportUnit(Left=import_unit, Right=name)
+    | Name -> SingleImportUnit(Value=name)
 
 # Compound Statements
 # ===================

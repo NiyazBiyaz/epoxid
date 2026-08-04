@@ -47,7 +47,7 @@ public static class Program
             }
             else
             {
-                Console.WriteLine($"Parsing error in file {arg}");
+                Console.WriteLine($"Parsing error in file {arg}. Line: {tokenizer.Synchronize().StartLine + 1}");
             }
         }
     }

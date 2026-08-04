@@ -10,16 +10,46 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ManyDottedNameNode), typeof(SingleDottedNameNode))]
-public abstract partial record DottedNameNode : GreenNode
+public sealed partial record DottedNameNode : GreenNode
 {
+    public ImportUnitNode Name => (ImportUnitNode)Children![0];
+    public AsNameNode? Alias => Children![1] as AsNameNode;
+    public override DottedNameView GetView(int position, IRedView? parent)
+        => new DottedNameView(this, position, parent);
 }
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(ManyDottedNameView), typeof(SingleDottedNameView))]
-public abstract partial class DottedNameView : RedView
+public sealed partial class DottedNameView : RedView
 {
     public DottedNameView(DottedNameNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private ImportUnitView? _field_name = null;
+    public ImportUnitView Name
+    {
+        get
+        {
+            if (_field_name == null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_name = (ImportUnitView)((DottedNameNode)base.Green).Name!.GetView(_positionOfField, this);
+            }
+            return (ImportUnitView)_field_name;
+        }
+    }
+
+    private AsNameView? _field_alias = null;
+    public AsNameView? Alias
+    {
+        get
+        {
+            if (_field_alias == null && ((DottedNameNode)base.Green).Alias != null)
+            {
+                var _positionOfField = base.GetPositionFor(1);
+                _field_alias = (AsNameView)((DottedNameNode)base.Green).Alias!.GetView(_positionOfField, this);
+            }
+            return (AsNameView?)_field_alias;
+        }
     }
 }

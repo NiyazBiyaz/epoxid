@@ -10,46 +10,57 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-public sealed partial record ImportFromNamesNode : ImportFromNode
+public sealed partial record ImportFromNamesNode : ImportFromTargetsNode
 {
-    public DottedNameNode Path => (DottedNameNode)Children![2];
-    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
+    private global::System.Collections.Immutable.ImmutableArray<AliasedNameNode>? _field_Targets = null;
+    public global::System.Collections.Immutable.ImmutableArray<AliasedNameNode> Targets
+    {
+        get
+        {
+            if (_field_Targets is null)
+            {
+                var _tmp = AstTargets.Where(static (_, i) => i % 2 == 0).Cast<AliasedNameNode>();
+                _field_Targets = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_Targets.Value;
+        }
+    }
+    public NodeArray<GreenNode> AstTargets => (NodeArray<GreenNode>)Children![0];
     public override ImportFromNamesView GetView(int position, IRedView? parent)
         => new ImportFromNamesView(this, position, parent);
 }
 
-public sealed partial class ImportFromNamesView : ImportFromView
+public sealed partial class ImportFromNamesView : ImportFromTargetsView
 {
     public ImportFromNamesView(ImportFromNamesNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private DottedNameView? _field_path = null;
-    public DottedNameView Path
+    private ViewArray<RedView>? _ast_field_targets = null;
+    public ViewArray<RedView> AstTargets
     {
         get
         {
-            if (_field_path == null)
+            if (_ast_field_targets == null)
             {
-                var _positionOfField = base.GetPositionFor(2);
-                _field_path = (DottedNameView)((ImportFromNamesNode)base.Green).Path!.GetView(_positionOfField, this);
+                var _positionOfField = base.GetPositionFor(0);
+                _ast_field_targets = new ViewArray<RedView>(((ImportFromNamesNode)base.Green).AstTargets, _positionOfField, this);
             }
-            return (DottedNameView)_field_path;
+            return _ast_field_targets.Value;
         }
     }
-
-    private ImportFromTargetsView? _field_targets = null;
-    public ImportFromTargetsView Targets
+    private global::System.Collections.Immutable.ImmutableArray<AliasedNameView>? _field_targets = null;
+    public global::System.Collections.Immutable.ImmutableArray<AliasedNameView> Targets
     {
         get
         {
             if (_field_targets == null)
             {
-                var _positionOfField = base.GetPositionFor(4);
-                _field_targets = (ImportFromTargetsView)((ImportFromNamesNode)base.Green).Targets!.GetView(_positionOfField, this);
+                var _tmp = AstTargets.Where(static (_, i) => i % 2 == 0).Cast<AliasedNameView>();
+                _field_targets = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
-            return (ImportFromTargetsView)_field_targets;
+            return _field_targets.Value;
         }
     }
 }

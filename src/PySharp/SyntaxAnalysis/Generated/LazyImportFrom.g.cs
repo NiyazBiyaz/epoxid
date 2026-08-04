@@ -10,13 +10,13 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(LazyImportFromNamesNode), typeof(LazyImportFromRelativeNode))]
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(LazyImportFromModuleNode), typeof(LazyImportFromRelativeNode))]
 public abstract partial record LazyImportFromNode : GreenNode, IImportStatementNode
 {
     public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
 }
 
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(LazyImportFromNamesView), typeof(LazyImportFromRelativeView))]
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(LazyImportFromModuleView), typeof(LazyImportFromRelativeView))]
 public abstract partial class LazyImportFromView : RedView, IImportStatementView
 {
     public LazyImportFromView(LazyImportFromNode green, int position, IRedView? parent)

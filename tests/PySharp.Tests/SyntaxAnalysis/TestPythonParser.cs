@@ -142,6 +142,42 @@ public class TestPythonParser
         return Verify(res.PrettyPrint());
     }
 
+    [Fact]
+    public Task TestParse_Assignment()
+    {
+        const string src = """
+        b = ...
+        a = True
+        u = 789
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestParse_Imports()
+    {
+        const string src = """
+        import bau
+        import bau.bau as Bau
+        from fwmc import fuzzy as moco, fluffy as fuwa
+        from fwmc import (
+            fuwa,
+            moco,
+        )
+        from .pondering import baubau
+        from ....halo.halo import baubau as bauBau
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
     private static PythonParser getParser(string src)
     {
         var tokenizer = new Tokenizer(SynchronizationPoint.ClearPoint(new StringBuffer(src)));

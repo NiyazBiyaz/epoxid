@@ -1,0 +1,47 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    SingleSimpleStatementNode {
+      Slot[0]: SimpleAssignmentNode {
+        Slot[0]: Token(Type: Name, RawString: `b`),
+        Slot[1]: EqualAnnotatedRhsNode {
+          Slot[0]: Token(Type: Equal, RawString: `=`),
+          Slot[1]: AtomPrimaryNode {
+            Slot[0]: EllipsisAtomNode {
+              Slot[0]: Token(Type: Ellipsis, RawString: `...`),
+            },
+          },
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: SimpleAssignmentNode {
+        Slot[0]: Token(Type: Name, RawString: `a`),
+        Slot[1]: EqualAnnotatedRhsNode {
+          Slot[0]: Token(Type: Equal, RawString: `=`),
+          Slot[1]: AtomPrimaryNode {
+            Slot[0]: TrueAtomNode {
+              Slot[0]: Token(Type: Name, RawString: `True`),
+            },
+          },
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+    SingleSimpleStatementNode {
+      Slot[0]: SimpleAssignmentNode {
+        Slot[0]: Token(Type: Name, RawString: `u`),
+        Slot[1]: EqualAnnotatedRhsNode {
+          Slot[0]: Token(Type: Equal, RawString: `=`),
+          Slot[1]: AtomPrimaryNode {
+            Slot[0]: NumberAtomNode {
+              Slot[0]: Token(Type: Number, RawString: `789`),
+            },
+          },
+        },
+      },
+      Slot[1]: Token(Type: NewLine, RawString: `\n`),
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

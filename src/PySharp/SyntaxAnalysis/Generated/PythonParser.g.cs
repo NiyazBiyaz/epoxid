@@ -2252,7 +2252,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // ImportStatement
 
     #region ImportName
-    // ImportName: 'import' DottedAsName+.',' -> new(Import=dotted_as_name_Gather)
+    // ImportName: 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
     ImportNameNode? rule_ImportName()
     {
         base.LogIncreaseLevel();
@@ -2260,29 +2260,29 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ImportNameNode? _res = null;
         {
-            // 'import' DottedAsName+.',' -> new(Import=dotted_as_name_Gather)
-            base.LogAlternativeEntered("'import' DottedAsName+.','");
+            // 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
+            base.LogAlternativeEntered("'import' DottedName+.','");
             IGreenNode? _string_token;
-            INodeArray<GreenNode>? dotted_as_name_Gather;
+            INodeArray<GreenNode>? dotted_name_Gather;
             if ((_string_token = Expect("import")) is not null
                 &&
-                (dotted_as_name_Gather = _GatherHelper_dotted_as_name_Gather()) is not null
+                (dotted_name_Gather = _GatherHelper_dotted_name_Gather()) is not null
             )
             {
-                base.LogAlternativeSucceed("'import' DottedAsName+.','");
+                base.LogAlternativeSucceed("'import' DottedName+.','");
                 _res = new ImportNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
-                        dotted_as_name_Gather,
+                        dotted_name_Gather,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'import' DottedAsName+.','");
-            NodeArray<GreenNode>? _GatherHelper_dotted_as_name_Gather()
+            base.LogAlternativeFailed("'import' DottedName+.','");
+            NodeArray<GreenNode>? _GatherHelper_dotted_name_Gather()
             {
-                GreenNode? _node = rule_DottedAsName();
+                GreenNode? _node = rule_DottedName();
                 GreenNode? _separator;
                 if (_node == null) return null;
                 global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
@@ -2291,7 +2291,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                     int _mark = base.Mark();
                     _separator = Expect(TokenType.Comma);
                     if (_separator == null) break;
-                    _node = rule_DottedAsName();
+                    _node = rule_DottedName();
                     if (_node == null)
                     {
                         base.Reset(_mark);
@@ -2313,7 +2313,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // ImportName
 
     #region LazyImportName
-    // LazyImportName: 'lazy' 'import' DottedAsName+.',' -> new(Import=dotted_as_name_Gather)
+    // LazyImportName: 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
     LazyImportNameNode? rule_LazyImportName()
     {
         base.LogIncreaseLevel();
@@ -2321,33 +2321,33 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         LazyImportNameNode? _res = null;
         {
-            // 'lazy' 'import' DottedAsName+.',' -> new(Import=dotted_as_name_Gather)
-            base.LogAlternativeEntered("'lazy' 'import' DottedAsName+.','");
+            // 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
+            base.LogAlternativeEntered("'lazy' 'import' DottedName+.','");
             IGreenNode? _string_token;
             IGreenNode? _string_token1;
-            INodeArray<GreenNode>? dotted_as_name_Gather;
+            INodeArray<GreenNode>? dotted_name_Gather;
             if ((_string_token = Expect("lazy")) is not null
                 &&
                 (_string_token1 = Expect("import")) is not null
                 &&
-                (dotted_as_name_Gather = _GatherHelper_dotted_as_name_Gather()) is not null
+                (dotted_name_Gather = _GatherHelper_dotted_name_Gather()) is not null
             )
             {
-                base.LogAlternativeSucceed("'lazy' 'import' DottedAsName+.','");
+                base.LogAlternativeSucceed("'lazy' 'import' DottedName+.','");
                 _res = new LazyImportNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         _string_token1,
-                        dotted_as_name_Gather,
+                        dotted_name_Gather,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'lazy' 'import' DottedAsName+.','");
-            NodeArray<GreenNode>? _GatherHelper_dotted_as_name_Gather()
+            base.LogAlternativeFailed("'lazy' 'import' DottedName+.','");
+            NodeArray<GreenNode>? _GatherHelper_dotted_name_Gather()
             {
-                GreenNode? _node = rule_DottedAsName();
+                GreenNode? _node = rule_DottedName();
                 GreenNode? _separator;
                 if (_node == null) return null;
                 global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
@@ -2356,7 +2356,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                     int _mark = base.Mark();
                     _separator = Expect(TokenType.Comma);
                     if (_separator == null) break;
-                    _node = rule_DottedAsName();
+                    _node = rule_DottedName();
                     if (_node == null)
                     {
                         base.Reset(_mark);
@@ -2377,10 +2377,88 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // LazyImportName
 
+    #region DottedName
+    // DottedName: ImportUnit ['as' Name -> AsName(Value=name)] -> new(Name=import_unit, Alias=as_name)
+    DottedNameNode? rule_DottedName()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("DottedName");
+        int _mark = base.Mark();
+        DottedNameNode? _res = null;
+        {
+            // ImportUnit ['as' Name -> AsName(Value=name)] -> new(Name=import_unit, Alias=as_name)
+            base.LogAlternativeEntered("ImportUnit ['as' Name -> AsName(Value=name)]");
+            IGreenNode? import_unit;
+            IGreenNode? as_name;
+            if ((import_unit = rule_ImportUnit()) is not null
+                &&
+                ((as_name = rule_AsName()) is not null || true) // Optional
+            )
+            {
+                base.LogAlternativeSucceed("ImportUnit ['as' Name -> AsName(Value=name)]");
+                _res = new DottedNameNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        import_unit,
+                        as_name ?? VoidNode.Instance,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("ImportUnit ['as' Name -> AsName(Value=name)]");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("DottedName");
+    _Return:
+        base.LogRuleExiting("DottedName");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // DottedName
+
+    #region AsName
+    // ['as' Name -> AsName(Value=name)]
+    AsNameNode? rule_AsName()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("AsName");
+        int _mark = base.Mark();
+        AsNameNode? _res = null;
+        {
+            // 'as' Name -> AsName(Value=name)
+            base.LogAlternativeEntered("'as' Name");
+            IGreenNode? _string_token;
+            IGreenNode? name;
+            if ((_string_token = Expect("as")) is not null
+                &&
+                (name = Expect(TokenType.Name)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("'as' Name");
+                _res = new AsNameNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        _string_token,
+                        name,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'as' Name");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("AsName");
+    _Return:
+        base.LogRuleExiting("AsName");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // AsName
+
     #region ImportFrom
     // ImportFrom:
-    //     | 'from' RelativeImportDots* DottedName 'import' ImportFromTargets -> ImportFromNames(
-    //         RelativePath=relative_import_dots_Star, Path=dotted_name, Targets=import_from_targets)
+    //     | 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
+    //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
     //
     //     | 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
     //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
@@ -2391,39 +2469,39 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ImportFromNode? _res = null;
         {
-            // 'from' RelativeImportDots* DottedName 'import' ImportFromTargets -> ImportFromNames(
-            //         RelativePath=relative_import_dots_Star, Path=dotted_name, Targets=import_from_targets)
-            base.LogAlternativeEntered("'from' RelativeImportDots* DottedName 'import' ImportFromTargets");
+            // 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
+            //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
+            base.LogAlternativeEntered("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
             IGreenNode? _string_token;
             INodeArray<TokenNode>? relative_import_dots_Star;
-            IGreenNode? dotted_name;
+            IGreenNode? import_unit;
             IGreenNode? _string_token1;
             IGreenNode? import_from_targets;
             if ((_string_token = Expect("from")) is not null
                 &&
                 (relative_import_dots_Star = _RepeatHelper_relative_import_dots_Star()) is not null
                 &&
-                (dotted_name = rule_DottedName()) is not null
+                (import_unit = rule_ImportUnit()) is not null
                 &&
                 (_string_token1 = Expect("import")) is not null
                 &&
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
             {
-                base.LogAlternativeSucceed("'from' RelativeImportDots* DottedName 'import' ImportFromTargets");
-                _res = new ImportFromNamesNode()
+                base.LogAlternativeSucceed("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
+                _res = new ImportFromModuleNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         relative_import_dots_Star,
-                        dotted_name,
+                        import_unit,
                         _string_token1,
                         import_from_targets,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'from' RelativeImportDots* DottedName 'import' ImportFromTargets");
+            base.LogAlternativeFailed("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
             NodeArray<TokenNode>? _RepeatHelper_relative_import_dots_Star()
             {
                 TokenNode? _node = rule_RelativeImportDots();
@@ -2490,8 +2568,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region LazyImportFrom
     // LazyImportFrom:
-    //     | 'lazy' 'from' RelativeImportDots* DottedAsName+.',' 'import' ImportFromTargets -> LazyImportFromNames(
-    //         RelativePath=relative_import_dots_Star, Path=dotted_as_name_Gather, Targets=import_from_targets)
+    //     | 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
+    //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
     //
     //     | 'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> LazyImportFromRelative(
     //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
@@ -2502,13 +2580,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         LazyImportFromNode? _res = null;
         {
-            // 'lazy' 'from' RelativeImportDots* DottedAsName+.',' 'import' ImportFromTargets -> LazyImportFromNames(
-            //         RelativePath=relative_import_dots_Star, Path=dotted_as_name_Gather, Targets=import_from_targets)
-            base.LogAlternativeEntered("'lazy' 'from' RelativeImportDots* DottedAsName+.',' 'import' ImportFromTargets");
+            // 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
+            //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
+            base.LogAlternativeEntered("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
             IGreenNode? _string_token;
             IGreenNode? _string_token1;
             INodeArray<TokenNode>? relative_import_dots_Star;
-            INodeArray<GreenNode>? dotted_as_name_Gather;
+            IGreenNode? import_unit;
             IGreenNode? _string_token2;
             IGreenNode? import_from_targets;
             if ((_string_token = Expect("lazy")) is not null
@@ -2517,50 +2595,28 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 &&
                 (relative_import_dots_Star = _RepeatHelper_relative_import_dots_Star()) is not null
                 &&
-                (dotted_as_name_Gather = _GatherHelper_dotted_as_name_Gather()) is not null
+                (import_unit = rule_ImportUnit()) is not null
                 &&
                 (_string_token2 = Expect("import")) is not null
                 &&
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
             {
-                base.LogAlternativeSucceed("'lazy' 'from' RelativeImportDots* DottedAsName+.',' 'import' ImportFromTargets");
-                _res = new LazyImportFromNamesNode()
+                base.LogAlternativeSucceed("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
+                _res = new LazyImportFromModuleNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         _string_token1,
                         relative_import_dots_Star,
-                        dotted_as_name_Gather,
+                        import_unit,
                         _string_token2,
                         import_from_targets,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'lazy' 'from' RelativeImportDots* DottedAsName+.',' 'import' ImportFromTargets");
-            NodeArray<GreenNode>? _GatherHelper_dotted_as_name_Gather()
-            {
-                GreenNode? _node = rule_DottedAsName();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_DottedAsName();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
+            base.LogAlternativeFailed("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
             NodeArray<TokenNode>? _RepeatHelper_relative_import_dots_Star()
             {
                 TokenNode? _node = rule_RelativeImportDots();
@@ -2676,9 +2732,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ImportFromTargets
     // ImportFromTargets:
-    //     | '(' ImportFromAsName+.',' -',' ')' -> ImportFromParenthesizedTargets(Value=import_from_as_name_Gather)
-    //     | ImportFromAsName+.',' !',' -> ImportFromFlatTargets(Value=import_from_as_name_Gather)
-    //     | '*' -> ImportFromAllTargets()
+    //     | '(' AliasedName+.',' -',' ')' -> ImportFromGroup(Targets=aliased_name_Gather)
+    //     | AliasedName+.',' !',' -> ImportFromNames(Targets=aliased_name_Gather)
+    //     | '*' -> ImportAll()
     ImportFromTargetsNode? rule_ImportFromTargets()
     {
         base.LogIncreaseLevel();
@@ -2686,37 +2742,37 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ImportFromTargetsNode? _res = null;
         {
-            // '(' ImportFromAsName+.',' -',' ')' -> ImportFromParenthesizedTargets(Value=import_from_as_name_Gather)
-            base.LogAlternativeEntered("'(' ImportFromAsName+.',' -',' ')'");
+            // '(' AliasedName+.',' -',' ')' -> ImportFromGroup(Targets=aliased_name_Gather)
+            base.LogAlternativeEntered("'(' AliasedName+.',' -',' ')'");
             IGreenNode? left_paren;
-            INodeArray<GreenNode>? import_from_as_name_Gather;
+            INodeArray<GreenNode>? aliased_name_Gather;
             IGreenNode? comma;
             IGreenNode? right_paren;
             if ((left_paren = Expect(TokenType.LeftParen)) is not null
                 &&
-                (import_from_as_name_Gather = _GatherHelper_import_from_as_name_Gather()) is not null
+                (aliased_name_Gather = _GatherHelper_aliased_name_Gather()) is not null
                 &&
                 ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
                 &&
                 (right_paren = Expect(TokenType.RightParen)) is not null
             )
             {
-                base.LogAlternativeSucceed("'(' ImportFromAsName+.',' -',' ')'");
-                _res = new ImportFromParenthesizedTargetsNode()
+                base.LogAlternativeSucceed("'(' AliasedName+.',' -',' ')'");
+                _res = new ImportFromGroupNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         left_paren,
-                        import_from_as_name_Gather,
+                        aliased_name_Gather,
                         comma ?? VoidNode.Instance,
                         right_paren,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'(' ImportFromAsName+.',' -',' ')'");
-            NodeArray<GreenNode>? _GatherHelper_import_from_as_name_Gather()
+            base.LogAlternativeFailed("'(' AliasedName+.',' -',' ')'");
+            NodeArray<GreenNode>? _GatherHelper_aliased_name_Gather()
             {
-                GreenNode? _node = rule_ImportFromAsName();
+                GreenNode? _node = rule_AliasedName();
                 GreenNode? _separator;
                 if (_node == null) return null;
                 global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
@@ -2725,7 +2781,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                     int _mark = base.Mark();
                     _separator = Expect(TokenType.Comma);
                     if (_separator == null) break;
-                    _node = rule_ImportFromAsName();
+                    _node = rule_AliasedName();
                     if (_node == null)
                     {
                         base.Reset(_mark);
@@ -2739,27 +2795,27 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // ImportFromAsName+.',' !',' -> ImportFromFlatTargets(Value=import_from_as_name_Gather)
-            base.LogAlternativeEntered("ImportFromAsName+.',' !','");
-            INodeArray<GreenNode>? import_from_as_name_Gather;
-            if ((import_from_as_name_Gather = _GatherHelper_import_from_as_name_Gather()) is not null
+            // AliasedName+.',' !',' -> ImportFromNames(Targets=aliased_name_Gather)
+            base.LogAlternativeEntered("AliasedName+.',' !','");
+            INodeArray<GreenNode>? aliased_name_Gather;
+            if ((aliased_name_Gather = _GatherHelper_aliased_name_Gather()) is not null
                 &&
                 _LookaheadHelper_comma()
             )
             {
-                base.LogAlternativeSucceed("ImportFromAsName+.',' !','");
-                _res = new ImportFromFlatTargetsNode()
+                base.LogAlternativeSucceed("AliasedName+.',' !','");
+                _res = new ImportFromNamesNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        import_from_as_name_Gather,
+                        aliased_name_Gather,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("ImportFromAsName+.',' !','");
-            NodeArray<GreenNode>? _GatherHelper_import_from_as_name_Gather()
+            base.LogAlternativeFailed("AliasedName+.',' !','");
+            NodeArray<GreenNode>? _GatherHelper_aliased_name_Gather()
             {
-                GreenNode? _node = rule_ImportFromAsName();
+                GreenNode? _node = rule_AliasedName();
                 GreenNode? _separator;
                 if (_node == null) return null;
                 global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
@@ -2768,7 +2824,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                     int _mark = base.Mark();
                     _separator = Expect(TokenType.Comma);
                     if (_separator == null) break;
-                    _node = rule_ImportFromAsName();
+                    _node = rule_AliasedName();
                     if (_node == null)
                     {
                         base.Reset(_mark);
@@ -2789,13 +2845,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // '*' -> ImportFromAllTargets()
+            // '*' -> ImportAll()
             base.LogAlternativeEntered("'*'");
             IGreenNode? star;
             if ((star = Expect(TokenType.Star)) is not null)
             {
                 base.LogAlternativeSucceed("'*'");
-                _res = new ImportFromAllTargetsNode()
+                _res = new ImportAllNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         star,
@@ -2814,16 +2870,16 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // ImportFromTargets
 
-    #region ImportFromAsName
-    // ImportFromAsName: Name ['as' Name -> AsName(Value=name)] -> new(ToImport=name, Alias=as_name)
-    ImportFromAsNameNode? rule_ImportFromAsName()
+    #region AliasedName
+    // AliasedName: Name ['as' Name -> AsName(Value=name)] -> new(Name=name, Alias=as_name)
+    AliasedNameNode? rule_AliasedName()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("ImportFromAsName");
+        base.LogRuleEntered("AliasedName");
         int _mark = base.Mark();
-        ImportFromAsNameNode? _res = null;
+        AliasedNameNode? _res = null;
         {
-            // Name ['as' Name -> AsName(Value=name)] -> new(ToImport=name, Alias=as_name)
+            // Name ['as' Name -> AsName(Value=name)] -> new(Name=name, Alias=as_name)
             base.LogAlternativeEntered("Name ['as' Name -> AsName(Value=name)]");
             IGreenNode? name;
             IGreenNode? as_name;
@@ -2833,7 +2889,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("Name ['as' Name -> AsName(Value=name)]");
-                _res = new ImportFromAsNameNode()
+                _res = new AliasedNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         name,
@@ -2845,115 +2901,37 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             base.LogAlternativeFailed("Name ['as' Name -> AsName(Value=name)]");
         }
         base.Reset(_mark);
-        base.LogRuleFailed("ImportFromAsName");
+        base.LogRuleFailed("AliasedName");
     _Return:
-        base.LogRuleExiting("ImportFromAsName");
+        base.LogRuleExiting("AliasedName");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // ImportFromAsName
+    #endregion // AliasedName
 
-    #region AsName
-    // ['as' Name -> AsName(Value=name)]
-    AsNameNode? rule_AsName()
+    #region ImportUnit
+    private readonly IMemoContainer<ImportUnitNode> _memo_ImportUnit = CreateContainer<ImportUnitNode>();
+    ImportUnitNode? rule_ImportUnit()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("AsName");
-        int _mark = base.Mark();
-        AsNameNode? _res = null;
-        {
-            // 'as' Name -> AsName(Value=name)
-            base.LogAlternativeEntered("'as' Name");
-            IGreenNode? _string_token;
-            IGreenNode? name;
-            if ((_string_token = Expect("as")) is not null
-                &&
-                (name = Expect(TokenType.Name)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'as' Name");
-                _res = new AsNameNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        name,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'as' Name");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("AsName");
-    _Return:
-        base.LogRuleExiting("AsName");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // AsName
-
-    #region DottedAsName
-    // DottedAsName: DottedName ['as' Name -> AsName(Value=name)] -> new(Name=dotted_name, Alias=as_name)
-    DottedAsNameNode? rule_DottedAsName()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("DottedAsName");
-        int _mark = base.Mark();
-        DottedAsNameNode? _res = null;
-        {
-            // DottedName ['as' Name -> AsName(Value=name)] -> new(Name=dotted_name, Alias=as_name)
-            base.LogAlternativeEntered("DottedName ['as' Name -> AsName(Value=name)]");
-            IGreenNode? dotted_name;
-            IGreenNode? as_name;
-            if ((dotted_name = rule_DottedName()) is not null
-                &&
-                ((as_name = rule_AsName()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("DottedName ['as' Name -> AsName(Value=name)]");
-                _res = new DottedAsNameNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        dotted_name,
-                        as_name ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("DottedName ['as' Name -> AsName(Value=name)]");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("DottedAsName");
-    _Return:
-        base.LogRuleExiting("DottedAsName");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // DottedAsName
-
-    #region DottedName
-    private readonly IMemoContainer<DottedNameNode> _memo_DottedName = CreateContainer<DottedNameNode>();
-    DottedNameNode? rule_DottedName()
-    {
-        base.LogIncreaseLevel();
-        base.LogLeftRecursionRuleEntered("DottedName");
-        DottedNameNode? _res = null;
+        base.LogLeftRecursionRuleEntered("ImportUnit");
+        ImportUnitNode? _res = null;
         int _mark = base.Mark();
         int _lastMark = base.Mark();
-        if (_memo_DottedName.TryGetCache(_mark, out var _memoized))
+        if (_memo_ImportUnit.TryGetCache(_mark, out var _memoized))
         {
-            base.LogRuleMemoUsed("DottedName", _mark, _memoized);
+            base.LogRuleMemoUsed("ImportUnit", _mark, _memoized);
             base.LogDecreaseLevel();
             base.Reset(_memoized.EndPosition);
             return _memoized.Cache;
         }
-        base.LogStartGrow("DottedName");
+        base.LogStartGrow("ImportUnit");
         while (true)
         {
-            _memo_DottedName.UpdateCache(_mark, base.Mark(), _res);
+            _memo_ImportUnit.UpdateCache(_mark, base.Mark(), _res);
             base.Reset(_mark);
-            base.LogNextGrow("DottedName");
-            var _rawResult = raw_rule_DottedName();
+            base.LogNextGrow("ImportUnit");
+            var _rawResult = raw_rule_ImportUnit();
             if (_rawResult == null || base.Mark() <= _lastMark)
             {
                 break;
@@ -2962,61 +2940,61 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             _res = _rawResult;
         }
         base.Reset(_lastMark);
-        base.LogEndGrow("DottedName", _res == null);
+        base.LogEndGrow("ImportUnit", _res == null);
         base.LogDecreaseLevel();
         return _res;
     }
     // @memo
-    // DottedName:
-    //     | DottedName '.' Name -> ManyDottedName(Left=dotted_name, Right=name)
-    //     | Name -> SingleDottedName(Value=name)
+    // ImportUnit:
+    //     | ImportUnit '.' Name -> DottedImportUnit(Left=import_unit, Right=name)
+    //     | Name -> SingleImportUnit(Value=name)
     //
     //
     //
     //
     //
     //
-    DottedNameNode? raw_rule_DottedName()
+    ImportUnitNode? raw_rule_ImportUnit()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("DottedName");
+        base.LogRuleEntered("ImportUnit");
         int _mark = base.Mark();
-        DottedNameNode? _res = null;
+        ImportUnitNode? _res = null;
         {
-            // DottedName '.' Name -> ManyDottedName(Left=dotted_name, Right=name)
-            base.LogAlternativeEntered("DottedName '.' Name");
-            IGreenNode? dotted_name;
+            // ImportUnit '.' Name -> DottedImportUnit(Left=import_unit, Right=name)
+            base.LogAlternativeEntered("ImportUnit '.' Name");
+            IGreenNode? import_unit;
             IGreenNode? dot;
             IGreenNode? name;
-            if ((dotted_name = rule_DottedName()) is not null
+            if ((import_unit = rule_ImportUnit()) is not null
                 &&
                 (dot = Expect(TokenType.Dot)) is not null
                 &&
                 (name = Expect(TokenType.Name)) is not null
             )
             {
-                base.LogAlternativeSucceed("DottedName '.' Name");
-                _res = new ManyDottedNameNode()
+                base.LogAlternativeSucceed("ImportUnit '.' Name");
+                _res = new DottedImportUnitNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        dotted_name,
+                        import_unit,
                         dot,
                         name,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("DottedName '.' Name");
+            base.LogAlternativeFailed("ImportUnit '.' Name");
         }
         base.Reset(_mark);
         {
-            // Name -> SingleDottedName(Value=name)
+            // Name -> SingleImportUnit(Value=name)
             base.LogAlternativeEntered("Name");
             IGreenNode? name;
             if ((name = Expect(TokenType.Name)) is not null)
             {
                 base.LogAlternativeSucceed("Name");
-                _res = new SingleDottedNameNode()
+                _res = new SingleImportUnitNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         name,
@@ -3027,13 +3005,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             base.LogAlternativeFailed("Name");
         }
         base.Reset(_mark);
-        base.LogRuleFailed("DottedName");
+        base.LogRuleFailed("ImportUnit");
     _Return:
-        base.LogRuleExiting("DottedName");
+        base.LogRuleExiting("ImportUnit");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // DottedName
+    #endregion // ImportUnit
 
     #region Block
     private readonly IMemoContainer<BlockNode> _memo_Block = CreateContainer<BlockNode>();

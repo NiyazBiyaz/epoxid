@@ -12,14 +12,14 @@ namespace PySharp.SyntaxAnalysis;
 
 public sealed partial record ImportNameNode : GreenNode, IImportStatementNode
 {
-    private global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode>? _field_Import = null;
-    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameNode> Import
+    private global::System.Collections.Immutable.ImmutableArray<DottedNameNode>? _field_Import = null;
+    public global::System.Collections.Immutable.ImmutableArray<DottedNameNode> Import
     {
         get
         {
             if (_field_Import is null)
             {
-                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedAsNameNode>();
+                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedNameNode>();
                 _field_Import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Import.Value;
@@ -50,14 +50,14 @@ public sealed partial class ImportNameView : RedView, IImportStatementView
             return _ast_field_import.Value;
         }
     }
-    private global::System.Collections.Immutable.ImmutableArray<DottedAsNameView>? _field_import = null;
-    public global::System.Collections.Immutable.ImmutableArray<DottedAsNameView> Import
+    private global::System.Collections.Immutable.ImmutableArray<DottedNameView>? _field_import = null;
+    public global::System.Collections.Immutable.ImmutableArray<DottedNameView> Import
     {
         get
         {
             if (_field_import == null)
             {
-                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedAsNameView>();
+                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedNameView>();
                 _field_import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_import.Value;
