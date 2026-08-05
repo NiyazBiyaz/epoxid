@@ -116,6 +116,78 @@ public class TestInterpreter
         assertOutput(src, "True");
     }
 
+    [Fact]
+    public void Test_WhileAndBreak_WhenElse()
+    {
+        const string src = """
+        a = 10
+        while a != 0:
+            print(a, "bau bau!")
+            if a == 5:
+                break
+            a = a - 1
+        else:
+            print("another bau bau!")
+
+        """;
+        const string output =
+        """
+        10 bau bau!
+        9 bau bau!
+        8 bau bau!
+        7 bau bau!
+        6 bau bau!
+        5 bau bau!
+        """;
+        assertOutput(src, output);
+    }
+
+    [Fact]
+    public void Test_WhileAndBreak()
+    {
+        const string src = """
+        a = 10
+        while a != 0:
+            print(a, "bau bau!")
+            if a == 5:
+                break
+            a = a - 1
+
+        """;
+        const string output =
+        """
+        10 bau bau!
+        9 bau bau!
+        8 bau bau!
+        7 bau bau!
+        6 bau bau!
+        5 bau bau!
+        """;
+        assertOutput(src, output);
+    }
+
+    [Fact]
+    public void Test_WhileLoop()
+    {
+        const string src = """
+        a = 10
+        while a != 4:
+            print(a, "bau bau!")
+            a = a - 1
+
+        """;
+        const string output =
+        """
+        10 bau bau!
+        9 bau bau!
+        8 bau bau!
+        7 bau bau!
+        6 bau bau!
+        5 bau bau!
+        """;
+        assertOutput(src, output);
+    }
+
     private static void assertOutput(string src, string expected, bool includeNewLine = true)
     {
         var file = getView(src);

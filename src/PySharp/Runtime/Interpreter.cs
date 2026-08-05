@@ -46,6 +46,7 @@ public partial class Interpreter
                 break;
 
             case IfStatementView ifStatement:
+            {
                 var condition = ifStatement.Condition;
                 bool fold = false;
 
@@ -54,22 +55,46 @@ public partial class Interpreter
                     InterpretBlock(ifStatement.Block);
                 }
 
-                if (!fold)
+                int elifIndex = 0;
+                while (elifIndex < ifStatement.Elifs.Count && !fold)
                 {
-                    if (ifStatement.Else != null)
+                    var elif = ifStatement.Elifs[elifIndex++];
+                    if (fold = Core.ConvertBool(InterpretExpression(elif.Condition)))
                     {
-                        InterpretBlock(ifStatement.Else.Block);
+                        InterpretBlock(elif.Block);
                     }
                 }
 
+                if (!fold && ifStatement.Else != null)
+                {
+                    InterpretBlock(ifStatement.Else.Block);
+                }
+
                 break;
+            }
+
+            case WhileStatementView whileStatement:
+            {
+                var condition = whileStatement.Condition;
+                scopes.Peek().SetupLoop();
+                while (Core.ConvertBool(InterpretExpression(condition)) && !scopes.Peek().PeekLoop())
+                {
+                    InterpretBlock(whileStatement.Block);
+                }
+
+                if (!scopes.Peek().TerminateLoop() && whileStatement.Else != null)
+                {
+                    InterpretBlock(whileStatement.Else.Block);
+                }
+
+                break;
+            }
 
             case FunctionDefView:
             case ForStatementView:
             case WithStatementView:
             case ClassDefView:
             case TryStatementView:
-            case WhileStatementView:
             default:
                 throw notImplemented(statement);
         }
@@ -123,8 +148,31 @@ public partial class Interpreter
                 break;
             }
 
-            default:
+            case BreakStatementView:
+            {
+                scopes.Peek().SetBreakFlag();
+                break;
+            }
+
+            case AugmentedAssignmentView:
+            case IStarExpressionVariantView:
+            case CascadeAssignmentView:
+            case GlobalStatementView:
+            case AssertStatementView:
+            case NonlocalStatementView:
+            case TypeAliasView:
+            case YieldStatementView:
+            case RaiseStatementView:
+            case ContinueStatementView:
+            case DeleteStatementView:
+            case ReturnStatementView:
+            case AnnotatedParenthesizedAssignmentView:
+            case PassStatementView:
+            case AnnotatedSubscriptAttributeAssignmentView:
+            case IImportStatementView:
                 throw notImplemented(simpleStatement);
+            default:
+                throw new InvalidOperationException();
         }
     }
 
@@ -146,6 +194,8 @@ public partial class Interpreter
 
                         _ => throw new InvalidOperationException(),
                     },
+
+                    IfExpressionView view => throw notImplemented(view),
 
                     _ => throw notImplemented(expr),
                 };
