@@ -1,10 +1,10 @@
 namespace PySharp.Runtime.Objects;
 
-public class PsFunction : PsObject
+public class PsFunction(string name) : PsBaseFunction(PsConstants.Function, name)
 {
     /* Here should be function implementation, but not now. */
 
-    internal static PsObject DunderCallImplementation(PsObject self, PsObject args, PsObject? kwargs)
+    internal static PsObject DunderCallImplementation(PsObject self, PsObject args, PsObject kwargs)
     {
         if (self is PsFunction userFunc)
         {

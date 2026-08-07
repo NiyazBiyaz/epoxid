@@ -30,7 +30,7 @@ public class PsType : PsObject
 
     public BinaryFunction? DunderTrueDiv { get; set; }
 
-    public BinaryFunction? DunderPow { get; set; }
+    public BinaryFunction? DunderPow { get; set; } // It's not really BinaryFunction because in Python it accepts 3 arguments, but for now...
 
     public UnaryFunction? DunderBool { get; set; }
 

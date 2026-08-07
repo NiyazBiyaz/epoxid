@@ -13,6 +13,12 @@ public class PsDict : PsObject, IDictionary<PsObject, PsObject>
         this.items = items;
     }
 
+    public PsDict()
+        : base(PsConstants.Dict)
+    {
+        items = [];
+    }
+
     public PsObject this[PsObject key]
     {
         get => items[key];

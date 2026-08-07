@@ -4,11 +4,18 @@ namespace PySharp.Runtime;
 
 internal static class Core
 {
-    internal static PsObject CallFunction(PsObject func, PsObject args, PsObject? kwargs)
+    internal static PsObject CallFunction(PsObject func, PsObject args, PsObject kwargs)
     {
         if (func.DunderClass.DunderCall == null)
         {
             throw new Exception($"TypeError: type '{func.DunderClass.DunderName}' is not callable.");
+        }
+
+        var descr = ((PsBaseFunction)func).ParamsDescription;
+
+        if (!descr.IsArgumentsAreValid((PsTuple)args, (PsDict)kwargs, out string? message))
+        {
+            throw new Exception($"TypeError: {string.Format(message, ((PsBaseFunction)func).QualName)}");
         }
 
         return func.DunderClass.DunderCall(func, args, kwargs);

@@ -12,6 +12,8 @@ public partial class Interpreter
 {
     private readonly Stack<Scope> scopes = [];
 
+    private readonly Scope builtins = new();
+
     // It should be PyObject, but later.
     public TextWriter Stdout { get; set; } = Console.Out;
     public TextReader Stdin { get; set; } = Console.In;
@@ -373,11 +375,11 @@ public partial class Interpreter
         return (PsString)builder.ToString();
     }
 
-    private (PsTuple arguments, PsDict? keywordArguments) evaluateArguments(ArgumentsView? arguments)
+    private (PsTuple arguments, PsDict keywordArguments) evaluateArguments(ArgumentsView? arguments)
     {
         if (arguments == null)
         {
-            return (new PsTuple([]), null);
+            return ([], []);
         }
 
         switch (arguments)
@@ -398,7 +400,7 @@ public partial class Interpreter
                     throw notImplemented(withPositional.KeywordArgumentsPart);
                 }
 
-                return (new PsTuple(positional.ToArray()), null);
+                return ([.. positional], []);
 
             default:
                 throw notImplemented(arguments);

@@ -6,4 +6,4 @@ public delegate PsObject UnaryFunction(PsObject self);
 
 public delegate PsObject BinaryFunction(PsObject self, PsObject other);
 
-public delegate PsObject TernaryFunction(PsObject self, PsObject args, PsObject? kwargs);
+public delegate PsObject TernaryFunction(PsObject self, PsObject args, PsObject kwargs);

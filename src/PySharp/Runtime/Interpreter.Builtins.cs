@@ -6,45 +6,48 @@ public partial class Interpreter
 {
     public void LoadBuiltins()
     {
-        var builtins = new Scope();
-
-        builtins.Bind(nameof(print), new PsBuiltinFunction(nameof(print), print));
-        builtins.Bind(nameof(input), new PsBuiltinFunction(nameof(input), input));
-
+        constructFunc("print", print, print_params);
+        constructFunc("input", input, input_params);
         scopes.Push(builtins);
     }
 
-    private PsNone print(PsObject self, PsTuple args, PsDict? kwargs)
+    private void constructFunc(string name, TernaryFunction function, FunctionParametersDescription description)
+    {
+        var func = new PsBuiltinFunction(name, function)
+        {
+            ParamsDescription = description,
+        };
+        builtins.Bind(name, func);
+    }
+
+    private static readonly FunctionParametersDescription print_params = new()
+    {
+        VariadicPositionalParam = FunctionParameter.Args,
+        KeywordOnlyParams = [new("end", false), new("file", false), new("sep", false)],
+    };
+
+    private PsNone print(PsObject self, PsObject args, PsObject kwargs)
     {
         // Simple 'print' implementation on C# side.
-        int seenCount = 0;
-
         PsObject? end = null, sep = null;
 
-        if (kwargs != null)
+        if (kwargs is PsDict kwargsDict)
         {
-            if (kwargs.TryGetValue((PsString)"end", out end))
-                seenCount++;
+            kwargsDict.TryGetValue((PsString)"end", out end);
 
             // NSY
-            // if (kwargs.TryGetValue((PsString)"file", out var file))
-            //     file = Stdout;
-            //
-            // else
-            //     seenCount++;
+            // kwargs.TryGetValue((PsString)"file", out var file)
 
-            if (kwargs.TryGetValue((PsString)"sep", out sep))
-                seenCount++;
-
-            if (kwargs.Count > seenCount)
-                throw new Exception("Unknown keyword parameters."); // TODO: more proper exception
+            kwargsDict.TryGetValue((PsString)"sep", out sep);
         }
 
         end ??= (PsString)"\n";
         sep ??= (PsString)" ";
 
+        var argsTuple = args as PsTuple ?? throw new ArgumentException("Not a Py# tuple.", nameof(args));
+
         bool needSep = false;
-        foreach (var obj in args)
+        foreach (var obj in argsTuple)
         {
             if (needSep)
                 Stdout.Write(sep);
@@ -58,20 +61,18 @@ public partial class Interpreter
         return PsConstants.None;
     }
 
-    private PsString input(PsObject self, PsTuple args, PsDict? kwargs)
+    private static readonly FunctionParametersDescription input_params = new()
     {
-        if (kwargs != null)
-        {
-            throw new ArgumentException("'input' function doesn't allow keyword arguments.", nameof(kwargs));
-        }
-        else if (args.Count > 1)
-        {
-            throw new ArgumentException("'input' function accepts one or zero positional arguments.", nameof(args));
-        }
+        FreeParams = [new("prompt", false)]
+    };
 
-        if (args.Count == 1)
+    private PsString input(PsObject self, PsObject args, PsObject kwargs)
+    {
+        var argsTuple = args as PsTuple ?? throw new ArgumentException("Not a Py# tuple.", nameof(args));
+
+        if (argsTuple.Count == 1)
         {
-            Stdout.Write(args[0]);
+            Stdout.Write(argsTuple[0]);
         }
 
         var input = Stdin.ReadLine() ?? throw new Exception("EOFError()");
