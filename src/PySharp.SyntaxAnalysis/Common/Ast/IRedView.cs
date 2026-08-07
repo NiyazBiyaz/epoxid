@@ -11,9 +11,9 @@ public interface IRedView
 
     SyntaxViewTree SyntaxTree { get; }
 
-    Position2D Position2D { get; }
-    Position2D FullPosition2D { get; }
-    Position2D EndPosition2D { get; }
+    Position2D StartLocation { get; }
+    Position2D FullLocation { get; }
+    Position2D EndLocation { get; }
 
     bool IsArray { get; }
 

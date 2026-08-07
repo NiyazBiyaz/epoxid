@@ -41,21 +41,21 @@ public class TestParser
         """;
         var view = getView(src);
 
-        Assert.Equal(0, view.Metadata[0].Position2D.Line);
-        Assert.Equal(1, view.Metadata[0].EndPosition2D.Line);
-        Assert.Equal(1, view.Metadata[1].Position2D.Line);
-        Assert.Equal(2, view.Metadata[1].EndPosition2D.Line);
+        Assert.Equal(0, view.Metadata[0].StartLocation.Line);
+        Assert.Equal(1, view.Metadata[0].EndLocation.Line);
+        Assert.Equal(1, view.Metadata[1].StartLocation.Line);
+        Assert.Equal(2, view.Metadata[1].EndLocation.Line);
 
-        Assert.Equal(3, view.Rules[0].Decorators[0].Position2D.Line);
-        Assert.Equal(4, view.Rules[0].Decorators[0].EndPosition2D.Line);
+        Assert.Equal(3, view.Rules[0].Decorators[0].StartLocation.Line);
+        Assert.Equal(4, view.Rules[0].Decorators[0].EndLocation.Line);
 
-        Assert.Equal(3, view.Rules[0].Position2D.Line);
-        Assert.Equal(7, view.Rules[0].EndPosition2D.Line);
+        Assert.Equal(3, view.Rules[0].StartLocation.Line);
+        Assert.Equal(7, view.Rules[0].EndLocation.Line);
 
-        Assert.Equal(5, (view.Rules[0] as ArmedRuleView)!.Arms[0].Position2D.Line);
-        Assert.Equal(4, (view.Rules[0] as ArmedRuleView)!.Arms[0].Position2D.Column);
-        Assert.Equal(6, (view.Rules[0] as ArmedRuleView)!.Arms[0].EndPosition2D.Line);
-        Assert.Equal(0, (view.Rules[0] as ArmedRuleView)!.Arms[0].EndPosition2D.Column);
+        Assert.Equal(5, (view.Rules[0] as ArmedRuleView)!.Arms[0].StartLocation.Line);
+        Assert.Equal(4, (view.Rules[0] as ArmedRuleView)!.Arms[0].StartLocation.Column);
+        Assert.Equal(6, (view.Rules[0] as ArmedRuleView)!.Arms[0].EndLocation.Line);
+        Assert.Equal(0, (view.Rules[0] as ArmedRuleView)!.Arms[0].EndLocation.Column);
     }
 
     private static GrammarView getView(string src)

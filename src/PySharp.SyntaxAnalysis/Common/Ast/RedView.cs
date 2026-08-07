@@ -38,11 +38,11 @@ public abstract class RedView : IRedView
         set => syntaxTree = value;
     }
 
-    public Position2D FullPosition2D => SyntaxTree.PositionMap.GetPosition2D(FullPosition);
+    public Position2D FullLocation => SyntaxTree.PositionMap.GetPosition2D(FullPosition);
 
-    public Position2D Position2D => SyntaxTree.PositionMap.GetPosition2D(Position);
+    public Position2D StartLocation => SyntaxTree.PositionMap.GetPosition2D(Position);
 
-    public Position2D EndPosition2D => SyntaxTree.PositionMap.GetPosition2D(EndPosition);
+    public Position2D EndLocation => SyntaxTree.PositionMap.GetPosition2D(EndPosition);
 
     public int Position => FullPosition + (Green.TriviaWidth ?? 0);
 
