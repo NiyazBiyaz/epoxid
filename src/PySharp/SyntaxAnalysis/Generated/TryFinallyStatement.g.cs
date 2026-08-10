@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TryFinallyStatement</i>.
+/// </summary>
 public sealed partial record TryFinallyStatementNode : TryStatementNode
 {
     public FinallyBlockNode Finally => (FinallyBlockNode)Children![3];
@@ -17,6 +20,9 @@ public sealed partial record TryFinallyStatementNode : TryStatementNode
         => new TryFinallyStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TryFinallyStatement</i>.
+/// </summary>
 public sealed partial class TryFinallyStatementView : TryStatementView
 {
     public TryFinallyStatementView(TryFinallyStatementNode green, int position, IRedView? parent)

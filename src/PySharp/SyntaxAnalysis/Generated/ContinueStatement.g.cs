@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ContinueStatement</i>.
+/// </summary>
 public sealed partial record ContinueStatementNode : GreenNode, ISimpleStatementNode
 {
     public override ContinueStatementView GetView(int position, IRedView? parent)
         => new ContinueStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ContinueStatement</i>.
+/// </summary>
 public sealed partial class ContinueStatementView : RedView, ISimpleStatementView
 {
     public ContinueStatementView(ContinueStatementNode green, int position, IRedView? parent)

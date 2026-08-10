@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ParenthesizedWithStatement</i>.
+/// </summary>
 public sealed partial record ParenthesizedWithStatementNode : WithStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<WithItemNode>? _field_Items = null;
@@ -31,6 +34,9 @@ public sealed partial record ParenthesizedWithStatementNode : WithStatementNode
         => new ParenthesizedWithStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ParenthesizedWithStatement</i>.
+/// </summary>
 public sealed partial class ParenthesizedWithStatementView : WithStatementView
 {
     public ParenthesizedWithStatementView(ParenthesizedWithStatementNode green, int position, IRedView? parent)

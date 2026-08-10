@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>NamedGroupExpression</i>.
+/// </summary>
 public sealed partial record NamedGroupExpressionNode : GroupNode
 {
     public INamedExpressionNode Value => (INamedExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record NamedGroupExpressionNode : GroupNode
         => new NamedGroupExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NamedGroupExpression</i>.
+/// </summary>
 public sealed partial class NamedGroupExpressionView : GroupView
 {
     public NamedGroupExpressionView(NamedGroupExpressionNode green, int position, IRedView? parent)

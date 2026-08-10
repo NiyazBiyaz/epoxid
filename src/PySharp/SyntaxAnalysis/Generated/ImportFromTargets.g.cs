@@ -10,11 +10,29 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ImportFromTargets</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ImportFromGroupNode</i><br/>
+/// 2. <i>ImportFromNamesNode</i><br/>
+/// 3. <i>ImportAllNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(ImportFromGroupNode), typeof(ImportFromNamesNode), typeof(ImportAllNode))]
 public abstract partial record ImportFromTargetsNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>ImportFromTargets</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ImportFromGroupView</i><br/>
+/// 2. <i>ImportFromNamesView</i><br/>
+/// 3. <i>ImportAllView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(ImportFromGroupView), typeof(ImportFromNamesView), typeof(ImportAllView))]
 public abstract partial class ImportFromTargetsView : RedView
 {

@@ -10,12 +10,30 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TryStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>TryFinallyStatementNode</i><br/>
+/// 2. <i>TryExceptStatementNode</i><br/>
+/// 3. <i>TryExceptStarStatementNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(TryFinallyStatementNode), typeof(TryExceptStatementNode), typeof(TryExceptStarStatementNode))]
 public abstract partial record TryStatementNode : GreenNode, ICompoundStatementNode
 {
     public BlockNode Try => (BlockNode)Children![2];
 }
 
+/// <summary>
+/// View class that represents <i>TryStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>TryFinallyStatementView</i><br/>
+/// 2. <i>TryExceptStatementView</i><br/>
+/// 3. <i>TryExceptStarStatementView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(TryFinallyStatementView), typeof(TryExceptStatementView), typeof(TryExceptStarStatementView))]
 public abstract partial class TryStatementView : RedView, ICompoundStatementView
 {

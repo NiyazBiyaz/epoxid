@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DotOperationPrimary</i>.
+/// </summary>
 public sealed partial record DotOperationPrimaryNode : RawPrimaryNode
 {
     public RawPrimaryNode Left => (RawPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record DotOperationPrimaryNode : RawPrimaryNode
         => new DotOperationPrimaryView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DotOperationPrimary</i>.
+/// </summary>
 public sealed partial class DotOperationPrimaryView : RawPrimaryView
 {
     public DotOperationPrimaryView(DotOperationPrimaryNode green, int position, IRedView? parent)

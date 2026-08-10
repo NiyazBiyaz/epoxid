@@ -10,11 +10,29 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>RaiseStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>RaiseFromStatementNode</i><br/>
+/// 2. <i>RaiseFromScratchStatementNode</i><br/>
+/// 3. <i>PassedRaiseStatementNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(RaiseFromStatementNode), typeof(RaiseFromScratchStatementNode), typeof(PassedRaiseStatementNode))]
 public abstract partial record RaiseStatementNode : GreenNode, ISimpleStatementNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>RaiseStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>RaiseFromStatementView</i><br/>
+/// 2. <i>RaiseFromScratchStatementView</i><br/>
+/// 3. <i>PassedRaiseStatementView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(RaiseFromStatementView), typeof(RaiseFromScratchStatementView), typeof(PassedRaiseStatementView))]
 public abstract partial class RaiseStatementView : RedView, ISimpleStatementView
 {

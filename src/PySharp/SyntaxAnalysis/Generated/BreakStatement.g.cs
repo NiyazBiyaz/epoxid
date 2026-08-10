@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>BreakStatement</i>.
+/// </summary>
 public sealed partial record BreakStatementNode : GreenNode, ISimpleStatementNode
 {
     public override BreakStatementView GetView(int position, IRedView? parent)
         => new BreakStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>BreakStatement</i>.
+/// </summary>
 public sealed partial class BreakStatementView : RedView, ISimpleStatementView
 {
     public BreakStatementView(BreakStatementNode green, int position, IRedView? parent)

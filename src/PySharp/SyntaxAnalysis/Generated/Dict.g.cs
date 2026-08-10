@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Dict</i>.
+/// </summary>
 public sealed partial record DictNode : GreenNode, IAtomNode
 {
     public StarredOrKeyValuesNode? KeyValuePairs => Children![1] as StarredOrKeyValuesNode;
@@ -17,6 +20,9 @@ public sealed partial record DictNode : GreenNode, IAtomNode
         => new DictView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Dict</i>.
+/// </summary>
 public sealed partial class DictView : RedView, IAtomView
 {
     public DictView(DictNode green, int position, IRedView? parent)

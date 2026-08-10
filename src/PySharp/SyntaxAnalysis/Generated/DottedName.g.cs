@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DottedName</i>.
+/// </summary>
 public sealed partial record DottedNameNode : GreenNode
 {
     public ImportUnitNode Name => (ImportUnitNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record DottedNameNode : GreenNode
         => new DottedNameView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DottedName</i>.
+/// </summary>
 public sealed partial class DottedNameView : RedView
 {
     public DottedNameView(DottedNameNode green, int position, IRedView? parent)

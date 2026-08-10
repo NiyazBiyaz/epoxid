@@ -10,12 +10,28 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>LazyImportFrom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>LazyImportFromModuleNode</i><br/>
+/// 2. <i>LazyImportFromRelativeNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(LazyImportFromModuleNode), typeof(LazyImportFromRelativeNode))]
 public abstract partial record LazyImportFromNode : GreenNode, IImportStatementNode
 {
     public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
 }
 
+/// <summary>
+/// View class that represents <i>LazyImportFrom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>LazyImportFromModuleView</i><br/>
+/// 2. <i>LazyImportFromRelativeView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(LazyImportFromModuleView), typeof(LazyImportFromRelativeView))]
 public abstract partial class LazyImportFromView : RedView, IImportStatementView
 {

@@ -527,6 +527,25 @@ internal class CsGenerator(string accessModifier)
         string typeNodeName = nodeName(ir.Name);
         string baseNodeName = nodeName(ir.BaseName ?? "Green");
 
+        // Add node class.
+        addLines($"""
+        /// <summary>
+        /// Node class that represents <i>{ir.Name}</i>.
+        /// </summary>
+        """);
+        if (ir.IsAbstract.Value)
+        {
+            addLines($"""
+            /// <remarks>
+            /// Inheritors:<br/>
+            """);
+            foreach (var (i, name) in ir.Inheritors!.Index())
+            {
+                addLine($"/// {i + 1}. <i>{nodeName(name.Name)}</i><br/>");
+            }
+            addLine("/// </remarks>");
+        }
+
         if (ir.IsAbstract.Value)
         {
             var nodeInheritorNames = ir.Inheritors!
@@ -536,7 +555,6 @@ internal class CsGenerator(string accessModifier)
             addLine($"[global::PySharp.SyntaxAnalysis.BaseRule({string.Join(", ", nodeInheritorNames)})]");
         }
 
-        // Add node class.
         beginLine();
         add($"{accessModifier} {abstractOrSealed} partial record {typeNodeName} : {baseNodeName}");
         foreach (string union in ir.UnionMembership)
@@ -610,6 +628,24 @@ internal class CsGenerator(string accessModifier)
 
         // Add view class.
         string baseViewName = viewName(ir.BaseName ?? "Red");
+
+        addLines($"""
+        /// <summary>
+        /// View class that represents <i>{ir.Name}</i>.
+        /// </summary>
+        """);
+        if (ir.IsAbstract.Value)
+        {
+            addLines($"""
+            /// <remarks>
+            /// Inheritors:<br/>
+            """);
+            foreach (var (i, name) in ir.Inheritors!.Index())
+            {
+                addLine($"/// {i + 1}. <i>{viewName(name.Name)}</i><br/>");
+            }
+            addLine("/// </remarks>");
+        }
 
         if (ir.IsAbstract.Value)
         {
@@ -730,10 +766,24 @@ internal class CsGenerator(string accessModifier)
     {
         string typeNodeName = nodeName(ir.Name, true);
         var nodeMemberNames = ir.UnionMembers!
-            .Select(m => nodeName(m.Name, m.Kind == TypeKind.Union))
-            .Select(name => $"typeof({name})");
+            .Select(m => nodeName(m.Name, m.Kind == TypeKind.Union));
 
-        addLine($"[global::PySharp.SyntaxAnalysis.WildUnion({string.Join(", ", nodeMemberNames)})]");
+        var typeofNodeMemberNames = nodeMemberNames.Select(name => $"typeof({name})");
+
+        addLines($"""
+        /// <summary>
+        /// Node interface that represents <i>{ir.Name}</i>.
+        /// </summary>
+        /// <remarks>
+        /// Implementors:<br/>
+        """);
+        foreach (var (i, member) in nodeMemberNames.Index())
+        {
+            addLine($"/// {i + 1}. <i>{member}</i><br/>");
+        }
+        addLine("/// </remarks>");
+
+        addLine($"[global::PySharp.SyntaxAnalysis.WildUnion({string.Join(", ", typeofNodeMemberNames)})]");
 
         beginLine();
         add($"{accessModifier} partial interface {typeNodeName} : IGreenNode");
@@ -749,10 +799,24 @@ internal class CsGenerator(string accessModifier)
         string typeViewName = viewName(ir.Name, true);
 
         var viewMemberNames = ir.UnionMembers!
-            .Select(m => viewName(m.Name, m.Kind == TypeKind.Union))
-            .Select(name => $"typeof({name})");
+            .Select(m => viewName(m.Name, m.Kind == TypeKind.Union));
 
-        addLine($"[global::PySharp.SyntaxAnalysis.WildUnion({string.Join(", ", viewMemberNames)})]");
+        var typeofViewMemberNames = viewMemberNames.Select(name => $"typeof({name})");
+
+        addLines($"""
+        /// <summary>
+        /// View interface that represents <i>{ir.Name}</i>.
+        /// </summary>
+        /// <remarks>
+        /// Implementors:<br/>
+        """);
+        foreach (var (i, member) in viewMemberNames.Index())
+        {
+            addLine($"/// {i + 1}. <i>{member}</i><br/>");
+        }
+        addLine("/// </remarks>");
+
+        addLine($"[global::PySharp.SyntaxAnalysis.WildUnion({string.Join(", ", typeofViewMemberNames)})]");
 
         beginLine();
         add($"{accessModifier} partial interface {typeViewName} : IRedView");

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ImportFromGroup</i>.
+/// </summary>
 public sealed partial record ImportFromGroupNode : ImportFromTargetsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<AliasedNameNode>? _field_Targets = null;
@@ -30,6 +33,9 @@ public sealed partial record ImportFromGroupNode : ImportFromTargetsNode
         => new ImportFromGroupView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ImportFromGroup</i>.
+/// </summary>
 public sealed partial class ImportFromGroupView : ImportFromTargetsView
 {
     public ImportFromGroupView(ImportFromGroupNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Disjunction</i>.
+/// </summary>
 public sealed partial record DisjunctionNode : GreenNode, IExpressionNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ConjunctionNode>? _field_Values = null;
@@ -30,6 +33,9 @@ public sealed partial record DisjunctionNode : GreenNode, IExpressionNode
         => new DisjunctionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Disjunction</i>.
+/// </summary>
 public sealed partial class DisjunctionView : RedView, IExpressionView
 {
     public DisjunctionView(DisjunctionNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>CascadeTarget</i>.
+/// </summary>
 public sealed partial record CascadeTargetNode : GreenNode
 {
     public IAssignmentTargetVariantNode Value => (IAssignmentTargetVariantNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record CascadeTargetNode : GreenNode
         => new CascadeTargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>CascadeTarget</i>.
+/// </summary>
 public sealed partial class CascadeTargetView : RedView
 {
     public CascadeTargetView(CascadeTargetNode green, int position, IRedView? parent)

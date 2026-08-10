@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>PlainWithItem</i>.
+/// </summary>
 public sealed partial record PlainWithItemNode : WithItemNode
 {
     public override PlainWithItemView GetView(int position, IRedView? parent)
         => new PlainWithItemView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>PlainWithItem</i>.
+/// </summary>
 public sealed partial class PlainWithItemView : WithItemView
 {
     public PlainWithItemView(PlainWithItemNode green, int position, IRedView? parent)

@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>NoneAtom</i>.
+/// </summary>
 public sealed partial record NoneAtomNode : OneTokenAtomNode
 {
     public override NoneAtomView GetView(int position, IRedView? parent)
         => new NoneAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NoneAtom</i>.
+/// </summary>
 public sealed partial class NoneAtomView : OneTokenAtomView
 {
     public NoneAtomView(NoneAtomNode green, int position, IRedView? parent)

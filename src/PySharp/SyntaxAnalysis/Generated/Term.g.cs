@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Term</i>.
+/// </summary>
 public sealed partial record TermNode : GreenNode, ITermExpressionNode
 {
     public ITermExpressionNode Left => (ITermExpressionNode)Children![0];
@@ -19,6 +22,9 @@ public sealed partial record TermNode : GreenNode, ITermExpressionNode
         => new TermView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Term</i>.
+/// </summary>
 public sealed partial class TermView : RedView, ITermExpressionView
 {
     public TermView(TermNode green, int position, IRedView? parent)

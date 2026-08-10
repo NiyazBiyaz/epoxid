@@ -10,11 +10,29 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DeleteTarget</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DeleteAttributeTargetNode</i><br/>
+/// 2. <i>DeleteSubscriptTargetNode</i><br/>
+/// 3. <i>DeleteAtomTargetNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DeleteAttributeTargetNode), typeof(DeleteSubscriptTargetNode), typeof(DeleteAtomTargetNode))]
 public abstract partial record DeleteTargetNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>DeleteTarget</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DeleteAttributeTargetView</i><br/>
+/// 2. <i>DeleteSubscriptTargetView</i><br/>
+/// 3. <i>DeleteAtomTargetView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DeleteAttributeTargetView), typeof(DeleteSubscriptTargetView), typeof(DeleteAtomTargetView))]
 public abstract partial class DeleteTargetView : RedView
 {

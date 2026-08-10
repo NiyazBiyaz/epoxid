@@ -10,6 +10,14 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>FunctionDefRaw</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NormalFunctionDefNode</i><br/>
+/// 2. <i>AsyncFunctionDefNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalFunctionDefNode), typeof(AsyncFunctionDefNode))]
 public abstract partial record FunctionDefRawNode : GreenNode
 {
@@ -20,6 +28,14 @@ public abstract partial record FunctionDefRawNode : GreenNode
     public BlockNode Block => (BlockNode)Children![8];
 }
 
+/// <summary>
+/// View class that represents <i>FunctionDefRaw</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NormalFunctionDefView</i><br/>
+/// 2. <i>AsyncFunctionDefView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalFunctionDefView), typeof(AsyncFunctionDefView))]
 public abstract partial class FunctionDefRawView : RedView
 {

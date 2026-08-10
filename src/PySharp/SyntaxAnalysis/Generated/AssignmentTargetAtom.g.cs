@@ -10,11 +10,31 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AssignmentTargetAtom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NameTargetAtomNode</i><br/>
+/// 2. <i>GroupedTargetAtomNode</i><br/>
+/// 3. <i>TupleTargetAtomNode</i><br/>
+/// 4. <i>ListTargetAtomNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NameTargetAtomNode), typeof(GroupedTargetAtomNode), typeof(TupleTargetAtomNode), typeof(ListTargetAtomNode))]
 public abstract partial record AssignmentTargetAtomNode : GreenNode, IAssignmentTargetUnitNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>AssignmentTargetAtom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NameTargetAtomView</i><br/>
+/// 2. <i>GroupedTargetAtomView</i><br/>
+/// 3. <i>TupleTargetAtomView</i><br/>
+/// 4. <i>ListTargetAtomView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NameTargetAtomView), typeof(GroupedTargetAtomView), typeof(TupleTargetAtomView), typeof(ListTargetAtomView))]
 public abstract partial class AssignmentTargetAtomView : RedView, IAssignmentTargetUnitView
 {

@@ -10,11 +10,31 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>WithStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ParenthesizedWithStatementNode</i><br/>
+/// 2. <i>OneLinedWithStatementNode</i><br/>
+/// 3. <i>ParenthesizedAsyncWithStatementNode</i><br/>
+/// 4. <i>OneLinedAsyncWithStatementNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(ParenthesizedWithStatementNode), typeof(OneLinedWithStatementNode), typeof(ParenthesizedAsyncWithStatementNode), typeof(OneLinedAsyncWithStatementNode))]
 public abstract partial record WithStatementNode : GreenNode, ICompoundStatementNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>WithStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ParenthesizedWithStatementView</i><br/>
+/// 2. <i>OneLinedWithStatementView</i><br/>
+/// 3. <i>ParenthesizedAsyncWithStatementView</i><br/>
+/// 4. <i>OneLinedAsyncWithStatementView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(ParenthesizedWithStatementView), typeof(OneLinedWithStatementView), typeof(ParenthesizedAsyncWithStatementView), typeof(OneLinedAsyncWithStatementView))]
 public abstract partial class WithStatementView : RedView, ICompoundStatementView
 {

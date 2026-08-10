@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SingleSubscriptTarget</i>.
+/// </summary>
 public sealed partial record SingleSubscriptTargetNode : SingleSubscriptAttributeTargetNode
 {
     public SlicesNode Subscript => (SlicesNode)Children![2];
@@ -17,6 +20,9 @@ public sealed partial record SingleSubscriptTargetNode : SingleSubscriptAttribut
         => new SingleSubscriptTargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SingleSubscriptTarget</i>.
+/// </summary>
 public sealed partial class SingleSubscriptTargetView : SingleSubscriptAttributeTargetView
 {
     public SingleSubscriptTargetView(SingleSubscriptTargetNode green, int position, IRedView? parent)

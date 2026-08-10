@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SetComprehension</i>.
+/// </summary>
 public sealed partial record SetComprehensionNode : GreenNode, IAtomNode
 {
     public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
@@ -18,6 +21,9 @@ public sealed partial record SetComprehensionNode : GreenNode, IAtomNode
         => new SetComprehensionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SetComprehension</i>.
+/// </summary>
 public sealed partial class SetComprehensionView : RedView, IAtomView
 {
     public SetComprehensionView(SetComprehensionNode green, int position, IRedView? parent)

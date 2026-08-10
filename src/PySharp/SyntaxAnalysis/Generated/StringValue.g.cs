@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>StringValue</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>StringConstantNode</i><br/>
+/// 2. <i>FStringNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(StringConstantNode), typeof(FStringNode))]
 public partial interface IStringValueNode : IGreenNode;
 
+/// <summary>
+/// View interface that represents <i>StringValue</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>StringConstantView</i><br/>
+/// 2. <i>FStringView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(StringConstantView), typeof(FStringView))]
 public partial interface IStringValueView : IRedView;

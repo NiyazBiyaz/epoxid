@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AsyncForStatement</i>.
+/// </summary>
 public sealed partial record AsyncForStatementNode : ForStatementNode
 {
     public IAssignmentTargetVariantNode Targets => (IAssignmentTargetVariantNode)Children![2];
@@ -20,6 +23,9 @@ public sealed partial record AsyncForStatementNode : ForStatementNode
         => new AsyncForStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AsyncForStatement</i>.
+/// </summary>
 public sealed partial class AsyncForStatementView : ForStatementView
 {
     public AsyncForStatementView(AsyncForStatementNode green, int position, IRedView? parent)

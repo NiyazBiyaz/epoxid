@@ -10,12 +10,28 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SingleSubscriptAttributeTarget</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>SingleAttributeTargetNode</i><br/>
+/// 2. <i>SingleSubscriptTargetNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(SingleAttributeTargetNode), typeof(SingleSubscriptTargetNode))]
 public abstract partial record SingleSubscriptAttributeTargetNode : GreenNode
 {
     public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
 }
 
+/// <summary>
+/// View class that represents <i>SingleSubscriptAttributeTarget</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>SingleAttributeTargetView</i><br/>
+/// 2. <i>SingleSubscriptTargetView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(SingleAttributeTargetView), typeof(SingleSubscriptTargetView))]
 public abstract partial class SingleSubscriptAttributeTargetView : RedView
 {

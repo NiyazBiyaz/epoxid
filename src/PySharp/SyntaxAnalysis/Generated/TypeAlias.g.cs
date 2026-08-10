@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TypeAlias</i>.
+/// </summary>
 public sealed partial record TypeAliasNode : GreenNode, ISimpleStatementNode
 {
     public TokenNode Name => (TokenNode)Children![1];
@@ -19,6 +22,9 @@ public sealed partial record TypeAliasNode : GreenNode, ISimpleStatementNode
         => new TypeAliasView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TypeAlias</i>.
+/// </summary>
 public sealed partial class TypeAliasView : RedView, ISimpleStatementView
 {
     public TypeAliasView(TypeAliasNode green, int position, IRedView? parent)

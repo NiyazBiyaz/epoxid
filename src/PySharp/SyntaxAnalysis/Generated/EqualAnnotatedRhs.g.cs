@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>EqualAnnotatedRhs</i>.
+/// </summary>
 public sealed partial record EqualAnnotatedRhsNode : GreenNode
 {
     public IAnnotatedRhsNode Value => (IAnnotatedRhsNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record EqualAnnotatedRhsNode : GreenNode
         => new EqualAnnotatedRhsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>EqualAnnotatedRhs</i>.
+/// </summary>
 public sealed partial class EqualAnnotatedRhsView : RedView
 {
     public EqualAnnotatedRhsView(EqualAnnotatedRhsNode green, int position, IRedView? parent)

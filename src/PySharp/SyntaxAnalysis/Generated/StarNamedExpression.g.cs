@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>StarNamedExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>StarBitwiseOrExpressionNode</i><br/>
+/// 2. <i>INamedExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(StarBitwiseOrExpressionNode), typeof(INamedExpressionNode))]
 public partial interface IStarNamedExpressionNode : IGreenNode;
 
+/// <summary>
+/// View interface that represents <i>StarNamedExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>StarBitwiseOrExpressionView</i><br/>
+/// 2. <i>INamedExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(StarBitwiseOrExpressionView), typeof(INamedExpressionView))]
 public partial interface IStarNamedExpressionView : IRedView;

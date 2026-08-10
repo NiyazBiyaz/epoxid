@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AnnotatedAssignment</i>.
+/// </summary>
 public sealed partial record AnnotatedAssignmentNode : AssignmentNode
 {
     public TokenNode Target => (TokenNode)Children![0];
@@ -19,6 +22,9 @@ public sealed partial record AnnotatedAssignmentNode : AssignmentNode
         => new AnnotatedAssignmentView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AnnotatedAssignment</i>.
+/// </summary>
 public sealed partial class AnnotatedAssignmentView : AssignmentView
 {
     public AnnotatedAssignmentView(AnnotatedAssignmentNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>UnpackingDictComprehension</i>.
+/// </summary>
 public sealed partial record UnpackingDictComprehensionNode : DictComprehensionNode
 {
     public IExpressionNode Expression => (IExpressionNode)Children![2];
@@ -18,6 +21,9 @@ public sealed partial record UnpackingDictComprehensionNode : DictComprehensionN
         => new UnpackingDictComprehensionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>UnpackingDictComprehension</i>.
+/// </summary>
 public sealed partial class UnpackingDictComprehensionView : DictComprehensionView
 {
     public UnpackingDictComprehensionView(UnpackingDictComprehensionNode green, int position, IRedView? parent)

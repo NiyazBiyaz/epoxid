@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ForStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NormalForStatementNode</i><br/>
+/// 2. <i>AsyncForStatementNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalForStatementNode), typeof(AsyncForStatementNode))]
 public abstract partial record ForStatementNode : GreenNode, ICompoundStatementNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>ForStatement</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NormalForStatementView</i><br/>
+/// 2. <i>AsyncForStatementView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalForStatementView), typeof(AsyncForStatementView))]
 public abstract partial class ForStatementView : RedView, ICompoundStatementView
 {

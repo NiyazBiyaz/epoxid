@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Sum</i>.
+/// </summary>
 public sealed partial record SumNode : GreenNode, ISumExpressionNode
 {
     public ISumExpressionNode Left => (ISumExpressionNode)Children![0];
@@ -19,6 +22,9 @@ public sealed partial record SumNode : GreenNode, ISumExpressionNode
         => new SumView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Sum</i>.
+/// </summary>
 public sealed partial class SumView : RedView, ISumExpressionView
 {
     public SumView(SumNode green, int position, IRedView? parent)

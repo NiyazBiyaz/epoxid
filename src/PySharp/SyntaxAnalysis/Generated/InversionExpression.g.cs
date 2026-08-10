@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>InversionExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>InversionNode</i><br/>
+/// 2. <i>ComparisonNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(InversionNode), typeof(ComparisonNode))]
 public partial interface IInversionExpressionNode : IGreenNode;
 
+/// <summary>
+/// View interface that represents <i>InversionExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>InversionView</i><br/>
+/// 2. <i>ComparisonView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(InversionView), typeof(ComparisonView))]
 public partial interface IInversionExpressionView : IRedView;

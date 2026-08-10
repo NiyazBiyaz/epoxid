@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Comparison</i>.
+/// </summary>
 public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNode
 {
     public IBitwiseOrExpressionNode First => (IBitwiseOrExpressionNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNod
         => new ComparisonView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Comparison</i>.
+/// </summary>
 public sealed partial class ComparisonView : RedView, IInversionExpressionView
 {
     public ComparisonView(ComparisonNode green, int position, IRedView? parent)

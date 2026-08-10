@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TypeParameterBound</i>.
+/// </summary>
 public sealed partial record TypeParameterBoundNode : GreenNode
 {
     public IExpressionNode Value => (IExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record TypeParameterBoundNode : GreenNode
         => new TypeParameterBoundView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TypeParameterBound</i>.
+/// </summary>
 public sealed partial class TypeParameterBoundView : RedView
 {
     public TypeParameterBoundView(TypeParameterBoundNode green, int position, IRedView? parent)

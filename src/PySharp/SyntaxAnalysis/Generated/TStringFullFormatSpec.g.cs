@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TStringFullFormatSpec</i>.
+/// </summary>
 public sealed partial record TStringFullFormatSpecNode : GreenNode
 {
     public NodeArray<TStringFormatSpecNode> Specs => (NodeArray<TStringFormatSpecNode>)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record TStringFullFormatSpecNode : GreenNode
         => new TStringFullFormatSpecView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TStringFullFormatSpec</i>.
+/// </summary>
 public sealed partial class TStringFullFormatSpecView : RedView
 {
     public TStringFullFormatSpecView(TStringFullFormatSpecNode green, int position, IRedView? parent)

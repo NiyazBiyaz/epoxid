@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DimensionalSubscript</i>.
+/// </summary>
 public sealed partial record DimensionalSubscriptNode : SlicesNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DimensionNode>? _field_Values = null;
@@ -30,6 +33,9 @@ public sealed partial record DimensionalSubscriptNode : SlicesNode
         => new DimensionalSubscriptView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DimensionalSubscript</i>.
+/// </summary>
 public sealed partial class DimensionalSubscriptView : SlicesView
 {
     public DimensionalSubscriptView(DimensionalSubscriptNode green, int position, IRedView? parent)

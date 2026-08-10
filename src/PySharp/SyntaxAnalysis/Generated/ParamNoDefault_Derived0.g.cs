@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ParamNoDefault_Derived0</i>.
+/// </summary>
 public sealed partial record ParamNoDefault_Derived0Node : ParamNoDefaultNode
 {
     public TokenNode Token => (TokenNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record ParamNoDefault_Derived0Node : ParamNoDefaultNode
         => new ParamNoDefault_Derived0View(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ParamNoDefault_Derived0</i>.
+/// </summary>
 public sealed partial class ParamNoDefault_Derived0View : ParamNoDefaultView
 {
     public ParamNoDefault_Derived0View(ParamNoDefault_Derived0Node green, int position, IRedView? parent)

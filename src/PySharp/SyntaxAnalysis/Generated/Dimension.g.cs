@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Dimension</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DimensionSliceNode</i><br/>
+/// 2. <i>DimensionExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DimensionSliceNode), typeof(DimensionExpressionNode))]
 public abstract partial record DimensionNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>Dimension</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DimensionSliceView</i><br/>
+/// 2. <i>DimensionExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DimensionSliceView), typeof(DimensionExpressionView))]
 public abstract partial class DimensionView : RedView
 {

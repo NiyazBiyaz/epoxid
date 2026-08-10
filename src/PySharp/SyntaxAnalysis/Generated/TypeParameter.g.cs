@@ -10,12 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TypeParameter</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record TypeParameterNode : GreenNode
 {
     public TokenNode Token => (TokenNode)Children![0];
 }
 
+/// <summary>
+/// View class that represents <i>TypeParameter</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class TypeParameterView : RedView
 {

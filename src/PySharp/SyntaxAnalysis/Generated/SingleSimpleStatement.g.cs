@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SingleSimpleStatement</i>.
+/// </summary>
 public sealed partial record SingleSimpleStatementNode : SimpleStatementsNode
 {
     public ISimpleStatementNode Value => (ISimpleStatementNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record SingleSimpleStatementNode : SimpleStatementsNode
         => new SingleSimpleStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SingleSimpleStatement</i>.
+/// </summary>
 public sealed partial class SingleSimpleStatementView : SimpleStatementsView
 {
     public SingleSimpleStatementView(SingleSimpleStatementNode green, int position, IRedView? parent)

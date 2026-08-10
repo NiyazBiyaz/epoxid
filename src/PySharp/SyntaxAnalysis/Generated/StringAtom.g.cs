@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StringAtom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>StringValueAtomNode</i><br/>
+/// 2. <i>StringTemplateAtomNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(StringValueAtomNode), typeof(StringTemplateAtomNode))]
 public abstract partial record StringAtomNode : GreenNode, IAtomNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>StringAtom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>StringValueAtomView</i><br/>
+/// 2. <i>StringTemplateAtomView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(StringValueAtomView), typeof(StringTemplateAtomView))]
 public abstract partial class StringAtomView : RedView, IAtomView
 {

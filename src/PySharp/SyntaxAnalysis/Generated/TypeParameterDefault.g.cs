@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TypeParameterDefault</i>.
+/// </summary>
 public sealed partial record TypeParameterDefaultNode : GreenNode
 {
     public IExpressionNode Value => (IExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record TypeParameterDefaultNode : GreenNode
         => new TypeParameterDefaultView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TypeParameterDefault</i>.
+/// </summary>
 public sealed partial class TypeParameterDefaultView : RedView
 {
     public TypeParameterDefaultView(TypeParameterDefaultNode green, int position, IRedView? parent)

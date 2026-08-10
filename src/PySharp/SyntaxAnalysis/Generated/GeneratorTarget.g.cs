@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>GeneratorTarget</i>.
+/// </summary>
 public sealed partial record GeneratorTargetNode : TargetPrimaryNode
 {
     public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record GeneratorTargetNode : TargetPrimaryNode
         => new GeneratorTargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>GeneratorTarget</i>.
+/// </summary>
 public sealed partial class GeneratorTargetView : TargetPrimaryView
 {
     public GeneratorTargetView(GeneratorTargetNode green, int position, IRedView? parent)

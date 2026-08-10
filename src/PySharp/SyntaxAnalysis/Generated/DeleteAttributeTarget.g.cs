@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DeleteAttributeTarget</i>.
+/// </summary>
 public sealed partial record DeleteAttributeTargetNode : DeleteTargetNode
 {
     public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record DeleteAttributeTargetNode : DeleteTargetNode
         => new DeleteAttributeTargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DeleteAttributeTarget</i>.
+/// </summary>
 public sealed partial class DeleteAttributeTargetView : DeleteTargetView
 {
     public DeleteAttributeTargetView(DeleteAttributeTargetNode green, int position, IRedView? parent)

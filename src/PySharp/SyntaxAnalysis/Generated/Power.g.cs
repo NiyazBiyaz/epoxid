@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Power</i>.
+/// </summary>
 public sealed partial record PowerNode : GreenNode, IPowerExpressionNode
 {
     public IPrimaryNode Left => (IPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record PowerNode : GreenNode, IPowerExpressionNode
         => new PowerView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Power</i>.
+/// </summary>
 public sealed partial class PowerView : RedView, IPowerExpressionView
 {
     public PowerView(PowerNode green, int position, IRedView? parent)

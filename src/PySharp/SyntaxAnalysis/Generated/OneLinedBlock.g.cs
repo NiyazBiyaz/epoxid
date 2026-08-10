@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>OneLinedBlock</i>.
+/// </summary>
 public sealed partial record OneLinedBlockNode : BlockNode
 {
     public SimpleStatementsNode Statements => (SimpleStatementsNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record OneLinedBlockNode : BlockNode
         => new OneLinedBlockView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>OneLinedBlock</i>.
+/// </summary>
 public sealed partial class OneLinedBlockView : BlockView
 {
     public OneLinedBlockView(OneLinedBlockNode green, int position, IRedView? parent)

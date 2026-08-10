@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SlashWithDefault_Derived0</i>.
+/// </summary>
 public sealed partial record SlashWithDefault_Derived0Node : SlashWithDefaultNode
 {
     public TokenNode Token1 => (TokenNode)Children![3];
@@ -17,6 +20,9 @@ public sealed partial record SlashWithDefault_Derived0Node : SlashWithDefaultNod
         => new SlashWithDefault_Derived0View(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SlashWithDefault_Derived0</i>.
+/// </summary>
 public sealed partial class SlashWithDefault_Derived0View : SlashWithDefaultView
 {
     public SlashWithDefault_Derived0View(SlashWithDefault_Derived0Node green, int position, IRedView? parent)

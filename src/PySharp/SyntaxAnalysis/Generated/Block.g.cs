@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Block</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>IndentedBlockNode</i><br/>
+/// 2. <i>OneLinedBlockNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(IndentedBlockNode), typeof(OneLinedBlockNode))]
 public abstract partial record BlockNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>Block</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>IndentedBlockView</i><br/>
+/// 2. <i>OneLinedBlockView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(IndentedBlockView), typeof(OneLinedBlockView))]
 public abstract partial class BlockView : RedView
 {

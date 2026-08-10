@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DeleteStatement</i>.
+/// </summary>
 public sealed partial record DeleteStatementNode : GreenNode, ISimpleStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DeleteTargetNode>? _field_Targets = null;
@@ -30,6 +33,9 @@ public sealed partial record DeleteStatementNode : GreenNode, ISimpleStatementNo
         => new DeleteStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DeleteStatement</i>.
+/// </summary>
 public sealed partial class DeleteStatementView : RedView, ISimpleStatementView
 {
     public DeleteStatementView(DeleteStatementNode green, int position, IRedView? parent)

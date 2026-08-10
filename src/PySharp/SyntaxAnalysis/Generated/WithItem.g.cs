@@ -10,12 +10,28 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>WithItem</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NamedWithItemNode</i><br/>
+/// 2. <i>PlainWithItemNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedWithItemNode), typeof(PlainWithItemNode))]
 public abstract partial record WithItemNode : GreenNode
 {
     public IExpressionNode Expression => (IExpressionNode)Children![0];
 }
 
+/// <summary>
+/// View class that represents <i>WithItem</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NamedWithItemView</i><br/>
+/// 2. <i>PlainWithItemView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedWithItemView), typeof(PlainWithItemView))]
 public abstract partial class WithItemView : RedView
 {

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>File</i>.
+/// </summary>
 public sealed partial record FileNode : GreenNode
 {
     public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record FileNode : GreenNode
         => new FileView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>File</i>.
+/// </summary>
 public sealed partial class FileView : RedView
 {
     public FileView(FileNode green, int position, IRedView? parent)

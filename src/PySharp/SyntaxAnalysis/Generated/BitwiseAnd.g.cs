@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>BitwiseAnd</i>.
+/// </summary>
 public sealed partial record BitwiseAndNode : GreenNode, IBitwiseAndExpressionNode
 {
     public IBitwiseAndExpressionNode Left => (IBitwiseAndExpressionNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record BitwiseAndNode : GreenNode, IBitwiseAndExpressionNo
         => new BitwiseAndView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>BitwiseAnd</i>.
+/// </summary>
 public sealed partial class BitwiseAndView : RedView, IBitwiseAndExpressionView
 {
     public BitwiseAndView(BitwiseAndNode green, int position, IRedView? parent)

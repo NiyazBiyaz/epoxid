@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Group</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NamedGroupExpressionNode</i><br/>
+/// 2. <i>YieldGroupExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedGroupExpressionNode), typeof(YieldGroupExpressionNode))]
 public abstract partial record GroupNode : GreenNode, IAtomNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>Group</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>NamedGroupExpressionView</i><br/>
+/// 2. <i>YieldGroupExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(NamedGroupExpressionView), typeof(YieldGroupExpressionView))]
 public abstract partial class GroupView : RedView, IAtomView
 {

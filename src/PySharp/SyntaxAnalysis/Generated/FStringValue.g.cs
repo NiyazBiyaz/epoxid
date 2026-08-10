@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>FStringValue</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>FStringValueLiteralNode</i><br/>
+/// 2. <i>FStringValueReplacementNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(FStringValueLiteralNode), typeof(FStringValueReplacementNode))]
 public abstract partial record FStringValueNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>FStringValue</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>FStringValueLiteralView</i><br/>
+/// 2. <i>FStringValueReplacementView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(FStringValueLiteralView), typeof(FStringValueReplacementView))]
 public abstract partial class FStringValueView : RedView
 {

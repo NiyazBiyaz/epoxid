@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>WhileStatement</i>.
+/// </summary>
 public sealed partial record WhileStatementNode : GreenNode, ICompoundStatementNode
 {
     public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
@@ -19,6 +22,9 @@ public sealed partial record WhileStatementNode : GreenNode, ICompoundStatementN
         => new WhileStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>WhileStatement</i>.
+/// </summary>
 public sealed partial class WhileStatementView : RedView, ICompoundStatementView
 {
     public WhileStatementView(WhileStatementNode green, int position, IRedView? parent)

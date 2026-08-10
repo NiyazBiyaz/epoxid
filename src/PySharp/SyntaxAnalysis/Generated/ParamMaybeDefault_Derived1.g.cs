@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ParamMaybeDefault_Derived1</i>.
+/// </summary>
 public sealed partial record ParamMaybeDefault_Derived1Node : ParamMaybeDefaultNode
 {
     public override ParamMaybeDefault_Derived1View GetView(int position, IRedView? parent)
         => new ParamMaybeDefault_Derived1View(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ParamMaybeDefault_Derived1</i>.
+/// </summary>
 public sealed partial class ParamMaybeDefault_Derived1View : ParamMaybeDefaultView
 {
     public ParamMaybeDefault_Derived1View(ParamMaybeDefault_Derived1Node green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Tuple</i>.
+/// </summary>
 public sealed partial record TupleNode : GreenNode, IAtomNode
 {
     public IStarNamedExpressionNode First => (IStarNamedExpressionNode)Children![1];
@@ -18,6 +21,9 @@ public sealed partial record TupleNode : GreenNode, IAtomNode
         => new TupleView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Tuple</i>.
+/// </summary>
 public sealed partial class TupleView : RedView, IAtomView
 {
     public TupleView(TupleNode green, int position, IRedView? parent)

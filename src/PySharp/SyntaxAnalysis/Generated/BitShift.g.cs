@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>BitShift</i>.
+/// </summary>
 public sealed partial record BitShiftNode : GreenNode, IBitShiftExpressionNode
 {
     public IBitShiftExpressionNode Left => (IBitShiftExpressionNode)Children![0];
@@ -19,6 +22,9 @@ public sealed partial record BitShiftNode : GreenNode, IBitShiftExpressionNode
         => new BitShiftView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>BitShift</i>.
+/// </summary>
 public sealed partial class BitShiftView : RedView, IBitShiftExpressionView
 {
     public BitShiftView(BitShiftNode green, int position, IRedView? parent)

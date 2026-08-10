@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StarEtc_Derived2</i>.
+/// </summary>
 public sealed partial record StarEtc_Derived2Node : StarEtcNode
 {
     public TokenNode Token => (TokenNode)Children![0];
@@ -20,6 +23,9 @@ public sealed partial record StarEtc_Derived2Node : StarEtcNode
         => new StarEtc_Derived2View(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StarEtc_Derived2</i>.
+/// </summary>
 public sealed partial class StarEtc_Derived2View : StarEtcView
 {
     public StarEtc_Derived2View(StarEtc_Derived2Node green, int position, IRedView? parent)

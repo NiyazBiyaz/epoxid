@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>BitShiftExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>BitShiftNode</i><br/>
+/// 2. <i>ISumExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(BitShiftNode), typeof(ISumExpressionNode))]
 public partial interface IBitShiftExpressionNode : IGreenNode, IBitwiseAndExpressionNode;
 
+/// <summary>
+/// View interface that represents <i>BitShiftExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>BitShiftView</i><br/>
+/// 2. <i>ISumExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(BitShiftView), typeof(ISumExpressionView))]
 public partial interface IBitShiftExpressionView : IRedView, IBitwiseAndExpressionView;

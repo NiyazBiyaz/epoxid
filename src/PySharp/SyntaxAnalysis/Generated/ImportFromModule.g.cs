@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ImportFromModule</i>.
+/// </summary>
 public sealed partial record ImportFromModuleNode : ImportFromNode
 {
     public ImportUnitNode Path => (ImportUnitNode)Children![2];
@@ -18,6 +21,9 @@ public sealed partial record ImportFromModuleNode : ImportFromNode
         => new ImportFromModuleView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ImportFromModule</i>.
+/// </summary>
 public sealed partial class ImportFromModuleView : ImportFromView
 {
     public ImportFromModuleView(ImportFromModuleNode green, int position, IRedView? parent)

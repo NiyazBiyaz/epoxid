@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SimpleStatements</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>SingleSimpleStatementNode</i><br/>
+/// 2. <i>SeparatedSimpleStatementsNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(SingleSimpleStatementNode), typeof(SeparatedSimpleStatementsNode))]
 public abstract partial record SimpleStatementsNode : GreenNode, IStatementNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>SimpleStatements</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>SingleSimpleStatementView</i><br/>
+/// 2. <i>SeparatedSimpleStatementsView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(SingleSimpleStatementView), typeof(SeparatedSimpleStatementsView))]
 public abstract partial class SimpleStatementsView : RedView, IStatementView
 {

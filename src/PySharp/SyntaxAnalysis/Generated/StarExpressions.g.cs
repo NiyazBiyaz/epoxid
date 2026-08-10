@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StarExpressions</i>.
+/// </summary>
 public sealed partial record StarExpressionsNode : GreenNode, IStarExpressionVariantNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IStarExpressionNode>? _field_Values = null;
@@ -30,6 +33,9 @@ public sealed partial record StarExpressionsNode : GreenNode, IStarExpressionVar
         => new StarExpressionsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StarExpressions</i>.
+/// </summary>
 public sealed partial class StarExpressionsView : RedView, IStarExpressionVariantView
 {
     public StarExpressionsView(StarExpressionsNode green, int position, IRedView? parent)

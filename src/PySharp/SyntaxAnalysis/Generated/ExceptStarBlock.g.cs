@@ -10,11 +10,29 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ExceptStarBlock</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>PlainExceptStarBlockNode</i><br/>
+/// 2. <i>AliasExceptStarBlockNode</i><br/>
+/// 3. <i>MultipleExceptStarBlockNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(PlainExceptStarBlockNode), typeof(AliasExceptStarBlockNode), typeof(MultipleExceptStarBlockNode))]
 public abstract partial record ExceptStarBlockNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>ExceptStarBlock</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>PlainExceptStarBlockView</i><br/>
+/// 2. <i>AliasExceptStarBlockView</i><br/>
+/// 3. <i>MultipleExceptStarBlockView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(PlainExceptStarBlockView), typeof(AliasExceptStarBlockView), typeof(MultipleExceptStarBlockView))]
 public abstract partial class ExceptStarBlockView : RedView
 {

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>IndentedBlock</i>.
+/// </summary>
 public sealed partial record IndentedBlockNode : BlockNode
 {
     public NodeArray<IStatementNode> Statements => (NodeArray<IStatementNode>)Children![2];
@@ -17,6 +20,9 @@ public sealed partial record IndentedBlockNode : BlockNode
         => new IndentedBlockView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>IndentedBlock</i>.
+/// </summary>
 public sealed partial class IndentedBlockView : BlockView
 {
     public IndentedBlockView(IndentedBlockNode green, int position, IRedView? parent)

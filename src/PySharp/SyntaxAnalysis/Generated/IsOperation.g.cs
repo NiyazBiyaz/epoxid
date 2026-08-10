@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>IsOperation</i>.
+/// </summary>
 public sealed partial record IsOperationNode : CompareOperationNode
 {
     public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record IsOperationNode : CompareOperationNode
         => new IsOperationView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>IsOperation</i>.
+/// </summary>
 public sealed partial class IsOperationView : CompareOperationView
 {
     public IsOperationView(IsOperationNode green, int position, IRedView? parent)

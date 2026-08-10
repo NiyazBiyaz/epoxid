@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SeparatedSimpleStatements</i>.
+/// </summary>
 public sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ISimpleStatementNode>? _field_Values = null;
@@ -30,6 +33,9 @@ public sealed partial record SeparatedSimpleStatementsNode : SimpleStatementsNod
         => new SeparatedSimpleStatementsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SeparatedSimpleStatements</i>.
+/// </summary>
 public sealed partial class SeparatedSimpleStatementsView : SimpleStatementsView
 {
     public SeparatedSimpleStatementsView(SeparatedSimpleStatementsNode green, int position, IRedView? parent)

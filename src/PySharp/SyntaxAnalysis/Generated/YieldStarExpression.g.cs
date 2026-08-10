@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>YieldStarExpression</i>.
+/// </summary>
 public sealed partial record YieldStarExpressionNode : YieldExpressionNode
 {
     public StarExpressionsNode? Expression => Children![1] as StarExpressionsNode;
@@ -17,6 +20,9 @@ public sealed partial record YieldStarExpressionNode : YieldExpressionNode
         => new YieldStarExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>YieldStarExpression</i>.
+/// </summary>
 public sealed partial class YieldStarExpressionView : YieldExpressionView
 {
     public YieldStarExpressionView(YieldStarExpressionNode green, int position, IRedView? parent)

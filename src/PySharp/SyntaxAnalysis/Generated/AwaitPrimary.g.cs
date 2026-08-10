@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AwaitPrimary</i>.
+/// </summary>
 public sealed partial record AwaitPrimaryNode : GreenNode, IPrimaryNode
 {
     public RawPrimaryNode Value => (RawPrimaryNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record AwaitPrimaryNode : GreenNode, IPrimaryNode
         => new AwaitPrimaryView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AwaitPrimary</i>.
+/// </summary>
 public sealed partial class AwaitPrimaryView : RedView, IPrimaryView
 {
     public AwaitPrimaryView(AwaitPrimaryNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Inversion</i>.
+/// </summary>
 public sealed partial record InversionNode : GreenNode, IInversionExpressionNode
 {
     public IInversionExpressionNode Value => (IInversionExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record InversionNode : GreenNode, IInversionExpressionNode
         => new InversionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Inversion</i>.
+/// </summary>
 public sealed partial class InversionView : RedView, IInversionExpressionView
 {
     public InversionView(InversionNode green, int position, IRedView? parent)

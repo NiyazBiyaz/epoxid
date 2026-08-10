@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>FunctionReturnHint</i>.
+/// </summary>
 public sealed partial record FunctionReturnHintNode : GreenNode
 {
     public IExpressionNode Value => (IExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record FunctionReturnHintNode : GreenNode
         => new FunctionReturnHintView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>FunctionReturnHint</i>.
+/// </summary>
 public sealed partial class FunctionReturnHintView : RedView
 {
     public FunctionReturnHintView(FunctionReturnHintNode green, int position, IRedView? parent)

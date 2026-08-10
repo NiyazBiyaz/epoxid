@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StepSliceParam</i>.
+/// </summary>
 public sealed partial record StepSliceParamNode : GreenNode
 {
     public IExpressionNode? Value => Children![1] as IExpressionNode;
@@ -17,6 +20,9 @@ public sealed partial record StepSliceParamNode : GreenNode
         => new StepSliceParamView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StepSliceParam</i>.
+/// </summary>
 public sealed partial class StepSliceParamView : RedView
 {
     public StepSliceParamView(StepSliceParamNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>GtEqOperation</i>.
+/// </summary>
 public sealed partial record GtEqOperationNode : CompareOperationNode
 {
     public IBitwiseOrExpressionNode Right => (IBitwiseOrExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record GtEqOperationNode : CompareOperationNode
         => new GtEqOperationView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>GtEqOperation</i>.
+/// </summary>
 public sealed partial class GtEqOperationView : CompareOperationView
 {
     public GtEqOperationView(GtEqOperationNode green, int position, IRedView? parent)

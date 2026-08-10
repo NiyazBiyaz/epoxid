@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>GlobalStatement</i>.
+/// </summary>
 public sealed partial record GlobalStatementNode : GreenNode, ISimpleStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Variables = null;
@@ -30,6 +33,9 @@ public sealed partial record GlobalStatementNode : GreenNode, ISimpleStatementNo
         => new GlobalStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>GlobalStatement</i>.
+/// </summary>
 public sealed partial class GlobalStatementView : RedView, ISimpleStatementView
 {
     public GlobalStatementView(GlobalStatementNode green, int position, IRedView? parent)

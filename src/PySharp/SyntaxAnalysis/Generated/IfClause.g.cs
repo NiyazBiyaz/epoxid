@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>IfClause</i>.
+/// </summary>
 public sealed partial record IfClauseNode : GreenNode
 {
     public DisjunctionNode Condition => (DisjunctionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record IfClauseNode : GreenNode
         => new IfClauseView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>IfClause</i>.
+/// </summary>
 public sealed partial class IfClauseView : RedView
 {
     public IfClauseView(IfClauseNode green, int position, IRedView? parent)

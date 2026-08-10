@@ -10,11 +10,23 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StarEtc</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record StarEtcNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>StarEtc</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class StarEtcView : RedView
 {

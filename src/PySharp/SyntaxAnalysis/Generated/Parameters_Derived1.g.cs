@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Parameters_Derived1</i>.
+/// </summary>
 public sealed partial record Parameters_Derived1Node : ParametersNode
 {
     public SlashWithDefaultNode SlashWithDefault => (SlashWithDefaultNode)Children![0];
@@ -19,6 +22,9 @@ public sealed partial record Parameters_Derived1Node : ParametersNode
         => new Parameters_Derived1View(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Parameters_Derived1</i>.
+/// </summary>
 public sealed partial class Parameters_Derived1View : ParametersView
 {
     public Parameters_Derived1View(Parameters_Derived1Node green, int position, IRedView? parent)

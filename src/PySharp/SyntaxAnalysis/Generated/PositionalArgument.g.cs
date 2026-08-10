@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>PositionalArgument</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>StarredExpressionNode</i><br/>
+/// 2. <i>INamedExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(StarredExpressionNode), typeof(INamedExpressionNode))]
 public partial interface IPositionalArgumentNode : IGreenNode;
 
+/// <summary>
+/// View interface that represents <i>PositionalArgument</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>StarredExpressionView</i><br/>
+/// 2. <i>INamedExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(StarredExpressionView), typeof(INamedExpressionView))]
 public partial interface IPositionalArgumentView : IRedView;

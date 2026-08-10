@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>FunctionDef</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DecoratedFunctionDefNode</i><br/>
+/// 2. <i>RawFunctionDefNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DecoratedFunctionDefNode), typeof(RawFunctionDefNode))]
 public abstract partial record FunctionDefNode : GreenNode, ICompoundStatementNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>FunctionDef</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DecoratedFunctionDefView</i><br/>
+/// 2. <i>RawFunctionDefView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DecoratedFunctionDefView), typeof(RawFunctionDefView))]
 public abstract partial class FunctionDefView : RedView, ICompoundStatementView
 {

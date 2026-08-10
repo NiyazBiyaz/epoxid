@@ -10,8 +10,26 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>AssignmentTargetUnit</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>DottedTargetUnitNode</i><br/>
+/// 2. <i>SubscriptTargetUnitNode</i><br/>
+/// 3. <i>AssignmentTargetAtomNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(DottedTargetUnitNode), typeof(SubscriptTargetUnitNode), typeof(AssignmentTargetAtomNode))]
 public partial interface IAssignmentTargetUnitNode : IGreenNode, IAssignmentTargetNode;
 
+/// <summary>
+/// View interface that represents <i>AssignmentTargetUnit</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>DottedTargetUnitView</i><br/>
+/// 2. <i>SubscriptTargetUnitView</i><br/>
+/// 3. <i>AssignmentTargetAtomView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(DottedTargetUnitView), typeof(SubscriptTargetUnitView), typeof(AssignmentTargetAtomView))]
 public partial interface IAssignmentTargetUnitView : IRedView, IAssignmentTargetView;

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ParamStarAnnotation</i>.
+/// </summary>
 public sealed partial record ParamStarAnnotationNode : GreenNode
 {
     public TokenNode Name => (TokenNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record ParamStarAnnotationNode : GreenNode
         => new ParamStarAnnotationView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ParamStarAnnotation</i>.
+/// </summary>
 public sealed partial class ParamStarAnnotationView : RedView
 {
     public ParamStarAnnotationView(ParamStarAnnotationNode green, int position, IRedView? parent)

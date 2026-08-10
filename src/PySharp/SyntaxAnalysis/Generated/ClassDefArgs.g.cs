@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ClassDefArgs</i>.
+/// </summary>
 public sealed partial record ClassDefArgsNode : GreenNode
 {
     public ArgumentsNode? Value => Children![1] as ArgumentsNode;
@@ -17,6 +20,9 @@ public sealed partial record ClassDefArgsNode : GreenNode
         => new ClassDefArgsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ClassDefArgs</i>.
+/// </summary>
 public sealed partial class ClassDefArgsView : RedView
 {
     public ClassDefArgsView(ClassDefArgsNode green, int position, IRedView? parent)

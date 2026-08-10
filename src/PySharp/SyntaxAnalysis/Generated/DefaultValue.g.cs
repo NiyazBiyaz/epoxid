@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DefaultValue</i>.
+/// </summary>
 public sealed partial record DefaultValueNode : GreenNode
 {
     public IExpressionNode Value => (IExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record DefaultValueNode : GreenNode
         => new DefaultValueView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DefaultValue</i>.
+/// </summary>
 public sealed partial class DefaultValueView : RedView
 {
     public DefaultValueView(DefaultValueNode green, int position, IRedView? parent)

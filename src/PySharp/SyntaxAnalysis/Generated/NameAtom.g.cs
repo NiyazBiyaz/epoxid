@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>NameAtom</i>.
+/// </summary>
 public sealed partial record NameAtomNode : OneTokenAtomNode
 {
     public TokenNode Value => (TokenNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record NameAtomNode : OneTokenAtomNode
         => new NameAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NameAtom</i>.
+/// </summary>
 public sealed partial class NameAtomView : OneTokenAtomView
 {
     public NameAtomView(NameAtomNode green, int position, IRedView? parent)

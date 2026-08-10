@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>CascadeAssignment</i>.
+/// </summary>
 public sealed partial record CascadeAssignmentNode : AssignmentNode
 {
     public NodeArray<CascadeTargetNode> Targets => (NodeArray<CascadeTargetNode>)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record CascadeAssignmentNode : AssignmentNode
         => new CascadeAssignmentView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>CascadeAssignment</i>.
+/// </summary>
 public sealed partial class CascadeAssignmentView : AssignmentView
 {
     public CascadeAssignmentView(CascadeAssignmentNode green, int position, IRedView? parent)

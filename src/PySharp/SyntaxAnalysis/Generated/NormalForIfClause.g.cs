@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>NormalForIfClause</i>.
+/// </summary>
 public sealed partial record NormalForIfClauseNode : ForIfClauseNode
 {
     public IAssignmentTargetVariantNode Variables => (IAssignmentTargetVariantNode)Children![1];
@@ -19,6 +22,9 @@ public sealed partial record NormalForIfClauseNode : ForIfClauseNode
         => new NormalForIfClauseView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NormalForIfClause</i>.
+/// </summary>
 public sealed partial class NormalForIfClauseView : ForIfClauseView
 {
     public NormalForIfClauseView(NormalForIfClauseNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>CallWithGeneratorPrimary</i>.
+/// </summary>
 public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
 {
     public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
         => new CallWithGeneratorPrimaryView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>CallWithGeneratorPrimary</i>.
+/// </summary>
 public sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
 {
     public CallWithGeneratorPrimaryView(CallWithGeneratorPrimaryNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Conversion</i>.
+/// </summary>
 public sealed partial record ConversionNode : GreenNode
 {
     public TokenNode Value => (TokenNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record ConversionNode : GreenNode
         => new ConversionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Conversion</i>.
+/// </summary>
 public sealed partial class ConversionView : RedView
 {
     public ConversionView(ConversionNode green, int position, IRedView? parent)

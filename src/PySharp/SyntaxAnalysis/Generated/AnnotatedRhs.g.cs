@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>AnnotatedRhs</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>YieldExpressionNode</i><br/>
+/// 2. <i>IStarExpressionVariantNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(YieldExpressionNode), typeof(IStarExpressionVariantNode))]
 public partial interface IAnnotatedRhsNode : IGreenNode;
 
+/// <summary>
+/// View interface that represents <i>AnnotatedRhs</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>YieldExpressionView</i><br/>
+/// 2. <i>IStarExpressionVariantView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(YieldExpressionView), typeof(IStarExpressionVariantView))]
 public partial interface IAnnotatedRhsView : IRedView;

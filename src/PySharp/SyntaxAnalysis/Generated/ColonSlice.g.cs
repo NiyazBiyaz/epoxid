@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ColonSlice</i>.
+/// </summary>
 public sealed partial record ColonSliceNode : SliceNode
 {
     public IExpressionNode? Start => Children![0] as IExpressionNode;
@@ -19,6 +22,9 @@ public sealed partial record ColonSliceNode : SliceNode
         => new ColonSliceView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ColonSlice</i>.
+/// </summary>
 public sealed partial class ColonSliceView : SliceView
 {
     public ColonSliceView(ColonSliceNode green, int position, IRedView? parent)

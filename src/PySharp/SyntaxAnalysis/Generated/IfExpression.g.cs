@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>IfExpression</i>.
+/// </summary>
 public sealed partial record IfExpressionNode : GreenNode, IExpressionNode
 {
     public DisjunctionNode Disjunction => (DisjunctionNode)Children![0];
@@ -21,6 +24,9 @@ public sealed partial record IfExpressionNode : GreenNode, IExpressionNode
         => new IfExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>IfExpression</i>.
+/// </summary>
 public sealed partial class IfExpressionView : RedView, IExpressionView
 {
     public IfExpressionView(IfExpressionNode green, int position, IRedView? parent)

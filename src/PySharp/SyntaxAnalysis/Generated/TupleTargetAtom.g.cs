@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TupleTargetAtom</i>.
+/// </summary>
 public sealed partial record TupleTargetAtomNode : AssignmentTargetAtomNode
 {
     public AssignmentTargetsNode? Items => Children![1] as AssignmentTargetsNode;
@@ -17,6 +20,9 @@ public sealed partial record TupleTargetAtomNode : AssignmentTargetAtomNode
         => new TupleTargetAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TupleTargetAtom</i>.
+/// </summary>
 public sealed partial class TupleTargetAtomView : AssignmentTargetAtomView
 {
     public TupleTargetAtomView(TupleTargetAtomNode green, int position, IRedView? parent)

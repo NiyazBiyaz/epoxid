@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>LazyImportFromModule</i>.
+/// </summary>
 public sealed partial record LazyImportFromModuleNode : LazyImportFromNode
 {
     public ImportUnitNode Path => (ImportUnitNode)Children![3];
@@ -18,6 +21,9 @@ public sealed partial record LazyImportFromModuleNode : LazyImportFromNode
         => new LazyImportFromModuleView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>LazyImportFromModule</i>.
+/// </summary>
 public sealed partial class LazyImportFromModuleView : LazyImportFromView
 {
     public LazyImportFromModuleView(LazyImportFromModuleNode green, int position, IRedView? parent)

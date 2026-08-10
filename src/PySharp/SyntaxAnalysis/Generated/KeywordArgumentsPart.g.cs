@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>KeywordArgumentsPart</i>.
+/// </summary>
 public sealed partial record KeywordArgumentsPartNode : GreenNode
 {
     public KwargsNode Value => (KwargsNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record KeywordArgumentsPartNode : GreenNode
         => new KeywordArgumentsPartView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>KeywordArgumentsPart</i>.
+/// </summary>
 public sealed partial class KeywordArgumentsPartView : RedView
 {
     public KeywordArgumentsPartView(KeywordArgumentsPartNode green, int position, IRedView? parent)

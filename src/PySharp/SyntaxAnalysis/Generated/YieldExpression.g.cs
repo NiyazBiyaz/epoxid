@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>YieldExpression</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>YieldFromExpressionNode</i><br/>
+/// 2. <i>YieldStarExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(YieldFromExpressionNode), typeof(YieldStarExpressionNode))]
 public abstract partial record YieldExpressionNode : GreenNode, IAnnotatedRhsNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>YieldExpression</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>YieldFromExpressionView</i><br/>
+/// 2. <i>YieldStarExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(YieldFromExpressionView), typeof(YieldStarExpressionView))]
 public abstract partial class YieldExpressionView : RedView, IAnnotatedRhsView
 {

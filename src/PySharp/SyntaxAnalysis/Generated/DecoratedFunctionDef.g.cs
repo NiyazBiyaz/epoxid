@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DecoratedFunctionDef</i>.
+/// </summary>
 public sealed partial record DecoratedFunctionDefNode : FunctionDefNode
 {
     public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record DecoratedFunctionDefNode : FunctionDefNode
         => new DecoratedFunctionDefView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DecoratedFunctionDef</i>.
+/// </summary>
 public sealed partial class DecoratedFunctionDefView : FunctionDefView
 {
     public DecoratedFunctionDefView(DecoratedFunctionDefNode green, int position, IRedView? parent)

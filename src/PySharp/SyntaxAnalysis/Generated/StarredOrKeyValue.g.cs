@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StarredOrKeyValue</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DoubleStarredNode</i><br/>
+/// 2. <i>KeyValuePairNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DoubleStarredNode), typeof(KeyValuePairNode))]
 public abstract partial record StarredOrKeyValueNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>StarredOrKeyValue</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>DoubleStarredView</i><br/>
+/// 2. <i>KeyValuePairView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(DoubleStarredView), typeof(KeyValuePairView))]
 public abstract partial class StarredOrKeyValueView : RedView
 {

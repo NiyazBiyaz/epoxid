@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>NormalFunctionDef</i>.
+/// </summary>
 public sealed partial record NormalFunctionDefNode : FunctionDefRawNode
 {
     public override NormalFunctionDefView GetView(int position, IRedView? parent)
         => new NormalFunctionDefView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NormalFunctionDef</i>.
+/// </summary>
 public sealed partial class NormalFunctionDefView : FunctionDefRawView
 {
     public NormalFunctionDefView(NormalFunctionDefNode green, int position, IRedView? parent)

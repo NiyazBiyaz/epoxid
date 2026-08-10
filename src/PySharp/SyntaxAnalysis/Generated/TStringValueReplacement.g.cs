@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TStringValueReplacement</i>.
+/// </summary>
 public sealed partial record TStringValueReplacementNode : TStringValueNode
 {
     public TStringReplacementFieldNode Value => (TStringReplacementFieldNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record TStringValueReplacementNode : TStringValueNode
         => new TStringValueReplacementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TStringValueReplacement</i>.
+/// </summary>
 public sealed partial class TStringValueReplacementView : TStringValueView
 {
     public TStringValueReplacementView(TStringValueReplacementNode green, int position, IRedView? parent)

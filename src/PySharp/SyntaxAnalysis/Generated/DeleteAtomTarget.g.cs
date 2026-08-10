@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DeleteAtomTarget</i>.
+/// </summary>
 public sealed partial record DeleteAtomTargetNode : DeleteTargetNode
 {
     public TokenNode Value => (TokenNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record DeleteAtomTargetNode : DeleteTargetNode
         => new DeleteAtomTargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DeleteAtomTarget</i>.
+/// </summary>
 public sealed partial class DeleteAtomTargetView : DeleteTargetView
 {
     public DeleteAtomTargetView(DeleteAtomTargetNode green, int position, IRedView? parent)

@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Arguments</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ArgumentsWithPositionalNode</i><br/>
+/// 2. <i>ArgumentsWithOnlyKeywordsNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(ArgumentsWithPositionalNode), typeof(ArgumentsWithOnlyKeywordsNode))]
 public abstract partial record ArgumentsNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>Arguments</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ArgumentsWithPositionalView</i><br/>
+/// 2. <i>ArgumentsWithOnlyKeywordsView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(ArgumentsWithPositionalView), typeof(ArgumentsWithOnlyKeywordsView))]
 public abstract partial class ArgumentsView : RedView
 {

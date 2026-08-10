@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DebugSpecifier</i>.
+/// </summary>
 public sealed partial record DebugSpecifierNode : GreenNode
 {
     public override DebugSpecifierView GetView(int position, IRedView? parent)
         => new DebugSpecifierView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DebugSpecifier</i>.
+/// </summary>
 public sealed partial class DebugSpecifierView : RedView
 {
     public DebugSpecifierView(DebugSpecifierNode green, int position, IRedView? parent)

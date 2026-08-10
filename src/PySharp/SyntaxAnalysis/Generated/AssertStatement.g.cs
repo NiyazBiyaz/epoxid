@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AssertStatement</i>.
+/// </summary>
 public sealed partial record AssertStatementNode : GreenNode, ISimpleStatementNode
 {
     public IExpressionNode Guard => (IExpressionNode)Children![1];
@@ -18,6 +21,9 @@ public sealed partial record AssertStatementNode : GreenNode, ISimpleStatementNo
         => new AssertStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AssertStatement</i>.
+/// </summary>
 public sealed partial class AssertStatementView : RedView, ISimpleStatementView
 {
     public AssertStatementView(AssertStatementNode green, int position, IRedView? parent)

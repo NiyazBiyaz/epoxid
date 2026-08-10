@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TypeParameter_Derived0</i>.
+/// </summary>
 public sealed partial record TypeParameter_Derived0Node : TypeParameterNode
 {
     public TypeParameterBoundNode? TypeParameterBound => Children![1] as TypeParameterBoundNode;
@@ -18,6 +21,9 @@ public sealed partial record TypeParameter_Derived0Node : TypeParameterNode
         => new TypeParameter_Derived0View(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TypeParameter_Derived0</i>.
+/// </summary>
 public sealed partial class TypeParameter_Derived0View : TypeParameterView
 {
     public TypeParameter_Derived0View(TypeParameter_Derived0Node green, int position, IRedView? parent)

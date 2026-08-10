@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>PlainExceptStarBlock</i>.
+/// </summary>
 public sealed partial record PlainExceptStarBlockNode : ExceptStarBlockNode
 {
     public IExpressionNode Exception => (IExpressionNode)Children![2];
@@ -18,6 +21,9 @@ public sealed partial record PlainExceptStarBlockNode : ExceptStarBlockNode
         => new PlainExceptStarBlockView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>PlainExceptStarBlock</i>.
+/// </summary>
 public sealed partial class PlainExceptStarBlockView : ExceptStarBlockView
 {
     public PlainExceptStarBlockView(PlainExceptStarBlockNode green, int position, IRedView? parent)

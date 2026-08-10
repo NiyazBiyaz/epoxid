@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>CallTarget</i>.
+/// </summary>
 public sealed partial record CallTargetNode : TargetPrimaryNode
 {
     public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record CallTargetNode : TargetPrimaryNode
         => new CallTargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>CallTarget</i>.
+/// </summary>
 public sealed partial class CallTargetView : TargetPrimaryView
 {
     public CallTargetView(CallTargetNode green, int position, IRedView? parent)

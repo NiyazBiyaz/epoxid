@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AssignmentExpression</i>.
+/// </summary>
 public sealed partial record AssignmentExpressionNode : GreenNode, INamedExpressionNode
 {
     public TokenNode Target => (TokenNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record AssignmentExpressionNode : GreenNode, INamedExpress
         => new AssignmentExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AssignmentExpression</i>.
+/// </summary>
 public sealed partial class AssignmentExpressionView : RedView, INamedExpressionView
 {
     public AssignmentExpressionView(AssignmentExpressionNode green, int position, IRedView? parent)

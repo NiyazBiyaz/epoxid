@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>SumExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>SumNode</i><br/>
+/// 2. <i>ITermExpressionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(SumNode), typeof(ITermExpressionNode))]
 public partial interface ISumExpressionNode : IGreenNode, IBitShiftExpressionNode;
 
+/// <summary>
+/// View interface that represents <i>SumExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>SumView</i><br/>
+/// 2. <i>ITermExpressionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(SumView), typeof(ITermExpressionView))]
 public partial interface ISumExpressionView : IRedView, IBitShiftExpressionView;

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>EmptyExceptBlock</i>.
+/// </summary>
 public sealed partial record EmptyExceptBlockNode : ExceptBlockNode
 {
     public BlockNode Block => (BlockNode)Children![2];
@@ -17,6 +20,9 @@ public sealed partial record EmptyExceptBlockNode : ExceptBlockNode
         => new EmptyExceptBlockView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>EmptyExceptBlock</i>.
+/// </summary>
 public sealed partial class EmptyExceptBlockView : ExceptBlockView
 {
     public EmptyExceptBlockView(EmptyExceptBlockNode green, int position, IRedView? parent)

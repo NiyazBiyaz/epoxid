@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>NamedSliceExpression</i>.
+/// </summary>
 public sealed partial record NamedSliceExpressionNode : SliceNode
 {
     public INamedExpressionNode Value => (INamedExpressionNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record NamedSliceExpressionNode : SliceNode
         => new NamedSliceExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NamedSliceExpression</i>.
+/// </summary>
 public sealed partial class NamedSliceExpressionView : SliceView
 {
     public NamedSliceExpressionView(NamedSliceExpressionNode green, int position, IRedView? parent)

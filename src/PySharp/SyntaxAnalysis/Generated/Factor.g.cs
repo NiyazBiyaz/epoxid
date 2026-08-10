@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>Factor</i>.
+/// </summary>
 public sealed partial record FactorNode : GreenNode, IFactorExpressionNode
 {
     public TokenNode Operator => (TokenNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record FactorNode : GreenNode, IFactorExpressionNode
         => new FactorView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Factor</i>.
+/// </summary>
 public sealed partial class FactorView : RedView, IFactorExpressionView
 {
     public FactorView(FactorNode green, int position, IRedView? parent)

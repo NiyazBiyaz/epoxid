@@ -10,12 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ParamNoDefaultStarAnnotation</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record ParamNoDefaultStarAnnotationNode : GreenNode
 {
     public ParamStarAnnotationNode ParamStarAnnotation => (ParamStarAnnotationNode)Children![0];
 }
 
+/// <summary>
+/// View class that represents <i>ParamNoDefaultStarAnnotation</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class ParamNoDefaultStarAnnotationView : RedView
 {

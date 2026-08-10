@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ElifStatement</i>.
+/// </summary>
 public sealed partial record ElifStatementNode : GreenNode
 {
     public INamedExpressionNode Condition => (INamedExpressionNode)Children![1];
@@ -18,6 +21,9 @@ public sealed partial record ElifStatementNode : GreenNode
         => new ElifStatementView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ElifStatement</i>.
+/// </summary>
 public sealed partial class ElifStatementView : RedView
 {
     public ElifStatementView(ElifStatementNode green, int position, IRedView? parent)

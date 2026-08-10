@@ -10,12 +10,18 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AsyncFunctionDef</i>.
+/// </summary>
 public sealed partial record AsyncFunctionDefNode : FunctionDefRawNode
 {
     public override AsyncFunctionDefView GetView(int position, IRedView? parent)
         => new AsyncFunctionDefView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AsyncFunctionDef</i>.
+/// </summary>
 public sealed partial class AsyncFunctionDefView : FunctionDefRawView
 {
     public AsyncFunctionDefView(AsyncFunctionDefNode green, int position, IRedView? parent)

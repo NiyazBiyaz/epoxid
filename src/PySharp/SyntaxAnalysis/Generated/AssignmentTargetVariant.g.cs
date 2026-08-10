@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>AssignmentTargetVariant</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>IAssignmentTargetNode</i><br/>
+/// 2. <i>AssignmentTargetsNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(IAssignmentTargetNode), typeof(AssignmentTargetsNode))]
 public partial interface IAssignmentTargetVariantNode : IGreenNode;
 
+/// <summary>
+/// View interface that represents <i>AssignmentTargetVariant</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>IAssignmentTargetView</i><br/>
+/// 2. <i>AssignmentTargetsView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(IAssignmentTargetView), typeof(AssignmentTargetsView))]
 public partial interface IAssignmentTargetVariantView : IRedView;

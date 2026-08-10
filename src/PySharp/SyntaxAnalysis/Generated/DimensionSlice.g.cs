@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DimensionSlice</i>.
+/// </summary>
 public sealed partial record DimensionSliceNode : DimensionNode
 {
     public SliceNode Value => (SliceNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record DimensionSliceNode : DimensionNode
         => new DimensionSliceView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>DimensionSlice</i>.
+/// </summary>
 public sealed partial class DimensionSliceView : DimensionView
 {
     public DimensionSliceView(DimensionSliceNode green, int position, IRedView? parent)

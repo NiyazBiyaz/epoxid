@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>AssignmentTargets</i>.
+/// </summary>
 public sealed partial record AssignmentTargetsNode : GreenNode, IAssignmentTargetVariantNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IAssignmentTargetNode>? _field_Targets = null;
@@ -30,6 +33,9 @@ public sealed partial record AssignmentTargetsNode : GreenNode, IAssignmentTarge
         => new AssignmentTargetsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AssignmentTargets</i>.
+/// </summary>
 public sealed partial class AssignmentTargetsView : RedView, IAssignmentTargetVariantView
 {
     public AssignmentTargetsView(AssignmentTargetsNode green, int position, IRedView? parent)

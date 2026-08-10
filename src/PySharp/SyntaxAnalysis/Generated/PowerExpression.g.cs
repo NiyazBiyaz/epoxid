@@ -10,8 +10,24 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node interface that represents <i>PowerExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>PowerNode</i><br/>
+/// 2. <i>IPrimaryNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(PowerNode), typeof(IPrimaryNode))]
 public partial interface IPowerExpressionNode : IGreenNode, IFactorExpressionNode;
 
+/// <summary>
+/// View interface that represents <i>PowerExpression</i>.
+/// </summary>
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>PowerView</i><br/>
+/// 2. <i>IPrimaryView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.WildUnion(typeof(PowerView), typeof(IPrimaryView))]
 public partial interface IPowerExpressionView : IRedView, IFactorExpressionView;

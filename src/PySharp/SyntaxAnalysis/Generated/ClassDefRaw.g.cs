@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ClassDefRaw</i>.
+/// </summary>
 public sealed partial record ClassDefRawNode : GreenNode
 {
     public TokenNode Name => (TokenNode)Children![1];
@@ -20,6 +23,9 @@ public sealed partial record ClassDefRawNode : GreenNode
         => new ClassDefRawView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ClassDefRaw</i>.
+/// </summary>
 public sealed partial class ClassDefRawView : RedView
 {
     public ClassDefRawView(ClassDefRawNode green, int position, IRedView? parent)

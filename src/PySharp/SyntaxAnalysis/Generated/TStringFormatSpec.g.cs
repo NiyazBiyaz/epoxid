@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TStringFormatSpec</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>TStringFormatLiteralNode</i><br/>
+/// 2. <i>TStringFormatReplacementNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(TStringFormatLiteralNode), typeof(TStringFormatReplacementNode))]
 public abstract partial record TStringFormatSpecNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>TStringFormatSpec</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>TStringFormatLiteralView</i><br/>
+/// 2. <i>TStringFormatReplacementView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(TStringFormatLiteralView), typeof(TStringFormatReplacementView))]
 public abstract partial class TStringFormatSpecView : RedView
 {

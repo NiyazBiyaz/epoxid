@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StringValueAtom</i>.
+/// </summary>
 public sealed partial record StringValueAtomNode : StringAtomNode
 {
     public NodeArray<IStringValueNode> Parts => (NodeArray<IStringValueNode>)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record StringValueAtomNode : StringAtomNode
         => new StringValueAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StringValueAtom</i>.
+/// </summary>
 public sealed partial class StringValueAtomView : StringAtomView
 {
     public StringValueAtomView(StringValueAtomNode green, int position, IRedView? parent)

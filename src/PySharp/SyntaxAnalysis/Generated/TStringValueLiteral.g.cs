@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>TStringValueLiteral</i>.
+/// </summary>
 public sealed partial record TStringValueLiteralNode : TStringValueNode
 {
     public TokenNode Value => (TokenNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record TStringValueLiteralNode : TStringValueNode
         => new TStringValueLiteralView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>TStringValueLiteral</i>.
+/// </summary>
 public sealed partial class TStringValueLiteralView : TStringValueView
 {
     public TStringValueLiteralView(TStringValueLiteralNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SubscriptPrimary</i>.
+/// </summary>
 public sealed partial record SubscriptPrimaryNode : RawPrimaryNode
 {
     public RawPrimaryNode Target => (RawPrimaryNode)Children![0];
@@ -18,6 +21,9 @@ public sealed partial record SubscriptPrimaryNode : RawPrimaryNode
         => new SubscriptPrimaryView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SubscriptPrimary</i>.
+/// </summary>
 public sealed partial class SubscriptPrimaryView : RawPrimaryView
 {
     public SubscriptPrimaryView(SubscriptPrimaryNode green, int position, IRedView? parent)

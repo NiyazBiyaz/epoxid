@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>KeyValueDictComprehension</i>.
+/// </summary>
 public sealed partial record KeyValueDictComprehensionNode : DictComprehensionNode
 {
     public IExpressionNode Key => (IExpressionNode)Children![1];
@@ -19,6 +22,9 @@ public sealed partial record KeyValueDictComprehensionNode : DictComprehensionNo
         => new KeyValueDictComprehensionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>KeyValueDictComprehension</i>.
+/// </summary>
 public sealed partial class KeyValueDictComprehensionView : DictComprehensionView
 {
     public KeyValueDictComprehensionView(KeyValueDictComprehensionNode green, int position, IRedView? parent)

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StringConstant</i>.
+/// </summary>
 public sealed partial record StringConstantNode : GreenNode, IStringValueNode
 {
     public TokenNode Value => (TokenNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record StringConstantNode : GreenNode, IStringValueNode
         => new StringConstantView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StringConstant</i>.
+/// </summary>
 public sealed partial class StringConstantView : RedView, IStringValueView
 {
     public StringConstantView(StringConstantNode green, int position, IRedView? parent)

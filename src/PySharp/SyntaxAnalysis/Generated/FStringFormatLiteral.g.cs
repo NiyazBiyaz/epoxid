@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>FStringFormatLiteral</i>.
+/// </summary>
 public sealed partial record FStringFormatLiteralNode : FStringFormatSpecNode
 {
     public TokenNode Value => (TokenNode)Children![0];
@@ -17,6 +20,9 @@ public sealed partial record FStringFormatLiteralNode : FStringFormatSpecNode
         => new FStringFormatLiteralView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>FStringFormatLiteral</i>.
+/// </summary>
 public sealed partial class FStringFormatLiteralView : FStringFormatSpecView
 {
     public FStringFormatLiteralView(FStringFormatLiteralNode green, int position, IRedView? parent)

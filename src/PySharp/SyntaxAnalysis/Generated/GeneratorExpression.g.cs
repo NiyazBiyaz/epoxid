@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>GeneratorExpression</i>.
+/// </summary>
 public sealed partial record GeneratorExpressionNode : GreenNode, IAtomNode
 {
     public IStarNamedExpressionNode Expression => (IStarNamedExpressionNode)Children![1];
@@ -18,6 +21,9 @@ public sealed partial record GeneratorExpressionNode : GreenNode, IAtomNode
         => new GeneratorExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>GeneratorExpression</i>.
+/// </summary>
 public sealed partial class GeneratorExpressionView : RedView, IAtomView
 {
     public GeneratorExpressionView(GeneratorExpressionNode green, int position, IRedView? parent)

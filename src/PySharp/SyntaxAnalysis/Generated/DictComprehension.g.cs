@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>DictComprehension</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>KeyValueDictComprehensionNode</i><br/>
+/// 2. <i>UnpackingDictComprehensionNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(KeyValueDictComprehensionNode), typeof(UnpackingDictComprehensionNode))]
 public abstract partial record DictComprehensionNode : GreenNode, IAtomNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>DictComprehension</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>KeyValueDictComprehensionView</i><br/>
+/// 2. <i>UnpackingDictComprehensionView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(KeyValueDictComprehensionView), typeof(UnpackingDictComprehensionView))]
 public abstract partial class DictComprehensionView : RedView, IAtomView
 {

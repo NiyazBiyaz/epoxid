@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>LazyImportName</i>.
+/// </summary>
 public sealed partial record LazyImportNameNode : GreenNode, IImportStatementNode
 {
     private global::System.Collections.Immutable.ImmutableArray<DottedNameNode>? _field_Import = null;
@@ -30,6 +33,9 @@ public sealed partial record LazyImportNameNode : GreenNode, IImportStatementNod
         => new LazyImportNameView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>LazyImportName</i>.
+/// </summary>
 public sealed partial class LazyImportNameView : RedView, IImportStatementView
 {
     public LazyImportNameView(LazyImportNameNode green, int position, IRedView? parent)

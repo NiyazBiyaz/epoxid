@@ -10,11 +10,27 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ForIfClause</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>AsyncForIfClauseNode</i><br/>
+/// 2. <i>NormalForIfClauseNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(AsyncForIfClauseNode), typeof(NormalForIfClauseNode))]
 public abstract partial record ForIfClauseNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>ForIfClause</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>AsyncForIfClauseView</i><br/>
+/// 2. <i>NormalForIfClauseView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(AsyncForIfClauseView), typeof(NormalForIfClauseView))]
 public abstract partial class ForIfClauseView : RedView
 {

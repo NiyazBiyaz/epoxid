@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>StarBitwiseOrExpression</i>.
+/// </summary>
 public sealed partial record StarBitwiseOrExpressionNode : GreenNode, IStarExpressionNode, IStarNamedExpressionNode
 {
     public IBitwiseOrExpressionNode Value => (IBitwiseOrExpressionNode)Children![1];
@@ -17,6 +20,9 @@ public sealed partial record StarBitwiseOrExpressionNode : GreenNode, IStarExpre
         => new StarBitwiseOrExpressionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StarBitwiseOrExpression</i>.
+/// </summary>
 public sealed partial class StarBitwiseOrExpressionView : RedView, IStarExpressionView, IStarNamedExpressionView
 {
     public StarBitwiseOrExpressionView(StarBitwiseOrExpressionNode green, int position, IRedView? parent)

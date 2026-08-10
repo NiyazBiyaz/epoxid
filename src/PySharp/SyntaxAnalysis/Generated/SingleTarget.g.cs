@@ -10,11 +10,29 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SingleTarget</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>CompositeSingleTargetNode</i><br/>
+/// 2. <i>NameSingleTargetNode</i><br/>
+/// 3. <i>GroupedTargetNode</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(CompositeSingleTargetNode), typeof(NameSingleTargetNode), typeof(GroupedTargetNode))]
 public abstract partial record SingleTargetNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>SingleTarget</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>CompositeSingleTargetView</i><br/>
+/// 2. <i>NameSingleTargetView</i><br/>
+/// 3. <i>GroupedTargetView</i><br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule(typeof(CompositeSingleTargetView), typeof(NameSingleTargetView), typeof(GroupedTargetView))]
 public abstract partial class SingleTargetView : RedView
 {

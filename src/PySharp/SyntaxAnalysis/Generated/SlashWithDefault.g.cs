@@ -10,6 +10,12 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>SlashWithDefault</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial record SlashWithDefaultNode : GreenNode
 {
@@ -18,6 +24,12 @@ public abstract partial record SlashWithDefaultNode : GreenNode
     public TokenNode Token => (TokenNode)Children![2];
 }
 
+/// <summary>
+/// View class that represents <i>SlashWithDefault</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// </remarks>
 [global::PySharp.SyntaxAnalysis.BaseRule()]
 public abstract partial class SlashWithDefaultView : RedView
 {

@@ -10,6 +10,9 @@ using PySharp.SyntaxAnalysis.Common.Ast;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Node class that represents <i>ArgumentsWithPositional</i>.
+/// </summary>
 public sealed partial record ArgumentsWithPositionalNode : ArgumentsNode
 {
     private global::System.Collections.Immutable.ImmutableArray<IPositionalArgumentNode>? _field_PositionalArgumentsPart = null;
@@ -31,6 +34,9 @@ public sealed partial record ArgumentsWithPositionalNode : ArgumentsNode
         => new ArgumentsWithPositionalView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ArgumentsWithPositional</i>.
+/// </summary>
 public sealed partial class ArgumentsWithPositionalView : ArgumentsView
 {
     public ArgumentsWithPositionalView(ArgumentsWithPositionalNode green, int position, IRedView? parent)
