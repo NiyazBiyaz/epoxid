@@ -33,7 +33,8 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 
 ### Currently working on:
 - Improving Python parser.
-- Runtime basics and interpretation.
+- Runtime basics.
+- Bytecode VM and compiler for it.
 
 ## Getting started
 
