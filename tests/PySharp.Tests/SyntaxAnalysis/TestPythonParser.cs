@@ -201,6 +201,117 @@ public class TestPythonParser
         return Verify(res.PrettyPrint());
     }
 
+    [Fact]
+    public Task TestFunctionParams_Ordinal()
+    {
+        const string src = """
+        def bau(fluffy, fuzzy): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestFunctionParams_Full()
+    {
+        const string src = """
+        def bau(pon, de, ring, /, fluffy, fuzzy, *pats, fuwa, moco, **kwargs): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestFunctionParams_Full_WithDefaults()
+    {
+        const string src = """
+        def bau(pon, de, ring, /, fluffy=fuwawa, fuzzy=mococo, *pats, fuwa=iyargh, moco=hoeh, **doggos): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestFunctionParams_BeforeSlash()
+    {
+        const string src = """
+        def bau(pon, de, ring, /): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestFunctionParams_BeforeStar()
+    {
+        const string src = """
+        def bau(fluffy, fuzzy, *pats): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public Task TestFunctionParams_AfterStar()
+    {
+        const string src = """
+        def bau(*, fuwa, moco): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public void TestFunctionParams_CannotSetDefaultTo_ArgsKwargs()
+    {
+        string src = """
+        def bau(*pats=many): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.Null(res); // TODO: when added invalid nodes, replace with `Invalid` flag check
+
+        src = """
+        def bau(*doggos=happy): ...
+
+        """;
+        parser = getParser(src);
+        res = parser.Parse();
+        Assert.Null(res); // TODO: see above
+    }
+
+    [Fact]
+    public Task TestFunctionParams_Annotations()
+    {
+        const string src = """
+        def bau(fuwa: Fluffy, moco: Fuzzy): ...
+
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        return Verify(res.PrettyPrint());
+    }
+
     private static PythonParser getParser(string src)
     {
         var tokenizer = new Tokenizer(SynchronizationPoint.ClearPoint(new StringBuffer(src)));

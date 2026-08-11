@@ -13,25 +13,60 @@ namespace PySharp.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>Parameters</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// </remarks>
-[global::PySharp.SyntaxAnalysis.BaseRule()]
-public abstract partial record ParametersNode : GreenNode
+public sealed partial record ParametersNode : GreenNode
 {
+    private global::System.Collections.Immutable.ImmutableArray<ParameterNode>? _field_Parameters = null;
+    public global::System.Collections.Immutable.ImmutableArray<ParameterNode> Parameters
+    {
+        get
+        {
+            if (_field_Parameters is null)
+            {
+                var _tmp = AstParameters.Where(static (_, i) => i % 2 == 0).Cast<ParameterNode>();
+                _field_Parameters = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_Parameters.Value;
+        }
+    }
+    public NodeArray<GreenNode> AstParameters => (NodeArray<GreenNode>)Children![0];
+    public override ParametersView GetView(int position, IRedView? parent)
+        => new ParametersView(this, position, parent);
 }
 
 /// <summary>
 /// View class that represents <i>Parameters</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// </remarks>
-[global::PySharp.SyntaxAnalysis.BaseRule()]
-public abstract partial class ParametersView : RedView
+public sealed partial class ParametersView : RedView
 {
     public ParametersView(ParametersNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private ViewArray<RedView>? _ast_field_parameters = null;
+    public ViewArray<RedView> AstParameters
+    {
+        get
+        {
+            if (_ast_field_parameters == null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _ast_field_parameters = new ViewArray<RedView>(((ParametersNode)base.Green).AstParameters, _positionOfField, this);
+            }
+            return _ast_field_parameters.Value;
+        }
+    }
+    private global::System.Collections.Immutable.ImmutableArray<ParameterView>? _field_parameters = null;
+    public global::System.Collections.Immutable.ImmutableArray<ParameterView> Parameters
+    {
+        get
+        {
+            if (_field_parameters == null)
+            {
+                var _tmp = AstParameters.Where(static (_, i) => i % 2 == 0).Cast<ParameterView>();
+                _field_parameters = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+            }
+            return _field_parameters.Value;
+        }
     }
 }

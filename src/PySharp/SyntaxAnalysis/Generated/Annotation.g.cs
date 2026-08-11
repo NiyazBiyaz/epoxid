@@ -15,7 +15,7 @@ namespace PySharp.SyntaxAnalysis;
 /// </summary>
 public sealed partial record AnnotationNode : GreenNode
 {
-    public IExpressionNode Value => (IExpressionNode)Children![1];
+    public IExpressionNode Expression => (IExpressionNode)Children![1];
     public override AnnotationView GetView(int position, IRedView? parent)
         => new AnnotationView(this, position, parent);
 }
@@ -30,17 +30,17 @@ public sealed partial class AnnotationView : RedView
     {
     }
 
-    private IExpressionView? _field_value = null;
-    public IExpressionView Value
+    private IExpressionView? _field_expression = null;
+    public IExpressionView Expression
     {
         get
         {
-            if (_field_value == null)
+            if (_field_expression == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_value = (IExpressionView)((AnnotationNode)base.Green).Value!.GetView(_positionOfField, this);
+                _field_expression = (IExpressionView)((AnnotationNode)base.Green).Expression!.GetView(_positionOfField, this);
             }
-            return (IExpressionView)_field_value;
+            return (IExpressionView)_field_expression;
         }
     }
 }

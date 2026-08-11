@@ -15,10 +15,10 @@ namespace PySharp.SyntaxAnalysis;
 /// </summary>
 /// <remarks>
 /// Inheritors:<br/>
-/// 1. <i>NormalFunctionDefNode</i><br/>
+/// 1. <i>SyncFunctionDefNode</i><br/>
 /// 2. <i>AsyncFunctionDefNode</i><br/>
 /// </remarks>
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalFunctionDefNode), typeof(AsyncFunctionDefNode))]
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(SyncFunctionDefNode), typeof(AsyncFunctionDefNode))]
 public abstract partial record FunctionDefRawNode : GreenNode
 {
     public TokenNode Name => (TokenNode)Children![1];
@@ -33,10 +33,10 @@ public abstract partial record FunctionDefRawNode : GreenNode
 /// </summary>
 /// <remarks>
 /// Inheritors:<br/>
-/// 1. <i>NormalFunctionDefView</i><br/>
+/// 1. <i>SyncFunctionDefView</i><br/>
 /// 2. <i>AsyncFunctionDefView</i><br/>
 /// </remarks>
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(NormalFunctionDefView), typeof(AsyncFunctionDefView))]
+[global::PySharp.SyntaxAnalysis.BaseRule(typeof(SyncFunctionDefView), typeof(AsyncFunctionDefView))]
 public abstract partial class FunctionDefRawView : RedView
 {
     public FunctionDefRawView(FunctionDefRawNode green, int position, IRedView? parent)

@@ -1,0 +1,60 @@
+﻿FileNode {
+  Slot[0]: NodeArray() [
+    FunctionDefNode {
+      Slot[0]: NodeArray() [
+      ],
+      Slot[1]: SyncFunctionDefNode {
+        Slot[0]: Token(Type: Name, RawString: `def`),
+        Slot[1]: Token(Type: Name, RawString: `bau`),
+        Slot[2]: VoidNode(),
+        Slot[3]: Token(Type: LeftParen, RawString: `(`),
+        Slot[4]: ParametersNode {
+          Slot[0]: NodeArray() [
+            OrdinalParameterNode {
+              Slot[0]: ParamNode {
+                Slot[0]: Token(Type: Name, RawString: `fuwa`),
+                Slot[1]: AnnotationNode {
+                  Slot[0]: Token(Type: Colon, RawString: `:`),
+                  Slot[1]: AtomPrimaryNode {
+                    Slot[0]: NameAtomNode {
+                      Slot[0]: Token(Type: Name, RawString: `Fluffy`),
+                    },
+                  },
+                },
+              },
+            },
+            Token(Type: Comma, RawString: `,`),
+            OrdinalParameterNode {
+              Slot[0]: ParamNode {
+                Slot[0]: Token(Type: Name, RawString: `moco`),
+                Slot[1]: AnnotationNode {
+                  Slot[0]: Token(Type: Colon, RawString: `:`),
+                  Slot[1]: AtomPrimaryNode {
+                    Slot[0]: NameAtomNode {
+                      Slot[0]: Token(Type: Name, RawString: `Fuzzy`),
+                    },
+                  },
+                },
+              },
+            },
+          ],
+          Slot[1]: VoidNode(),
+        },
+        Slot[5]: Token(Type: RightParen, RawString: `)`),
+        Slot[6]: VoidNode(),
+        Slot[7]: Token(Type: Colon, RawString: `:`),
+        Slot[8]: OneLinedBlockNode {
+          Slot[0]: SingleSimpleStatementNode {
+            Slot[0]: AtomPrimaryNode {
+              Slot[0]: EllipsisAtomNode {
+                Slot[0]: Token(Type: Ellipsis, RawString: `...`),
+              },
+            },
+            Slot[1]: Token(Type: NewLine, RawString: `\n`),
+          },
+        },
+      },
+    },
+  ],
+  Slot[1]: Token(Type: EndOfFile, RawString: ``),
+}

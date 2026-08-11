@@ -260,72 +260,29 @@ ClassDefRaw: 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Va
 # --------------------
 
 FunctionDef:
-    | Decorator* FunctionDefRaw -> DecoratedFunctionDef(Decorators=decorator_Star, FunctionDef=function_def_raw)
-    | FunctionDefRaw -> RawFunctionDef(Value=function_def_raw)
+    | Decorator* FunctionDefRaw -> new(Decorators=decorator_Star, FunctionDef=function_def_raw)
 
 FunctionDefRaw:
     | 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-        NormalFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
+        SyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
 
     | 'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
         AsyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
 
-# Function parameters
-# -------------------
+# In original grammar parser forces from code to use proper orders of default values and sections 
+# but it makes output AST hierarchy very complicated, so better to validate it when compiling.
+Parameters: Parameter+.',' -',' -> new(Parameters=parameter_Gather)
 
-# TODO: Create actions.
-Parameters:
-    | SlashNoDefault ParamNoDefault* ParamWithDefault* -StarEtc
-    | SlashWithDefault ParamWithDefault* -StarEtc
-    | ParamNoDefault+ ParamWithDefault* -StarEtc
-    | ParamWithDefault* -StarEtc
-    | StarEtc
+Parameter:
+    | Param '=' Expression -> ParameterDefault(Param=param, DefaultValue=expression)
+    | Param -> OrdinalParameter(Param=param)
+    | '*' Param -> PositionalVariadicParameter(Param=param)
+    | '**' Param -> KeywordVariadicParameter(Param=param)
+    | '*' -> KeywordOnlyMarker()
+    | '/' -> PositionalOnlyMarker()
 
-# TODO: Think about how to optimize AST. Maybe we can move lookahead on paren in level higher or something.
-# If not, it means that we have to use different node names.
-# Maybe use something like: `Param+.',' &')'`
-
-SlashNoDefault:
-    | ParamNoDefault+ '/' ','
-    | ParamNoDefault+ '/' &')'
-
-SlashWithDefault:
-    | ParamNoDefault* ParamWithDefault+ '/' ','
-    | ParamNoDefault* ParamWithDefault+ '/' &')'
-
-StarEtc:
-    | '*' ParamNoDefault ParamMaybeDefault* -Keywords
-    | '*' ParamNoDefaultStarAnnotation ParamMaybeDefault* -Keywords
-    | '*' ',' ParamMaybeDefault+ -Keywords
-    | Keywords
-
-Keywords: '**' ParamNoDefault -> new(Parameter=param_no_default)
-
-ParamNoDefault:
-    | Param ','
-    | Param &')'
-
-ParamNoDefaultStarAnnotation:
-    | ParamStarAnnotation ','
-    | ParamStarAnnotation &')'
-
-ParamWithDefault:
-    | Param DefaultValue ','
-    | Param DefaultValue &')'
-
-ParamMaybeDefault:
-    | Param -DefaultValue ','
-    | Param -DefaultValue &')'
-
-Param: Name -Annotation -> new(Name=name, Annotation=annotation)
-
-ParamStarAnnotation: Name StarAnnotation -> new(Name=name, Annotation=star_annotation)
-
-Annotation: ':' Expression -> new(Value=expression)
-
-StarAnnotation: ':' StarExpression -> new(Value=star_expression)
-
-DefaultValue: '=' Expression -> new(Value=expression)
+Param: Name [':' Expression -> Annotation(Expression=expression)] -> new(
+    Name=name, Annotation=annotation)
 
 # If statement
 # ------------

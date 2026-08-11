@@ -3323,8 +3323,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region FunctionDef
     // FunctionDef:
-    //     | Decorator* FunctionDefRaw -> DecoratedFunctionDef(Decorators=decorator_Star, FunctionDef=function_def_raw)
-    //     | FunctionDefRaw -> RawFunctionDef(Value=function_def_raw)
+    //     | Decorator* FunctionDefRaw -> new(Decorators=decorator_Star, FunctionDef=function_def_raw)
     FunctionDefNode? rule_FunctionDef()
     {
         base.LogIncreaseLevel();
@@ -3332,7 +3331,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         FunctionDefNode? _res = null;
         {
-            // Decorator* FunctionDefRaw -> DecoratedFunctionDef(Decorators=decorator_Star, FunctionDef=function_def_raw)
+            // Decorator* FunctionDefRaw -> new(Decorators=decorator_Star, FunctionDef=function_def_raw)
             base.LogAlternativeEntered("Decorator* FunctionDefRaw");
             INodeArray<DecoratorNode>? decorator_Star;
             IGreenNode? function_def_raw;
@@ -3342,7 +3341,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("Decorator* FunctionDefRaw");
-                _res = new DecoratedFunctionDefNode()
+                _res = new FunctionDefNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         decorator_Star,
@@ -3365,24 +3364,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
-        {
-            // FunctionDefRaw -> RawFunctionDef(Value=function_def_raw)
-            base.LogAlternativeEntered("FunctionDefRaw");
-            IGreenNode? function_def_raw;
-            if ((function_def_raw = rule_FunctionDefRaw()) is not null)
-            {
-                base.LogAlternativeSucceed("FunctionDefRaw");
-                _res = new RawFunctionDefNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        function_def_raw,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("FunctionDefRaw");
-        }
-        base.Reset(_mark);
         base.LogRuleFailed("FunctionDef");
     _Return:
         base.LogRuleExiting("FunctionDef");
@@ -3394,12 +3375,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #region FunctionDefRaw
     // FunctionDefRaw:
     //     | 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-    //         NormalFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
+    //         SyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
     //
     //     | 'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
     //         AsyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
-    //
-    //
     //
     //
     //
@@ -3411,7 +3390,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         FunctionDefRawNode? _res = null;
         {
             // 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-            //         NormalFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
+            //         SyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
             base.LogAlternativeEntered("'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
             IGreenNode? _string_token;
             IGreenNode? name;
@@ -3442,7 +3421,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-                _res = new NormalFunctionDefNode()
+                _res = new SyncFunctionDefNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
@@ -3561,16 +3540,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // FunctionReturnHint
 
     #region Parameters
-    // Parameters:
-    //     | SlashNoDefault ParamNoDefault* ParamWithDefault* -StarEtc
-    //     | SlashWithDefault ParamWithDefault* -StarEtc
-    //     | ParamNoDefault+ ParamWithDefault* -StarEtc
-    //     | ParamWithDefault* -StarEtc
-    //     | StarEtc
-    //
-    //
-    //
-    //
+    // Parameters: Parameter+.',' -',' -> new(Parameters=parameter_Gather)
     ParametersNode? rule_Parameters()
     {
         base.LogIncreaseLevel();
@@ -3578,195 +3548,48 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ParametersNode? _res = null;
         {
-            // SlashNoDefault ParamNoDefault* ParamWithDefault* -StarEtc
-            base.LogAlternativeEntered("SlashNoDefault ParamNoDefault* ParamWithDefault* -StarEtc");
-            IGreenNode? slash_no_default;
-            INodeArray<ParamNoDefaultNode>? param_no_default_Star;
-            INodeArray<ParamWithDefaultNode>? param_with_default_Star;
-            IGreenNode? star_etc;
-            if ((slash_no_default = rule_SlashNoDefault()) is not null
+            // Parameter+.',' -',' -> new(Parameters=parameter_Gather)
+            base.LogAlternativeEntered("Parameter+.',' -','");
+            INodeArray<GreenNode>? parameter_Gather;
+            IGreenNode? comma;
+            if ((parameter_Gather = _GatherHelper_parameter_Gather()) is not null
                 &&
-                (param_no_default_Star = _RepeatHelper_param_no_default_Star()) is not null
-                &&
-                (param_with_default_Star = _RepeatHelper_param_with_default_Star()) is not null
-                &&
-                ((star_etc = rule_StarEtc()) is not null || true) // Optional
+                ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("SlashNoDefault ParamNoDefault* ParamWithDefault* -StarEtc");
-                _res = new Parameters_Derived0Node()
+                base.LogAlternativeSucceed("Parameter+.',' -','");
+                _res = new ParametersNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        slash_no_default,
-                        param_no_default_Star,
-                        param_with_default_Star,
-                        star_etc ?? VoidNode.Instance,
+                        parameter_Gather,
+                        comma ?? VoidNode.Instance,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("SlashNoDefault ParamNoDefault* ParamWithDefault* -StarEtc");
-            NodeArray<ParamNoDefaultNode>? _RepeatHelper_param_no_default_Star()
+            base.LogAlternativeFailed("Parameter+.',' -','");
+            NodeArray<GreenNode>? _GatherHelper_parameter_Gather()
             {
-                ParamNoDefaultNode? _node = rule_ParamNoDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamNoDefaultNode> _result = [_node];
-                while ((_node = rule_ParamNoDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-            NodeArray<ParamWithDefaultNode>? _RepeatHelper_param_with_default_Star()
-            {
-                ParamWithDefaultNode? _node = rule_ParamWithDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamWithDefaultNode> _result = [_node];
-                while ((_node = rule_ParamWithDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // SlashWithDefault ParamWithDefault* -StarEtc
-            base.LogAlternativeEntered("SlashWithDefault ParamWithDefault* -StarEtc");
-            IGreenNode? slash_with_default;
-            INodeArray<ParamWithDefaultNode>? param_with_default_Star;
-            IGreenNode? star_etc;
-            if ((slash_with_default = rule_SlashWithDefault()) is not null
-                &&
-                (param_with_default_Star = _RepeatHelper_param_with_default_Star()) is not null
-                &&
-                ((star_etc = rule_StarEtc()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("SlashWithDefault ParamWithDefault* -StarEtc");
-                _res = new Parameters_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        slash_with_default,
-                        param_with_default_Star,
-                        star_etc ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("SlashWithDefault ParamWithDefault* -StarEtc");
-            NodeArray<ParamWithDefaultNode>? _RepeatHelper_param_with_default_Star()
-            {
-                ParamWithDefaultNode? _node = rule_ParamWithDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamWithDefaultNode> _result = [_node];
-                while ((_node = rule_ParamWithDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // ParamNoDefault+ ParamWithDefault* -StarEtc
-            base.LogAlternativeEntered("ParamNoDefault+ ParamWithDefault* -StarEtc");
-            INodeArray<ParamNoDefaultNode>? param_no_default_Plus;
-            INodeArray<ParamWithDefaultNode>? param_with_default_Star;
-            IGreenNode? star_etc;
-            if ((param_no_default_Plus = _RepeatHelper_param_no_default_Plus()) is not null
-                &&
-                (param_with_default_Star = _RepeatHelper_param_with_default_Star()) is not null
-                &&
-                ((star_etc = rule_StarEtc()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("ParamNoDefault+ ParamWithDefault* -StarEtc");
-                _res = new Parameters_Derived2Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param_no_default_Plus,
-                        param_with_default_Star,
-                        star_etc ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ParamNoDefault+ ParamWithDefault* -StarEtc");
-            NodeArray<ParamNoDefaultNode>? _RepeatHelper_param_no_default_Plus()
-            {
-                ParamNoDefaultNode? _node = rule_ParamNoDefault();
+                GreenNode? _node = rule_Parameter();
+                GreenNode? _separator;
                 if (_node == null) return null;
-                global::System.Collections.Generic.List<ParamNoDefaultNode> _result = [_node];
-                while ((_node = rule_ParamNoDefault()) != null)
+                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
+                while (true)
                 {
-                    _result.Add(_node);
+                    int _mark = base.Mark();
+                    _separator = Expect(TokenType.Comma);
+                    if (_separator == null) break;
+                    _node = rule_Parameter();
+                    if (_node == null)
+                    {
+                        base.Reset(_mark);
+                        break;
+                    }
+                    _gathered.Add((GreenNode)_separator);
+                    _gathered.Add((GreenNode)_node);
                 }
-                return [.. _result];
+                return [.. _gathered];
             }
-            NodeArray<ParamWithDefaultNode>? _RepeatHelper_param_with_default_Star()
-            {
-                ParamWithDefaultNode? _node = rule_ParamWithDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamWithDefaultNode> _result = [_node];
-                while ((_node = rule_ParamWithDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // ParamWithDefault* -StarEtc
-            base.LogAlternativeEntered("ParamWithDefault* -StarEtc");
-            INodeArray<ParamWithDefaultNode>? param_with_default_Star;
-            IGreenNode? star_etc;
-            if ((param_with_default_Star = _RepeatHelper_param_with_default_Star()) is not null
-                &&
-                ((star_etc = rule_StarEtc()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("ParamWithDefault* -StarEtc");
-                _res = new Parameters_Derived3Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param_with_default_Star,
-                        star_etc ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ParamWithDefault* -StarEtc");
-            NodeArray<ParamWithDefaultNode>? _RepeatHelper_param_with_default_Star()
-            {
-                ParamWithDefaultNode? _node = rule_ParamWithDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamWithDefaultNode> _result = [_node];
-                while ((_node = rule_ParamWithDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // StarEtc
-            base.LogAlternativeEntered("StarEtc");
-            IGreenNode? star_etc;
-            if ((star_etc = rule_StarEtc()) is not null)
-            {
-                base.LogAlternativeSucceed("StarEtc");
-                _res = new Parameters_Derived4Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        star_etc,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("StarEtc");
         }
         base.Reset(_mark);
         base.LogRuleFailed("Parameters");
@@ -3777,731 +3600,158 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // Parameters
 
-    #region SlashNoDefault
-    // SlashNoDefault:
-    //     | ParamNoDefault+ '/' ','
-    //     | ParamNoDefault+ '/' &')'
-    SlashNoDefaultNode? rule_SlashNoDefault()
+    #region Parameter
+    // Parameter:
+    //     | Param '=' Expression -> ParameterDefault(Param=param, DefaultValue=expression)
+    //     | Param -> OrdinalParameter(Param=param)
+    //     | '*' Param -> PositionalVariadicParameter(Param=param)
+    //     | '**' Param -> KeywordVariadicParameter(Param=param)
+    //     | '*' -> KeywordOnlyMarker()
+    //     | '/' -> PositionalOnlyMarker()
+    ParameterNode? rule_Parameter()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("SlashNoDefault");
+        base.LogRuleEntered("Parameter");
         int _mark = base.Mark();
-        SlashNoDefaultNode? _res = null;
+        ParameterNode? _res = null;
         {
-            // ParamNoDefault+ '/' ','
-            base.LogAlternativeEntered("ParamNoDefault+ '/' ','");
-            INodeArray<ParamNoDefaultNode>? param_no_default_Plus;
-            IGreenNode? slash;
-            IGreenNode? comma;
-            if ((param_no_default_Plus = _RepeatHelper_param_no_default_Plus()) is not null
+            // Param '=' Expression -> ParameterDefault(Param=param, DefaultValue=expression)
+            base.LogAlternativeEntered("Param '=' Expression");
+            IGreenNode? param;
+            IGreenNode? equal;
+            IGreenNode? expression;
+            if ((param = rule_Param()) is not null
                 &&
-                (slash = Expect(TokenType.Slash)) is not null
+                (equal = Expect(TokenType.Equal)) is not null
                 &&
-                (comma = Expect(TokenType.Comma)) is not null
+                (expression = rule_Expression()) is not null
             )
             {
-                base.LogAlternativeSucceed("ParamNoDefault+ '/' ','");
-                _res = new SlashNoDefault_Derived0Node()
+                base.LogAlternativeSucceed("Param '=' Expression");
+                _res = new ParameterDefaultNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        param_no_default_Plus,
-                        slash,
-                        comma,
+                        param,
+                        equal,
+                        expression,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("ParamNoDefault+ '/' ','");
-            NodeArray<ParamNoDefaultNode>? _RepeatHelper_param_no_default_Plus()
-            {
-                ParamNoDefaultNode? _node = rule_ParamNoDefault();
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<ParamNoDefaultNode> _result = [_node];
-                while ((_node = rule_ParamNoDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
+            base.LogAlternativeFailed("Param '=' Expression");
         }
         base.Reset(_mark);
         {
-            // ParamNoDefault+ '/' &')'
-            base.LogAlternativeEntered("ParamNoDefault+ '/' &')'");
-            INodeArray<ParamNoDefaultNode>? param_no_default_Plus;
-            IGreenNode? slash;
-            if ((param_no_default_Plus = _RepeatHelper_param_no_default_Plus()) is not null
-                &&
-                (slash = Expect(TokenType.Slash)) is not null
-                &&
-                _LookaheadHelper_right_paren()
-            )
+            // Param -> OrdinalParameter(Param=param)
+            base.LogAlternativeEntered("Param");
+            IGreenNode? param;
+            if ((param = rule_Param()) is not null)
             {
-                base.LogAlternativeSucceed("ParamNoDefault+ '/' &')'");
-                _res = new SlashNoDefault_Derived1Node()
+                base.LogAlternativeSucceed("Param");
+                _res = new OrdinalParameterNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        param_no_default_Plus,
-                        slash,
+                        param,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("ParamNoDefault+ '/' &')'");
-            NodeArray<ParamNoDefaultNode>? _RepeatHelper_param_no_default_Plus()
-            {
-                ParamNoDefaultNode? _node = rule_ParamNoDefault();
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<ParamNoDefaultNode> _result = [_node];
-                while ((_node = rule_ParamNoDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-            bool _LookaheadHelper_right_paren()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.RightParen) != null;
-                base.Reset(_mark);
-                return _wasParsed == true;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("SlashNoDefault");
-    _Return:
-        base.LogRuleExiting("SlashNoDefault");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // SlashNoDefault
-
-    #region SlashWithDefault
-    // SlashWithDefault:
-    //     | ParamNoDefault* ParamWithDefault+ '/' ','
-    //     | ParamNoDefault* ParamWithDefault+ '/' &')'
-    SlashWithDefaultNode? rule_SlashWithDefault()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("SlashWithDefault");
-        int _mark = base.Mark();
-        SlashWithDefaultNode? _res = null;
-        {
-            // ParamNoDefault* ParamWithDefault+ '/' ','
-            base.LogAlternativeEntered("ParamNoDefault* ParamWithDefault+ '/' ','");
-            INodeArray<ParamNoDefaultNode>? param_no_default_Star;
-            INodeArray<ParamWithDefaultNode>? param_with_default_Plus;
-            IGreenNode? slash;
-            IGreenNode? comma;
-            if ((param_no_default_Star = _RepeatHelper_param_no_default_Star()) is not null
-                &&
-                (param_with_default_Plus = _RepeatHelper_param_with_default_Plus()) is not null
-                &&
-                (slash = Expect(TokenType.Slash)) is not null
-                &&
-                (comma = Expect(TokenType.Comma)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("ParamNoDefault* ParamWithDefault+ '/' ','");
-                _res = new SlashWithDefault_Derived0Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param_no_default_Star,
-                        param_with_default_Plus,
-                        slash,
-                        comma,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ParamNoDefault* ParamWithDefault+ '/' ','");
-            NodeArray<ParamNoDefaultNode>? _RepeatHelper_param_no_default_Star()
-            {
-                ParamNoDefaultNode? _node = rule_ParamNoDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamNoDefaultNode> _result = [_node];
-                while ((_node = rule_ParamNoDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-            NodeArray<ParamWithDefaultNode>? _RepeatHelper_param_with_default_Plus()
-            {
-                ParamWithDefaultNode? _node = rule_ParamWithDefault();
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<ParamWithDefaultNode> _result = [_node];
-                while ((_node = rule_ParamWithDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
+            base.LogAlternativeFailed("Param");
         }
         base.Reset(_mark);
         {
-            // ParamNoDefault* ParamWithDefault+ '/' &')'
-            base.LogAlternativeEntered("ParamNoDefault* ParamWithDefault+ '/' &')'");
-            INodeArray<ParamNoDefaultNode>? param_no_default_Star;
-            INodeArray<ParamWithDefaultNode>? param_with_default_Plus;
-            IGreenNode? slash;
-            if ((param_no_default_Star = _RepeatHelper_param_no_default_Star()) is not null
-                &&
-                (param_with_default_Plus = _RepeatHelper_param_with_default_Plus()) is not null
-                &&
-                (slash = Expect(TokenType.Slash)) is not null
-                &&
-                _LookaheadHelper_right_paren()
-            )
-            {
-                base.LogAlternativeSucceed("ParamNoDefault* ParamWithDefault+ '/' &')'");
-                _res = new SlashWithDefault_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param_no_default_Star,
-                        param_with_default_Plus,
-                        slash,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ParamNoDefault* ParamWithDefault+ '/' &')'");
-            NodeArray<ParamNoDefaultNode>? _RepeatHelper_param_no_default_Star()
-            {
-                ParamNoDefaultNode? _node = rule_ParamNoDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamNoDefaultNode> _result = [_node];
-                while ((_node = rule_ParamNoDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-            NodeArray<ParamWithDefaultNode>? _RepeatHelper_param_with_default_Plus()
-            {
-                ParamWithDefaultNode? _node = rule_ParamWithDefault();
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<ParamWithDefaultNode> _result = [_node];
-                while ((_node = rule_ParamWithDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-            bool _LookaheadHelper_right_paren()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.RightParen) != null;
-                base.Reset(_mark);
-                return _wasParsed == true;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("SlashWithDefault");
-    _Return:
-        base.LogRuleExiting("SlashWithDefault");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // SlashWithDefault
-
-    #region StarEtc
-    // StarEtc:
-    //     | '*' ParamNoDefault ParamMaybeDefault* -Keywords
-    //     | '*' ParamNoDefaultStarAnnotation ParamMaybeDefault* -Keywords
-    //     | '*' ',' ParamMaybeDefault+ -Keywords
-    //     | Keywords
-    StarEtcNode? rule_StarEtc()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("StarEtc");
-        int _mark = base.Mark();
-        StarEtcNode? _res = null;
-        {
-            // '*' ParamNoDefault ParamMaybeDefault* -Keywords
-            base.LogAlternativeEntered("'*' ParamNoDefault ParamMaybeDefault* -Keywords");
+            // '*' Param -> PositionalVariadicParameter(Param=param)
+            base.LogAlternativeEntered("'*' Param");
             IGreenNode? star;
-            IGreenNode? param_no_default;
-            INodeArray<ParamMaybeDefaultNode>? param_maybe_default_Star;
-            IGreenNode? keywords;
+            IGreenNode? param;
             if ((star = Expect(TokenType.Star)) is not null
                 &&
-                (param_no_default = rule_ParamNoDefault()) is not null
-                &&
-                (param_maybe_default_Star = _RepeatHelper_param_maybe_default_Star()) is not null
-                &&
-                ((keywords = rule_Keywords()) is not null || true) // Optional
+                (param = rule_Param()) is not null
             )
             {
-                base.LogAlternativeSucceed("'*' ParamNoDefault ParamMaybeDefault* -Keywords");
-                _res = new StarEtc_Derived0Node()
+                base.LogAlternativeSucceed("'*' Param");
+                _res = new PositionalVariadicParameterNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         star,
-                        param_no_default,
-                        param_maybe_default_Star,
-                        keywords ?? VoidNode.Instance,
+                        param,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'*' ParamNoDefault ParamMaybeDefault* -Keywords");
-            NodeArray<ParamMaybeDefaultNode>? _RepeatHelper_param_maybe_default_Star()
-            {
-                ParamMaybeDefaultNode? _node = rule_ParamMaybeDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamMaybeDefaultNode> _result = [_node];
-                while ((_node = rule_ParamMaybeDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
+            base.LogAlternativeFailed("'*' Param");
         }
         base.Reset(_mark);
         {
-            // '*' ParamNoDefaultStarAnnotation ParamMaybeDefault* -Keywords
-            base.LogAlternativeEntered("'*' ParamNoDefaultStarAnnotation ParamMaybeDefault* -Keywords");
-            IGreenNode? star;
-            IGreenNode? param_no_default_star_annotation;
-            INodeArray<ParamMaybeDefaultNode>? param_maybe_default_Star;
-            IGreenNode? keywords;
-            if ((star = Expect(TokenType.Star)) is not null
-                &&
-                (param_no_default_star_annotation = rule_ParamNoDefaultStarAnnotation()) is not null
-                &&
-                (param_maybe_default_Star = _RepeatHelper_param_maybe_default_Star()) is not null
-                &&
-                ((keywords = rule_Keywords()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("'*' ParamNoDefaultStarAnnotation ParamMaybeDefault* -Keywords");
-                _res = new StarEtc_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        star,
-                        param_no_default_star_annotation,
-                        param_maybe_default_Star,
-                        keywords ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'*' ParamNoDefaultStarAnnotation ParamMaybeDefault* -Keywords");
-            NodeArray<ParamMaybeDefaultNode>? _RepeatHelper_param_maybe_default_Star()
-            {
-                ParamMaybeDefaultNode? _node = rule_ParamMaybeDefault();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<ParamMaybeDefaultNode> _result = [_node];
-                while ((_node = rule_ParamMaybeDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // '*' ',' ParamMaybeDefault+ -Keywords
-            base.LogAlternativeEntered("'*' ',' ParamMaybeDefault+ -Keywords");
-            IGreenNode? star;
-            IGreenNode? comma;
-            INodeArray<ParamMaybeDefaultNode>? param_maybe_default_Plus;
-            IGreenNode? keywords;
-            if ((star = Expect(TokenType.Star)) is not null
-                &&
-                (comma = Expect(TokenType.Comma)) is not null
-                &&
-                (param_maybe_default_Plus = _RepeatHelper_param_maybe_default_Plus()) is not null
-                &&
-                ((keywords = rule_Keywords()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("'*' ',' ParamMaybeDefault+ -Keywords");
-                _res = new StarEtc_Derived2Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        star,
-                        comma,
-                        param_maybe_default_Plus,
-                        keywords ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'*' ',' ParamMaybeDefault+ -Keywords");
-            NodeArray<ParamMaybeDefaultNode>? _RepeatHelper_param_maybe_default_Plus()
-            {
-                ParamMaybeDefaultNode? _node = rule_ParamMaybeDefault();
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<ParamMaybeDefaultNode> _result = [_node];
-                while ((_node = rule_ParamMaybeDefault()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // Keywords
-            base.LogAlternativeEntered("Keywords");
-            IGreenNode? keywords;
-            if ((keywords = rule_Keywords()) is not null)
-            {
-                base.LogAlternativeSucceed("Keywords");
-                _res = new StarEtc_Derived3Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        keywords,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Keywords");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("StarEtc");
-    _Return:
-        base.LogRuleExiting("StarEtc");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // StarEtc
-
-    #region Keywords
-    // Keywords: '**' ParamNoDefault -> new(Parameter=param_no_default)
-    KeywordsNode? rule_Keywords()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("Keywords");
-        int _mark = base.Mark();
-        KeywordsNode? _res = null;
-        {
-            // '**' ParamNoDefault -> new(Parameter=param_no_default)
-            base.LogAlternativeEntered("'**' ParamNoDefault");
+            // '**' Param -> KeywordVariadicParameter(Param=param)
+            base.LogAlternativeEntered("'**' Param");
             IGreenNode? double_star;
-            IGreenNode? param_no_default;
+            IGreenNode? param;
             if ((double_star = Expect(TokenType.DoubleStar)) is not null
                 &&
-                (param_no_default = rule_ParamNoDefault()) is not null
+                (param = rule_Param()) is not null
             )
             {
-                base.LogAlternativeSucceed("'**' ParamNoDefault");
-                _res = new KeywordsNode()
+                base.LogAlternativeSucceed("'**' Param");
+                _res = new KeywordVariadicParameterNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         double_star,
-                        param_no_default,
+                        param,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'**' ParamNoDefault");
+            base.LogAlternativeFailed("'**' Param");
         }
         base.Reset(_mark);
-        base.LogRuleFailed("Keywords");
+        {
+            // '*' -> KeywordOnlyMarker()
+            base.LogAlternativeEntered("'*'");
+            IGreenNode? star;
+            if ((star = Expect(TokenType.Star)) is not null)
+            {
+                base.LogAlternativeSucceed("'*'");
+                _res = new KeywordOnlyMarkerNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        star,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'*'");
+        }
+        base.Reset(_mark);
+        {
+            // '/' -> PositionalOnlyMarker()
+            base.LogAlternativeEntered("'/'");
+            IGreenNode? slash;
+            if ((slash = Expect(TokenType.Slash)) is not null)
+            {
+                base.LogAlternativeSucceed("'/'");
+                _res = new PositionalOnlyMarkerNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        slash,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'/'");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("Parameter");
     _Return:
-        base.LogRuleExiting("Keywords");
+        base.LogRuleExiting("Parameter");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // Keywords
-
-    #region ParamNoDefault
-    // ParamNoDefault:
-    //     | Param ','
-    //     | Param &')'
-    ParamNoDefaultNode? rule_ParamNoDefault()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("ParamNoDefault");
-        int _mark = base.Mark();
-        ParamNoDefaultNode? _res = null;
-        {
-            // Param ','
-            base.LogAlternativeEntered("Param ','");
-            IGreenNode? param;
-            IGreenNode? comma;
-            if ((param = rule_Param()) is not null
-                &&
-                (comma = Expect(TokenType.Comma)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("Param ','");
-                _res = new ParamNoDefault_Derived0Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param,
-                        comma,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Param ','");
-        }
-        base.Reset(_mark);
-        {
-            // Param &')'
-            base.LogAlternativeEntered("Param &')'");
-            IGreenNode? param;
-            if ((param = rule_Param()) is not null
-                &&
-                _LookaheadHelper_right_paren()
-            )
-            {
-                base.LogAlternativeSucceed("Param &')'");
-                _res = new ParamNoDefault_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Param &')'");
-            bool _LookaheadHelper_right_paren()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.RightParen) != null;
-                base.Reset(_mark);
-                return _wasParsed == true;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("ParamNoDefault");
-    _Return:
-        base.LogRuleExiting("ParamNoDefault");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // ParamNoDefault
-
-    #region ParamNoDefaultStarAnnotation
-    // ParamNoDefaultStarAnnotation:
-    //     | ParamStarAnnotation ','
-    //     | ParamStarAnnotation &')'
-    ParamNoDefaultStarAnnotationNode? rule_ParamNoDefaultStarAnnotation()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("ParamNoDefaultStarAnnotation");
-        int _mark = base.Mark();
-        ParamNoDefaultStarAnnotationNode? _res = null;
-        {
-            // ParamStarAnnotation ','
-            base.LogAlternativeEntered("ParamStarAnnotation ','");
-            IGreenNode? param_star_annotation;
-            IGreenNode? comma;
-            if ((param_star_annotation = rule_ParamStarAnnotation()) is not null
-                &&
-                (comma = Expect(TokenType.Comma)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("ParamStarAnnotation ','");
-                _res = new ParamNoDefaultStarAnnotation_Derived0Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param_star_annotation,
-                        comma,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ParamStarAnnotation ','");
-        }
-        base.Reset(_mark);
-        {
-            // ParamStarAnnotation &')'
-            base.LogAlternativeEntered("ParamStarAnnotation &')'");
-            IGreenNode? param_star_annotation;
-            if ((param_star_annotation = rule_ParamStarAnnotation()) is not null
-                &&
-                _LookaheadHelper_right_paren()
-            )
-            {
-                base.LogAlternativeSucceed("ParamStarAnnotation &')'");
-                _res = new ParamNoDefaultStarAnnotation_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param_star_annotation,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ParamStarAnnotation &')'");
-            bool _LookaheadHelper_right_paren()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.RightParen) != null;
-                base.Reset(_mark);
-                return _wasParsed == true;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("ParamNoDefaultStarAnnotation");
-    _Return:
-        base.LogRuleExiting("ParamNoDefaultStarAnnotation");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // ParamNoDefaultStarAnnotation
-
-    #region ParamWithDefault
-    // ParamWithDefault:
-    //     | Param DefaultValue ','
-    //     | Param DefaultValue &')'
-    ParamWithDefaultNode? rule_ParamWithDefault()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("ParamWithDefault");
-        int _mark = base.Mark();
-        ParamWithDefaultNode? _res = null;
-        {
-            // Param DefaultValue ','
-            base.LogAlternativeEntered("Param DefaultValue ','");
-            IGreenNode? param;
-            IGreenNode? default_value;
-            IGreenNode? comma;
-            if ((param = rule_Param()) is not null
-                &&
-                (default_value = rule_DefaultValue()) is not null
-                &&
-                (comma = Expect(TokenType.Comma)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("Param DefaultValue ','");
-                _res = new ParamWithDefault_Derived0Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param,
-                        default_value,
-                        comma,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Param DefaultValue ','");
-        }
-        base.Reset(_mark);
-        {
-            // Param DefaultValue &')'
-            base.LogAlternativeEntered("Param DefaultValue &')'");
-            IGreenNode? param;
-            IGreenNode? default_value;
-            if ((param = rule_Param()) is not null
-                &&
-                (default_value = rule_DefaultValue()) is not null
-                &&
-                _LookaheadHelper_right_paren()
-            )
-            {
-                base.LogAlternativeSucceed("Param DefaultValue &')'");
-                _res = new ParamWithDefault_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param,
-                        default_value,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Param DefaultValue &')'");
-            bool _LookaheadHelper_right_paren()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.RightParen) != null;
-                base.Reset(_mark);
-                return _wasParsed == true;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("ParamWithDefault");
-    _Return:
-        base.LogRuleExiting("ParamWithDefault");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // ParamWithDefault
-
-    #region ParamMaybeDefault
-    // ParamMaybeDefault:
-    //     | Param -DefaultValue ','
-    //     | Param -DefaultValue &')'
-    ParamMaybeDefaultNode? rule_ParamMaybeDefault()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("ParamMaybeDefault");
-        int _mark = base.Mark();
-        ParamMaybeDefaultNode? _res = null;
-        {
-            // Param -DefaultValue ','
-            base.LogAlternativeEntered("Param -DefaultValue ','");
-            IGreenNode? param;
-            IGreenNode? default_value;
-            IGreenNode? comma;
-            if ((param = rule_Param()) is not null
-                &&
-                ((default_value = rule_DefaultValue()) is not null || true) // Optional
-                &&
-                (comma = Expect(TokenType.Comma)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("Param -DefaultValue ','");
-                _res = new ParamMaybeDefault_Derived0Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param,
-                        default_value ?? VoidNode.Instance,
-                        comma,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Param -DefaultValue ','");
-        }
-        base.Reset(_mark);
-        {
-            // Param -DefaultValue &')'
-            base.LogAlternativeEntered("Param -DefaultValue &')'");
-            IGreenNode? param;
-            IGreenNode? default_value;
-            if ((param = rule_Param()) is not null
-                &&
-                ((default_value = rule_DefaultValue()) is not null || true) // Optional
-                &&
-                _LookaheadHelper_right_paren()
-            )
-            {
-                base.LogAlternativeSucceed("Param -DefaultValue &')'");
-                _res = new ParamMaybeDefault_Derived1Node()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        param,
-                        default_value ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Param -DefaultValue &')'");
-            bool _LookaheadHelper_right_paren()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = Expect(TokenType.RightParen) != null;
-                base.Reset(_mark);
-                return _wasParsed == true;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("ParamMaybeDefault");
-    _Return:
-        base.LogRuleExiting("ParamMaybeDefault");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // ParamMaybeDefault
+    #endregion // Parameter
 
     #region Param
-    // Param: Name -Annotation -> new(Name=name, Annotation=annotation)
+    // Param: Name [':' Expression -> Annotation(Expression=expression)] -> new(
+    //     Name=name, Annotation=annotation)
     ParamNode? rule_Param()
     {
         base.LogIncreaseLevel();
@@ -4509,8 +3759,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ParamNode? _res = null;
         {
-            // Name -Annotation -> new(Name=name, Annotation=annotation)
-            base.LogAlternativeEntered("Name -Annotation");
+            // Name [':' Expression -> Annotation(Expression=expression)] -> new(
+            //     Name=name, Annotation=annotation)
+            base.LogAlternativeEntered("Name [':' Expression -> Annotation(Expression=expression)]");
             IGreenNode? name;
             IGreenNode? annotation;
             if ((name = Expect(TokenType.Name)) is not null
@@ -4518,7 +3769,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 ((annotation = rule_Annotation()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("Name -Annotation");
+                base.LogAlternativeSucceed("Name [':' Expression -> Annotation(Expression=expression)]");
                 _res = new ParamNode()
                 {
                     Children = new NodeArray<IGreenNode>([
@@ -4528,7 +3779,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("Name -Annotation");
+            base.LogAlternativeFailed("Name [':' Expression -> Annotation(Expression=expression)]");
         }
         base.Reset(_mark);
         base.LogRuleFailed("Param");
@@ -4539,47 +3790,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // Param
 
-    #region ParamStarAnnotation
-    // ParamStarAnnotation: Name StarAnnotation -> new(Name=name, Annotation=star_annotation)
-    ParamStarAnnotationNode? rule_ParamStarAnnotation()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("ParamStarAnnotation");
-        int _mark = base.Mark();
-        ParamStarAnnotationNode? _res = null;
-        {
-            // Name StarAnnotation -> new(Name=name, Annotation=star_annotation)
-            base.LogAlternativeEntered("Name StarAnnotation");
-            IGreenNode? name;
-            IGreenNode? star_annotation;
-            if ((name = Expect(TokenType.Name)) is not null
-                &&
-                (star_annotation = rule_StarAnnotation()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("Name StarAnnotation");
-                _res = new ParamStarAnnotationNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        name,
-                        star_annotation,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Name StarAnnotation");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("ParamStarAnnotation");
-    _Return:
-        base.LogRuleExiting("ParamStarAnnotation");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // ParamStarAnnotation
-
     #region Annotation
-    // Annotation: ':' Expression -> new(Value=expression)
+    // [':' Expression -> Annotation(Expression=expression)]
     AnnotationNode? rule_Annotation()
     {
         base.LogIncreaseLevel();
@@ -4587,7 +3799,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         AnnotationNode? _res = null;
         {
-            // ':' Expression -> new(Value=expression)
+            // ':' Expression -> Annotation(Expression=expression)
             base.LogAlternativeEntered("':' Expression");
             IGreenNode? colon;
             IGreenNode? expression;
@@ -4616,84 +3828,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // Annotation
-
-    #region StarAnnotation
-    // StarAnnotation: ':' StarExpression -> new(Value=star_expression)
-    StarAnnotationNode? rule_StarAnnotation()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("StarAnnotation");
-        int _mark = base.Mark();
-        StarAnnotationNode? _res = null;
-        {
-            // ':' StarExpression -> new(Value=star_expression)
-            base.LogAlternativeEntered("':' StarExpression");
-            IGreenNode? colon;
-            IGreenNode? star_expression;
-            if ((colon = Expect(TokenType.Colon)) is not null
-                &&
-                (star_expression = rule_StarExpression()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("':' StarExpression");
-                _res = new StarAnnotationNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        colon,
-                        star_expression,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("':' StarExpression");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("StarAnnotation");
-    _Return:
-        base.LogRuleExiting("StarAnnotation");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // StarAnnotation
-
-    #region DefaultValue
-    // DefaultValue: '=' Expression -> new(Value=expression)
-    DefaultValueNode? rule_DefaultValue()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("DefaultValue");
-        int _mark = base.Mark();
-        DefaultValueNode? _res = null;
-        {
-            // '=' Expression -> new(Value=expression)
-            base.LogAlternativeEntered("'=' Expression");
-            IGreenNode? equal;
-            IGreenNode? expression;
-            if ((equal = Expect(TokenType.Equal)) is not null
-                &&
-                (expression = rule_Expression()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'=' Expression");
-                _res = new DefaultValueNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        equal,
-                        expression,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'=' Expression");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("DefaultValue");
-    _Return:
-        base.LogRuleExiting("DefaultValue");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // DefaultValue
 
     #region IfStatement
     // IfStatement:

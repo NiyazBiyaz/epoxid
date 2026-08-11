@@ -13,29 +13,49 @@ namespace PySharp.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>FunctionDef</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>DecoratedFunctionDefNode</i><br/>
-/// 2. <i>RawFunctionDefNode</i><br/>
-/// </remarks>
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DecoratedFunctionDefNode), typeof(RawFunctionDefNode))]
-public abstract partial record FunctionDefNode : GreenNode, ICompoundStatementNode
+public sealed partial record FunctionDefNode : GreenNode, ICompoundStatementNode
 {
+    public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
+    public FunctionDefRawNode FunctionDef => (FunctionDefRawNode)Children![1];
+    public override FunctionDefView GetView(int position, IRedView? parent)
+        => new FunctionDefView(this, position, parent);
 }
 
 /// <summary>
 /// View class that represents <i>FunctionDef</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>DecoratedFunctionDefView</i><br/>
-/// 2. <i>RawFunctionDefView</i><br/>
-/// </remarks>
-[global::PySharp.SyntaxAnalysis.BaseRule(typeof(DecoratedFunctionDefView), typeof(RawFunctionDefView))]
-public abstract partial class FunctionDefView : RedView, ICompoundStatementView
+public sealed partial class FunctionDefView : RedView, ICompoundStatementView
 {
     public FunctionDefView(FunctionDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private ViewArray<DecoratorView>? _field_decorators = null;
+    public ViewArray<DecoratorView> Decorators
+    {
+        get
+        {
+            if (_field_decorators == null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_decorators = (ViewArray<DecoratorView>)new ViewArray<DecoratorView>(((FunctionDefNode)base.Green).Decorators, _positionOfField, this);
+            }
+            return (ViewArray<DecoratorView>)_field_decorators;
+        }
+    }
+
+    private FunctionDefRawView? _field_functionDef = null;
+    public FunctionDefRawView FunctionDef
+    {
+        get
+        {
+            if (_field_functionDef == null)
+            {
+                var _positionOfField = base.GetPositionFor(1);
+                _field_functionDef = (FunctionDefRawView)((FunctionDefNode)base.Green).FunctionDef!.GetView(_positionOfField, this);
+            }
+            return (FunctionDefRawView)_field_functionDef;
+        }
     }
 }
