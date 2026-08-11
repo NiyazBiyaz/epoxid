@@ -11,7 +11,7 @@ internal class Engine
 
     public void RunCode(CodeObject code)
     {
-        var frame = registerStack.AsSpan(0, code.FrameSize);
+        var frame = registerStack.AsSpan(0, code.StackSize);
 
         bool stop = false;
         int programCounter = 0;

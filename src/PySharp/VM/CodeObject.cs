@@ -9,6 +9,4 @@ internal class CodeObject
     public List<string> VarNames { get; init; } = [];
     public int StackSize { get; set; }
     public int ArgCount { get; set; }
-
-    public int FrameSize => StackSize + ArgCount;
 }
