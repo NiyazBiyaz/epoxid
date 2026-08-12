@@ -20,7 +20,8 @@ public class PsType : PsObject
 
     #region Methods slots
 
-    public TernaryFunction? DunderCall { get; set; }
+    // Not supported yet.
+    //public FrameKeywordCall? DunderCall { get; set; }
 
     public BinaryFunction? DunderAdd { get; set; }
 

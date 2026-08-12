@@ -9,9 +9,13 @@ internal class Engine
 
     private readonly PsObject[] registerStack = new PsObject[register_stack_count];
 
-    public void RunCode(CodeObject code)
+    private int stackCount = 0;
+
+    public PsObject RunCode(CodeObject code, ReadOnlySpan<PsObject> argSpan, Runtime.Environment environment)
     {
-        var frame = registerStack.AsSpan(0, code.StackSize);
+        PsObject result = default!;
+        var frame = registerStack.AsSpan(stackCount, code.StackSize);
+        stackCount += code.StackSize;
 
         bool stop = false;
         int programCounter = 0;
@@ -19,7 +23,7 @@ internal class Engine
         {
             if (code.Instructions.Count <= programCounter)
             {
-                throw new InvalidOperationException("Invalid code object: code never returns");
+                throw new ArgumentException("Invalid code object: code never returns");
             }
 
             var instr = code.Instructions[programCounter];
@@ -30,10 +34,45 @@ internal class Engine
                     frame[instr.RegDest] = code.Constants[instr.Immediate16];
                     break;
 
+                case Opcode.LdArg:
+                    frame[instr.RegDest] = argSpan[instr.RegSrc1];
+                    break;
+
+                case Opcode.LdVar:
+                    var variable = environment.SearchVariable(code.VarNames[instr.Immediate16])
+                        ?? throw new Exception("NameError: TODO");
+
+                    frame[instr.RegDest] = variable;
+                    break;
+
                 case Opcode.Ret:
+                    result = frame[instr.RegSrc1];
                     frame.Clear();
                     stop = true;
                     break;
+
+                case Opcode.RetC:
+                    result = code.Constants[instr.Immediate16];
+                    frame.Clear();
+                    stop = true;
+                    break;
+
+                case Opcode.Call:
+                {
+                    var arguments = frame.Slice(instr.RegDest, instr.RegSrc2);
+                    var func = frame[instr.RegSrc1];
+                    frame[instr.RegDest] = Core.CallFunction(func, arguments);
+                    break;
+                }
+
+                case Opcode.CallK:
+                {
+                    var arguments = frame.Slice(instr.RegDest, instr.RegSrc2);
+                    var keywordArgs = frame[instr.RegSrc2 + 1];
+                    var func = frame[instr.RegSrc1];
+                    frame[instr.RegDest] = Core.CallKeywordFunction(func, arguments, keywordArgs);
+                    break;
+                }
 
                 // Register-to-register section
                 case Opcode.Add:
@@ -66,5 +105,8 @@ internal class Engine
 
             programCounter += 1;
         }
+
+        stackCount -= code.StackSize;
+        return result;
     }
 }

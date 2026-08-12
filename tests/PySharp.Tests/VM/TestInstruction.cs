@@ -38,18 +38,18 @@ public class TestInstruction
     [Fact]
     public void Test_Imm24Mode()
     {
-        var instr = new Instruction(Opcode.LJmp, 1234567);
+        var instr = new Instruction(Opcode.Jump, 1234567);
 
-        Assert.Equal(Opcode.LJmp, instr.Opcode);
+        Assert.Equal(Opcode.Jump, instr.Opcode);
         Assert.Equal(1234567, instr.Immediate24);
     }
 
     [Fact]
     public void Test_Imm24Mode_NegativeValue()
     {
-        var instr = new Instruction(Opcode.LJmp, -1234567);
+        var instr = new Instruction(Opcode.Jump, -1234567);
 
-        Assert.Equal(Opcode.LJmp, instr.Opcode);
+        Assert.Equal(Opcode.Jump, instr.Opcode);
         Assert.Equal(-1234567, instr.Immediate24);
     }
 
@@ -58,11 +58,11 @@ public class TestInstruction
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            new Instruction(Opcode.LJmp, 10_000_000);
+            new Instruction(Opcode.Jump, 10_000_000);
         });
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            new Instruction(Opcode.LJmp, -10_000_000);
+            new Instruction(Opcode.Jump, -10_000_000);
         });
     }
 }

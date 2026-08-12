@@ -1,24 +1,61 @@
+using System.Diagnostics;
 using PySharp.Runtime.Objects;
 
 namespace PySharp.Runtime;
 
 internal static class Core
 {
-    internal static PsObject CallFunction(PsObject func, PsObject args, PsObject kwargs)
+    internal static PsObject CallFunction(PsObject funcObject, ReadOnlySpan<PsObject> args)
     {
-        if (func.DunderClass.DunderCall == null)
+        var descr = ((PsBaseFunction)funcObject).ParamsDescription;
+
+        if (!descr.ArgumentsAreValid(args.Length, [], out string? message))
         {
-            throw new Exception($"TypeError: type '{func.DunderClass.DunderName}' is not callable.");
+            throw new Exception($"TypeError: {string.Format(message, ((PsBaseFunction)funcObject).QualName)}");
         }
 
-        var descr = ((PsBaseFunction)func).ParamsDescription;
-
-        if (!descr.IsArgumentsAreValid((PsTuple)args, (PsDict)kwargs, out string? message))
+        switch (funcObject)
         {
-            throw new Exception($"TypeError: {string.Format(message, ((PsBaseFunction)func).QualName)}");
+            case PsBuiltinFunction builtin:
+                Debug.Assert(builtin.FrameCall != null);
+
+                return builtin.FrameCall(args);
+
+            case PsFunction userFunc:
+                throw new NotImplementedException();
+
+            default:
+                throw new ArgumentException("Argument is not callable Py# object");
+        }
+    }
+
+    internal static PsObject CallKeywordFunction(PsObject funcObject, ReadOnlySpan<PsObject> args, PsObject kwargs)
+    {
+        if (kwargs is not PsDict kwDict)
+        {
+            throw new ArgumentException("Keyword arguments is not Py# dictionary.");
         }
 
-        return func.DunderClass.DunderCall(func, args, kwargs);
+        var descr = ((PsBaseFunction)funcObject).ParamsDescription;
+
+        if (!descr.ArgumentsAreValid(args.Length, [], out string? message))
+        {
+            throw new Exception($"TypeError: {string.Format(message, ((PsBaseFunction)funcObject).QualName)}");
+        }
+
+        switch (funcObject)
+        {
+            case PsBuiltinFunction builtin:
+                Debug.Assert(builtin.FrameKeywordCall != null);
+
+                return builtin.FrameKeywordCall(args, kwDict);
+
+            case PsFunction userFunc:
+                throw new NotImplementedException();
+
+            default:
+                throw new ArgumentException("Argument is not callable Py# object");
+        }
     }
 
     // TODO: MRO

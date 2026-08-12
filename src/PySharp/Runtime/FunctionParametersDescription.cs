@@ -50,27 +50,30 @@ public record FunctionParametersDescription
 
     public bool HasKeywordVariadic => VariadicKeywordParam != null;
 
-    public bool IsArgumentsAreValid(PsTuple args, PsDict kwargs, [NotNullWhen(false)] out string? message)
+    public bool ArgumentsAreValid(int argCount, PsDict kwargs, [NotNullWhen(false)] out string? message)
     {
         Span<bool> allUsedParams = stackalloc bool[allParamsCount];
         allUsedParams.Clear();
+
         Span<bool> usedPosParams = allUsedParams[..PositionalOnlyParams.Length];
+
         Span<bool> usedFreeParams = allUsedParams[PositionalOnlyParams.Length..FreeParams.Length];
+
         Span<bool> usedKwParams = allUsedParams[FreeParams.Length..];
 
         int minPositionalArgs = PositionalOnlyParams.Count(p => !p.Required);
         int maxPositionalArgs = PositionalOnlyParams.Length + FreeParams.Length;
 
         // Check positional arguments
-        if (args.Count < minPositionalArgs || args.Count > maxPositionalArgs && !HasPositionalVariadic)
+        if (argCount < minPositionalArgs || argCount > maxPositionalArgs && !HasPositionalVariadic)
         {
             string rangeString = getRange(minPositionalArgs, minPositionalArgs);
-            message = $"Function {{0}} takes {rangeString}, but {args.Count} were given";
+            message = $"Function {{0}} takes {rangeString}, but {argCount} were given";
             return false;
         }
 
         // Mark used as positional
-        for (int argsCounter = minPositionalArgs; argsCounter < args.Count; argsCounter++)
+        for (int argsCounter = minPositionalArgs; argsCounter < argCount; argsCounter++)
         {
             if (argsCounter < usedPosParams.Length)
             {

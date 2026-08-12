@@ -25,6 +25,8 @@ public class PsDict : PsObject, IDictionary<PsObject, PsObject>
         set => items[key] = value;
     }
 
+    public static readonly PsDict Empty = [];
+
     public ICollection<PsObject> Keys => items.Keys;
 
     public ICollection<PsObject> Values => items.Values;
