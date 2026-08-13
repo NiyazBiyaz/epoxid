@@ -17,7 +17,13 @@ internal static class Core
         switch (funcObject)
         {
             case PsBuiltinFunction builtin:
-                Debug.Assert(builtin.FrameCall != null);
+                if (builtin.FrameCall == null)
+                {
+                    if (builtin.FrameKeywordCall == null)
+                        throw new ArgumentException("Invalid function object: can't find any underlying function");
+
+                    return builtin.FrameKeywordCall(args, PsDict.Empty);
+                }
 
                 return builtin.FrameCall(args);
 

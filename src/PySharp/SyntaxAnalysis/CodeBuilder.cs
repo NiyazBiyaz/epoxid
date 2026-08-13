@@ -3,6 +3,9 @@ using PySharp.VM;
 
 namespace PySharp.SyntaxAnalysis;
 
+/// <summary>
+/// Class to manage indexes of variable names, constant values, registers in the final instruction.
+/// </summary>
 internal class CodeBuilder
 {
     private readonly List<IntermediateInstruction> instructions = [];
@@ -46,20 +49,45 @@ internal class CodeBuilder
         }
     }
 
+    private Register allocateRegister()
+    {
+        var reg = new Register();
+        allocatedRegisters.Add(reg);
+        return reg;
+    }
+
+    private Constant addConstant(PsObject value)
+    {
+        if (constants.FirstOrDefault(con => con.Value == value) is Constant existingConstant)
+            return existingConstant;
+
+        var constant = new Constant(value);
+        constants.Add(constant);
+        return constant;
+    }
+
+    private Variable addVariable(string name)
+    {
+        if (closureVariables.FirstOrDefault(var => var.Name == name) is Variable existingVariable)
+            return existingVariable;
+
+        var variable = new Variable(name);
+        closureVariables.Add(variable);
+        return variable;
+    }
+
     public IntermediateInstruction RegisterToRegister(Opcode opcode, Register src1, Register src2)
     {
         if (!opcode.IsRegisterToRegister)
-            throw new ArgumentOutOfRangeException(nameof(opcode), "Invalid opcode value for this call");
+            throw new ArgumentOutOfRangeException(nameof(opcode), "Invalid opcode value for this instruction format");
 
-        var dest = new Register();
         var instr = new IntermediateInstruction(opcode)
         {
-            Dest = dest,
+            Dest = allocateRegister(),
             Src1 = src1,
             Src2 = src2,
         };
 
-        allocatedRegisters.Add(dest);
         instructions.Add(instr);
 
         return instr;
@@ -67,16 +95,12 @@ internal class CodeBuilder
 
     public IntermediateInstruction LdVar(string name)
     {
-        var dest = new Register();
-        var variable = new Variable(name);
         var instr = new IntermediateInstruction(Opcode.LdVar)
         {
-            Dest = dest,
-            VarName = variable,
+            Dest = allocateRegister(),
+            VarName = addVariable(name),
         };
 
-        allocatedRegisters.Add(dest);
-        closureVariables.Add(variable);
         instructions.Add(instr);
 
         return instr;
@@ -84,16 +108,12 @@ internal class CodeBuilder
 
     public IntermediateInstruction LdConst(PsObject value)
     {
-        var dest = new Register();
-        var constant = new Constant(value);
         var instr = new IntermediateInstruction(Opcode.LdConst)
         {
-            Dest = dest,
-            Constant = constant,
+            Dest = allocateRegister(),
+            Constant = addConstant(value),
         };
 
-        allocatedRegisters.Add(dest);
-        constants.Add(constant);
         instructions.Add(instr);
 
         return instr;
@@ -129,14 +149,11 @@ internal class CodeBuilder
 
     public IntermediateInstruction Move(Register source)
     {
-        var destination = new Register();
         var instr = new IntermediateInstruction(Opcode.Move)
         {
-            Dest = destination,
+            Dest = allocateRegister(),
             Src1 = source,
         };
-
-        allocatedRegisters.Add(destination);
         instructions.Add(instr);
 
         return instr;
