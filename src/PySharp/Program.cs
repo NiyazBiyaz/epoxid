@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using PySharp.Runtime;
 using PySharp.Runtime.Objects;
+using PySharp.SyntaxAnalysis;
 using PySharp.VM;
 
 [assembly: InternalsVisibleTo("PySharp.Tests")]
@@ -52,27 +53,21 @@ public static class Program
 
         var engine = new Engine();
 
-        var code = new CodeObject()
-        {
-            StackSize = 4,
-            Instructions = [
-                new(Opcode.LdVar, 0, 0),    // Load 'print'
-                new(Opcode.LdConst, 1, 0),  // Load "bau bau!"
-                new(Opcode.LdConst, 2, 3),  // Load 69
-                new(Opcode.LdConst, 3, 1),  // Load empty dict
-                new(Opcode.CallK, 1, 0, 2), // Call 'print'
-                new(Opcode.RetC, 2)         // Return 'None'
-            ],
-            VarNames = [
-                "print",
-            ],
-            Constants = [
-                (PsString)"bau bau!",
-                PsDict.Empty,
-                PsConstants.None,
-                (PsInteger)69,
-            ]
-        };
+        var builder = new CodeBuilder();
+
+        var left = builder.LdConst((PsString)"bau ");
+        var right = builder.LdConst((PsInteger)5);
+        var res = builder.RegisterToRegister(Opcode.Mul, left.Dest!, right.Dest!);
+
+        var print = builder.LdVar("print");
+        var arg0 = builder.LdConst((PsString)"Bau bau!");
+        builder.LdConst((PsInteger)69);
+        builder.Move(res.Dest!);
+        builder.LdConst(PsDict.Empty);
+        builder.CallK(print.Dest!, arg0.Dest!, 3);
+        builder.Ret(arg0.Dest!);
+
+        var code = builder.Dump();
 
         var env = new Runtime.Environment();
         env.Scopes.Push(Builtins.BuiltinsScope);

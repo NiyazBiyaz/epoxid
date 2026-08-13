@@ -21,7 +21,7 @@ internal class Engine
         int programCounter = 0;
         while (!stop)
         {
-            if (code.Instructions.Count <= programCounter)
+            if (code.Instructions.Length <= programCounter)
             {
                 throw new ArgumentException("Invalid code object: code never returns");
             }
@@ -68,11 +68,15 @@ internal class Engine
                 case Opcode.CallK:
                 {
                     var arguments = frame.Slice(instr.RegDest, instr.RegSrc2);
-                    var keywordArgs = frame[instr.RegSrc2 + 1];
+                    var keywordArgs = frame[instr.RegDest + instr.RegSrc2];
                     var func = frame[instr.RegSrc1];
                     frame[instr.RegDest] = Core.CallKeywordFunction(func, arguments, keywordArgs);
                     break;
                 }
+
+                case Opcode.Move:
+                    frame[instr.RegDest] = frame[instr.RegSrc1];
+                    break;
 
                 // Register-to-register section
                 case Opcode.Add:

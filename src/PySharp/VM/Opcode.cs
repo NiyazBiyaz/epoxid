@@ -95,3 +95,11 @@ internal enum Opcode : byte
     /// </summary>
     LdArg,
 }
+
+internal static class OpcodeExtensions
+{
+    extension(Opcode opcode)
+    {
+        public bool IsRegisterToRegister => opcode < Opcode.Call;
+    }
+}
