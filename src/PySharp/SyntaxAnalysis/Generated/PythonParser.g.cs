@@ -7904,7 +7904,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     //     | RawPrimary GeneratorExpression -> CallWithGeneratorPrimary(Function=raw_primary, Argument=generator_expression)
     //     | RawPrimary '(' -Arguments ')' -> CallWithArgumentsPrimary(Function=raw_primary, Arguments=arguments)
     //     | RawPrimary '[' Slices ']' -> SubscriptPrimary(Target=raw_primary, Subscript=slices)
-    //     | Atom -> AtomPrimary(Value=atom)
+    //     | Atom -> AtomPrimary(Atom=atom)
     RawPrimaryNode? raw_rule_RawPrimary()
     {
         base.LogIncreaseLevel();
@@ -8024,7 +8024,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Atom -> AtomPrimary(Value=atom)
+            // Atom -> AtomPrimary(Atom=atom)
             base.LogAlternativeEntered("Atom");
             IGreenNode? atom;
             if ((atom = rule_Atom()) is not null)

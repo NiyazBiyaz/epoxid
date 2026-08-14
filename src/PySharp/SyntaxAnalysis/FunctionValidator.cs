@@ -6,7 +6,7 @@ namespace PySharp.SyntaxAnalysis;
 
 internal class FunctionValidator
 {
-    public readonly CodeBlockValidator BlockValidator;
+    public readonly CodeBlockGenerator BlockValidator;
 
     private readonly List<string> variables = [];
 

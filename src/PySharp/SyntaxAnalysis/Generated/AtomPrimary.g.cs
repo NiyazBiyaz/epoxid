@@ -15,7 +15,7 @@ namespace PySharp.SyntaxAnalysis;
 /// </summary>
 public sealed partial record AtomPrimaryNode : RawPrimaryNode
 {
-    public IAtomNode Value => (IAtomNode)Children![0];
+    public IAtomNode Atom => (IAtomNode)Children![0];
     public override AtomPrimaryView GetView(int position, IRedView? parent)
         => new AtomPrimaryView(this, position, parent);
 }
@@ -30,17 +30,17 @@ public sealed partial class AtomPrimaryView : RawPrimaryView
     {
     }
 
-    private IAtomView? _field_value = null;
-    public IAtomView Value
+    private IAtomView? _field_atom = null;
+    public IAtomView Atom
     {
         get
         {
-            if (_field_value == null)
+            if (_field_atom == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_value = (IAtomView)((AtomPrimaryNode)base.Green).Value!.GetView(_positionOfField, this);
+                _field_atom = (IAtomView)((AtomPrimaryNode)base.Green).Atom!.GetView(_positionOfField, this);
             }
-            return (IAtomView)_field_value;
+            return (IAtomView)_field_atom;
         }
     }
 }

@@ -566,7 +566,7 @@ RawPrimary:
     | RawPrimary GeneratorExpression -> CallWithGeneratorPrimary(Function=raw_primary, Argument=generator_expression)
     | RawPrimary '(' -Arguments ')' -> CallWithArgumentsPrimary(Function=raw_primary, Arguments=arguments)
     | RawPrimary '[' Slices ']' -> SubscriptPrimary(Target=raw_primary, Subscript=slices)
-    | Atom -> AtomPrimary(Value=atom)
+    | Atom -> AtomPrimary(Atom  =atom)
 
 Slices:
     | Slice !',' -> OneSliceSubscript(Value=slice)

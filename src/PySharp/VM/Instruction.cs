@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace PySharp.VM;
 
+[DebuggerDisplay("{Opcode}")]
 internal readonly struct Instruction
 {
     private readonly uint rawData;
@@ -70,4 +73,6 @@ internal readonly struct Instruction
         rawData |= ((uint)opcode) << opcode_offset;
         rawData |= (uint)immediateValue;
     }
+
+    public override string ToString() => $"{Opcode} {{ Dest: {RegDest} Src1: {RegSrc1} Src2: {RegSrc2}, Imm16: {Immediate16}, Imm24: {Immediate24} }}";
 }

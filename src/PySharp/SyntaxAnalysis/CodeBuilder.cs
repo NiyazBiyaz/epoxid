@@ -159,11 +159,35 @@ internal class CodeBuilder
         return instr;
     }
 
+    public IntermediateInstruction Move(Register source, Register dest)
+    {
+        var instr = new IntermediateInstruction(Opcode.Move)
+        {
+            Dest = dest,
+            Src1 = source,
+        };
+        instructions.Add(instr);
+
+        return instr;
+    }
+
     public IntermediateInstruction Ret(Register register)
     {
         var instr = new IntermediateInstruction(Opcode.Ret)
         {
             Src1 = register,
+        };
+
+        instructions.Add(instr);
+
+        return instr;
+    }
+
+    public IntermediateInstruction RetC(PsObject constantValue)
+    {
+        var instr = new IntermediateInstruction(Opcode.RetC)
+        {
+            Constant = addConstant(constantValue),
         };
 
         instructions.Add(instr);

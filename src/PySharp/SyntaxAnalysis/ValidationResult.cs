@@ -4,7 +4,6 @@ internal abstract record ValidationResult
 {
     // TODO: file location
     public sealed record Success : ValidationResult;
-    public sealed record Warning(string Message) : ValidationResult;
     public sealed record Error(string Message) : ValidationResult;
 
     public static readonly Success ResultSuccess = new();

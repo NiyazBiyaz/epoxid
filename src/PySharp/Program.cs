@@ -1,7 +1,8 @@
 using System.Runtime.CompilerServices;
 using PySharp.Runtime;
-using PySharp.Runtime.Objects;
 using PySharp.SyntaxAnalysis;
+using PySharp.SyntaxAnalysis.Common;
+using PySharp.SyntaxAnalysis.Tokens;
 using PySharp.VM;
 
 [assembly: InternalsVisibleTo("PySharp.Tests")]
@@ -10,30 +11,48 @@ namespace PySharp;
 
 public static class Program
 {
-    public static void Main(string[] args) => runFile(args);
-
-    private static void runFile(string[] args)
+    public static int Main(string[] args)
     {
+        if (args.Length != 1)
+            return 1;
+
+        var file = File.ReadAllText(args[0]);
+
+        var tokenizer = new Tokenizer(SynchronizationPoint.ClearPoint(new StringBuffer(file)));
+        var parser = new PythonParser(new TokenNodeStream(tokenizer));
+
+        var tree = parser.Parse();
+
+        if (tree == null)
+        {
+            Console.Error.WriteLine("Error while parsing file");
+            return 1;
+        }
+
+        var view = tree.GetView(0, null);
+        view.SyntaxTree = new SyntaxViewTree
+        {
+            Root = view,
+            PositionMap = tokenizer.PositionMap,
+        };
+
+        var codeGen = new CodeBlockGenerator(view.Statements);
+        codeGen.GenerateCode();
+
+        var code = codeGen.Builder.Dump();
+
         var engine = new Engine();
 
-        var builder = new CodeBuilder();
+        var environment = new Runtime.Environment();
+        environment.Scopes.Push(Builtins.BuiltinsScope);
 
-        var left = builder.LdConst((PsString)"bau ");
-        var right = builder.LdConst((PsInteger)5);
-        var res = builder.RegisterToRegister(Opcode.Mul, left.Dest!, right.Dest!);
+        engine.RunCode(code, [], environment);
 
-        var print = builder.LdVar("print");
-        var arg0 = builder.LdConst((PsString)"Bau bau!");
-        builder.LdConst((PsInteger)69);
-        builder.Move(res.Dest!);
-        builder.Call(print.Dest!, arg0.Dest!, 3);
-        builder.Ret(arg0.Dest!);
+        Console.WriteLine("----------------");
 
-        var code = builder.Dump();
+        foreach (var instr in code.Instructions)
+            Console.WriteLine(instr);
 
-        var env = new Runtime.Environment();
-        env.Scopes.Push(Builtins.BuiltinsScope);
-
-        engine.RunCode(code, [], env);
+        return 0;
     }
 }
