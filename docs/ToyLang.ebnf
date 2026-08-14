@@ -1,9 +1,9 @@
 @header '''\
-using PySharp.SyntaxAnalysis.Tokens;
-using PySharp.SyntaxAnalysis.Common;
-using PySharp.SyntaxAnalysis.Common.Ast;
+using Epoxid.SyntaxAnalysis.Tokens;
+using Epoxid.SyntaxAnalysis.Common;
+using Epoxid.SyntaxAnalysis.Common.Ast;
 
-namespace PySharp.SyntaxAnalysis;
+namespace Epoxid.SyntaxAnalysis;
 '''
 @parser_name 'ToyParser'
 
@@ -13,7 +13,7 @@ namespace PySharp.SyntaxAnalysis;
 # plain structure that can be used as AST.
 
 # Direct translation from CPython's pegen to PegenNet caused issue that AST nesting was 
-# extremely high. To get token `"Bau Bau!"` from __hello__.pysharp you have needed to 
+# extremely high. To get token `"Bau Bau!"` from __hello__.ep you have needed to 
 # jump over than 40 AST objects starting from root. Seeing that AST is a reference objects,
 # it was should to be an absolute nightmare for CPU cache.
 

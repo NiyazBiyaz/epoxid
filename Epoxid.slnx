@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/Epoxid.SyntaxAnalysis.Generator.Analyzers/Epoxid.SyntaxAnalysis.Generator.Analyzers.csproj" />
+    <Project Path="src/Epoxid.SyntaxAnalysis.Generator/Epoxid.SyntaxAnalysis.Generator.csproj" />
+    <Project Path="src/Epoxid.SyntaxAnalysis/Epoxid.SyntaxAnalysis.csproj" />
+    <Project Path="src/Epoxid/Epoxid.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Epoxid.SyntaxAnalysis.Generator.Analyzers.Tests/Epoxid.SyntaxAnalysis.Generator.Analyzers.Tests.csproj" />
+    <Project Path="tests/Epoxid.SyntaxAnalysis.Generator.Tests/Epoxid.SyntaxAnalysis.Generator.Tests.csproj" />
+    <Project Path="tests/Epoxid.SyntaxAnalysis.Tests/Epoxid.SyntaxAnalysis.Tests.csproj" />
+    <Project Path="tests/Epoxid.Tests/Epoxid.Tests.csproj" />
+  </Folder>
+  <Project Path="Epoxid.Benchmarks/Epoxid.Benchmarks.csproj" />
+</Solution>

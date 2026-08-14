@@ -1,5 +1,5 @@
-dotnet build ./src/PySharp.SyntaxAnalysis.Generator -c Release
-cd ./src/PySharp/SyntaxAnalysis
+dotnet build ./src/Epoxid.SyntaxAnalysis.Generator -c Release
+cd ./src/Epoxid/SyntaxAnalysis
 rm -rf ./Generated
-../../PySharp.SyntaxAnalysis.Generator/bin/Release/net10.0/pegennet Python.ebnf -o Generated --split-files
+../../Epoxid.SyntaxAnalysis.Generator/bin/Release/net10.0/pegennet Python.ebnf -o Generated --split-files
 cd ../../..
