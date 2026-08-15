@@ -386,7 +386,12 @@ Expression:
     | BitwiseOrExpression
     # NSY | LambdaDef
 
-IfExpression: Disjunction 'if' Disjunction 'else' Expression
+IfExpression: Arithmetic 'if' Arithmetic 'else' Expression -> new(Condition=arithmetic1, Then=arithmetic, Else=expression)
+
+@union
+Arithmetic:
+    | Disjunction
+    | BitwiseOrExpression
 
 YieldExpression:
     | 'yield' 'from' Expression -> YieldFromExpression(Expression=expression)
@@ -422,10 +427,10 @@ NamedExpression:
     | Expression !':='
 
 @memo
-Disjunction: Conjunction+.'or' -> new(Values=conjunction_Gather)
+Disjunction: Conjunction+.'or' -> new(Conjunctions=conjunction_Gather)
 
 @memo
-Conjunction: InversionExpression+.'and' -> new(Values=inversion_expression_Gather)
+Conjunction: InversionExpression+.'and' -> new(Inversions=inversion_expression_Gather)
 
 @union
 @memo
@@ -433,7 +438,7 @@ InversionExpression:
     | Inversion
     | Comparison
 
-Inversion: 'not' InversionExpression -> new(Value=inversion_expression)
+Inversion: 'not' InversionExpression -> new(Inversion=inversion_expression)
 
 # Comparison operators
 # --------------------

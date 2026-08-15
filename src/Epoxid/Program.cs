@@ -46,8 +46,8 @@ public static class Program
         var environment = new Runtime.Environment();
         environment.Scopes.Push(Builtins.BuiltinsScope);
 
-        // Console.WriteLine(string.Join("\n", code.Instructions));
-        // Console.WriteLine("----------------");
+        Console.WriteLine(code.ToString());
+        Console.WriteLine("----------------");
 
         engine.RunCode(code, [], environment);
 

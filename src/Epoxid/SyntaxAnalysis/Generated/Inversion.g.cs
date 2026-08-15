@@ -15,7 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record InversionNode : GreenNode, IInversionExpressionNode
 {
-    public IInversionExpressionNode Value => (IInversionExpressionNode)Children![1];
+    public IInversionExpressionNode Inversion => (IInversionExpressionNode)Children![1];
     public override InversionView GetView(int position, IRedView? parent)
         => new InversionView(this, position, parent);
 }
@@ -30,17 +30,17 @@ public sealed partial class InversionView : RedView, IInversionExpressionView
     {
     }
 
-    private IInversionExpressionView? _field_value = null;
-    public IInversionExpressionView Value
+    private IInversionExpressionView? _field_inversion = null;
+    public IInversionExpressionView Inversion
     {
         get
         {
-            if (_field_value == null)
+            if (_field_inversion == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_value = (IInversionExpressionView)((InversionNode)base.Green).Value!.GetView(_positionOfField, this);
+                _field_inversion = (IInversionExpressionView)((InversionNode)base.Green).Inversion!.GetView(_positionOfField, this);
             }
-            return (IInversionExpressionView)_field_value;
+            return (IInversionExpressionView)_field_inversion;
         }
     }
 }

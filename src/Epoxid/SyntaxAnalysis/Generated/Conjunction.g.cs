@@ -15,20 +15,20 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record ConjunctionNode : GreenNode
 {
-    private global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode>? _field_Values = null;
-    public global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode> Values
+    private global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode>? _field_Inversions = null;
+    public global::System.Collections.Immutable.ImmutableArray<IInversionExpressionNode> Inversions
     {
         get
         {
-            if (_field_Values is null)
+            if (_field_Inversions is null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionNode>();
-                _field_Values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+                var _tmp = AstInversions.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionNode>();
+                _field_Inversions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
-            return _field_Values.Value;
+            return _field_Inversions.Value;
         }
     }
-    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstInversions => (NodeArray<GreenNode>)Children![0];
     public override ConjunctionView GetView(int position, IRedView? parent)
         => new ConjunctionView(this, position, parent);
 }
@@ -43,30 +43,30 @@ public sealed partial class ConjunctionView : RedView
     {
     }
 
-    private ViewArray<RedView>? _ast_field_values = null;
-    public ViewArray<RedView> AstValues
+    private ViewArray<RedView>? _ast_field_inversions = null;
+    public ViewArray<RedView> AstInversions
     {
         get
         {
-            if (_ast_field_values == null)
+            if (_ast_field_inversions == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_values = new ViewArray<RedView>(((ConjunctionNode)base.Green).AstValues, _positionOfField, this);
+                _ast_field_inversions = new ViewArray<RedView>(((ConjunctionNode)base.Green).AstInversions, _positionOfField, this);
             }
-            return _ast_field_values.Value;
+            return _ast_field_inversions.Value;
         }
     }
-    private global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView>? _field_values = null;
-    public global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView> Values
+    private global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView>? _field_inversions = null;
+    public global::System.Collections.Immutable.ImmutableArray<IInversionExpressionView> Inversions
     {
         get
         {
-            if (_field_values == null)
+            if (_field_inversions == null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionView>();
-                _field_values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+                var _tmp = AstInversions.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionView>();
+                _field_inversions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
-            return _field_values.Value;
+            return _field_inversions.Value;
         }
     }
 }

@@ -192,7 +192,36 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
             }
 
             case DisjunctionView disjunction:
+                return generateDisjunction(disjunction);
+
             case IfExpressionView ifExpression:
+            {
+                var elseLabel = new Label();
+                var endLabel = new Label();
+                var conditionInstr = ifExpression.Condition switch
+                {
+                    IBitwiseOrExpressionView arithmetic => generateArithmetic(arithmetic),
+                    DisjunctionView disjunction => generateDisjunction(disjunction),
+                    _ => throw new UnreachableException(),
+                };
+                Builder.BrFl(elseLabel, conditionInstr.Dest!);
+
+                instr = ifExpression.Then switch
+                {
+                    IBitwiseOrExpressionView arithmetic => generateArithmetic(arithmetic),
+                    DisjunctionView disjunction => generateDisjunction(disjunction),
+                    _ => throw new UnreachableException(),
+                };
+                Builder.Brc(endLabel);
+
+                Builder.PutLabel(elseLabel);
+                ensureExpressionRegister(ifExpression.Else, out var elseResultReg, out _);
+                Builder.Move(elseResultReg, instr.Dest!);
+
+                Builder.PutLabel(endLabel);
+
+                break;
+            }
             case StarBitwiseOrExpressionView:
             case StarExpressionsView:
                 throw new NotImplementedException();
@@ -202,6 +231,84 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         }
 
         return instr;
+    }
+
+    private IntermediateInstruction generateDisjunction(DisjunctionView disjunction)
+    {
+        if (disjunction.Conjunctions.Length == 1)
+        {
+            return generateConjunction(disjunction.Conjunctions[0]);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private IntermediateInstruction generateConjunction(ConjunctionView conjunction)
+    {
+        if (conjunction.Inversions.Length == 1)
+        {
+            return generateInversion(conjunction.Inversions[0]);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private IntermediateInstruction generateInversion(IInversionExpressionView inversion)
+    {
+        switch (inversion)
+        {
+            case InversionView inv:
+                throw new NotImplementedException();
+
+            case ComparisonView comp:
+                return generateComparison(comp);
+
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    private IntermediateInstruction generateComparison(ComparisonView comparison)
+    {
+        if (comparison.Rest.Count == 1)
+        {
+            ensureExpressionRegister(comparison.First, out var leftValueReg, out _);
+            var (right, opcode) = comparison.Rest[0] switch
+            {
+                LtEqOperationView view => throw new NotImplementedException(),
+
+                IsOperationView view => throw new NotImplementedException(),
+
+                NotEqOperationView neq => (neq.Right, Opcode.NEq),
+
+                IsNotOperationView view => throw new NotImplementedException(),
+
+                GtOperationView view => throw new NotImplementedException(),
+
+                LtOperationView view => throw new NotImplementedException(),
+
+                InOperationView view => throw new NotImplementedException(),
+
+                EqOperationView eq => (eq.Right, Opcode.Eq),
+
+                GtEqOperationView view => throw new NotImplementedException(),
+
+                NotInOperationView view => throw new NotImplementedException(),
+
+                _ => throw new UnreachableException(),
+            };
+            ensureExpressionRegister(right, out var rightValueReg, out _);
+
+            return Builder.RegisterToRegister(opcode, leftValueReg, rightValueReg);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private IntermediateInstruction generateArithmetic(IBitwiseOrExpressionView arithmetic)

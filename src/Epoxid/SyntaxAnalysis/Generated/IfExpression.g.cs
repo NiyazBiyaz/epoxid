@@ -15,11 +15,9 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record IfExpressionNode : GreenNode, IExpressionNode
 {
-    public DisjunctionNode Disjunction => (DisjunctionNode)Children![0];
-    public TokenNode Token => (TokenNode)Children![1];
-    public DisjunctionNode Disjunction1 => (DisjunctionNode)Children![2];
-    public TokenNode Token1 => (TokenNode)Children![3];
-    public IExpressionNode Expression => (IExpressionNode)Children![4];
+    public IArithmeticNode Condition => (IArithmeticNode)Children![2];
+    public IArithmeticNode Then => (IArithmeticNode)Children![0];
+    public IExpressionNode Else => (IExpressionNode)Children![4];
     public override IfExpressionView GetView(int position, IRedView? parent)
         => new IfExpressionView(this, position, parent);
 }
@@ -34,73 +32,45 @@ public sealed partial class IfExpressionView : RedView, IExpressionView
     {
     }
 
-    private DisjunctionView? _field_disjunction = null;
-    public DisjunctionView Disjunction
+    private IArithmeticView? _field_condition = null;
+    public IArithmeticView Condition
     {
         get
         {
-            if (_field_disjunction == null)
-            {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_disjunction = (DisjunctionView)((IfExpressionNode)base.Green).Disjunction!.GetView(_positionOfField, this);
-            }
-            return (DisjunctionView)_field_disjunction;
-        }
-    }
-
-    private TokenView? _field_token = null;
-    public TokenView Token
-    {
-        get
-        {
-            if (_field_token == null)
-            {
-                var _positionOfField = base.GetPositionFor(1);
-                _field_token = (TokenView)((IfExpressionNode)base.Green).Token!.GetView(_positionOfField, this);
-            }
-            return (TokenView)_field_token;
-        }
-    }
-
-    private DisjunctionView? _field_disjunction1 = null;
-    public DisjunctionView Disjunction1
-    {
-        get
-        {
-            if (_field_disjunction1 == null)
+            if (_field_condition == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _field_disjunction1 = (DisjunctionView)((IfExpressionNode)base.Green).Disjunction1!.GetView(_positionOfField, this);
+                _field_condition = (IArithmeticView)((IfExpressionNode)base.Green).Condition!.GetView(_positionOfField, this);
             }
-            return (DisjunctionView)_field_disjunction1;
+            return (IArithmeticView)_field_condition;
         }
     }
 
-    private TokenView? _field_token1 = null;
-    public TokenView Token1
+    private IArithmeticView? _field_then = null;
+    public IArithmeticView Then
     {
         get
         {
-            if (_field_token1 == null)
+            if (_field_then == null)
             {
-                var _positionOfField = base.GetPositionFor(3);
-                _field_token1 = (TokenView)((IfExpressionNode)base.Green).Token1!.GetView(_positionOfField, this);
+                var _positionOfField = base.GetPositionFor(0);
+                _field_then = (IArithmeticView)((IfExpressionNode)base.Green).Then!.GetView(_positionOfField, this);
             }
-            return (TokenView)_field_token1;
+            return (IArithmeticView)_field_then;
         }
     }
 
-    private IExpressionView? _field_expression = null;
-    public IExpressionView Expression
+    private IExpressionView? _field_else = null;
+    public IExpressionView Else
     {
         get
         {
-            if (_field_expression == null)
+            if (_field_else == null)
             {
                 var _positionOfField = base.GetPositionFor(4);
-                _field_expression = (IExpressionView)((IfExpressionNode)base.Green).Expression!.GetView(_positionOfField, this);
+                _field_else = (IExpressionView)((IfExpressionNode)base.Green).Else!.GetView(_positionOfField, this);
             }
-            return (IExpressionView)_field_expression;
+            return (IExpressionView)_field_else;
         }
     }
 }

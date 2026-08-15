@@ -80,7 +80,7 @@ internal class Engine
                     break;
 
                 case Opcode.Brc:
-                    programCounter += instr.Immediate24;
+                    programCounter += instr.Immediate16;
                     goto nextInstruction;
 
                 case Opcode.BrTr:

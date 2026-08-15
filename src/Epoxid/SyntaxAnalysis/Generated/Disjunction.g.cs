@@ -13,22 +13,22 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>Disjunction</i>.
 /// </summary>
-public sealed partial record DisjunctionNode : GreenNode, IExpressionNode
+public sealed partial record DisjunctionNode : GreenNode, IExpressionNode, IArithmeticNode
 {
-    private global::System.Collections.Immutable.ImmutableArray<ConjunctionNode>? _field_Values = null;
-    public global::System.Collections.Immutable.ImmutableArray<ConjunctionNode> Values
+    private global::System.Collections.Immutable.ImmutableArray<ConjunctionNode>? _field_Conjunctions = null;
+    public global::System.Collections.Immutable.ImmutableArray<ConjunctionNode> Conjunctions
     {
         get
         {
-            if (_field_Values is null)
+            if (_field_Conjunctions is null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionNode>();
-                _field_Values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+                var _tmp = AstConjunctions.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionNode>();
+                _field_Conjunctions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
-            return _field_Values.Value;
+            return _field_Conjunctions.Value;
         }
     }
-    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> AstConjunctions => (NodeArray<GreenNode>)Children![0];
     public override DisjunctionView GetView(int position, IRedView? parent)
         => new DisjunctionView(this, position, parent);
 }
@@ -36,37 +36,37 @@ public sealed partial record DisjunctionNode : GreenNode, IExpressionNode
 /// <summary>
 /// View class that represents <i>Disjunction</i>.
 /// </summary>
-public sealed partial class DisjunctionView : RedView, IExpressionView
+public sealed partial class DisjunctionView : RedView, IExpressionView, IArithmeticView
 {
     public DisjunctionView(DisjunctionNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private ViewArray<RedView>? _ast_field_values = null;
-    public ViewArray<RedView> AstValues
+    private ViewArray<RedView>? _ast_field_conjunctions = null;
+    public ViewArray<RedView> AstConjunctions
     {
         get
         {
-            if (_ast_field_values == null)
+            if (_ast_field_conjunctions == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_values = new ViewArray<RedView>(((DisjunctionNode)base.Green).AstValues, _positionOfField, this);
+                _ast_field_conjunctions = new ViewArray<RedView>(((DisjunctionNode)base.Green).AstConjunctions, _positionOfField, this);
             }
-            return _ast_field_values.Value;
+            return _ast_field_conjunctions.Value;
         }
     }
-    private global::System.Collections.Immutable.ImmutableArray<ConjunctionView>? _field_values = null;
-    public global::System.Collections.Immutable.ImmutableArray<ConjunctionView> Values
+    private global::System.Collections.Immutable.ImmutableArray<ConjunctionView>? _field_conjunctions = null;
+    public global::System.Collections.Immutable.ImmutableArray<ConjunctionView> Conjunctions
     {
         get
         {
-            if (_field_values == null)
+            if (_field_conjunctions == null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionView>();
-                _field_values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
+                var _tmp = AstConjunctions.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionView>();
+                _field_conjunctions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
-            return _field_values.Value;
+            return _field_conjunctions.Value;
         }
     }
 }

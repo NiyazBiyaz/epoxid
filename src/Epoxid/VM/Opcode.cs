@@ -67,7 +67,7 @@ internal enum Opcode : byte
     RetC,
 
     /// <summary>
-    /// Unconditionally changes program counter by the value of <see cref="Instruction.Immediate24"/>
+    /// Unconditionally changes program counter by the value of <see cref="Instruction.Immediate16"/>
     /// </summary>
     Brc,
 
@@ -112,5 +112,7 @@ internal static class OpcodeExtensions
     extension(Opcode opcode)
     {
         public bool IsRegisterToRegister => opcode < Opcode.Call;
+
+        public bool IsBranch => opcode >= Opcode.Brc && opcode <= Opcode.BrFl;
     }
 }

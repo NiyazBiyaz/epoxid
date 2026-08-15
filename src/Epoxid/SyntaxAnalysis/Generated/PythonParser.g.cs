@@ -2689,7 +2689,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @inline
     // RelativeImportDots:
     //     | '.'
-    //     | '...'
+    //     | '...'  
     TokenNode? rule_RelativeImportDots()
     {
         base.LogIncreaseLevel();
@@ -3217,9 +3217,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ClassDefRaw
     // ClassDefRaw: 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
-    //         Name=name,
-    //         TypeParameters=type_parameters,
-    //         Arguments=class_def_args,
+    //         Name=name, 
+    //         TypeParameters=type_parameters, 
+    //         Arguments=class_def_args, 
     //         Block=block)
     ClassDefRawNode? rule_ClassDefRaw()
     {
@@ -3229,9 +3229,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         ClassDefRawNode? _res = null;
         {
             // 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
-            //         Name=name,
-            //         TypeParameters=type_parameters,
-            //         Arguments=class_def_args,
+            //         Name=name, 
+            //         TypeParameters=type_parameters, 
+            //         Arguments=class_def_args, 
             //         Block=block)
             base.LogAlternativeEntered("'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
             IGreenNode? _string_token;
@@ -5515,7 +5515,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // Expression
 
     #region IfExpression
-    // IfExpression: Disjunction 'if' Disjunction 'else' Expression
+    // IfExpression: Arithmetic 'if' Arithmetic 'else' Expression -> new(Condition=arithmetic1, Then=arithmetic, Else=expression)
     IfExpressionNode? rule_IfExpression()
     {
         base.LogIncreaseLevel();
@@ -5523,38 +5523,38 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         IfExpressionNode? _res = null;
         {
-            // Disjunction 'if' Disjunction 'else' Expression
-            base.LogAlternativeEntered("Disjunction 'if' Disjunction 'else' Expression");
-            IGreenNode? disjunction;
+            // Arithmetic 'if' Arithmetic 'else' Expression -> new(Condition=arithmetic1, Then=arithmetic, Else=expression)
+            base.LogAlternativeEntered("Arithmetic 'if' Arithmetic 'else' Expression");
+            IGreenNode? arithmetic;
             IGreenNode? _string_token;
-            IGreenNode? disjunction1;
+            IGreenNode? arithmetic1;
             IGreenNode? _string_token1;
             IGreenNode? expression;
-            if ((disjunction = rule_Disjunction()) is not null
+            if ((arithmetic = rule_Arithmetic()) is not null
                 &&
                 (_string_token = Expect("if")) is not null
                 &&
-                (disjunction1 = rule_Disjunction()) is not null
+                (arithmetic1 = rule_Arithmetic()) is not null
                 &&
                 (_string_token1 = Expect("else")) is not null
                 &&
                 (expression = rule_Expression()) is not null
             )
             {
-                base.LogAlternativeSucceed("Disjunction 'if' Disjunction 'else' Expression");
+                base.LogAlternativeSucceed("Arithmetic 'if' Arithmetic 'else' Expression");
                 _res = new IfExpressionNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        disjunction,
+                        arithmetic,
                         _string_token,
-                        disjunction1,
+                        arithmetic1,
                         _string_token1,
                         expression,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("Disjunction 'if' Disjunction 'else' Expression");
+            base.LogAlternativeFailed("Arithmetic 'if' Arithmetic 'else' Expression");
         }
         base.Reset(_mark);
         base.LogRuleFailed("IfExpression");
@@ -5564,6 +5564,51 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // IfExpression
+
+    #region Arithmetic
+    // @union
+    // Arithmetic:
+    //     | Disjunction
+    //     | BitwiseOrExpression
+    IArithmeticNode? rule_Arithmetic()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("Arithmetic");
+        int _mark = base.Mark();
+        IArithmeticNode? _res = null;
+        {
+            // Disjunction
+            base.LogAlternativeEntered("Disjunction");
+            IGreenNode? disjunction;
+            if ((disjunction = rule_Disjunction()) is not null)
+            {
+                base.LogAlternativeSucceed("Disjunction");
+                _res = (DisjunctionNode?)disjunction;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("Disjunction");
+        }
+        base.Reset(_mark);
+        {
+            // BitwiseOrExpression
+            base.LogAlternativeEntered("BitwiseOrExpression");
+            IGreenNode? bitwise_or_expression;
+            if ((bitwise_or_expression = rule_BitwiseOrExpression()) is not null)
+            {
+                base.LogAlternativeSucceed("BitwiseOrExpression");
+                _res = (IBitwiseOrExpressionNode?)bitwise_or_expression;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("BitwiseOrExpression");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("Arithmetic");
+    _Return:
+        base.LogRuleExiting("Arithmetic");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // Arithmetic
 
     #region YieldExpression
     // YieldExpression:
@@ -6059,7 +6104,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #region Disjunction
     private readonly IMemoContainer<DisjunctionNode> _memo_Disjunction = CreateContainer<DisjunctionNode>();
     // @memo
-    // Disjunction: Conjunction+.'or' -> new(Values=conjunction_Gather)
+    // Disjunction: Conjunction+.'or' -> new(Conjunctions=conjunction_Gather)
     DisjunctionNode? rule_Disjunction()
     {
         base.LogIncreaseLevel();
@@ -6074,7 +6119,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         DisjunctionNode? _res = null;
         {
-            // Conjunction+.'or' -> new(Values=conjunction_Gather)
+            // Conjunction+.'or' -> new(Conjunctions=conjunction_Gather)
             base.LogAlternativeEntered("Conjunction+.'or'");
             INodeArray<GreenNode>? conjunction_Gather;
             if ((conjunction_Gather = _GatherHelper_conjunction_Gather()) is not null)
@@ -6126,7 +6171,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #region Conjunction
     private readonly IMemoContainer<ConjunctionNode> _memo_Conjunction = CreateContainer<ConjunctionNode>();
     // @memo
-    // Conjunction: InversionExpression+.'and' -> new(Values=inversion_expression_Gather)
+    // Conjunction: InversionExpression+.'and' -> new(Inversions=inversion_expression_Gather)
     ConjunctionNode? rule_Conjunction()
     {
         base.LogIncreaseLevel();
@@ -6141,7 +6186,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         ConjunctionNode? _res = null;
         {
-            // InversionExpression+.'and' -> new(Values=inversion_expression_Gather)
+            // InversionExpression+.'and' -> new(Inversions=inversion_expression_Gather)
             base.LogAlternativeEntered("InversionExpression+.'and'");
             INodeArray<GreenNode>? inversion_expression_Gather;
             if ((inversion_expression_Gather = _GatherHelper_inversion_expression_Gather()) is not null)
@@ -6247,7 +6292,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // InversionExpression
 
     #region Inversion
-    // Inversion: 'not' InversionExpression -> new(Value=inversion_expression)
+    // Inversion: 'not' InversionExpression -> new(Inversion=inversion_expression)
     InversionNode? rule_Inversion()
     {
         base.LogIncreaseLevel();
@@ -6255,7 +6300,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         InversionNode? _res = null;
         {
-            // 'not' InversionExpression -> new(Value=inversion_expression)
+            // 'not' InversionExpression -> new(Inversion=inversion_expression)
             base.LogAlternativeEntered("'not' InversionExpression");
             IGreenNode? _string_token;
             IGreenNode? inversion_expression;
@@ -7686,7 +7731,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @memo
     // PowerExpression:
     //     | Power
-    //     | Primary
+    //     | Primary  
     IPowerExpressionNode? rule_PowerExpression()
     {
         base.LogIncreaseLevel();
@@ -7904,7 +7949,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     //     | RawPrimary GeneratorExpression -> CallWithGeneratorPrimary(Function=raw_primary, Argument=generator_expression)
     //     | RawPrimary '(' -Arguments ')' -> CallWithArgumentsPrimary(Function=raw_primary, Arguments=arguments)
     //     | RawPrimary '[' Slices ']' -> SubscriptPrimary(Target=raw_primary, Subscript=slices)
-    //     | Atom -> AtomPrimary(Atom=atom)
+    //     | Atom -> AtomPrimary(Atom  =atom)
     RawPrimaryNode? raw_rule_RawPrimary()
     {
         base.LogIncreaseLevel();
@@ -8024,7 +8069,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Atom -> AtomPrimary(Atom=atom)
+            // Atom -> AtomPrimary(Atom  =atom)
             base.LogAlternativeEntered("Atom");
             IGreenNode? atom;
             if ((atom = rule_Atom()) is not null)
@@ -8142,7 +8187,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region Dimension
     // Dimension:
-    //     | Slice -> DimensionSlice(Value=slice)
+    //     | Slice -> DimensionSlice(Value=slice) 
     //     | StarExpression -> DimensionExpression(Value=star_expression)
     DimensionNode? rule_Dimension()
     {
@@ -8948,7 +8993,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // FStringValue
 
     #region FStringReplacementField
-    // FStringReplacementField:
+    // FStringReplacementField: 
     //     | '{' AnnotatedRhs -DebugSpecifier -Conversion -FStringFullFormatSpec '}' -> new(
     //         Value=annotated_rhs, DebugSpecifier=debug_specifier, Conversion=conversion, FormatSpec=f_string_full_format_spec)
     FStringReplacementFieldNode? rule_FStringReplacementField()
@@ -10277,7 +10322,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // GeneratorExpression
 
     #region DictComprehension
-    // DictComprehension:
+    // DictComprehension: 
     //     | '{' Expression ':' Expression ForIfClause+ '}' -> KeyValueDictComprehension(Key=expression, Value=expression1, Iterators=for_if_clause_Plus)
     //     | '{' '**' Expression ForIfClause+ '}' -> UnpackingDictComprehension(Expression=expression, Iterators=for_if_clause_Plus)
     //
