@@ -24,6 +24,8 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
 
     private readonly IEnumerable<IStatementView> blockStatements = statements;
 
+    private readonly Stack<IntermediateLoop> loops = [];
+
     public ValidationResult GenerateCode()
     {
         var result = validateAndGenerateStatements(blockStatements);
@@ -42,8 +44,8 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                     var endLabel = new Label();
                     var elseLabel = new Label();
 
-                    ensureNamedExpressionRegister(ifStmt.Condition, out var regDest, out _);
-                    Builder.BrFl(elseLabel, regDest);
+                    ensureNamedExpressionRegister(ifStmt.Condition, out var conditionReg, out _);
+                    Builder.BrFl(elseLabel, conditionReg);
                     // TODO: validation results pool
                     validateAndGenerateStatements(ifStmt.Block.GetStatements());
                     Builder.Brc(endLabel);
@@ -53,8 +55,8 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                         Builder.PutLabel(elseLabel);
                         elseLabel = new Label();
 
-                        ensureNamedExpressionRegister(elif.Condition, out regDest, out _);
-                        Builder.BrFl(elseLabel, regDest);
+                        ensureNamedExpressionRegister(elif.Condition, out conditionReg, out _);
+                        Builder.BrFl(elseLabel, conditionReg);
                         validateAndGenerateStatements(elif.Block.GetStatements());
                         Builder.Brc(endLabel);
                     }
@@ -70,10 +72,35 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                     break;
                 }
 
+                case WhileStatementView whileStmt:
+                {
+                    var headLabel = new Label();
+                    var elseLabel = new Label();
+                    var endLabel = new Label();
+                    loops.Push(new(headLabel, endLabel));
+
+                    Builder.PutLabel(headLabel);
+                    ensureNamedExpressionRegister(whileStmt.Condition, out var conditionReg, out _);
+                    Builder.BrFl(elseLabel, conditionReg);
+                    validateAndGenerateStatements(whileStmt.Block.GetStatements());
+                    Builder.Brc(headLabel);
+
+                    loops.Pop();
+
+                    Builder.PutLabel(elseLabel);
+                    if (whileStmt.Else != null)
+                    {
+                        validateAndGenerateStatements(whileStmt.Else.Block.GetStatements());
+                    }
+
+                    Builder.PutLabel(endLabel);
+
+                    break;
+                }
+
                 case ClassDefView:
                 case ForStatementView:
                 case FunctionDefView:
-                case WhileStatementView:
                 case TryStatementView:
                 case WithStatementView:
                     throw new NotImplementedException();
@@ -112,7 +139,29 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 break;
 
             case ContinueStatementView:
+            {
+                if (!loops.TryPeek(out var loop))
+                {
+                    throw new Exception("Бро, тут нет цикла, бро...");
+                }
+
+                Builder.Brc(loop.Condition);
+
+                break;
+            }
+
             case BreakStatementView:
+            {
+                if (!loops.TryPeek(out var loop))
+                {
+                    throw new Exception("Бро, тут нет цикла, бро...");
+                }
+
+                Builder.Brc(loop.End);
+
+                break;
+            }
+
             case TypeAliasView:
             case YieldStatementView:
             case RaiseStatementView:
@@ -304,17 +353,17 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 {
                     case IStarExpressionVariantView expr:
                     {
-                        ensureExpressionRegister(expr, out var dest, out _);
+                        ensureExpressionRegister(expr, out var expressionResultReg, out _);
 
                         var name = simple.Target.RawString;
                         // TODO: find assignment variables before generating actual bytecode.
-                        if (locals.TryGetValue(name, out var register))
+                        if (locals.TryGetValue(name, out var oldRegister))
                         {
-                            Builder.Move(register, dest);
+                            Builder.Move(expressionResultReg, oldRegister);
                         }
                         else
                         {
-                            locals[name] = dest;
+                            locals[name] = expressionResultReg;
                         }
 
                         break;
