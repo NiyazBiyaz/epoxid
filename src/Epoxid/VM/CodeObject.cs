@@ -68,6 +68,8 @@ internal class CodeObject
 
                 case Opcode.LdConst:
                     sb.Append(formatRegister(instr.RegDest));
+                    sb.Append(delimiter);
+                    sb.Append(instr.Immediate16);
                     sb.Append(indent);
                     sb.Append(indent);
                     sb.Append('`');
@@ -77,6 +79,8 @@ internal class CodeObject
 
                 case Opcode.LdVar:
                     sb.Append(formatRegister(instr.RegDest));
+                    sb.Append(delimiter);
+                    sb.Append(instr.Immediate16);
                     sb.Append(indent);
                     sb.Append(indent);
                     sb.Append('"');

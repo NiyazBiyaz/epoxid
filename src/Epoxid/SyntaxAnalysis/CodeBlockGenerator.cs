@@ -235,14 +235,27 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
 
     private IntermediateInstruction generateDisjunction(DisjunctionView disjunction)
     {
+
         if (disjunction.Conjunctions.Length == 1)
         {
             return generateConjunction(disjunction.Conjunctions[0]);
         }
-        else
+
+        var labelWhenTrue = new Label();
+
+        var instructionWithResult = generateConjunction(disjunction.Conjunctions[0]);
+        Builder.BrTr(labelWhenTrue, instructionWithResult.Dest!);
+
+        foreach (var conj in disjunction.Conjunctions[1..])
         {
-            throw new NotImplementedException();
+            var nextInstruction = generateConjunction(conj);
+            Builder.Move(nextInstruction.Dest!, instructionWithResult.Dest!);
+            Builder.BrTr(labelWhenTrue, instructionWithResult.Dest!);
         }
+
+        Builder.PutLabel(labelWhenTrue);
+
+        return instructionWithResult;
     }
 
     private IntermediateInstruction generateConjunction(ConjunctionView conjunction)
@@ -251,10 +264,22 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         {
             return generateInversion(conjunction.Inversions[0]);
         }
-        else
+
+        var labelWhenFalse = new Label();
+
+        var instructionWithResult = generateInversion(conjunction.Inversions[0]);
+        Builder.BrFl(labelWhenFalse, instructionWithResult.Dest!);
+
+        foreach (var inv in conjunction.Inversions[1..])
         {
-            throw new NotImplementedException();
+            var nextInstruction = generateInversion(inv);
+            Builder.Move(nextInstruction.Dest!, instructionWithResult.Dest!);
+            Builder.BrFl(labelWhenFalse, instructionWithResult.Dest!);
         }
+
+        Builder.PutLabel(labelWhenFalse);
+
+        return instructionWithResult;
     }
 
     private IntermediateInstruction generateInversion(IInversionExpressionView inversion)
