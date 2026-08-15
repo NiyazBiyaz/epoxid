@@ -21,6 +21,7 @@ internal class Engine
         int programCounter = 0;
         while (!stop)
         {
+        nextInstruction: // To avoid programCounter auto-incrementing after branches
             if (code.Instructions.Length <= programCounter)
             {
                 throw new ArgumentException("Invalid code object: code never returns");
@@ -76,6 +77,26 @@ internal class Engine
 
                 case Opcode.Move:
                     frame[instr.RegDest] = frame[instr.RegSrc1];
+                    break;
+
+                case Opcode.Brc:
+                    programCounter += instr.Immediate24;
+                    goto nextInstruction;
+
+                case Opcode.BrTr:
+                    if (Core.ConvertBool(frame[instr.RegDest]))
+                    {
+                        programCounter += instr.Immediate16;
+                        goto nextInstruction;
+                    }
+                    break;
+
+                case Opcode.BrFl:
+                    if (!Core.ConvertBool(frame[instr.RegDest]))
+                    {
+                        programCounter += instr.Immediate16;
+                        goto nextInstruction;
+                    }
                     break;
 
                 // Register-to-register section

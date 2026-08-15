@@ -48,11 +48,6 @@ public static class Program
 
         engine.RunCode(code, [], environment);
 
-        Console.WriteLine("----------------");
-
-        foreach (var instr in code.Instructions)
-            Console.WriteLine(instr);
-
         return 0;
     }
 }

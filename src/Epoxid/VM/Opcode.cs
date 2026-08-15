@@ -67,10 +67,21 @@ internal enum Opcode : byte
     RetC,
 
     /// <summary>
-    /// Unconditionally <b>jump</b>s to the instruction with zero-based index stored in
-    /// <see cref="Instruction.Immediate24"/> relatively by <see cref="CodeObject.Instructions"/>
+    /// Unconditionally changes program counter by the value of <see cref="Instruction.Immediate24"/>
     /// </summary>
-    Jump,
+    Brc,
+
+    /// <summary>
+    /// Changes program counter by the value of <see cref="Instruction.Immediate16"/> if boolean value in the
+    /// <see cref="Instruction.RegDest"/> is equals to <b>True</b>
+    /// </summary>
+    BrTr,
+
+    /// <summary>
+    /// Changes program counter by the value of <see cref="Instruction.Immediate16"/> if boolean value in the
+    /// <see cref="Instruction.RegDest"/> is equals to <b>False</b>
+    /// </summary>
+    BrFl,
 
     /// <summary>
     /// <b>Move</b>s object from <see cref="Instruction.RegSrc1"/> to <see cref="Instruction.RegDest"/>

@@ -18,25 +18,57 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
 {
-    public List<string> Variables { get; init; } = [];
-
     public CodeBuilder Builder { get; } = new();
 
     private readonly Dictionary<string, Register> locals = [];
 
     private readonly IEnumerable<IStatementView> blockStatements = statements;
 
-    public ValidationResult GenerateCode() => validateStatements(blockStatements);
+    public ValidationResult GenerateCode()
+    {
+        var result = validateAndGenerateStatements(blockStatements);
+        Builder.RetC(EpConstants.None);
+        return result;
+    }
 
-    private ValidationResult validateStatements(IEnumerable<IStatementView> statements)
+    private ValidationResult validateAndGenerateStatements(IEnumerable<IStatementView> statements)
     {
         foreach (var statement in statements)
         {
             switch (statement)
             {
                 case IfStatementView ifStmt:
+                {
+                    var endLabel = new Label();
+                    var elseLabel = new Label();
+
+                    ensureNamedExpressionRegister(ifStmt.Condition, out var regDest, out _);
+                    Builder.BrFl(elseLabel, regDest);
+                    // TODO: validation results pool
+                    validateAndGenerateStatements(ifStmt.Block.GetStatements());
+                    Builder.Brc(endLabel);
+
+                    foreach (var elif in ifStmt.Elifs)
+                    {
+                        Builder.PutLabel(elseLabel);
+                        elseLabel = new Label();
+
+                        ensureNamedExpressionRegister(elif.Condition, out regDest, out _);
+                        Builder.BrFl(elseLabel, regDest);
+                        validateAndGenerateStatements(elif.Block.GetStatements());
+                        Builder.Brc(endLabel);
+                    }
+
+                    Builder.PutLabel(elseLabel);
+                    if (ifStmt.Else != null)
+                    {
+                        validateAndGenerateStatements(ifStmt.Else.Block.GetStatements());
+                    }
+
+                    Builder.PutLabel(endLabel);
 
                     break;
+                }
 
                 case ClassDefView:
                 case ForStatementView:
@@ -64,22 +96,19 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
             }
         }
 
-        Builder.RetC(EpConstants.None);
-
         return ValidationResult.ResultSuccess;
     }
 
-    private IntermediateInstruction generateSimpleStatement(ISimpleStatementView statement)
+    private void generateSimpleStatement(ISimpleStatementView statement)
     {
-        IntermediateInstruction label;
         switch (statement)
         {
             case AssignmentView assignment:
-                label = generateAssignment(assignment);
+                generateAssignment(assignment);
                 break;
 
             case IStarExpressionVariantView expr:
-                label = generateExpression(expr);
+                generateExpression(expr);
                 break;
 
             case ContinueStatementView:
@@ -99,19 +128,17 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
             default:
                 throw new UnreachableException();
         }
-
-        return label;
     }
 
     private IntermediateInstruction generateExpression(IStarExpressionVariantView starExpression)
     {
-        IntermediateInstruction label;
+        IntermediateInstruction instr;
 
         switch (starExpression)
         {
             case IBitwiseOrExpressionView arithmetic:
             {
-                label = generateArithmetic(arithmetic);
+                instr = generateArithmetic(arithmetic);
                 break;
             }
 
@@ -125,7 +152,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 throw new UnreachableException();
         }
 
-        return label;
+        return instr;
     }
 
     private IntermediateInstruction generateArithmetic(IBitwiseOrExpressionView arithmetic)
@@ -140,17 +167,10 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
 
             case SumView sum:
             {
-                IntermediateInstruction? label = null;
-                if (ensureExpressionRegister(sum.Left, out Register leftReg, out var leftLabel))
-                {
-                    label ??= leftLabel;
-                }
-                if (ensureExpressionRegister(sum.Right, out Register rightReg, out var rightLabel))
-                {
-                    label ??= rightLabel;
-                }
+                ensureExpressionRegister(sum.Left, out Register leftReg, out _);
+                ensureExpressionRegister(sum.Right, out Register rightReg, out _);
 
-                var sumLabel = Builder.RegisterToRegister(sum.Operator.Type switch
+                var sumInstr = Builder.RegisterToRegister(sum.Operator.Type switch
                 {
                     TokenType.Plus => Opcode.Add,
                     TokenType.Minus => Opcode.Sub,
@@ -159,24 +179,15 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 leftReg,
                 rightReg);
 
-                label ??= sumLabel;
-
-                return sumLabel;
+                return sumInstr;
             }
 
             case TermView term:
             {
-                IntermediateInstruction? label = null;
-                if (ensureExpressionRegister(term.Left, out Register leftReg, out var leftLabel))
-                {
-                    label ??= leftLabel;
-                }
-                if (ensureExpressionRegister(term.Right, out Register rightReg, out var rightLabel))
-                {
-                    label ??= rightLabel;
-                }
+                ensureExpressionRegister(term.Left, out Register leftReg, out _);
+                ensureExpressionRegister(term.Right, out Register rightReg, out _);
 
-                var termLabel = Builder.RegisterToRegister(term.Operator.Type switch
+                var termInstr = Builder.RegisterToRegister(term.Operator.Type switch
                 {
                     TokenType.Star => Opcode.Mul,
                     TokenType.Slash => Opcode.TDiv,
@@ -188,9 +199,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 leftReg,
                 rightReg);
 
-                label ??= termLabel;
-
-                return label;
+                return termInstr;
             }
 
             case FactorView factor:
@@ -286,10 +295,8 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         return Builder.LdConst((EpString)strValue);
     }
 
-    private IntermediateInstruction generateAssignment(AssignmentView assignment)
+    private void generateAssignment(AssignmentView assignment)
     {
-        IntermediateInstruction? label;
-
         switch (assignment)
         {
             case SimpleAssignmentView simple:
@@ -297,7 +304,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 {
                     case IStarExpressionVariantView expr:
                     {
-                        ensureExpressionRegister(expr, out var dest, out label);
+                        ensureExpressionRegister(expr, out var dest, out _);
 
                         var name = simple.Target.RawString;
                         // TODO: find assignment variables before generating actual bytecode.
@@ -331,15 +338,11 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
             default:
                 throw new UnreachableException();
         }
-
-        // TODO: remove this 'label' pattern and use real data structure for labels
-        return label!;
     }
 
     private IntermediateInstruction generateCall(CallWithArgumentsPrimaryView call)
     {
         Register[] argumentRegisters;
-        IntermediateInstruction? label = null;
         // TODO: keyword arguments
         // Computing all argument expressions and getting their registers
         switch (call.Arguments)
@@ -355,8 +358,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                     switch (positionalArgs[i])
                     {
                         case IExpressionView expr:
-                            if (ensureExpressionRegister(expr, out argumentRegisters[i], out var instruction))
-                                label ??= instruction;
+                            ensureExpressionRegister(expr, out argumentRegisters[i], out _);
                             break;
 
                         case AssignmentExpressionView assignment:
@@ -370,6 +372,10 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 break;
             }
 
+            case null:
+                argumentRegisters = [];
+                break;
+
             case ArgumentsWithOnlyKeywordsView:
                 throw new NotImplementedException();
 
@@ -378,10 +384,10 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         }
 
         // Putting function to frame
-        if (ensureExpressionRegister(call.Function, out var funcRegister, out var funcInstruction))
-            label ??= funcInstruction;
-        else
-            label ??= Builder.Move(funcRegister);
+        if (!ensureExpressionRegister(call.Function, out var funcRegister, out _))
+        {
+            Builder.Move(funcRegister);
+        }
 
         Register? firstArgument = null;
         // Filling registers with the arguments
@@ -393,15 +399,13 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 firstArgument ??= move.Dest!;
             }
         }
-        // If arguments was not set, load 'None' next to the function to make it return in it
+        // If arguments was not set, load 'None' in register next to the function to make it return in it
         else
         {
             firstArgument = Builder.LdConst(EpConstants.None).Dest!;
         }
 
-        Builder.Call(funcRegister, firstArgument!, argumentRegisters.Length);
-
-        return label;
+        return Builder.Call(funcRegister, firstArgument!, argumentRegisters.Length);
     }
 
     /// <summary>
@@ -419,7 +423,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         }
 
         loadInstruction = Builder.LdVar(variableName);
-        locals.Add(variableName, variableRegister = loadInstruction.Dest!);
+        variableRegister = loadInstruction.Dest!;
 
         return true;
     }
@@ -434,6 +438,24 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         instruction = generateExpression(expression);
         register = instruction.Dest!;
         return true;
+    }
+
+    private bool ensureNamedExpressionRegister(
+        INamedExpressionView namedExpression,
+        [NotNull] out Register? register,
+        [NotNullWhen(true)] out IntermediateInstruction? instruction)
+    {
+        switch (namedExpression)
+        {
+            case AssignmentExpressionView assignment:
+                throw new NotImplementedException();
+
+            case IExpressionView expr:
+                return ensureExpressionRegister(expr, out register, out instruction);
+
+            default:
+                throw new UnreachableException();
+        }
     }
 }
 

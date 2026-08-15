@@ -8,7 +8,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}/src/Epoxid",
             "program": 
-                "${workspaceFolder}/src/Epoxid/bin/Debug/net10.0/Epoxid.dll",
+                "${workspaceFolder}/src/Epoxid/bin/Debug/net10.0/epoxid.dll",
             "args": [
                 "__hello__.ep"
             ],

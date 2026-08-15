@@ -13,8 +13,13 @@ internal class CodeBuilder
     private readonly List<Constant> constants = [];
     private readonly List<Variable> closureVariables = [];
 
+    private readonly Stack<Label> labels = [];
+
     public CodeObject Dump()
     {
+        if (labels.Count != 0)
+            throw new InvalidOperationException("Cannot dump code object: builder have unresolved labels");
+
         resolveIndexes();
 
         return new CodeObject
@@ -47,6 +52,23 @@ internal class CodeBuilder
         {
             variable.Index = i;
         }
+    }
+
+    public void PutLabel(Label newLabel) => labels.Push(newLabel);
+
+    private void addInstruction(IntermediateInstruction instruction)
+    {
+        while (labels.TryPop(out var label))
+        {
+            if (label.InstructionOnLabel != null)
+            {
+                throw new InvalidOperationException("Label already has attached instruction");
+            }
+
+            label.InstructionOnLabel = instruction;
+        }
+
+        instructions.Add(instruction);
     }
 
     private Register allocateRegister()
@@ -87,8 +109,7 @@ internal class CodeBuilder
             Src1 = src1,
             Src2 = src2,
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -98,10 +119,9 @@ internal class CodeBuilder
         var instr = new IntermediateInstruction(Opcode.LdVar)
         {
             Dest = allocateRegister(),
-            VarName = addVariable(name),
+            Variable = addVariable(name),
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -113,8 +133,7 @@ internal class CodeBuilder
             Dest = allocateRegister(),
             Constant = addConstant(value),
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -127,8 +146,7 @@ internal class CodeBuilder
             Src1 = function,
             ArgCount = argCount,
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -141,8 +159,7 @@ internal class CodeBuilder
             Src1 = function,
             ArgCount = argCount,
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -154,7 +171,7 @@ internal class CodeBuilder
             Dest = allocateRegister(),
             Src1 = source,
         };
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -166,7 +183,7 @@ internal class CodeBuilder
             Dest = dest,
             Src1 = source,
         };
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -177,8 +194,7 @@ internal class CodeBuilder
         {
             Src1 = register,
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
@@ -189,69 +205,42 @@ internal class CodeBuilder
         {
             Constant = addConstant(constantValue),
         };
-
-        instructions.Add(instr);
+        addInstruction(instr);
 
         return instr;
     }
-}
 
-internal class Register
-{
-    public int Index { get; set; }
-}
-
-internal record Constant(EpObject Value)
-{
-    public int Index { get; set; }
-}
-
-internal record Variable(string Name)
-{
-    public int Index { get; set; }
-}
-
-internal record IntermediateInstruction(Opcode Opcode)
-{
-    public int Index { get; set; }
-
-    public Register? Dest { get; init; }
-    public byte DestValue => Dest != null ? checked((byte)Dest.Index) : throw new InvalidOperationException("Value was not set before");
-
-    public Register? Src1 { get; init; }
-    public byte Src1Value => Src1 != null ? checked((byte)Src1.Index) : throw new InvalidOperationException("Value was not set before");
-
-    public Register? Src2 { get; init; }
-    public byte Src2Value => Src2 != null ? checked((byte)Src2.Index) : throw new InvalidOperationException("Value was not set before");
-
-    public Constant? Constant { get; init; }
-    public short ConstantValue => Constant != null ? checked((short)Constant.Index) : throw new InvalidOperationException("Value was not set before");
-
-    public Variable? VarName { get; init; }
-    public short VarNameValue => VarName != null ? checked((short)VarName.Index) : throw new InvalidOperationException("Value was not set before");
-
-    public IntermediateInstruction? JumpDest { get; init; }
-    public short JumpDestValue => JumpDest != null ? checked((short)JumpDest.Index) : throw new InvalidOperationException("Value was not set before");
-
-    public int ArgCount { get; init; } = -1;
-    public byte ArgCountValue => ArgCount != -1 ? checked((byte)ArgCount) : throw new InvalidOperationException("Value was not set before");
-
-    public Instruction Lower() => checked(Opcode switch
+    public IntermediateInstruction Brc(Label target)
     {
-        _ when Opcode.IsRegisterToRegister => new Instruction(Opcode, DestValue, Src1Value, Src2Value),
+        var instr = new IntermediateInstruction(Opcode.Brc)
+        {
+            Label = target,
+        };
+        addInstruction(instr);
 
-        Opcode.LdConst => new Instruction(Opcode, DestValue, ConstantValue),
+        return instr;
+    }
 
-        Opcode.LdVar => new Instruction(Opcode, DestValue, VarNameValue),
+    public IntermediateInstruction BrTr(Label target, Register condition)
+    {
+        var instr = new IntermediateInstruction(Opcode.BrTr)
+        {
+            Label = target,
+            Dest = condition,
+        };
+        addInstruction(instr);
 
-        Opcode.Ret => new Instruction(Opcode, 0, Src1Value, 0),
+        return instr;
+    }
+    public IntermediateInstruction BrFl(Label target, Register condition)
+    {
+        var instr = new IntermediateInstruction(Opcode.BrFl)
+        {
+            Label = target,
+            Dest = condition,
+        };
+        addInstruction(instr);
 
-        Opcode.RetC => new Instruction(Opcode, 0, ConstantValue),
-
-        Opcode.Call or Opcode.CallK => new Instruction(Opcode, DestValue, Src1Value, ArgCountValue),
-
-        Opcode.Move => new Instruction(Opcode, DestValue, Src1Value, 0),
-
-        _ => throw new NotImplementedException(),
-    });
+        return instr;
+    }
 }

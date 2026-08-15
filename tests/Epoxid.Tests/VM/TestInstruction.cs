@@ -38,31 +38,31 @@ public class TestInstruction
     [Fact]
     public void Test_Imm24Mode()
     {
-        var instr = new Instruction(Opcode.Jump, 1234567);
+        var instr = new Instruction(Opcode.Move, 1234567);
 
-        Assert.Equal(Opcode.Jump, instr.Opcode);
+        Assert.Equal(Opcode.Move, instr.Opcode);
         Assert.Equal(1234567, instr.Immediate24);
     }
 
     [Fact]
     public void Test_Imm24Mode_NegativeValue()
     {
-        var instr = new Instruction(Opcode.Jump, -1234567);
+        var instr = new Instruction(Opcode.Move, -1234567);
 
-        Assert.Equal(Opcode.Jump, instr.Opcode);
+        Assert.Equal(Opcode.Move, instr.Opcode);
         Assert.Equal(-1234567, instr.Immediate24);
     }
 
     [Fact]
     public void Test_Imm24Mode_OverflowedValue_Throws()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
-            new Instruction(Opcode.Jump, 10_000_000);
-        });
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Instruction((Opcode)Opcode.Move, 10_000_000);
+        }));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
-            new Instruction(Opcode.Jump, -10_000_000);
-        });
+            new Instruction((Opcode)Opcode.Move, -10_000_000);
+        }));
     }
 }

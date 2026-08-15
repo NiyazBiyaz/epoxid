@@ -13,10 +13,8 @@ internal class FunctionValidator
     public FunctionValidator(FunctionDefRawView function)
     {
         // TODO: Other function stuff
-        BlockValidator = new(function.Block.GetStatements())
-        {
-            Variables = variables, // Share variables with the block validator.
-        };
+        // TODO: arguments sharing
+        BlockValidator = new(function.Block.GetStatements());
         functionParameters = function.Parameters?.Parameters ?? [];
     }
 
