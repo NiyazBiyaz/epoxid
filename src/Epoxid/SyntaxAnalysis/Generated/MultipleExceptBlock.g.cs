@@ -22,13 +22,13 @@ public sealed partial record MultipleExceptBlockNode : ExceptBlockNode
         {
             if (_field_Exceptions is null)
             {
-                var _tmp = AstExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionNode>();
+                var _tmp = SeparatedExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionNode>();
                 _field_Exceptions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Exceptions.Value;
         }
     }
-    public NodeArray<GreenNode> AstExceptions => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> SeparatedExceptions => (NodeArray<GreenNode>)Children![1];
     public BlockNode Block => (BlockNode)Children![4];
     public override MultipleExceptBlockView GetView(int position, IRedView? parent)
         => new MultipleExceptBlockView(this, position, parent);
@@ -45,14 +45,14 @@ public sealed partial class MultipleExceptBlockView : ExceptBlockView
     }
 
     private ViewArray<RedView>? _ast_field_exceptions = null;
-    public ViewArray<RedView> AstExceptions
+    public ViewArray<RedView> SeparatedExceptions
     {
         get
         {
             if (_ast_field_exceptions == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _ast_field_exceptions = new ViewArray<RedView>(((MultipleExceptBlockNode)base.Green).AstExceptions, _positionOfField, this);
+                _ast_field_exceptions = new ViewArray<RedView>(((MultipleExceptBlockNode)base.Green).SeparatedExceptions, _positionOfField, this);
             }
             return _ast_field_exceptions.Value;
         }
@@ -64,7 +64,7 @@ public sealed partial class MultipleExceptBlockView : ExceptBlockView
         {
             if (_field_exceptions == null)
             {
-                var _tmp = AstExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionView>();
+                var _tmp = SeparatedExceptions.Where(static (_, i) => i % 2 == 0).Cast<IExpressionView>();
                 _field_exceptions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_exceptions.Value;

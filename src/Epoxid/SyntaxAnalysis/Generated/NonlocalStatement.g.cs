@@ -22,13 +22,13 @@ public sealed partial record NonlocalStatementNode : GreenNode, ISimpleStatement
         {
             if (_field_Variables is null)
             {
-                var _tmp = AstVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
+                var _tmp = SeparatedVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
                 _field_Variables = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Variables.Value;
         }
     }
-    public NodeArray<GreenNode> AstVariables => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> SeparatedVariables => (NodeArray<GreenNode>)Children![1];
     public override NonlocalStatementView GetView(int position, IRedView? parent)
         => new NonlocalStatementView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class NonlocalStatementView : RedView, ISimpleStatementVie
     }
 
     private ViewArray<RedView>? _ast_field_variables = null;
-    public ViewArray<RedView> AstVariables
+    public ViewArray<RedView> SeparatedVariables
     {
         get
         {
             if (_ast_field_variables == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _ast_field_variables = new ViewArray<RedView>(((NonlocalStatementNode)base.Green).AstVariables, _positionOfField, this);
+                _ast_field_variables = new ViewArray<RedView>(((NonlocalStatementNode)base.Green).SeparatedVariables, _positionOfField, this);
             }
             return _ast_field_variables.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class NonlocalStatementView : RedView, ISimpleStatementVie
         {
             if (_field_variables == null)
             {
-                var _tmp = AstVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
+                var _tmp = SeparatedVariables.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
                 _field_variables = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_variables.Value;

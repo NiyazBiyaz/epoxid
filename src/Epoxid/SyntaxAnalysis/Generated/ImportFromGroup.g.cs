@@ -22,13 +22,13 @@ public sealed partial record ImportFromGroupNode : ImportFromTargetsNode
         {
             if (_field_Targets is null)
             {
-                var _tmp = AstTargets.Where(static (_, i) => i % 2 == 0).Cast<AliasedNameNode>();
+                var _tmp = SeparatedTargets.Where(static (_, i) => i % 2 == 0).Cast<AliasedNameNode>();
                 _field_Targets = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Targets.Value;
         }
     }
-    public NodeArray<GreenNode> AstTargets => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> SeparatedTargets => (NodeArray<GreenNode>)Children![1];
     public override ImportFromGroupView GetView(int position, IRedView? parent)
         => new ImportFromGroupView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class ImportFromGroupView : ImportFromTargetsView
     }
 
     private ViewArray<RedView>? _ast_field_targets = null;
-    public ViewArray<RedView> AstTargets
+    public ViewArray<RedView> SeparatedTargets
     {
         get
         {
             if (_ast_field_targets == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _ast_field_targets = new ViewArray<RedView>(((ImportFromGroupNode)base.Green).AstTargets, _positionOfField, this);
+                _ast_field_targets = new ViewArray<RedView>(((ImportFromGroupNode)base.Green).SeparatedTargets, _positionOfField, this);
             }
             return _ast_field_targets.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class ImportFromGroupView : ImportFromTargetsView
         {
             if (_field_targets == null)
             {
-                var _tmp = AstTargets.Where(static (_, i) => i % 2 == 0).Cast<AliasedNameView>();
+                var _tmp = SeparatedTargets.Where(static (_, i) => i % 2 == 0).Cast<AliasedNameView>();
                 _field_targets = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_targets.Value;

@@ -22,13 +22,13 @@ public sealed partial record StarredOrKeyValuesNode : GreenNode
         {
             if (_field_Items is null)
             {
-                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<StarredOrKeyValueNode>();
+                var _tmp = SeparatedItems.Where(static (_, i) => i % 2 == 0).Cast<StarredOrKeyValueNode>();
                 _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Items.Value;
         }
     }
-    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedItems => (NodeArray<GreenNode>)Children![0];
     public override StarredOrKeyValuesView GetView(int position, IRedView? parent)
         => new StarredOrKeyValuesView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class StarredOrKeyValuesView : RedView
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    public ViewArray<RedView> AstItems
+    public ViewArray<RedView> SeparatedItems
     {
         get
         {
             if (_ast_field_items == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_items = new ViewArray<RedView>(((StarredOrKeyValuesNode)base.Green).AstItems, _positionOfField, this);
+                _ast_field_items = new ViewArray<RedView>(((StarredOrKeyValuesNode)base.Green).SeparatedItems, _positionOfField, this);
             }
             return _ast_field_items.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class StarredOrKeyValuesView : RedView
         {
             if (_field_items == null)
             {
-                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<StarredOrKeyValueView>();
+                var _tmp = SeparatedItems.Where(static (_, i) => i % 2 == 0).Cast<StarredOrKeyValueView>();
                 _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_items.Value;

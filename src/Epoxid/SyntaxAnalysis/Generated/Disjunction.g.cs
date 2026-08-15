@@ -22,13 +22,13 @@ public sealed partial record DisjunctionNode : GreenNode, IExpressionNode, IArit
         {
             if (_field_Conjunctions is null)
             {
-                var _tmp = AstConjunctions.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionNode>();
+                var _tmp = SeparatedConjunctions.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionNode>();
                 _field_Conjunctions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Conjunctions.Value;
         }
     }
-    public NodeArray<GreenNode> AstConjunctions => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedConjunctions => (NodeArray<GreenNode>)Children![0];
     public override DisjunctionView GetView(int position, IRedView? parent)
         => new DisjunctionView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class DisjunctionView : RedView, IExpressionView, IArithme
     }
 
     private ViewArray<RedView>? _ast_field_conjunctions = null;
-    public ViewArray<RedView> AstConjunctions
+    public ViewArray<RedView> SeparatedConjunctions
     {
         get
         {
             if (_ast_field_conjunctions == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_conjunctions = new ViewArray<RedView>(((DisjunctionNode)base.Green).AstConjunctions, _positionOfField, this);
+                _ast_field_conjunctions = new ViewArray<RedView>(((DisjunctionNode)base.Green).SeparatedConjunctions, _positionOfField, this);
             }
             return _ast_field_conjunctions.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class DisjunctionView : RedView, IExpressionView, IArithme
         {
             if (_field_conjunctions == null)
             {
-                var _tmp = AstConjunctions.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionView>();
+                var _tmp = SeparatedConjunctions.Where(static (_, i) => i % 2 == 0).Cast<ConjunctionView>();
                 _field_conjunctions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_conjunctions.Value;

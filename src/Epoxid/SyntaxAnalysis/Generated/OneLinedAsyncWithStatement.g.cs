@@ -22,13 +22,13 @@ public sealed partial record OneLinedAsyncWithStatementNode : WithStatementNode
         {
             if (_field_Items is null)
             {
-                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemNode>();
+                var _tmp = SeparatedItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemNode>();
                 _field_Items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Items.Value;
         }
     }
-    public NodeArray<GreenNode> AstItems => (NodeArray<GreenNode>)Children![2];
+    public NodeArray<GreenNode> SeparatedItems => (NodeArray<GreenNode>)Children![2];
     public BlockNode Block => (BlockNode)Children![4];
     public override OneLinedAsyncWithStatementView GetView(int position, IRedView? parent)
         => new OneLinedAsyncWithStatementView(this, position, parent);
@@ -45,14 +45,14 @@ public sealed partial class OneLinedAsyncWithStatementView : WithStatementView
     }
 
     private ViewArray<RedView>? _ast_field_items = null;
-    public ViewArray<RedView> AstItems
+    public ViewArray<RedView> SeparatedItems
     {
         get
         {
             if (_ast_field_items == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _ast_field_items = new ViewArray<RedView>(((OneLinedAsyncWithStatementNode)base.Green).AstItems, _positionOfField, this);
+                _ast_field_items = new ViewArray<RedView>(((OneLinedAsyncWithStatementNode)base.Green).SeparatedItems, _positionOfField, this);
             }
             return _ast_field_items.Value;
         }
@@ -64,7 +64,7 @@ public sealed partial class OneLinedAsyncWithStatementView : WithStatementView
         {
             if (_field_items == null)
             {
-                var _tmp = AstItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemView>();
+                var _tmp = SeparatedItems.Where(static (_, i) => i % 2 == 0).Cast<WithItemView>();
                 _field_items = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_items.Value;

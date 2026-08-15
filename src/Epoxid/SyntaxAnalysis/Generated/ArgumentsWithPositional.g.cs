@@ -22,13 +22,13 @@ public sealed partial record ArgumentsWithPositionalNode : ArgumentsNode
         {
             if (_field_PositionalArgumentsPart is null)
             {
-                var _tmp = AstPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentNode>();
+                var _tmp = SeparatedPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentNode>();
                 _field_PositionalArgumentsPart = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_PositionalArgumentsPart.Value;
         }
     }
-    public NodeArray<GreenNode> AstPositionalArgumentsPart => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedPositionalArgumentsPart => (NodeArray<GreenNode>)Children![0];
     public KeywordArgumentsPartNode? KeywordArgumentsPart => Children![1] as KeywordArgumentsPartNode;
     public override ArgumentsWithPositionalView GetView(int position, IRedView? parent)
         => new ArgumentsWithPositionalView(this, position, parent);
@@ -45,14 +45,14 @@ public sealed partial class ArgumentsWithPositionalView : ArgumentsView
     }
 
     private ViewArray<RedView>? _ast_field_positionalArgumentsPart = null;
-    public ViewArray<RedView> AstPositionalArgumentsPart
+    public ViewArray<RedView> SeparatedPositionalArgumentsPart
     {
         get
         {
             if (_ast_field_positionalArgumentsPart == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_positionalArgumentsPart = new ViewArray<RedView>(((ArgumentsWithPositionalNode)base.Green).AstPositionalArgumentsPart, _positionOfField, this);
+                _ast_field_positionalArgumentsPart = new ViewArray<RedView>(((ArgumentsWithPositionalNode)base.Green).SeparatedPositionalArgumentsPart, _positionOfField, this);
             }
             return _ast_field_positionalArgumentsPart.Value;
         }
@@ -64,7 +64,7 @@ public sealed partial class ArgumentsWithPositionalView : ArgumentsView
         {
             if (_field_positionalArgumentsPart == null)
             {
-                var _tmp = AstPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentView>();
+                var _tmp = SeparatedPositionalArgumentsPart.Where(static (_, i) => i % 2 == 0).Cast<IPositionalArgumentView>();
                 _field_positionalArgumentsPart = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_positionalArgumentsPart.Value;

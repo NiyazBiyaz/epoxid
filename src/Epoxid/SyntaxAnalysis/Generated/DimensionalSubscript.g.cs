@@ -22,13 +22,13 @@ public sealed partial record DimensionalSubscriptNode : SlicesNode
         {
             if (_field_Values is null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<DimensionNode>();
+                var _tmp = SeparatedValues.Where(static (_, i) => i % 2 == 0).Cast<DimensionNode>();
                 _field_Values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Values.Value;
         }
     }
-    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedValues => (NodeArray<GreenNode>)Children![0];
     public override DimensionalSubscriptView GetView(int position, IRedView? parent)
         => new DimensionalSubscriptView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class DimensionalSubscriptView : SlicesView
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    public ViewArray<RedView> AstValues
+    public ViewArray<RedView> SeparatedValues
     {
         get
         {
             if (_ast_field_values == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_values = new ViewArray<RedView>(((DimensionalSubscriptNode)base.Green).AstValues, _positionOfField, this);
+                _ast_field_values = new ViewArray<RedView>(((DimensionalSubscriptNode)base.Green).SeparatedValues, _positionOfField, this);
             }
             return _ast_field_values.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class DimensionalSubscriptView : SlicesView
         {
             if (_field_values == null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<DimensionView>();
+                var _tmp = SeparatedValues.Where(static (_, i) => i % 2 == 0).Cast<DimensionView>();
                 _field_values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_values.Value;

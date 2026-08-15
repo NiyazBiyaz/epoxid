@@ -601,13 +601,13 @@ internal class CsGenerator(string accessModifier)
                         {
                             if (_field_{{field.Name}} is null)
                             {
-                                var _tmp = Ast{{field.Name}}.Where(static (_, i) => i % 2 == 0).Cast<{{fieldTypeName}}>();
+                                var _tmp = Separated{{field.Name}}.Where(static (_, i) => i % 2 == 0).Cast<{{fieldTypeName}}>();
                                 _field_{{field.Name}} = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
                             }
                             return _field_{{field.Name}}.Value;
                         }
                     }
-                    {{accessModifier}} NodeArray<GreenNode> Ast{{field.Name}} => (NodeArray<GreenNode>)Children![{{field.ChildIndex}}];
+                    {{accessModifier}} NodeArray<GreenNode> Separated{{field.Name}} => (NodeArray<GreenNode>)Children![{{field.ChildIndex}}];
                     """);
                     break;
 
@@ -696,7 +696,7 @@ internal class CsGenerator(string accessModifier)
                     break;
 
                 case FieldKind.Gather:
-                    greenField = $"(({typeNodeName})base.Green).Ast{field.Name}";
+                    greenField = $"(({typeNodeName})base.Green).Separated{field.Name}";
                     break;
 
                 default:
@@ -730,7 +730,7 @@ internal class CsGenerator(string accessModifier)
             {
                 addLines($$"""
                 private ViewArray<RedView>? _ast{{backingFieldName}} = null;
-                {{accessModifier}} ViewArray<RedView> Ast{{field.Name}}
+                {{accessModifier}} ViewArray<RedView> Separated{{field.Name}}
                 {
                     get
                     {
@@ -749,7 +749,7 @@ internal class CsGenerator(string accessModifier)
                     {
                         if ({{backingFieldName}} == null)
                         {
-                            var _tmp = Ast{{field.Name}}.Where(static (_, i) => i % 2 == 0).Cast<{{fieldTypeName}}>();
+                            var _tmp = Separated{{field.Name}}.Where(static (_, i) => i % 2 == 0).Cast<{{fieldTypeName}}>();
                             {{backingFieldName}} = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
                         }
                         return {{backingFieldName}}.Value;

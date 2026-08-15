@@ -22,13 +22,13 @@ public sealed partial record ConjunctionNode : GreenNode
         {
             if (_field_Inversions is null)
             {
-                var _tmp = AstInversions.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionNode>();
+                var _tmp = SeparatedInversions.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionNode>();
                 _field_Inversions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Inversions.Value;
         }
     }
-    public NodeArray<GreenNode> AstInversions => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedInversions => (NodeArray<GreenNode>)Children![0];
     public override ConjunctionView GetView(int position, IRedView? parent)
         => new ConjunctionView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class ConjunctionView : RedView
     }
 
     private ViewArray<RedView>? _ast_field_inversions = null;
-    public ViewArray<RedView> AstInversions
+    public ViewArray<RedView> SeparatedInversions
     {
         get
         {
             if (_ast_field_inversions == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_inversions = new ViewArray<RedView>(((ConjunctionNode)base.Green).AstInversions, _positionOfField, this);
+                _ast_field_inversions = new ViewArray<RedView>(((ConjunctionNode)base.Green).SeparatedInversions, _positionOfField, this);
             }
             return _ast_field_inversions.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class ConjunctionView : RedView
         {
             if (_field_inversions == null)
             {
-                var _tmp = AstInversions.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionView>();
+                var _tmp = SeparatedInversions.Where(static (_, i) => i % 2 == 0).Cast<IInversionExpressionView>();
                 _field_inversions = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_inversions.Value;

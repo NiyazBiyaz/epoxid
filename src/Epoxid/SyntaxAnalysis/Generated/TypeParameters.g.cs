@@ -22,13 +22,13 @@ public sealed partial record TypeParametersNode : GreenNode
         {
             if (_field_Values is null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<TypeParameterNode>();
+                var _tmp = SeparatedValues.Where(static (_, i) => i % 2 == 0).Cast<TypeParameterNode>();
                 _field_Values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Values.Value;
         }
     }
-    public NodeArray<GreenNode> AstValues => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> SeparatedValues => (NodeArray<GreenNode>)Children![1];
     public override TypeParametersView GetView(int position, IRedView? parent)
         => new TypeParametersView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class TypeParametersView : RedView
     }
 
     private ViewArray<RedView>? _ast_field_values = null;
-    public ViewArray<RedView> AstValues
+    public ViewArray<RedView> SeparatedValues
     {
         get
         {
             if (_ast_field_values == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _ast_field_values = new ViewArray<RedView>(((TypeParametersNode)base.Green).AstValues, _positionOfField, this);
+                _ast_field_values = new ViewArray<RedView>(((TypeParametersNode)base.Green).SeparatedValues, _positionOfField, this);
             }
             return _ast_field_values.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class TypeParametersView : RedView
         {
             if (_field_values == null)
             {
-                var _tmp = AstValues.Where(static (_, i) => i % 2 == 0).Cast<TypeParameterView>();
+                var _tmp = SeparatedValues.Where(static (_, i) => i % 2 == 0).Cast<TypeParameterView>();
                 _field_values = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_values.Value;

@@ -22,13 +22,13 @@ public sealed partial record ImportNameNode : GreenNode, IImportStatementNode
         {
             if (_field_Import is null)
             {
-                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedNameNode>();
+                var _tmp = SeparatedImport.Where(static (_, i) => i % 2 == 0).Cast<DottedNameNode>();
                 _field_Import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Import.Value;
         }
     }
-    public NodeArray<GreenNode> AstImport => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> SeparatedImport => (NodeArray<GreenNode>)Children![1];
     public override ImportNameView GetView(int position, IRedView? parent)
         => new ImportNameView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class ImportNameView : RedView, IImportStatementView
     }
 
     private ViewArray<RedView>? _ast_field_import = null;
-    public ViewArray<RedView> AstImport
+    public ViewArray<RedView> SeparatedImport
     {
         get
         {
             if (_ast_field_import == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _ast_field_import = new ViewArray<RedView>(((ImportNameNode)base.Green).AstImport, _positionOfField, this);
+                _ast_field_import = new ViewArray<RedView>(((ImportNameNode)base.Green).SeparatedImport, _positionOfField, this);
             }
             return _ast_field_import.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class ImportNameView : RedView, IImportStatementView
         {
             if (_field_import == null)
             {
-                var _tmp = AstImport.Where(static (_, i) => i % 2 == 0).Cast<DottedNameView>();
+                var _tmp = SeparatedImport.Where(static (_, i) => i % 2 == 0).Cast<DottedNameView>();
                 _field_import = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_import.Value;

@@ -22,13 +22,13 @@ public sealed partial record AssignmentTargetsNode : GreenNode, IAssignmentTarge
         {
             if (_field_Targets is null)
             {
-                var _tmp = AstTargets.Where(static (_, i) => i % 2 == 0).Cast<IAssignmentTargetNode>();
+                var _tmp = SeparatedTargets.Where(static (_, i) => i % 2 == 0).Cast<IAssignmentTargetNode>();
                 _field_Targets = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Targets.Value;
         }
     }
-    public NodeArray<GreenNode> AstTargets => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedTargets => (NodeArray<GreenNode>)Children![0];
     public override AssignmentTargetsView GetView(int position, IRedView? parent)
         => new AssignmentTargetsView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class AssignmentTargetsView : RedView, IAssignmentTargetVa
     }
 
     private ViewArray<RedView>? _ast_field_targets = null;
-    public ViewArray<RedView> AstTargets
+    public ViewArray<RedView> SeparatedTargets
     {
         get
         {
             if (_ast_field_targets == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_targets = new ViewArray<RedView>(((AssignmentTargetsNode)base.Green).AstTargets, _positionOfField, this);
+                _ast_field_targets = new ViewArray<RedView>(((AssignmentTargetsNode)base.Green).SeparatedTargets, _positionOfField, this);
             }
             return _ast_field_targets.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class AssignmentTargetsView : RedView, IAssignmentTargetVa
         {
             if (_field_targets == null)
             {
-                var _tmp = AstTargets.Where(static (_, i) => i % 2 == 0).Cast<IAssignmentTargetView>();
+                var _tmp = SeparatedTargets.Where(static (_, i) => i % 2 == 0).Cast<IAssignmentTargetView>();
                 _field_targets = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_targets.Value;

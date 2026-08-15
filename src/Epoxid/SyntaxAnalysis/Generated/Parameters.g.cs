@@ -22,13 +22,13 @@ public sealed partial record ParametersNode : GreenNode
         {
             if (_field_Parameters is null)
             {
-                var _tmp = AstParameters.Where(static (_, i) => i % 2 == 0).Cast<ParameterNode>();
+                var _tmp = SeparatedParameters.Where(static (_, i) => i % 2 == 0).Cast<ParameterNode>();
                 _field_Parameters = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Parameters.Value;
         }
     }
-    public NodeArray<GreenNode> AstParameters => (NodeArray<GreenNode>)Children![0];
+    public NodeArray<GreenNode> SeparatedParameters => (NodeArray<GreenNode>)Children![0];
     public override ParametersView GetView(int position, IRedView? parent)
         => new ParametersView(this, position, parent);
 }
@@ -44,14 +44,14 @@ public sealed partial class ParametersView : RedView
     }
 
     private ViewArray<RedView>? _ast_field_parameters = null;
-    public ViewArray<RedView> AstParameters
+    public ViewArray<RedView> SeparatedParameters
     {
         get
         {
             if (_ast_field_parameters == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_parameters = new ViewArray<RedView>(((ParametersNode)base.Green).AstParameters, _positionOfField, this);
+                _ast_field_parameters = new ViewArray<RedView>(((ParametersNode)base.Green).SeparatedParameters, _positionOfField, this);
             }
             return _ast_field_parameters.Value;
         }
@@ -63,7 +63,7 @@ public sealed partial class ParametersView : RedView
         {
             if (_field_parameters == null)
             {
-                var _tmp = AstParameters.Where(static (_, i) => i % 2 == 0).Cast<ParameterView>();
+                var _tmp = SeparatedParameters.Where(static (_, i) => i % 2 == 0).Cast<ParameterView>();
                 _field_parameters = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_parameters.Value;
