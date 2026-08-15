@@ -35,6 +35,8 @@ public partial class Tokenizer : BaseTokenizer, ITokenizer
     } = 0;
     private int bracketsLevel { get; set; }
 
+    public bool EofReached { get; private set; }
+
     public Tokenizer(SynchronizationPoint syncPoint)
         : base(syncPoint)
     {
@@ -304,6 +306,7 @@ public partial class Tokenizer : BaseTokenizer, ITokenizer
     {
         if (NextChar == Eof)
         {
+            EofReached = true;
             // If indentation stack is not empty, enqueue dedent and return it.
             if (indentStack.Count > 1)
             {

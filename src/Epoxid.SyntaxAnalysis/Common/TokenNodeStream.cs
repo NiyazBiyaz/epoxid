@@ -9,6 +9,10 @@ public class TokenNodeStream(ITokenizer tokenizer) : ITokenNodeStream
     private readonly List<TokenNode> tokens = [];
     private readonly ITokenizer tokenizer = tokenizer;
 
+    private TokenType lastTokenType;
+
+    private bool virtualNewLineInserted = false;
+
     public int Index
     {
         get;
@@ -60,6 +64,23 @@ public class TokenNodeStream(ITokenizer tokenizer) : ITokenNodeStream
                 }
             }
             while (node.Type.IsTrivia || node.Type.IsError);
+
+            // If EOF reached and last token is not NewLine, add it to be able parse imperfect code
+            if (tokenizer.EofReached)
+            {
+                bool needVirtualNewLine = lastTokenType != TokenType.NewLine
+                    && lastTokenType != TokenType.Dedent
+                    && !virtualNewLineInserted;
+                if (needVirtualNewLine)
+                {
+                    virtualNewLineInserted = true;
+                    var virtualToken = new Token(TokenType.NewLine, "");
+                    var virtualNode = new TokenNode(virtualToken, []);
+                    tokens.Add(virtualNode);
+                }
+            }
+
+            lastTokenType = node.Type;
 
             tokens.Add(node);
         }

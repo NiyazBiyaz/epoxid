@@ -202,7 +202,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_Ordinal()
+    public Task TestParse_FunctionParams_Ordinal()
     {
         const string src = """
         def bau(fluffy, fuzzy): ...
@@ -215,7 +215,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_Full()
+    public Task TestParse_FunctionParams_Full()
     {
         const string src = """
         def bau(pon, de, ring, /, fluffy, fuzzy, *pats, fuwa, moco, **kwargs): ...
@@ -228,7 +228,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_Full_WithDefaults()
+    public Task TestParse_FunctionParams_Full_WithDefaults()
     {
         const string src = """
         def bau(pon, de, ring, /, fluffy=fuwawa, fuzzy=mococo, *pats, fuwa=iyargh, moco=hoeh, **doggos): ...
@@ -241,7 +241,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_BeforeSlash()
+    public Task TestParse_FunctionParams_BeforeSlash()
     {
         const string src = """
         def bau(pon, de, ring, /): ...
@@ -254,7 +254,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_BeforeStar()
+    public Task TestParse_FunctionParams_BeforeStar()
     {
         const string src = """
         def bau(fluffy, fuzzy, *pats): ...
@@ -267,7 +267,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_AfterStar()
+    public Task TestParse_FunctionParams_AfterStar()
     {
         const string src = """
         def bau(*, fuwa, moco): ...
@@ -280,7 +280,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public void TestFunctionParams_CannotSetDefaultTo_ArgsKwargs()
+    public void TestParse_FunctionParams_CannotSetDefaultTo_ArgsKwargs()
     {
         string src = """
         def bau(*pats=many): ...
@@ -300,7 +300,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestFunctionParams_Annotations()
+    public Task TestParse_FunctionParams_Annotations()
     {
         const string src = """
         def bau(fuwa: Fluffy, moco: Fuzzy): ...
@@ -313,7 +313,7 @@ public class TestPythonParser
     }
 
     [Fact]
-    public Task TestIfExpression()
+    public Task TestParse_IfExpression()
     {
         const string src = """
         "bau bau!" if 34 + 35 == 69 else "HOEH?!?"
@@ -323,6 +323,26 @@ public class TestPythonParser
         var res = parser.Parse();
         Assert.NotNull(res);
         return Verify(res.PrettyPrint());
+    }
+
+    [Fact]
+    public void TestCanParseWithoutFinalNewLine()
+    {
+        string src = """
+        "bau bau!"
+        """;
+        var parser = getParser(src);
+        var res = parser.Parse();
+        Assert.NotNull(res);
+        src = """
+        if bau:
+            bau
+        else:
+            bau
+        """;
+        parser = getParser(src);
+        res = parser.Parse();
+        Assert.NotNull(res);
     }
 
     private static PythonParser getParser(string src)

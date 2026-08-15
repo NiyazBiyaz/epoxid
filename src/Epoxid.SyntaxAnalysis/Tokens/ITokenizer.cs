@@ -5,6 +5,7 @@ namespace Epoxid.SyntaxAnalysis.Tokens;
 public interface ITokenizer
 {
     bool ShouldStop { get; }
+    bool EofReached { get; }
     TokenizerError Error { get; }
     string? ErrorMessage { get; }
 

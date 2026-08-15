@@ -15,7 +15,7 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 - [x] Run `print("Bau Bau!")`
 - [ ] Turing complete
 - [ ] Basic classes, functions, simple object semantics
-- [ ] Bytecode VM (on top of the CLR)
+- [x] Bytecode VM (on top of the CLR)
 - [ ] Calling CLR code
 - [ ] Full Python syntax support
 - [ ] Exporting code to CLR
@@ -53,6 +53,25 @@ git pull
 
 ```bash
 dotnet test
+```
+
+### Code examples:
+
+**[FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz)** game in Epoxid with some extensions and adapted to the current state of project:
+
+```ep
+phrase = input("Say something: ")
+number = 0
+while number < 31:
+    if number % 3 == 0 and number % 5 == 0:
+        print("Bau bau!")
+    elif number % 3 == 0:
+        print("Fluffy")
+    elif number % 5 == 0:
+        print("Fuzzy")
+    else:
+        print(number, phrase)
+    number = number + 1
 ```
 
 ---
