@@ -462,8 +462,8 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                     {
                         ensureExpressionRegister(expr, out var expressionResultReg, out _);
 
-                        var name = simple.Target.RawString;
                         // TODO: find assignment variables before generating actual bytecode.
+                        var name = simple.Target.RawString;
                         if (locals.TryGetValue(name, out var oldRegister))
                         {
                             Builder.Move(expressionResultReg, oldRegister);
@@ -501,6 +501,10 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         Register[] argumentRegisters;
         // TODO: keyword arguments
         // Computing all argument expressions and getting their registers
+
+        // Compute function first
+        ensureExpressionRegister(call.Function, out var funcRegister, out _);
+
         switch (call.Arguments)
         {
             case ArgumentsWithPositionalView args:
@@ -540,10 +544,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         }
 
         // Putting function to frame
-        if (!ensureExpressionRegister(call.Function, out var funcRegister, out _))
-        {
-            Builder.Move(funcRegister);
-        }
+        funcRegister = Builder.Move(funcRegister).Dest!;
 
         Register? firstArgument = null;
         // Filling registers with the arguments

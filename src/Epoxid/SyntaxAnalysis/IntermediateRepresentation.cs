@@ -122,7 +122,7 @@ internal record IntermediateInstruction(Opcode Opcode)
 
         Opcode.BrTr or Opcode.BrFl => new Instruction(Opcode, DestValue, LabelValue),
 
-        Opcode.Brc => new Instruction(Opcode, LabelValue),
+        Opcode.Brc => new Instruction(Opcode, 0, LabelValue),
 
         _ => throw new NotImplementedException(),
     });
