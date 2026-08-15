@@ -7,6 +7,11 @@ public class EpNone : EpObject
     {
     }
 
+    internal static readonly EpType Type = new("NoneType", [EpConstants.Object], EpConstants.Type)
+    {
+        DunderBool = DunderBoolImplementation,
+    };
+
     public override string ToString() => "None";
 
     internal static EpBool DunderBoolImplementation(EpObject self) => EpConstants.False;

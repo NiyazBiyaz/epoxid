@@ -29,6 +29,12 @@ internal enum Opcode : byte
     TDiv,
 
     /// <summary>
+    /// Gets the <b>mod</b>ule of <see cref="Instruction.RegSrc1"/> by <see cref="Instruction.RegSrc2"/> and
+    /// stores result in <see cref="Instruction.RegDest"/>
+    /// </summary>
+    Mod,
+
+    /// <summary>
     /// <b>Eq</b>uates object from <see cref="Instruction.RegSrc1"/> to object from <see cref="Instruction.RegSrc2"/>
     /// and stores result in <see cref="Instruction.RegDest"/>
     /// </summary>
@@ -39,6 +45,18 @@ internal enum Opcode : byte
     /// and stores result in <see cref="Instruction.RegDest"/>
     /// </summary>
     NEq,
+
+    /// <summary>
+    /// Determines that object from <see cref="Instruction.RegSrc1"/> is less than <see cref="Instruction.RegDest"/>
+    /// and stores result in <see cref="Instruction.RegDest"/>
+    /// </summary>
+    LsTh,
+
+    /// <summary>
+    /// Determines that object from <see cref="Instruction.RegSrc1"/> is greater than <see cref="Instruction.RegDest"/>
+    /// and stores result in <see cref="Instruction.RegDest"/>
+    /// </summary>
+    GrTh,
 
     /// <summary>
     /// <b>Call</b>s the function that stored in the <see cref="Instruction.RegSrc1"/> with <see cref="Instruction.RegSrc2"/>

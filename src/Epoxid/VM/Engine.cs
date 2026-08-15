@@ -116,12 +116,24 @@ internal class Engine
                     frame[instr.RegDest] = Core.TrueDivideObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
                     break;
 
+                case Opcode.Mod:
+                    frame[instr.RegDest] = Core.ModuleObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    break;
+
                 case Opcode.Eq:
                     frame[instr.RegDest] = Core.EqualObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
                     break;
 
                 case Opcode.NEq:
                     frame[instr.RegDest] = Core.NotEqualObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    break;
+
+                case Opcode.LsTh:
+                    frame[instr.RegDest] = Core.LessThanObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    break;
+
+                case Opcode.GrTh:
+                    frame[instr.RegDest] = Core.GreaterThanObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
                     break;
 
                 default:

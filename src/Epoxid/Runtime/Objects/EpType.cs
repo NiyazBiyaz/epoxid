@@ -31,6 +31,8 @@ public class EpType : EpObject
 
     public BinaryFunction? DunderTrueDiv { get; set; }
 
+    public BinaryFunction? DunderMod { get; set; }
+
     public BinaryFunction? DunderPow { get; set; } // It's not really BinaryFunction because in Python it accepts 3 arguments, but for now...
 
     public UnaryFunction? DunderBool { get; set; }
@@ -40,6 +42,10 @@ public class EpType : EpObject
     public BinaryFunction? DunderEq { get; set; } = DunderEqImplementation;
 
     public BinaryFunction? DunderNe { get; set; } = DunderNeImplementation;
+
+    public BinaryFunction? DunderLt { get; set; }
+
+    public BinaryFunction? DunderGt { get; set; }
 
     #endregion
 }

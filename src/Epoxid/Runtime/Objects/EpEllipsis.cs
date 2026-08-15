@@ -7,5 +7,7 @@ public class EpEllipsis : EpObject
     {
     }
 
+    internal static readonly EpType Type = new("EllipsisType", [EpConstants.Object], EpConstants.Type);
+
     public override string ToString() => "Ellipsis";
 }

@@ -287,9 +287,9 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
 
                 IsNotOperationView view => throw new NotImplementedException(),
 
-                GtOperationView view => throw new NotImplementedException(),
+                GtOperationView gt => (gt.Right, Opcode.GrTh),
 
-                LtOperationView view => throw new NotImplementedException(),
+                LtOperationView lt => (lt.Right, Opcode.LsTh),
 
                 InOperationView view => throw new NotImplementedException(),
 
@@ -347,7 +347,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                 {
                     TokenType.Star => Opcode.Mul,
                     TokenType.Slash => Opcode.TDiv,
-                    TokenType.Percent => throw new NotImplementedException(),
+                    TokenType.Percent => Opcode.Mod,
                     TokenType.DoubleSlash => throw new NotImplementedException(),
                     TokenType.At => throw new NotImplementedException(),
                     _ => throw new UnreachableException(),

@@ -29,6 +29,21 @@ public class EpInteger : EpObject
 
     public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 
+    internal static readonly EpType Type = new("int", [EpConstants.Object], EpConstants.Type)
+    {
+        DunderAdd = DunderAddImplementation,
+        DunderSub = DunderSubImplementation,
+        DunderMul = DunderMulImplementation,
+        DunderTrueDiv = DunderTrueDivImplementation,
+        DunderMod = DunderModImplementation,
+        DunderPow = DunderPowImplementation,
+        DunderBool = DunderBoolImplementation,
+        DunderEq = DunderEqImplementation,
+        DunderNe = DunderNeImplementation,
+        DunderGt = DunderGtImplementation,
+        DunderLt = DunderLtImplementation,
+    };
+
     internal static EpObject DunderAddImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
@@ -71,6 +86,17 @@ public class EpInteger : EpObject
             EpInteger otherInt => (EpFloat)((double)selfInt.Value / otherInt.Value),
             EpFloat otherFloat => (EpFloat)(selfInt.Value / otherFloat.Value),
             _ => throw new Exception($"TypeError: unsupported operand type(s) for -: 'int' and '{other.DunderClass.DunderName}'"),
+        };
+    }
+
+    internal static EpObject DunderModImplementation(EpObject self, EpObject other)
+    {
+        var selfInt = (EpInteger)self;
+        return other switch
+        {
+            EpInteger otherInt => (EpInteger)(selfInt.Value % otherInt.Value),
+            EpFloat otherFloat => (EpFloat)(selfInt.Value % otherFloat.Value),
+            _ => throw new Exception($"TypeError: unsupported operand type(s) for %: 'int' and '{other.DunderClass.DunderName}'"),
         };
     }
 
@@ -123,6 +149,28 @@ public class EpInteger : EpObject
             EpFloat otherF => (EpBool)(selfI.Value != otherF.Value),
             // As above, but True
             _ => (EpBool)true,
+        };
+    }
+
+    internal static EpBool DunderLtImplementation(EpObject self, EpObject other)
+    {
+        var selfI = (EpInteger)self;
+        return other switch
+        {
+            EpInteger otherI => (EpBool)(selfI.Value < otherI.Value),
+            EpFloat otherF => (EpBool)(selfI.Value < otherF.Value),
+            _ => throw new Exception($"TypeError: '<' not supported between instances of 'int' and '{other.DunderClass.DunderName}'")
+        };
+    }
+
+    internal static EpBool DunderGtImplementation(EpObject self, EpObject other)
+    {
+        var selfI = (EpInteger)self;
+        return other switch
+        {
+            EpInteger otherI => (EpBool)(selfI.Value > otherI.Value),
+            EpFloat otherF => (EpBool)(selfI.Value > otherF.Value),
+            _ => throw new Exception($"TypeError: '>' not supported between instances of 'int' and '{other.DunderClass.DunderName}'")
         };
     }
 

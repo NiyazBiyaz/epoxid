@@ -22,6 +22,11 @@ public class EpTuple : EpObject, IReadOnlyList<EpObject>
 
     public EpObject this[int index] => items[index];
 
+    internal static readonly EpType Type = new("tuple", [EpConstants.Object], EpConstants.Type)
+    {
+        DunderLen = DunderLenImplementation,
+    };
+
     public int Count => items.Length;
 
     public IEnumerator<EpObject> GetEnumerator() => ((IEnumerable<EpObject>)items).GetEnumerator();

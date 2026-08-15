@@ -27,6 +27,11 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
 
     public static readonly EpDict Empty = [];
 
+    internal static readonly EpType Type = new("dict", [EpConstants.Object], EpConstants.Type)
+    {
+        DunderLen = DunderLenImplementation,
+    };
+
     public ICollection<EpObject> Keys => items.Keys;
 
     public ICollection<EpObject> Values => items.Values;

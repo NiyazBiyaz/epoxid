@@ -15,6 +15,15 @@ public class EpString : EpObject
     public static explicit operator string(EpString str) => str.Value;
     public static explicit operator EpString(string str) => new(str);
 
+    internal static readonly EpType Type = new("str", [EpConstants.Object], EpConstants.Type)
+    {
+        DunderAdd = DunderAddImplementation,
+        DunderMul = DunderMulImplementation,
+        DunderLen = DunderLenImplementation,
+        DunderEq = DunderEqImplementation,
+        DunderNe = DunderNeImplementation,
+    };
+
     public override string ToString() => Value;
 
     public static EpString MultiplyString(EpString str, EpInteger times)

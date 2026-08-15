@@ -15,6 +15,21 @@ public class EpFloat : EpObject
     public static explicit operator double(EpFloat psFloat) => psFloat.Value;
     public static explicit operator EpFloat(double clrFloat) => new(clrFloat);
 
+    internal static readonly EpType Type = new("float", [EpConstants.Object], EpConstants.Type)
+    {
+        DunderAdd = DunderAddImplementation,
+        DunderSub = DunderSubImplementation,
+        DunderMul = DunderMulImplementation,
+        DunderTrueDiv = DunderTrueDivImplementation,
+        DunderMod = DunderModImplementation,
+        DunderPow = DunderPowImplementation,
+        DunderBool = DunderBoolImplementation,
+        DunderEq = DunderEqImplementation,
+        DunderNe = DunderNeImplementation,
+        DunderGt = DunderGtImplementation,
+        DunderLt = DunderLtImplementation,
+    };
+
     public override string ToString()
         => Value == (long)Value
         ? Value.ToString() + ".0" // I have no clue how to add .0 to this stupid double when converting to string, so...
@@ -64,6 +79,17 @@ public class EpFloat : EpObject
         };
     }
 
+    internal static EpObject DunderModImplementation(EpObject self, EpObject other)
+    {
+        var selfFloat = (EpFloat)self;
+        return other switch
+        {
+            EpInteger otherInt => (EpFloat)(selfFloat.Value % otherInt.Value),
+            EpFloat otherFloat => (EpFloat)(selfFloat.Value % otherFloat.Value),
+            _ => throw new Exception($"TypeError: unsupported operand type(s) for %: 'float' and '{other.DunderClass.DunderName}'"),
+        };
+    }
+
     internal static EpObject DunderPowImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
@@ -99,6 +125,29 @@ public class EpFloat : EpObject
             EpInteger otherI => (EpBool)(selfF.Value != otherI.Value),
             // As above, but True
             _ => (EpBool)true,
+        };
+    }
+
+
+    internal static EpBool DunderLtImplementation(EpObject self, EpObject other)
+    {
+        var selfF = (EpFloat)self;
+        return other switch
+        {
+            EpInteger otherI => (EpBool)(selfF.Value < otherI.Value),
+            EpFloat otherF => (EpBool)(selfF.Value < otherF.Value),
+            _ => throw new Exception($"TypeError: '<' not supported between instances of 'float' and '{other.DunderClass.DunderName}'")
+        };
+    }
+
+    internal static EpBool DunderGtImplementation(EpObject self, EpObject other)
+    {
+        var selfF = (EpFloat)self;
+        return other switch
+        {
+            EpInteger otherI => (EpBool)(selfF.Value > otherI.Value),
+            EpFloat otherF => (EpBool)(selfF.Value > otherF.Value),
+            _ => throw new Exception($"TypeError: '>' not supported between instances of 'float' and '{other.DunderClass.DunderName}'")
         };
     }
 }

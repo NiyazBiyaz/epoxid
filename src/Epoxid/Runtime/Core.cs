@@ -110,6 +110,17 @@ internal static class Core
         return left.DunderClass.DunderTrueDiv(left, right);
     }
 
+    internal static EpObject ModuleObjects(EpObject left, EpObject right)
+    {
+        if (left.DunderClass.DunderMod == null)
+        {
+            // TODO: __rtruediv__
+            throw new Exception($"TypeError: unsupported operand type(s) for %: '{left.DunderClass.DunderName}' and '{right.DunderClass.DunderName}'");
+        }
+
+        return left.DunderClass.DunderMod(left, right);
+    }
+
     internal static EpObject PowerObjects(EpObject left, EpObject right)
     {
         if (left.DunderClass.DunderPow == null)
@@ -155,5 +166,25 @@ internal static class Core
         }
 
         return left.DunderClass.DunderNe(left, right);
+    }
+
+    internal static EpObject LessThanObjects(EpObject left, EpObject right)
+    {
+        if (left.DunderClass.DunderLt == null)
+        {
+            throw new Exception($"TypeError: unsupported operand type for <: '{left.DunderClass.DunderName}'");
+        }
+
+        return left.DunderClass.DunderLt(left, right);
+    }
+
+    internal static EpObject GreaterThanObjects(EpObject left, EpObject right)
+    {
+        if (left.DunderClass.DunderGt == null)
+        {
+            throw new Exception($"TypeError: unsupported operand type for >: '{left.DunderClass.DunderName}'");
+        }
+
+        return left.DunderClass.DunderGt(left, right);
     }
 }
