@@ -1,3 +1,5 @@
+set -x
+
 dotnet build ./src/Epoxid.SyntaxAnalysis.Generator -c Release
 cd ./src/Epoxid/SyntaxAnalysis
 rm -rf ./Generated
