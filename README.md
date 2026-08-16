@@ -19,7 +19,7 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 - [ ] Calling CLR code
 - [ ] Full Python syntax support
 - [ ] Exporting code to CLR
-- [ ] Pure Python support
+- [ ] Pure (almost) Python support
 - [ ] Std re-implementation (using .NET std as backend)
 - [ ] Another cool stuff
 
@@ -32,6 +32,18 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 - Improving Python parser.
 - Runtime basics.
 - Bytecode VM and compiler for it.
+
+### v0.2.0 roadmap:
+
+- User-function declarations
+- User-class declarations
+- Support more syntax
+- Object attributes
+- Module imports
+- `sys` module subset
+- `for`-loops, iterator classes
+- `list` class
+- Various VM optimizations
 
 ## Getting started
 
@@ -49,15 +61,35 @@ git clone https://github.com/NiyazBiyaz/epoxid
 git pull
 ```
 
+#### Run sample script:
+
+```bash
+cd src/Epoxid/
+dotnet run __hello__.ep
+```
+
 #### Run tests:
 
 ```bash
 dotnet test
 ```
 
+#### Regenerate parser:
+
+```bash
+# Make a change to src/Epoxid/SyntaxAnalysis/Python.ebnf before
+./RegenerateParser.sh
+```
+
+#### Create executables:
+
+```bash
+./Publish.sh
+```
+
 ### Code examples:
 
-**[FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz)** game in Epoxid with some extensions and adapted to the current state of project:
+**[FizzBuzz](https://wikipedia.org/wiki/Fizz_buzz)** game in Epoxid with some extensions and adapted to the current state of project:
 
 ```ep
 phrase = input("Say something: ")
