@@ -1,8 +1,9 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Epoxid.SyntaxAnalysis;
 using Epoxid.Runtime;
 
-namespace Epoxid.SyntaxAnalysis;
+namespace Epoxid.CodeGen;
 
 internal class FunctionValidator
 {

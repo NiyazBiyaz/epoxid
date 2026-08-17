@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Epoxid.CodeGen;
 using Epoxid.Runtime;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
@@ -46,8 +47,8 @@ public static class Program
         var environment = new Runtime.Environment();
         environment.Scopes.Push(Builtins.BuiltinsScope);
 
-        // Console.WriteLine(code.ToString());
-        // Console.WriteLine("----------------");
+        Console.WriteLine(code.ToString());
+        Console.WriteLine("----------------");
 
         engine.RunCode(code, [], environment);
 

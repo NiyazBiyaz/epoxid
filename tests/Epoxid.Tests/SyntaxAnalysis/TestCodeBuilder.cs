@@ -1,6 +1,6 @@
+using Epoxid.CodeGen;
 using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
-using Epoxid.SyntaxAnalysis;
 using Epoxid.VM;
 
 namespace Epoxid.Tests.SyntaxAnalysis;

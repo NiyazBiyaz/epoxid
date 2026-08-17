@@ -3,11 +3,12 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Epoxid.Runtime.Objects;
+using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.VM;
 
-namespace Epoxid.SyntaxAnalysis;
+namespace Epoxid.CodeGen;
 
 // TODO: class validator
 
@@ -525,11 +526,11 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
     {
         Register[] argumentRegisters;
         // TODO: keyword arguments
-        // Computing all argument expressions and getting their registers
 
         // Compute function first
         ensureExpressionRegister(call.Function, out var funcRegister, out _);
 
+        // Computing all argument expressions and getting their registers
         switch (call.Arguments)
         {
             case ArgumentsWithPositionalView args:

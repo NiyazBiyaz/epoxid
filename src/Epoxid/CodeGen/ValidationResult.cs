@@ -1,4 +1,4 @@
-namespace Epoxid.SyntaxAnalysis;
+namespace Epoxid.CodeGen;
 
 internal abstract record ValidationResult
 {

@@ -1,7 +1,7 @@
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
 
-namespace Epoxid.SyntaxAnalysis;
+namespace Epoxid.CodeGen;
 
 /// <summary>
 /// Class to manage indexes of variable names, constant values, registers in the final instruction.

@@ -1,7 +1,7 @@
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
 
-namespace Epoxid.SyntaxAnalysis;
+namespace Epoxid.CodeGen;
 
 internal class Register
 {
