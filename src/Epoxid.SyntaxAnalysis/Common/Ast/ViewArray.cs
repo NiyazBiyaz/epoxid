@@ -21,15 +21,19 @@ public readonly struct ViewArray<TView>(INodeArray<IGreenNode> greens, int posit
 
     public SyntaxViewTree SyntaxTree => throw new NotSupportedException($"Using syntax tree for the {nameof(ViewArray<>)} is not allowed.");
 
-    public Position2D FullLocation => throw new NotImplementedException();
+    public Position2D FullLocation => throw new NotSupportedException();
 
-    public int Position => throw new NotImplementedException();
+    public int Position => throw new NotSupportedException();
 
-    public int EndPosition => throw new NotImplementedException();
+    public int EndPosition => throw new NotSupportedException();
 
-    public Position2D StartLocation => throw new NotImplementedException();
+    public Position2D StartLocation => throw new NotSupportedException();
 
-    public Position2D EndLocation => throw new NotImplementedException();
+    public Position2D EndLocation => throw new NotSupportedException();
+
+    public IEnumerable<IRedView> Children() => throw new NotSupportedException();
+
+    public IEnumerable<IRedView> ChildrenAndSelf() => throw new NotSupportedException();
 
     private TView ensureViewOnIndex(int index)
     {

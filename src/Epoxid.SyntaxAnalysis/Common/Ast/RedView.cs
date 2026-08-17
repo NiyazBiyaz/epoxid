@@ -55,6 +55,53 @@ public abstract class RedView : IRedView
         FullPosition = position;
     }
 
+    public IEnumerable<IRedView> Children()
+    {
+        if (Green.Children == null)
+            yield break;
+
+        for (int childIndex = 0; childIndex < Green.Children.Count; childIndex++)
+        {
+            var child = Green.Children[childIndex];
+
+            if (child.IsArray)
+            {
+                int widthAccumulator = 0;
+
+                foreach (var childItem in child.Children!)
+                {
+                    var childView = childItem.GetView(widthAccumulator, this);
+
+                    foreach (var grandChild in childView.ChildrenAndSelf())
+                    {
+                        yield return grandChild;
+                    }
+
+                    widthAccumulator += childItem.FullWidth;
+                }
+            }
+            else
+            {
+                var childView = child.GetView(childIndex, this);
+
+                foreach (var grandChild in childView.ChildrenAndSelf())
+                {
+                    yield return grandChild;
+                }
+            }
+        }
+    }
+
+    public IEnumerable<IRedView> ChildrenAndSelf()
+    {
+        yield return this;
+
+        foreach (var child in Children())
+        {
+            yield return child;
+        }
+    }
+
     public int GetPositionFor(int childIndex)
     {
         int position = FullPosition;

@@ -15,6 +15,9 @@ public interface IRedView
     Position2D FullLocation { get; }
     Position2D EndLocation { get; }
 
+    IEnumerable<IRedView> Children();
+    IEnumerable<IRedView> ChildrenAndSelf();
+
     bool IsArray { get; }
 
     string PrettyPrint();
