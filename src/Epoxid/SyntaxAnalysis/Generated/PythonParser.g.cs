@@ -3147,8 +3147,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ClassDef
     // ClassDef:
-    //     | Decorator* ClassDefRaw -> DecoratedClassDef(Decorators=decorator_Star, ClassDef=class_def_raw)
-    //     | ClassDefRaw -> RawClassDef(Value=class_def_raw)
+    //     | Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
+    //         Decorators=decorator_Star, Name=name, TypeParameters=type_parameters, Arguments=class_def_args, Block=block)
+    //
+    //
+    //
     ClassDefNode? rule_ClassDef()
     {
         base.LogIncreaseLevel();
@@ -3156,26 +3159,47 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ClassDefNode? _res = null;
         {
-            // Decorator* ClassDefRaw -> DecoratedClassDef(Decorators=decorator_Star, ClassDef=class_def_raw)
-            base.LogAlternativeEntered("Decorator* ClassDefRaw");
+            // Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
+            //         Decorators=decorator_Star, Name=name, TypeParameters=type_parameters, Arguments=class_def_args, Block=block)
+            base.LogAlternativeEntered("Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
             INodeArray<DecoratorNode>? decorator_Star;
-            IGreenNode? class_def_raw;
+            IGreenNode? _string_token;
+            IGreenNode? name;
+            IGreenNode? type_parameters;
+            IGreenNode? class_def_args;
+            IGreenNode? colon;
+            IGreenNode? block;
             if ((decorator_Star = _RepeatHelper_decorator_Star()) is not null
                 &&
-                (class_def_raw = rule_ClassDefRaw()) is not null
+                (_string_token = Expect("class")) is not null
+                &&
+                (name = Expect(TokenType.Name)) is not null
+                &&
+                ((type_parameters = rule_TypeParameters()) is not null || true) // Optional
+                &&
+                ((class_def_args = rule_ClassDefArgs()) is not null || true) // Optional
+                &&
+                (colon = Expect(TokenType.Colon)) is not null
+                &&
+                (block = rule_Block()) is not null
             )
             {
-                base.LogAlternativeSucceed("Decorator* ClassDefRaw");
-                _res = new DecoratedClassDefNode()
+                base.LogAlternativeSucceed("Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
+                _res = new ClassDefNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         decorator_Star,
-                        class_def_raw,
+                        _string_token,
+                        name,
+                        type_parameters ?? VoidNode.Instance,
+                        class_def_args ?? VoidNode.Instance,
+                        colon,
+                        block,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("Decorator* ClassDefRaw");
+            base.LogAlternativeFailed("Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
             NodeArray<DecoratorNode>? _RepeatHelper_decorator_Star()
             {
                 DecoratorNode? _node = rule_Decorator();
@@ -3189,24 +3213,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
-        {
-            // ClassDefRaw -> RawClassDef(Value=class_def_raw)
-            base.LogAlternativeEntered("ClassDefRaw");
-            IGreenNode? class_def_raw;
-            if ((class_def_raw = rule_ClassDefRaw()) is not null)
-            {
-                base.LogAlternativeSucceed("ClassDefRaw");
-                _res = new RawClassDefNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        class_def_raw,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("ClassDefRaw");
-        }
-        base.Reset(_mark);
         base.LogRuleFailed("ClassDef");
     _Return:
         base.LogRuleExiting("ClassDef");
@@ -3214,69 +3220,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // ClassDef
-
-    #region ClassDefRaw
-    // ClassDefRaw: 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
-    //         Name=name, 
-    //         TypeParameters=type_parameters, 
-    //         Arguments=class_def_args, 
-    //         Block=block)
-    ClassDefRawNode? rule_ClassDefRaw()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("ClassDefRaw");
-        int _mark = base.Mark();
-        ClassDefRawNode? _res = null;
-        {
-            // 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
-            //         Name=name, 
-            //         TypeParameters=type_parameters, 
-            //         Arguments=class_def_args, 
-            //         Block=block)
-            base.LogAlternativeEntered("'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
-            IGreenNode? _string_token;
-            IGreenNode? name;
-            IGreenNode? type_parameters;
-            IGreenNode? class_def_args;
-            IGreenNode? colon;
-            IGreenNode? block;
-            if ((_string_token = Expect("class")) is not null
-                &&
-                (name = Expect(TokenType.Name)) is not null
-                &&
-                ((type_parameters = rule_TypeParameters()) is not null || true) // Optional
-                &&
-                ((class_def_args = rule_ClassDefArgs()) is not null || true) // Optional
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
-                _res = new ClassDefRawNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        name,
-                        type_parameters ?? VoidNode.Instance,
-                        class_def_args ?? VoidNode.Instance,
-                        colon,
-                        block,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("ClassDefRaw");
-    _Return:
-        base.LogRuleExiting("ClassDefRaw");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // ClassDefRaw
 
     #region ClassDefArgs
     // ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)]
@@ -4172,10 +4115,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region WithStatement
     // WithStatement:
-    //     | 'with' '(' WithItem+.',' -',' ')' ':' Block -> ParenthesizedWithStatement(Items=with_item_Gather, Block=block)
-    //     | 'with' WithItem+.',' ':' Block -> OneLinedWithStatement(Items=with_item_Gather, Block=block)
-    //     | 'async' 'with' '(' WithItem+.',' -',' ')' ':' Block -> ParenthesizedAsyncWithStatement(Items=with_item_Gather, Block=block)
-    //     | 'async' 'with' WithItem+.',' ':' Block -> OneLinedAsyncWithStatement(Items=with_item_Gather, Block=block)
+    //     | 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
+    //     | 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
     WithStatementNode? rule_WithStatement()
     {
         base.LogIncreaseLevel();
@@ -4183,247 +4124,69 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         WithStatementNode? _res = null;
         {
-            // 'with' '(' WithItem+.',' -',' ')' ':' Block -> ParenthesizedWithStatement(Items=with_item_Gather, Block=block)
-            base.LogAlternativeEntered("'with' '(' WithItem+.',' -',' ')' ':' Block");
+            // 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
+            base.LogAlternativeEntered("'with' WithItems ':' Block");
             IGreenNode? _string_token;
-            IGreenNode? left_paren;
-            INodeArray<GreenNode>? with_item_Gather;
-            IGreenNode? comma;
-            IGreenNode? right_paren;
+            IGreenNode? with_items;
             IGreenNode? colon;
             IGreenNode? block;
             if ((_string_token = Expect("with")) is not null
                 &&
-                (left_paren = Expect(TokenType.LeftParen)) is not null
-                &&
-                (with_item_Gather = _GatherHelper_with_item_Gather()) is not null
-                &&
-                ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
-                &&
-                (right_paren = Expect(TokenType.RightParen)) is not null
+                (with_items = rule_WithItems()) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
                 (block = rule_Block()) is not null
             )
             {
-                base.LogAlternativeSucceed("'with' '(' WithItem+.',' -',' ')' ':' Block");
-                _res = new ParenthesizedWithStatementNode()
+                base.LogAlternativeSucceed("'with' WithItems ':' Block");
+                _res = new SyncWithStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
-                        left_paren,
-                        with_item_Gather,
-                        comma ?? VoidNode.Instance,
-                        right_paren,
+                        with_items,
                         colon,
                         block,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'with' '(' WithItem+.',' -',' ')' ':' Block");
-            NodeArray<GreenNode>? _GatherHelper_with_item_Gather()
-            {
-                GreenNode? _node = rule_WithItem();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_WithItem();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
+            base.LogAlternativeFailed("'with' WithItems ':' Block");
         }
         base.Reset(_mark);
         {
-            // 'with' WithItem+.',' ':' Block -> OneLinedWithStatement(Items=with_item_Gather, Block=block)
-            base.LogAlternativeEntered("'with' WithItem+.',' ':' Block");
-            IGreenNode? _string_token;
-            INodeArray<GreenNode>? with_item_Gather;
-            IGreenNode? colon;
-            IGreenNode? block;
-            if ((_string_token = Expect("with")) is not null
-                &&
-                (with_item_Gather = _GatherHelper_with_item_Gather()) is not null
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'with' WithItem+.',' ':' Block");
-                _res = new OneLinedWithStatementNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        with_item_Gather,
-                        colon,
-                        block,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'with' WithItem+.',' ':' Block");
-            NodeArray<GreenNode>? _GatherHelper_with_item_Gather()
-            {
-                GreenNode? _node = rule_WithItem();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_WithItem();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // 'async' 'with' '(' WithItem+.',' -',' ')' ':' Block -> ParenthesizedAsyncWithStatement(Items=with_item_Gather, Block=block)
-            base.LogAlternativeEntered("'async' 'with' '(' WithItem+.',' -',' ')' ':' Block");
+            // 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
+            base.LogAlternativeEntered("'async' 'with' WithItems ':' Block");
             IGreenNode? _string_token;
             IGreenNode? _string_token1;
-            IGreenNode? left_paren;
-            INodeArray<GreenNode>? with_item_Gather;
-            IGreenNode? comma;
-            IGreenNode? right_paren;
+            IGreenNode? with_items;
             IGreenNode? colon;
             IGreenNode? block;
             if ((_string_token = Expect("async")) is not null
                 &&
                 (_string_token1 = Expect("with")) is not null
                 &&
-                (left_paren = Expect(TokenType.LeftParen)) is not null
-                &&
-                (with_item_Gather = _GatherHelper_with_item_Gather()) is not null
-                &&
-                ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
-                &&
-                (right_paren = Expect(TokenType.RightParen)) is not null
+                (with_items = rule_WithItems()) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
                 (block = rule_Block()) is not null
             )
             {
-                base.LogAlternativeSucceed("'async' 'with' '(' WithItem+.',' -',' ')' ':' Block");
-                _res = new ParenthesizedAsyncWithStatementNode()
+                base.LogAlternativeSucceed("'async' 'with' WithItems ':' Block");
+                _res = new AsyncWithStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         _string_token,
                         _string_token1,
-                        left_paren,
-                        with_item_Gather,
-                        comma ?? VoidNode.Instance,
-                        right_paren,
+                        with_items,
                         colon,
                         block,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'async' 'with' '(' WithItem+.',' -',' ')' ':' Block");
-            NodeArray<GreenNode>? _GatherHelper_with_item_Gather()
-            {
-                GreenNode? _node = rule_WithItem();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_WithItem();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // 'async' 'with' WithItem+.',' ':' Block -> OneLinedAsyncWithStatement(Items=with_item_Gather, Block=block)
-            base.LogAlternativeEntered("'async' 'with' WithItem+.',' ':' Block");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
-            INodeArray<GreenNode>? with_item_Gather;
-            IGreenNode? colon;
-            IGreenNode? block;
-            if ((_string_token = Expect("async")) is not null
-                &&
-                (_string_token1 = Expect("with")) is not null
-                &&
-                (with_item_Gather = _GatherHelper_with_item_Gather()) is not null
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'async' 'with' WithItem+.',' ':' Block");
-                _res = new OneLinedAsyncWithStatementNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
-                        with_item_Gather,
-                        colon,
-                        block,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'async' 'with' WithItem+.',' ':' Block");
-            NodeArray<GreenNode>? _GatherHelper_with_item_Gather()
-            {
-                GreenNode? _node = rule_WithItem();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_WithItem();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
+            base.LogAlternativeFailed("'async' 'with' WithItems ':' Block");
         }
         base.Reset(_mark);
         base.LogRuleFailed("WithStatement");
@@ -4433,6 +4196,117 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // WithStatement
+
+    #region WithItems
+    // WithItems:
+    //     | '(' WithItem+.',' -',' ')' -> ParenthesizedWithItems(Items=with_item_Gather)
+    //     | WithItem+.',' -> PlainWithItems(Items=with_item_Gather)
+    WithItemsNode? rule_WithItems()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("WithItems");
+        int _mark = base.Mark();
+        WithItemsNode? _res = null;
+        {
+            // '(' WithItem+.',' -',' ')' -> ParenthesizedWithItems(Items=with_item_Gather)
+            base.LogAlternativeEntered("'(' WithItem+.',' -',' ')'");
+            IGreenNode? left_paren;
+            INodeArray<GreenNode>? with_item_Gather;
+            IGreenNode? comma;
+            IGreenNode? right_paren;
+            if ((left_paren = Expect(TokenType.LeftParen)) is not null
+                &&
+                (with_item_Gather = _GatherHelper_with_item_Gather()) is not null
+                &&
+                ((comma = Expect(TokenType.Comma)) is not null || true) // Optional
+                &&
+                (right_paren = Expect(TokenType.RightParen)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("'(' WithItem+.',' -',' ')'");
+                _res = new ParenthesizedWithItemsNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        left_paren,
+                        with_item_Gather,
+                        comma ?? VoidNode.Instance,
+                        right_paren,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'(' WithItem+.',' -',' ')'");
+            NodeArray<GreenNode>? _GatherHelper_with_item_Gather()
+            {
+                GreenNode? _node = rule_WithItem();
+                GreenNode? _separator;
+                if (_node == null) return null;
+                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
+                while (true)
+                {
+                    int _mark = base.Mark();
+                    _separator = Expect(TokenType.Comma);
+                    if (_separator == null) break;
+                    _node = rule_WithItem();
+                    if (_node == null)
+                    {
+                        base.Reset(_mark);
+                        break;
+                    }
+                    _gathered.Add((GreenNode)_separator);
+                    _gathered.Add((GreenNode)_node);
+                }
+                return [.. _gathered];
+            }
+        }
+        base.Reset(_mark);
+        {
+            // WithItem+.',' -> PlainWithItems(Items=with_item_Gather)
+            base.LogAlternativeEntered("WithItem+.','");
+            INodeArray<GreenNode>? with_item_Gather;
+            if ((with_item_Gather = _GatherHelper_with_item_Gather()) is not null)
+            {
+                base.LogAlternativeSucceed("WithItem+.','");
+                _res = new PlainWithItemsNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        with_item_Gather,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("WithItem+.','");
+            NodeArray<GreenNode>? _GatherHelper_with_item_Gather()
+            {
+                GreenNode? _node = rule_WithItem();
+                GreenNode? _separator;
+                if (_node == null) return null;
+                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
+                while (true)
+                {
+                    int _mark = base.Mark();
+                    _separator = Expect(TokenType.Comma);
+                    if (_separator == null) break;
+                    _node = rule_WithItem();
+                    if (_node == null)
+                    {
+                        base.Reset(_mark);
+                        break;
+                    }
+                    _gathered.Add((GreenNode)_separator);
+                    _gathered.Add((GreenNode)_node);
+                }
+                return [.. _gathered];
+            }
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("WithItems");
+    _Return:
+        base.LogRuleExiting("WithItems");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // WithItems
 
     #region WithItem
     // WithItem:

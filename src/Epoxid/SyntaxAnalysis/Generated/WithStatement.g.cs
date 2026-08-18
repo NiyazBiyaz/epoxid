@@ -15,12 +15,10 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 /// <remarks>
 /// Inheritors:<br/>
-/// 1. <i>ParenthesizedWithStatementNode</i><br/>
-/// 2. <i>OneLinedWithStatementNode</i><br/>
-/// 3. <i>ParenthesizedAsyncWithStatementNode</i><br/>
-/// 4. <i>OneLinedAsyncWithStatementNode</i><br/>
+/// 1. <i>SyncWithStatementNode</i><br/>
+/// 2. <i>AsyncWithStatementNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(ParenthesizedWithStatementNode), typeof(OneLinedWithStatementNode), typeof(ParenthesizedAsyncWithStatementNode), typeof(OneLinedAsyncWithStatementNode))]
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(SyncWithStatementNode), typeof(AsyncWithStatementNode))]
 public abstract partial record WithStatementNode : GreenNode, ICompoundStatementNode
 {
 }
@@ -30,12 +28,10 @@ public abstract partial record WithStatementNode : GreenNode, ICompoundStatement
 /// </summary>
 /// <remarks>
 /// Inheritors:<br/>
-/// 1. <i>ParenthesizedWithStatementView</i><br/>
-/// 2. <i>OneLinedWithStatementView</i><br/>
-/// 3. <i>ParenthesizedAsyncWithStatementView</i><br/>
-/// 4. <i>OneLinedAsyncWithStatementView</i><br/>
+/// 1. <i>SyncWithStatementView</i><br/>
+/// 2. <i>AsyncWithStatementView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(ParenthesizedWithStatementView), typeof(OneLinedWithStatementView), typeof(ParenthesizedAsyncWithStatementView), typeof(OneLinedAsyncWithStatementView))]
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(SyncWithStatementView), typeof(AsyncWithStatementView))]
 public abstract partial class WithStatementView : RedView, ICompoundStatementView
 {
     public WithStatementView(WithStatementNode green, int position, IRedView? parent)

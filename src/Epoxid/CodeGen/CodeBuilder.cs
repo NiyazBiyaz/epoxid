@@ -11,7 +11,7 @@ internal class CodeBuilder
     private readonly List<IntermediateInstruction> instructions = [];
     private readonly List<Register> allocatedRegisters = [];
     private readonly List<Constant> constants = [];
-    private readonly List<Variable> closureVariables = [];
+    private readonly List<Variable> freeVariables = [];
 
     private readonly Stack<Label> labels = [];
 
@@ -26,7 +26,7 @@ internal class CodeBuilder
         {
             Instructions = [.. instructions.Select(irI => irI.Lower())],
             Constants = [.. constants.Select(c => c.Value)],
-            VarNames = [.. closureVariables.Select(v => v.Name)],
+            VarNames = [.. freeVariables.Select(v => v.Name)],
             StackSize = allocatedRegisters.Count,
         };
     }
@@ -48,7 +48,7 @@ internal class CodeBuilder
             constant.Index = i;
         }
 
-        foreach (var (i, variable) in closureVariables.Index())
+        foreach (var (i, variable) in freeVariables.Index())
         {
             variable.Index = i;
         }
@@ -90,11 +90,11 @@ internal class CodeBuilder
 
     private Variable addVariable(string name)
     {
-        if (closureVariables.FirstOrDefault(var => var.Name == name) is Variable existingVariable)
+        if (freeVariables.FirstOrDefault(var => var.Name == name) is Variable existingVariable)
             return existingVariable;
 
         var variable = new Variable(name);
-        closureVariables.Add(variable);
+        freeVariables.Add(variable);
         return variable;
     }
 

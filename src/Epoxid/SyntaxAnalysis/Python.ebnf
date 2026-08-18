@@ -247,14 +247,8 @@ Decorator: '@' NamedExpression NewLine -> new(Value=named_expression)
 # -----------------
 
 ClassDef:
-    | Decorator* ClassDefRaw -> DecoratedClassDef(Decorators=decorator_Star, ClassDef=class_def_raw)
-    | ClassDefRaw -> RawClassDef(Value=class_def_raw)
-
-ClassDefRaw: 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
-        Name=name, 
-        TypeParameters=type_parameters, 
-        Arguments=class_def_args, 
-        Block=block)
+    | Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
+        Decorators=decorator_Star, Name=name, TypeParameters=type_parameters, Arguments=class_def_args, Block=block)
 
 # Function definitions
 # --------------------
@@ -314,10 +308,12 @@ ForStatement:
 # --------------
 
 WithStatement:
-    | 'with' '(' WithItem+.',' -',' ')' ':' Block -> ParenthesizedWithStatement(Items=with_item_Gather, Block=block)
-    | 'with' WithItem+.',' ':' Block -> OneLinedWithStatement(Items=with_item_Gather, Block=block)
-    | 'async' 'with' '(' WithItem+.',' -',' ')' ':' Block -> ParenthesizedAsyncWithStatement(Items=with_item_Gather, Block=block)
-    | 'async' 'with' WithItem+.',' ':' Block -> OneLinedAsyncWithStatement(Items=with_item_Gather, Block=block)
+    | 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
+    | 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
+
+WithItems:
+    | '(' WithItem+.',' -',' ')' -> ParenthesizedWithItems(Items=with_item_Gather)
+    | WithItem+.',' -> PlainWithItems(Items=with_item_Gather)
 
 WithItem:
     | Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=assignment_target)

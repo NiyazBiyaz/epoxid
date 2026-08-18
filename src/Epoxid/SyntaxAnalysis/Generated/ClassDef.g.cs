@@ -13,29 +13,94 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>ClassDef</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>DecoratedClassDefNode</i><br/>
-/// 2. <i>RawClassDefNode</i><br/>
-/// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DecoratedClassDefNode), typeof(RawClassDefNode))]
-public abstract partial record ClassDefNode : GreenNode, ICompoundStatementNode
+public sealed partial record ClassDefNode : GreenNode, ICompoundStatementNode
 {
+    public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
+    public TokenNode Name => (TokenNode)Children![2];
+    public TypeParametersNode? TypeParameters => Children![3] as TypeParametersNode;
+    public ClassDefArgsNode? Arguments => Children![4] as ClassDefArgsNode;
+    public BlockNode Block => (BlockNode)Children![6];
+    public override ClassDefView GetView(int position, IRedView? parent)
+        => new ClassDefView(this, position, parent);
 }
 
 /// <summary>
 /// View class that represents <i>ClassDef</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>DecoratedClassDefView</i><br/>
-/// 2. <i>RawClassDefView</i><br/>
-/// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DecoratedClassDefView), typeof(RawClassDefView))]
-public abstract partial class ClassDefView : RedView, ICompoundStatementView
+public sealed partial class ClassDefView : RedView, ICompoundStatementView
 {
     public ClassDefView(ClassDefNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private ViewArray<DecoratorView>? _field_decorators = null;
+    public ViewArray<DecoratorView> Decorators
+    {
+        get
+        {
+            if (_field_decorators == null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_decorators = (ViewArray<DecoratorView>)new ViewArray<DecoratorView>(((ClassDefNode)base.Green).Decorators, _positionOfField, this);
+            }
+            return (ViewArray<DecoratorView>)_field_decorators;
+        }
+    }
+
+    private TokenView? _field_name = null;
+    public TokenView Name
+    {
+        get
+        {
+            if (_field_name == null)
+            {
+                var _positionOfField = base.GetPositionFor(2);
+                _field_name = (TokenView)((ClassDefNode)base.Green).Name!.GetView(_positionOfField, this);
+            }
+            return (TokenView)_field_name;
+        }
+    }
+
+    private TypeParametersView? _field_typeParameters = null;
+    public TypeParametersView? TypeParameters
+    {
+        get
+        {
+            if (_field_typeParameters == null && ((ClassDefNode)base.Green).TypeParameters != null)
+            {
+                var _positionOfField = base.GetPositionFor(3);
+                _field_typeParameters = (TypeParametersView)((ClassDefNode)base.Green).TypeParameters!.GetView(_positionOfField, this);
+            }
+            return (TypeParametersView?)_field_typeParameters;
+        }
+    }
+
+    private ClassDefArgsView? _field_arguments = null;
+    public ClassDefArgsView? Arguments
+    {
+        get
+        {
+            if (_field_arguments == null && ((ClassDefNode)base.Green).Arguments != null)
+            {
+                var _positionOfField = base.GetPositionFor(4);
+                _field_arguments = (ClassDefArgsView)((ClassDefNode)base.Green).Arguments!.GetView(_positionOfField, this);
+            }
+            return (ClassDefArgsView?)_field_arguments;
+        }
+    }
+
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
+        {
+            if (_field_block == null)
+            {
+                var _positionOfField = base.GetPositionFor(6);
+                _field_block = (BlockView)((ClassDefNode)base.Green).Block!.GetView(_positionOfField, this);
+            }
+            return (BlockView)_field_block;
+        }
     }
 }
