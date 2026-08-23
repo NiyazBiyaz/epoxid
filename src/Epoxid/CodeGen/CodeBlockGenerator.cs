@@ -146,7 +146,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                     throw new Exception("Бро, тут нет цикла, бро...");
                 }
 
-                Builder.Brc(loop.Condition);
+                Builder.Brc(loop.HeadLabel);
 
                 break;
             }
@@ -158,7 +158,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
                     throw new Exception("Бро, тут нет цикла, бро...");
                 }
 
-                Builder.Brc(loop.End);
+                Builder.Brc(loop.EndLabel);
 
                 break;
             }

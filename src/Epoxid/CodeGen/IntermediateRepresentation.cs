@@ -23,6 +23,8 @@ internal class Label
     public IntermediateInstruction? InstructionOnLabel { get; set; }
 }
 
+internal record IntermediateLoop(Label HeadLabel, Label EndLabel);
+
 internal record IntermediateInstruction(Opcode Opcode)
 {
     public int Index { get; set; }
@@ -127,4 +129,3 @@ internal record IntermediateInstruction(Opcode Opcode)
         _ => throw new NotImplementedException(),
     });
 }
-
