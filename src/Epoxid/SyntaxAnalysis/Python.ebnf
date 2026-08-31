@@ -378,16 +378,29 @@ TypeParameterStarredDefault: '=' StarExpression -> new(Value=star_expression)
 @memo
 Expression:
     | IfExpression
-    | Disjunction
-    | BitwiseOrExpression
+    | Arithmetic
     # NSY | LambdaDef
 
 IfExpression: Arithmetic 'if' Arithmetic 'else' Expression -> new(Condition=arithmetic1, Then=arithmetic, Else=expression)
 
 @union
 Arithmetic:
+    | BitwiseOrExpression !PossibleBoolean
     | Disjunction
-    | BitwiseOrExpression
+
+@inline
+PossibleBoolean:
+    | 'or'
+    | 'and'
+    | 'not'
+    | 'in'
+    | 'is'
+    | '=='
+    | '!='
+    | '<='
+    | '<'
+    | '>='
+    | '>'
 
 YieldExpression:
     | 'yield' 'from' Expression -> YieldFromExpression(Expression=expression)
@@ -432,12 +445,17 @@ Conjunction: InversionExpression+.'and' -> new(Inversions=inversion_expression_G
 @memo
 InversionExpression:
     | Inversion
-    | Comparison
+    | ComparisonExpression
 
 Inversion: 'not' InversionExpression -> new(Inversion=inversion_expression)
 
 # Comparison operators
 # --------------------
+
+@union
+ComparisonExpression:
+    | Comparison
+    | BitwiseOrExpression
 
 Comparison: BitwiseOrExpression CompareOperation+ -> new(
     First=bitwise_or_expression, Rest=compare_operation_Plus)

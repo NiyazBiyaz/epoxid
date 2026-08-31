@@ -16,10 +16,9 @@ namespace Epoxid.SyntaxAnalysis;
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>IfExpressionNode</i><br/>
-/// 2. <i>DisjunctionNode</i><br/>
-/// 3. <i>IBitwiseOrExpressionNode</i><br/>
+/// 2. <i>IArithmeticNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(IfExpressionNode), typeof(DisjunctionNode), typeof(IBitwiseOrExpressionNode))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(IfExpressionNode), typeof(IArithmeticNode))]
 public partial interface IExpressionNode : IGreenNode, IStarExpressionNode, INamedExpressionNode;
 
 /// <summary>
@@ -28,8 +27,7 @@ public partial interface IExpressionNode : IGreenNode, IStarExpressionNode, INam
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>IfExpressionView</i><br/>
-/// 2. <i>DisjunctionView</i><br/>
-/// 3. <i>IBitwiseOrExpressionView</i><br/>
+/// 2. <i>IArithmeticView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(IfExpressionView), typeof(DisjunctionView), typeof(IBitwiseOrExpressionView))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(IfExpressionView), typeof(IArithmeticView))]
 public partial interface IExpressionView : IRedView, IStarExpressionView, INamedExpressionView;

@@ -5323,8 +5323,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @memo
     // Expression:
     //     | IfExpression
-    //     | Disjunction
-    //     | BitwiseOrExpression
+    //     | Arithmetic
     //
     IExpressionNode? rule_Expression()
     {
@@ -5353,29 +5352,16 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Disjunction
-            base.LogAlternativeEntered("Disjunction");
-            IGreenNode? disjunction;
-            if ((disjunction = rule_Disjunction()) is not null)
+            // Arithmetic
+            base.LogAlternativeEntered("Arithmetic");
+            IGreenNode? arithmetic;
+            if ((arithmetic = rule_Arithmetic()) is not null)
             {
-                base.LogAlternativeSucceed("Disjunction");
-                _res = (DisjunctionNode?)disjunction;
+                base.LogAlternativeSucceed("Arithmetic");
+                _res = (IArithmeticNode?)arithmetic;
                 goto _Return;
             }
-            base.LogAlternativeFailed("Disjunction");
-        }
-        base.Reset(_mark);
-        {
-            // BitwiseOrExpression
-            base.LogAlternativeEntered("BitwiseOrExpression");
-            IGreenNode? bitwise_or_expression;
-            if ((bitwise_or_expression = rule_BitwiseOrExpression()) is not null)
-            {
-                base.LogAlternativeSucceed("BitwiseOrExpression");
-                _res = (IBitwiseOrExpressionNode?)bitwise_or_expression;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("BitwiseOrExpression");
+            base.LogAlternativeFailed("Arithmetic");
         }
         base.Reset(_mark);
         base.LogRuleFailed("Expression");
@@ -5442,14 +5428,37 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #region Arithmetic
     // @union
     // Arithmetic:
+    //     | BitwiseOrExpression !PossibleBoolean
     //     | Disjunction
-    //     | BitwiseOrExpression
     IArithmeticNode? rule_Arithmetic()
     {
         base.LogIncreaseLevel();
         base.LogRuleEntered("Arithmetic");
         int _mark = base.Mark();
         IArithmeticNode? _res = null;
+        {
+            // BitwiseOrExpression !PossibleBoolean
+            base.LogAlternativeEntered("BitwiseOrExpression !PossibleBoolean");
+            IGreenNode? bitwise_or_expression;
+            if ((bitwise_or_expression = rule_BitwiseOrExpression()) is not null
+                &&
+                _LookaheadHelper_possible_boolean()
+            )
+            {
+                base.LogAlternativeSucceed("BitwiseOrExpression !PossibleBoolean");
+                _res = (IBitwiseOrExpressionNode?)bitwise_or_expression;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("BitwiseOrExpression !PossibleBoolean");
+            bool _LookaheadHelper_possible_boolean()
+            {
+                int _mark = base.Mark();
+                bool _wasParsed = rule_PossibleBoolean() != null;
+                base.Reset(_mark);
+                return _wasParsed == false;
+            }
+        }
+        base.Reset(_mark);
         {
             // Disjunction
             base.LogAlternativeEntered("Disjunction");
@@ -5463,19 +5472,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             base.LogAlternativeFailed("Disjunction");
         }
         base.Reset(_mark);
-        {
-            // BitwiseOrExpression
-            base.LogAlternativeEntered("BitwiseOrExpression");
-            IGreenNode? bitwise_or_expression;
-            if ((bitwise_or_expression = rule_BitwiseOrExpression()) is not null)
-            {
-                base.LogAlternativeSucceed("BitwiseOrExpression");
-                _res = (IBitwiseOrExpressionNode?)bitwise_or_expression;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("BitwiseOrExpression");
-        }
-        base.Reset(_mark);
         base.LogRuleFailed("Arithmetic");
     _Return:
         base.LogRuleExiting("Arithmetic");
@@ -5483,6 +5479,177 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // Arithmetic
+
+    #region PossibleBoolean
+    // @inline
+    // PossibleBoolean:
+    //     | 'or'
+    //     | 'and'
+    //     | 'not'
+    //     | 'in'
+    //     | 'is'
+    //     | '=='
+    //     | '!='
+    //     | '<='
+    //     | '<'
+    //     | '>='
+    //     | '>'
+    TokenNode? rule_PossibleBoolean()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("PossibleBoolean");
+        int _mark = base.Mark();
+        TokenNode? _res = null;
+        {
+            // 'or'
+            base.LogAlternativeEntered("'or'");
+            IGreenNode? _string_token;
+            if ((_string_token = Expect("or")) is not null)
+            {
+                base.LogAlternativeSucceed("'or'");
+                _res = (TokenNode?)_string_token;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'or'");
+        }
+        base.Reset(_mark);
+        {
+            // 'and'
+            base.LogAlternativeEntered("'and'");
+            IGreenNode? _string_token;
+            if ((_string_token = Expect("and")) is not null)
+            {
+                base.LogAlternativeSucceed("'and'");
+                _res = (TokenNode?)_string_token;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'and'");
+        }
+        base.Reset(_mark);
+        {
+            // 'not'
+            base.LogAlternativeEntered("'not'");
+            IGreenNode? _string_token;
+            if ((_string_token = Expect("not")) is not null)
+            {
+                base.LogAlternativeSucceed("'not'");
+                _res = (TokenNode?)_string_token;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'not'");
+        }
+        base.Reset(_mark);
+        {
+            // 'in'
+            base.LogAlternativeEntered("'in'");
+            IGreenNode? _string_token;
+            if ((_string_token = Expect("in")) is not null)
+            {
+                base.LogAlternativeSucceed("'in'");
+                _res = (TokenNode?)_string_token;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'in'");
+        }
+        base.Reset(_mark);
+        {
+            // 'is'
+            base.LogAlternativeEntered("'is'");
+            IGreenNode? _string_token;
+            if ((_string_token = Expect("is")) is not null)
+            {
+                base.LogAlternativeSucceed("'is'");
+                _res = (TokenNode?)_string_token;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'is'");
+        }
+        base.Reset(_mark);
+        {
+            // '=='
+            base.LogAlternativeEntered("'=='");
+            IGreenNode? eq_equal;
+            if ((eq_equal = Expect(TokenType.EqEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'=='");
+                _res = (TokenNode?)eq_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'=='");
+        }
+        base.Reset(_mark);
+        {
+            // '!='
+            base.LogAlternativeEntered("'!='");
+            IGreenNode? not_equal;
+            if ((not_equal = Expect(TokenType.NotEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'!='");
+                _res = (TokenNode?)not_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'!='");
+        }
+        base.Reset(_mark);
+        {
+            // '<='
+            base.LogAlternativeEntered("'<='");
+            IGreenNode? less_equal;
+            if ((less_equal = Expect(TokenType.LessEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'<='");
+                _res = (TokenNode?)less_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'<='");
+        }
+        base.Reset(_mark);
+        {
+            // '<'
+            base.LogAlternativeEntered("'<'");
+            IGreenNode? less;
+            if ((less = Expect(TokenType.Less)) is not null)
+            {
+                base.LogAlternativeSucceed("'<'");
+                _res = (TokenNode?)less;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'<'");
+        }
+        base.Reset(_mark);
+        {
+            // '>='
+            base.LogAlternativeEntered("'>='");
+            IGreenNode? greater_equal;
+            if ((greater_equal = Expect(TokenType.GreaterEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'>='");
+                _res = (TokenNode?)greater_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'>='");
+        }
+        base.Reset(_mark);
+        {
+            // '>'
+            base.LogAlternativeEntered("'>'");
+            IGreenNode? greater;
+            if ((greater = Expect(TokenType.Greater)) is not null)
+            {
+                base.LogAlternativeSucceed("'>'");
+                _res = (TokenNode?)greater;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'>'");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("PossibleBoolean");
+    _Return:
+        base.LogRuleExiting("PossibleBoolean");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // PossibleBoolean
 
     #region YieldExpression
     // YieldExpression:
@@ -6115,7 +6282,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @memo
     // InversionExpression:
     //     | Inversion
-    //     | Comparison
+    //     | ComparisonExpression
     IInversionExpressionNode? rule_InversionExpression()
     {
         base.LogIncreaseLevel();
@@ -6143,16 +6310,16 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Comparison
-            base.LogAlternativeEntered("Comparison");
-            IGreenNode? comparison;
-            if ((comparison = rule_Comparison()) is not null)
+            // ComparisonExpression
+            base.LogAlternativeEntered("ComparisonExpression");
+            IGreenNode? comparison_expression;
+            if ((comparison_expression = rule_ComparisonExpression()) is not null)
             {
-                base.LogAlternativeSucceed("Comparison");
-                _res = (ComparisonNode?)comparison;
+                base.LogAlternativeSucceed("ComparisonExpression");
+                _res = (IComparisonExpressionNode?)comparison_expression;
                 goto _Return;
             }
-            base.LogAlternativeFailed("Comparison");
+            base.LogAlternativeFailed("ComparisonExpression");
         }
         base.Reset(_mark);
         base.LogRuleFailed("InversionExpression");
@@ -6203,6 +6370,51 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // Inversion
+
+    #region ComparisonExpression
+    // @union
+    // ComparisonExpression:
+    //     | Comparison
+    //     | BitwiseOrExpression
+    IComparisonExpressionNode? rule_ComparisonExpression()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("ComparisonExpression");
+        int _mark = base.Mark();
+        IComparisonExpressionNode? _res = null;
+        {
+            // Comparison
+            base.LogAlternativeEntered("Comparison");
+            IGreenNode? comparison;
+            if ((comparison = rule_Comparison()) is not null)
+            {
+                base.LogAlternativeSucceed("Comparison");
+                _res = (ComparisonNode?)comparison;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("Comparison");
+        }
+        base.Reset(_mark);
+        {
+            // BitwiseOrExpression
+            base.LogAlternativeEntered("BitwiseOrExpression");
+            IGreenNode? bitwise_or_expression;
+            if ((bitwise_or_expression = rule_BitwiseOrExpression()) is not null)
+            {
+                base.LogAlternativeSucceed("BitwiseOrExpression");
+                _res = (IBitwiseOrExpressionNode?)bitwise_or_expression;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("BitwiseOrExpression");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("ComparisonExpression");
+    _Return:
+        base.LogRuleExiting("ComparisonExpression");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // ComparisonExpression
 
     #region Comparison
     // Comparison: BitwiseOrExpression CompareOperation+ -> new(

@@ -19,7 +19,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// 2. <i>IBitwiseXorExpressionNode</i><br/>
 /// </remarks>
 [global::Epoxid.SyntaxAnalysis.WildUnion(typeof(BitwiseOrNode), typeof(IBitwiseXorExpressionNode))]
-public partial interface IBitwiseOrExpressionNode : IGreenNode, IExpressionNode, IArithmeticNode;
+public partial interface IBitwiseOrExpressionNode : IGreenNode, IArithmeticNode, IComparisonExpressionNode;
 
 /// <summary>
 /// View interface that represents <i>BitwiseOrExpression</i>.
@@ -30,4 +30,4 @@ public partial interface IBitwiseOrExpressionNode : IGreenNode, IExpressionNode,
 /// 2. <i>IBitwiseXorExpressionView</i><br/>
 /// </remarks>
 [global::Epoxid.SyntaxAnalysis.WildUnion(typeof(BitwiseOrView), typeof(IBitwiseXorExpressionView))]
-public partial interface IBitwiseOrExpressionView : IRedView, IExpressionView, IArithmeticView;
+public partial interface IBitwiseOrExpressionView : IRedView, IArithmeticView, IComparisonExpressionView;

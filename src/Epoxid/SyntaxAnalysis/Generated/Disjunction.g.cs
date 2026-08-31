@@ -13,7 +13,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>Disjunction</i>.
 /// </summary>
-public sealed partial record DisjunctionNode : GreenNode, IExpressionNode, IArithmeticNode
+public sealed partial record DisjunctionNode : GreenNode, IArithmeticNode
 {
     private global::System.Collections.Immutable.ImmutableArray<ConjunctionNode>? _field_Conjunctions = null;
     public global::System.Collections.Immutable.ImmutableArray<ConjunctionNode> Conjunctions
@@ -36,7 +36,7 @@ public sealed partial record DisjunctionNode : GreenNode, IExpressionNode, IArit
 /// <summary>
 /// View class that represents <i>Disjunction</i>.
 /// </summary>
-public sealed partial class DisjunctionView : RedView, IExpressionView, IArithmeticView
+public sealed partial class DisjunctionView : RedView, IArithmeticView
 {
     public DisjunctionView(DisjunctionNode green, int position, IRedView? parent)
         : base(green, position, parent)

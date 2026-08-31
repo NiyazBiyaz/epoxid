@@ -16,9 +16,9 @@ namespace Epoxid.SyntaxAnalysis;
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>InversionNode</i><br/>
-/// 2. <i>ComparisonNode</i><br/>
+/// 2. <i>IComparisonExpressionNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(InversionNode), typeof(ComparisonNode))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(InversionNode), typeof(IComparisonExpressionNode))]
 public partial interface IInversionExpressionNode : IGreenNode;
 
 /// <summary>
@@ -27,7 +27,7 @@ public partial interface IInversionExpressionNode : IGreenNode;
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>InversionView</i><br/>
-/// 2. <i>ComparisonView</i><br/>
+/// 2. <i>IComparisonExpressionView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(InversionView), typeof(ComparisonView))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(InversionView), typeof(IComparisonExpressionView))]
 public partial interface IInversionExpressionView : IRedView;

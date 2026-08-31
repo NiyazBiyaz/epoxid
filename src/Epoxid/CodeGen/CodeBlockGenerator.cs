@@ -17,15 +17,25 @@ namespace Epoxid.CodeGen;
 /// <br/><br/>
 /// <seealso href="https://docs.python.org/3/reference/executionmodel.html#structure-of-a-program"/>
 /// </summary>
-internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
+internal class CodeBlockGenerator
 {
     public CodeBuilder Builder { get; } = new();
 
     private readonly Dictionary<string, Register> locals = [];
 
-    private readonly IEnumerable<IStatementView> blockStatements = statements;
+    private readonly IEnumerable<IStatementView> blockStatements;
 
     private readonly Stack<IntermediateLoop> loops = [];
+
+    public CodeBlockGenerator(IEnumerable<IStatementView> statements)
+    {
+        blockStatements = statements;
+    }
+
+    public CodeBlockGenerator(FileView file)
+    {
+        blockStatements = file.Statements;
+    }
 
     public ValidationResult GenerateCode()
     {
@@ -290,7 +300,7 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
             case InversionView inv:
                 throw new NotImplementedException();
 
-            case ComparisonView comp:
+            case IComparisonExpressionView comp:
                 return generateComparison(comp);
 
             default:
@@ -298,12 +308,12 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
         }
     }
 
-    private IntermediateInstruction generateComparison(ComparisonView comparison)
+    private IntermediateInstruction generateComparison(IComparisonExpressionView comparison)
     {
-        if (comparison.Rest.Count == 1)
+        if (comparison is ComparisonView compare && compare.Rest.Count == 1)
         {
-            ensureExpressionRegister(comparison.First, out var leftValueReg, out _);
-            var (right, opcode) = comparison.Rest[0] switch
+            ensureExpressionRegister(compare.First, out var leftValueReg, out _);
+            var (right, opcode) = compare.Rest[0] switch
             {
                 LtEqOperationView view => throw new NotImplementedException(),
 
@@ -330,6 +340,15 @@ internal class CodeBlockGenerator(IEnumerable<IStatementView> statements)
             ensureExpressionRegister(right, out var rightValueReg, out _);
 
             return Builder.RegisterToRegister(opcode, leftValueReg, rightValueReg);
+        }
+        else if (comparison is IBitwiseOrExpressionView arithmetic)
+        {
+            if (ensureExpressionRegister(arithmetic, out var reg, out var instruct))
+            {
+                return instruct;
+            }
+
+            return Builder.Move(reg);
         }
         else
         {

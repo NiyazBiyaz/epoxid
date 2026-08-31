@@ -15,19 +15,19 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 /// <remarks>
 /// Implementors:<br/>
-/// 1. <i>DisjunctionNode</i><br/>
-/// 2. <i>IBitwiseOrExpressionNode</i><br/>
+/// 1. <i>IBitwiseOrExpressionNode</i><br/>
+/// 2. <i>DisjunctionNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(DisjunctionNode), typeof(IBitwiseOrExpressionNode))]
-public partial interface IArithmeticNode : IGreenNode;
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(IBitwiseOrExpressionNode), typeof(DisjunctionNode))]
+public partial interface IArithmeticNode : IGreenNode, IExpressionNode;
 
 /// <summary>
 /// View interface that represents <i>Arithmetic</i>.
 /// </summary>
 /// <remarks>
 /// Implementors:<br/>
-/// 1. <i>DisjunctionView</i><br/>
-/// 2. <i>IBitwiseOrExpressionView</i><br/>
+/// 1. <i>IBitwiseOrExpressionView</i><br/>
+/// 2. <i>DisjunctionView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(DisjunctionView), typeof(IBitwiseOrExpressionView))]
-public partial interface IArithmeticView : IRedView;
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(IBitwiseOrExpressionView), typeof(DisjunctionView))]
+public partial interface IArithmeticView : IRedView, IExpressionView;

@@ -13,7 +13,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>Comparison</i>.
 /// </summary>
-public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNode
+public sealed partial record ComparisonNode : GreenNode, IComparisonExpressionNode
 {
     public IBitwiseOrExpressionNode First => (IBitwiseOrExpressionNode)Children![0];
     public NodeArray<CompareOperationNode> Rest => (NodeArray<CompareOperationNode>)Children![1];
@@ -24,7 +24,7 @@ public sealed partial record ComparisonNode : GreenNode, IInversionExpressionNod
 /// <summary>
 /// View class that represents <i>Comparison</i>.
 /// </summary>
-public sealed partial class ComparisonView : RedView, IInversionExpressionView
+public sealed partial class ComparisonView : RedView, IComparisonExpressionView
 {
     public ComparisonView(ComparisonNode green, int position, IRedView? parent)
         : base(green, position, parent)
