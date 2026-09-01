@@ -591,23 +591,19 @@ internal class CodeBlockGenerator
         // Putting function to frame
         funcRegister = Builder.Move(funcRegister).Dest!;
 
-        Register? firstArgument = null;
-        // Filling registers with the arguments
+        // Just get virtual register from builder by loading 'None' to one
+        var destRegister = Builder.LdConst(EpConstants.None).Dest!;
+
+        // Filling registers with the arguments next to destRegister
         if (argumentRegisters.Length != 0)
         {
             foreach (var argumentReg in argumentRegisters)
             {
-                var move = Builder.Move(argumentReg);
-                firstArgument ??= move.Dest!;
+                Builder.Move(argumentReg);
             }
         }
-        // If arguments was not set, load 'None' in register next to the function to make it return in it
-        else
-        {
-            firstArgument = Builder.LdConst(EpConstants.None).Dest!;
-        }
 
-        return Builder.Call(funcRegister, firstArgument!, argumentRegisters.Length);
+        return Builder.Call(funcRegister, destRegister, argumentRegisters.Length);
     }
 
     /// <summary>

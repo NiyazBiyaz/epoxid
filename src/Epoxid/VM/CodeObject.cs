@@ -46,7 +46,6 @@ internal class CodeObject
 
             sb.Append(instr.Opcode.ToString());
             sb.Append(indent);
-            sb.Append(indent);
 
             switch (instr.Opcode)
             {

@@ -60,7 +60,7 @@ internal enum Opcode : byte
 
     /// <summary>
     /// <b>Call</b>s the function that stored in the <see cref="Instruction.RegSrc1"/> with <see cref="Instruction.RegSrc2"/>
-    /// number of positional arguments starting from register <see cref="Instruction.RegDest"/> and stores returned
+    /// number of positional arguments starting from register <see cref="Instruction.RegDest"/>+1 and stores returned
     /// value in the <see cref="Instruction.RegDest"/>
     /// </summary>
     Call = 64,

@@ -60,7 +60,7 @@ internal class Engine
 
                 case Opcode.Call:
                 {
-                    var arguments = frame.Slice(instr.RegDest, instr.RegSrc2);
+                    var arguments = frame.Slice(instr.RegDest + 1, instr.RegSrc2);
                     var func = frame[instr.RegSrc1];
                     frame[instr.RegDest] = Core.CallFunction(func, arguments);
                     break;
@@ -68,11 +68,7 @@ internal class Engine
 
                 case Opcode.CallK:
                 {
-                    var arguments = frame.Slice(instr.RegDest, instr.RegSrc2);
-                    var keywordArgs = frame[instr.RegDest + instr.RegSrc2];
-                    var func = frame[instr.RegSrc1];
-                    frame[instr.RegDest] = Core.CallKeywordFunction(func, arguments, keywordArgs);
-                    break;
+                    throw new NotImplementedException("Functions with keyword arguments is not supported yet.");
                 }
 
                 case Opcode.Move:
@@ -84,7 +80,7 @@ internal class Engine
                     goto nextInstruction;
 
                 case Opcode.BrTr:
-                    if (Core.ConvertBool(frame[instr.RegDest]))
+                    if (Core.ConvertToBool(frame[instr.RegDest]))
                     {
                         programCounter += instr.Immediate16;
                         goto nextInstruction;
@@ -92,7 +88,7 @@ internal class Engine
                     break;
 
                 case Opcode.BrFl:
-                    if (!Core.ConvertBool(frame[instr.RegDest]))
+                    if (!Core.ConvertToBool(frame[instr.RegDest]))
                     {
                         programCounter += instr.Immediate16;
                         goto nextInstruction;

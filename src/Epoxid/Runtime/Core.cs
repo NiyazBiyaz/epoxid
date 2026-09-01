@@ -132,7 +132,7 @@ internal static class Core
         return left.DunderClass.DunderPow(left, right);
     }
 
-    internal static bool ConvertBool(EpObject obj)
+    internal static bool ConvertToBool(EpObject obj)
     {
         if (obj.DunderClass.DunderBool != null)
         {

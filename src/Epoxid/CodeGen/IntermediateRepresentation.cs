@@ -5,17 +5,17 @@ namespace Epoxid.CodeGen;
 
 internal class Register
 {
-    public int Index { get; set; }
+    public int StoredAddress { get; set; } = -1;
 }
 
 internal record Constant(EpObject Value)
 {
-    public int Index { get; set; }
+    public int ImmediateValue { get; set; } = -1;
 }
 
 internal record Variable(string Name)
 {
-    public int Index { get; set; }
+    public int ImmediateValue { get; set; } = -1;
 }
 
 internal class Label
@@ -27,7 +27,7 @@ internal record IntermediateLoop(Label HeadLabel, Label EndLabel);
 
 internal record IntermediateInstruction(Opcode Opcode)
 {
-    public int Index { get; set; }
+    public int InstructionAddress { get; set; }
 
     public Register? Dest { get; init; }
     public byte DestValue
@@ -37,7 +37,7 @@ internal record IntermediateInstruction(Opcode Opcode)
             if (Dest == null)
                 throw new InvalidOperationException("Value was not set before");
 
-            return checked((byte)Dest.Index);
+            return checked((byte)Dest.StoredAddress);
         }
     }
 
@@ -49,7 +49,7 @@ internal record IntermediateInstruction(Opcode Opcode)
             if (Src1 == null)
                 throw new InvalidOperationException("Value was not set before");
 
-            return checked((byte)Src1.Index);
+            return checked((byte)Src1.StoredAddress);
         }
     }
 
@@ -61,7 +61,7 @@ internal record IntermediateInstruction(Opcode Opcode)
             if (Src2 == null)
                 throw new InvalidOperationException("Value was not set before");
 
-            return checked((byte)Src2.Index);
+            return checked((byte)Src2.StoredAddress);
         }
     }
 
@@ -73,7 +73,7 @@ internal record IntermediateInstruction(Opcode Opcode)
             if (Constant == null)
                 throw new InvalidOperationException("Value was not set before");
 
-            return checked((short)Constant.Index);
+            return checked((short)Constant.ImmediateValue);
         }
     }
 
@@ -85,7 +85,7 @@ internal record IntermediateInstruction(Opcode Opcode)
             if (Variable == null)
                 throw new InvalidOperationException("Value was not set before");
 
-            return checked((short)Variable.Index);
+            return checked((short)Variable.ImmediateValue);
         }
     }
 
@@ -97,9 +97,9 @@ internal record IntermediateInstruction(Opcode Opcode)
             if (Label == null)
                 throw new InvalidOperationException("Value was not set before");
 
-            int index = Label.InstructionOnLabel?.Index ?? throw new InvalidOperationException("Label does not have any attached instruction");
+            int index = Label.InstructionOnLabel?.InstructionAddress ?? throw new InvalidOperationException("Label does not have any attached instruction");
 
-            return checked((short)(index - Index));
+            return checked((short)(index - InstructionAddress));
         }
     }
 
@@ -118,7 +118,7 @@ internal record IntermediateInstruction(Opcode Opcode)
 
         Opcode.RetC => new Instruction(Opcode, 0, ConstantValue),
 
-        Opcode.Call or Opcode.CallK => new Instruction(Opcode, DestValue, Src1Value, ArgCountValue),
+        Opcode.Call => new Instruction(Opcode, DestValue, Src1Value, ArgCountValue),
 
         Opcode.Move => new Instruction(Opcode, DestValue, Src1Value, 0),
 

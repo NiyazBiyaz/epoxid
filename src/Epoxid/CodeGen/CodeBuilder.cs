@@ -1,3 +1,4 @@
+using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
 
@@ -9,7 +10,7 @@ namespace Epoxid.CodeGen;
 internal class CodeBuilder
 {
     private readonly List<IntermediateInstruction> instructions = [];
-    private readonly List<Register> allocatedRegisters = [];
+    private readonly List<Register> registers = [];
     private readonly List<Constant> constants = [];
     private readonly List<Variable> freeVariables = [];
 
@@ -27,7 +28,7 @@ internal class CodeBuilder
             Instructions = [.. instructions.Select(irI => irI.Lower())],
             Constants = [.. constants.Select(c => c.Value)],
             VarNames = [.. freeVariables.Select(v => v.Name)],
-            StackSize = allocatedRegisters.Count,
+            StackSize = registers.Count,
         };
     }
 
@@ -35,22 +36,12 @@ internal class CodeBuilder
     {
         foreach (var (i, instr) in instructions.Index())
         {
-            instr.Index = i;
+            instr.InstructionAddress = i;
         }
 
-        foreach (var (i, reg) in allocatedRegisters.Index())
+        foreach (var (i, reg) in registers.Index())
         {
-            reg.Index = i;
-        }
-
-        foreach (var (i, constant) in constants.Index())
-        {
-            constant.Index = i;
-        }
-
-        foreach (var (i, variable) in freeVariables.Index())
-        {
-            variable.Index = i;
+            reg.StoredAddress = i;
         }
     }
 
@@ -74,18 +65,30 @@ internal class CodeBuilder
     private Register allocateRegister()
     {
         var reg = new Register();
-        allocatedRegisters.Add(reg);
+        registers.Add(reg);
         return reg;
     }
 
     private Constant addConstant(EpObject value)
     {
-        if (constants.FirstOrDefault(con => con.Value == value) is Constant existingConstant)
+        if (constants.FirstOrDefault(constant => byValueEpObjectEquals(constant.Value)) is Constant existingConstant)
             return existingConstant;
 
-        var constant = new Constant(value);
+        var constant = new Constant(value)
+        {
+            ImmediateValue = constants.Count,
+        };
         constants.Add(constant);
         return constant;
+
+        bool byValueEpObjectEquals(EpObject constant)
+        {
+            if (constant.DunderClass != value.DunderClass)
+                return false;
+
+            var equality = Core.EqualObjects(constant, value);
+            return Core.ConvertToBool(equality);
+        }
     }
 
     private Variable addVariable(string name)
@@ -93,10 +96,15 @@ internal class CodeBuilder
         if (freeVariables.FirstOrDefault(var => var.Name == name) is Variable existingVariable)
             return existingVariable;
 
-        var variable = new Variable(name);
+        var variable = new Variable(name)
+        {
+            ImmediateValue = freeVariables.Count,
+        };
         freeVariables.Add(variable);
         return variable;
     }
+
+    #region Opcodes
 
     public IntermediateInstruction RegisterToRegister(Opcode opcode, Register src1, Register src2)
     {
@@ -141,19 +149,6 @@ internal class CodeBuilder
     public IntermediateInstruction Call(Register function, Register destination, int argCount)
     {
         var instr = new IntermediateInstruction(Opcode.Call)
-        {
-            Dest = destination,
-            Src1 = function,
-            ArgCount = argCount,
-        };
-        addInstruction(instr);
-
-        return instr;
-    }
-
-    public IntermediateInstruction CallK(Register function, Register destination, int argCount)
-    {
-        var instr = new IntermediateInstruction(Opcode.CallK)
         {
             Dest = destination,
             Src1 = function,
@@ -243,4 +238,6 @@ internal class CodeBuilder
 
         return instr;
     }
+
+    #endregion
 }
