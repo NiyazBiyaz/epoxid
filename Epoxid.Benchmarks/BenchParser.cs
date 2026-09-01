@@ -49,6 +49,8 @@ public class BufferedTokenizer : ITokenizer
     public TokenizerError Error => throw new NotImplementedException();
     public string? ErrorMessage => throw new NotImplementedException();
 
+    public bool EofReached => index == buffer.Count;
+
     private int index = 0;
     private readonly List<Token> buffer = [];
 
