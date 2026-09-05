@@ -37,18 +37,25 @@ public static class Program
             PositionMap = tokenizer.PositionMap,
         };
 
-        var codeGen = new CodeBlockGenerator(view.Statements);
+        CodeBuilder builder = new();
+        var codeGen = new CodeBlockGenerator(view.Statements)
+        {
+            Builder = builder,
+        };
         codeGen.GenerateCode();
 
-        var code = codeGen.Builder.Dump();
+        var code = builder.Dump();
 
         var engine = new Engine();
 
         var environment = new Runtime.Environment();
         environment.Scopes.Push(Builtins.BuiltinsScope);
 
+        builder.CreateControlFlowGraph();
+
+        Console.WriteLine(builder.DumpCfg());
+        Console.WriteLine("======================");
         Console.WriteLine(code.ToString());
-        Console.WriteLine("----------------");
 
         engine.RunCode(code, [], environment);
 

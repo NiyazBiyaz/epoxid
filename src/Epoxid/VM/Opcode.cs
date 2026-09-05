@@ -132,5 +132,15 @@ internal static class OpcodeExtensions
         public bool IsRegisterToRegister => opcode < Opcode.Call;
 
         public bool IsBranch => opcode >= Opcode.Brc && opcode <= Opcode.BrFl;
+
+        /// <summary>
+        /// Determines whether <see cref="Opcode"/> is last instruction of control-flow-graph block.0
+        /// </summary>
+        public bool IsEndOfCfgBlock => opcode switch
+        {
+            Opcode.Brc or Opcode.BrFl or Opcode.BrTr => true,
+            Opcode.Ret or Opcode.RetC => true,
+            _ => false,
+        };
     }
 }

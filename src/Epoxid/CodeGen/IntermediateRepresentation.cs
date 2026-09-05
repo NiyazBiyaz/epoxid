@@ -6,21 +6,43 @@ namespace Epoxid.CodeGen;
 internal class Register
 {
     public int StoredAddress { get; set; } = -1;
+
+    public IntermediateInstruction LastUsedInstruction { get; set; } = null!;
+
+    public int Id { get; set; } = -1;
+
+    public override string ToString() => $"R{Id}";
 }
 
 internal record Constant(EpObject Value)
 {
     public int ImmediateValue { get; set; } = -1;
+
+    public override string ToString() => ImmediateValue.ToString();
 }
 
 internal record Variable(string Name)
 {
     public int ImmediateValue { get; set; } = -1;
+
+    public override string ToString() => ImmediateValue.ToString();
 }
 
-internal class Label
+internal class Label : IEquatable<Label>
 {
     public IntermediateInstruction? InstructionOnLabel { get; set; }
+
+    public InstructionId Id { get; set; } = null!;
+
+    public bool Equals(Label? other)
+    {
+        if (other == null)
+            return false;
+
+        return other.Id == Id;
+    }
+
+    public override string ToString() => Id.ToString();
 }
 
 internal record IntermediateLoop(Label HeadLabel, Label EndLabel);
@@ -28,6 +50,10 @@ internal record IntermediateLoop(Label HeadLabel, Label EndLabel);
 internal record IntermediateInstruction(Opcode Opcode)
 {
     public int InstructionAddress { get; set; }
+
+    public InstructionId Id { get; set; } = null!;
+
+    public ControlFlowBlock? FlowBlock { get; set; }
 
     public Register? Dest { get; init; }
     public byte DestValue
@@ -128,4 +154,45 @@ internal record IntermediateInstruction(Opcode Opcode)
 
         _ => throw new NotImplementedException(),
     });
+
+    public override string ToString() => Id.ToString() + ':' + '\t' + Opcode switch
+    {
+        _ when Opcode.IsRegisterToRegister => $"{Opcode}\t{Dest} {Src1} {Src2}",
+
+        Opcode.LdConst => $"LdConst\t{Dest} {Constant}",
+
+        Opcode.LdVar => $"LdVar\t{Dest} {Variable}",
+
+        Opcode.Ret => $"Ret\t{Src1}",
+
+        Opcode.RetC => $"RetC\t{Constant}",
+
+        Opcode.Call => $"Call\t{Src1} {Dest} {Src2} {ArgCount}",
+
+        Opcode.Move => $"Move\t{Dest} {Src1}",
+
+        Opcode.BrTr or Opcode.BrFl => $"{Opcode}\t{Dest} {Label}",
+
+        Opcode.Brc => $"Brc\t{Label}",
+
+        _ => throw new NotImplementedException(),
+    };
+}
+
+internal class ControlFlowBlock
+{
+    public required Label? StartLabel { get; set; }
+    public required Memory<IntermediateInstruction> Instructions { get; set; }
+    public required IntermediateInstruction EndInstruction { get; set; }
+
+    public ControlFlowBlock? Next { get; set; }
+}
+
+/// <summary>
+/// Reference class that represents ID of the instruction that label spot on.
+/// Allows to compare different labels by value while they still reference types.
+/// </summary>
+internal record InstructionId(int Mnemonics)
+{
+    public override string ToString() => $"I{Mnemonics}";
 }

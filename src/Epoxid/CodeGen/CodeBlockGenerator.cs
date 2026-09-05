@@ -19,7 +19,7 @@ namespace Epoxid.CodeGen;
 /// </summary>
 internal class CodeBlockGenerator
 {
-    public CodeBuilder Builder { get; } = new();
+    public CodeBuilder Builder { get; set; } = new();
 
     private readonly Dictionary<string, Register> locals = [];
 

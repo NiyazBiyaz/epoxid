@@ -1,3 +1,4 @@
+using System.Text;
 using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
@@ -14,11 +15,14 @@ internal class CodeBuilder
     private readonly List<Constant> constants = [];
     private readonly List<Variable> freeVariables = [];
 
-    private readonly Stack<Label> labels = [];
+    private readonly Dictionary<InstructionId, ControlFlowBlock> controlFlowGraph = [];
+
+    private readonly Stack<Label> pendingLabels = [];
+    private readonly Dictionary<InstructionId, Label> labels = [];
 
     public CodeObject Dump()
     {
-        if (labels.Count != 0)
+        if (pendingLabels.Count != 0)
             throw new InvalidOperationException("Cannot dump code object: builder have unresolved labels");
 
         resolveIndexes();
@@ -30,6 +34,59 @@ internal class CodeBuilder
             VarNames = [.. freeVariables.Select(v => v.Name)],
             StackSize = registers.Count,
         };
+    }
+
+    public void PutLabel(Label newLabel) => pendingLabels.Push(newLabel);
+
+    public void CreateControlFlowGraph()
+    {
+        for (int index = 0; index < instructions.Count; index++)
+        {
+            var instr = instructions[index];
+            int blockEnd = instructions.FindIndex(index, instr => instr.Opcode.IsEndOfCfgBlock);
+            controlFlowGraph[instr.Id] = instr.FlowBlock = new ControlFlowBlock
+            {
+                StartLabel = labels.TryGetValue(instr.Id, out var label) ? label : null,
+                Instructions = instructions[index..blockEnd].ToArray(),
+                EndInstruction = instructions[blockEnd],
+            };
+            index = blockEnd;
+        }
+
+        Console.WriteLine(string.Join(", ", controlFlowGraph));
+
+        foreach (var block in controlFlowGraph.Values)
+        {
+            if (block.EndInstruction.Opcode.IsBranch)
+            {
+                block.Next = controlFlowGraph[block.EndInstruction.Label!.Id];
+            }
+        }
+    }
+
+    public string DumpCfg()
+    {
+        var sb = new StringBuilder();
+
+        bool addLine = false;
+
+        foreach (var block in controlFlowGraph.Values)
+        {
+            if (addLine)
+                sb.Append("---------------------------\n");
+            addLine = true;
+
+            foreach (var instr in block.Instructions.Span)
+            {
+                sb.Append(instr.ToString());
+                sb.Append('\n');
+            }
+
+            sb.Append(block.EndInstruction.ToString());
+            sb.Append('\n');
+        }
+
+        return sb.ToString();
     }
 
     private void resolveIndexes()
@@ -45,11 +102,13 @@ internal class CodeBuilder
         }
     }
 
-    public void PutLabel(Label newLabel) => labels.Push(newLabel);
-
     private void addInstruction(IntermediateInstruction instruction)
     {
-        while (labels.TryPop(out var label))
+        instruction.Id = new(instructions.Count);
+
+        bool addToLabels = true;
+
+        while (pendingLabels.TryPop(out var label))
         {
             if (label.InstructionOnLabel != null)
             {
@@ -57,14 +116,28 @@ internal class CodeBuilder
             }
 
             label.InstructionOnLabel = instruction;
+            label.Id = instruction.Id;
+
+            if (addToLabels)
+            {
+                labels[instruction.Id] = label;
+                addToLabels = false;
+            }
         }
 
         instructions.Add(instruction);
+
+        instruction.Dest?.LastUsedInstruction = instruction;
+        instruction.Src1?.LastUsedInstruction = instruction;
+        instruction.Src2?.LastUsedInstruction = instruction;
     }
 
     private Register allocateRegister()
     {
-        var reg = new Register();
+        var reg = new Register
+        {
+            Id = registers.Count,
+        };
         registers.Add(reg);
         return reg;
     }
