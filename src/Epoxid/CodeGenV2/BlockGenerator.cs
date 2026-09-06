@@ -275,8 +275,9 @@ internal class BlockGenerator
             {
                 var funcRegister = getExpressionRegister(builder, callArgs.Function);
 
-                Register[] argRegisters = [];
-                bool dispose = false;
+                Register[] argRegistersArray = [];
+                Span<Register> argRegisters = default;
+                bool shouldReturnArray = false;
                 try
                 {
                     switch (callArgs.Arguments)
@@ -296,10 +297,12 @@ internal class BlockGenerator
                                 throw new NotImplementedException();
                             }
 
-                            argRegisters = ArrayPool<Register>.Shared.Rent(positional.PositionalArgumentsPart.Length);
-                            dispose = true;
+                            int argsSize = positional.PositionalArgumentsPart.Length;
+                            argRegistersArray = ArrayPool<Register>.Shared.Rent(argsSize);
+                            argRegisters = argRegistersArray.AsSpan(0, argsSize);
+                            shouldReturnArray = true;
 
-                            for (int i = 0; i < positional.PositionalArgumentsPart.Length; i++)
+                            for (int i = 0; i < argsSize; i++)
                             {
                                 argRegisters[i] = positional.PositionalArgumentsPart[i] switch
                                 {
@@ -311,15 +314,14 @@ internal class BlockGenerator
 
                             break;
                         }
-
                         default:
                             throw new UnreachableException();
                     }
                 }
                 finally
                 {
-                    if (dispose)
-                        ArrayPool<Register>.Shared.Return(argRegisters);
+                    if (shouldReturnArray)
+                        ArrayPool<Register>.Shared.Return(argRegistersArray);
                 }
 
                 // Place all call stuff in a row

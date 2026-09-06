@@ -134,7 +134,7 @@ internal static class OpcodeExtensions
         public bool IsBranch => opcode >= Opcode.Brc && opcode <= Opcode.BrFl;
 
         /// <summary>
-        /// Determines whether <see cref="Opcode"/> is last instruction of control-flow-graph block.0
+        /// Determines whether <see cref="Opcode"/> is last instruction of control-flow-graph block.
         /// </summary>
         public bool IsEndOfCfgBlock => opcode switch
         {

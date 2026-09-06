@@ -1,10 +1,8 @@
 using System.Runtime.CompilerServices;
-using Epoxid.CodeGen;
-using Epoxid.Runtime;
+using Epoxid.CodeGenV2;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
-using Epoxid.VM;
 
 [assembly: InternalsVisibleTo("Epoxid.Tests")]
 
@@ -30,34 +28,23 @@ public static class Program
             return 1;
         }
 
-        var view = tree.GetView(0, null);
-        view.SyntaxTree = new SyntaxViewTree
+        var fileView = tree.GetView(0, null);
+        fileView.SyntaxTree = new SyntaxViewTree
         {
-            Root = view,
+            Root = fileView,
             PositionMap = tokenizer.PositionMap,
         };
 
-        CodeBuilder builder = new();
-        var codeGen = new CodeBlockGenerator(view.Statements)
+        var builder = new CodeBuilder();
+        var generator = new BlockGenerator(fileView);
+
+        generator.GenerateCode(builder);
+
+        foreach (var block in builder.CfgBlocks)
         {
-            Builder = builder,
-        };
-        codeGen.GenerateCode();
-
-        var code = builder.Dump();
-
-        var engine = new Engine();
-
-        var environment = new Runtime.Environment();
-        environment.Scopes.Push(Builtins.BuiltinsScope);
-
-        builder.CreateControlFlowGraph();
-
-        Console.WriteLine(builder.DumpCfg());
-        Console.WriteLine("======================");
-        Console.WriteLine(code.ToString());
-
-        engine.RunCode(code, [], environment);
+            System.Console.WriteLine(block);
+            System.Console.WriteLine("---------------");
+        }
 
         return 0;
     }

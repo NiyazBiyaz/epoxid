@@ -17,4 +17,6 @@ internal class ControlFlowBlock
     }
 
     public ControlFlowBlock? Next => EndInstruction.JumpLabel?.Target;
+
+    public override string ToString() => string.Join('\n', Instructions);
 }

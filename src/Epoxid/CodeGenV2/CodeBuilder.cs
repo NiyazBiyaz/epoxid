@@ -16,7 +16,11 @@ internal class CodeBuilder
     ];
     private readonly List<string> freeVariables = [];
 
-    private readonly List<ControlFlowBlock> cfgBlocks = [];
+#if DEBUG
+    private int virtualRegistersCount = 0;
+#endif
+
+    public readonly List<ControlFlowBlock> CfgBlocks = [];
 
     private ControlFlowBlock currentBlock = new();
 
@@ -37,7 +41,14 @@ internal class CodeBuilder
 
     public Register AllocateRegister()
     {
+#if DEBUG
+        var reg = new Register
+        {
+            Mnemonics = virtualRegistersCount++,
+        };
+#else
         var reg = new Register();
+#endif
         registers.Add(reg);
         return reg;
     }
@@ -79,13 +90,17 @@ internal class CodeBuilder
     {
         currentBlock.Instructions.Add(instruction);
 
+        instruction.Destination?.LastUsage = instruction;
+        instruction.Source1?.LastUsage = instruction;
+        instruction.Source2?.LastUsage = instruction;
+
         if (instruction.Opcode.IsEndOfCfgBlock)
             endCfgBlock();
     }
 
     private void endCfgBlock()
     {
-        cfgBlocks.Add(currentBlock);
+        CfgBlocks.Add(currentBlock);
         currentBlock = new();
     }
 
@@ -169,8 +184,6 @@ internal class CodeBuilder
             ImmediateValue = constIndex,
         };
         addInstruction(instr);
-
-        endCfgBlock();
     }
 
     public void Brc(Label label)

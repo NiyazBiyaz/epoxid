@@ -27,4 +27,6 @@ internal record IntermediateInstruction
             field = value;
         }
     } = null;
+
+    public override string ToString() => $"{Opcode}\trd({Destination}) rs1({Source1}) rs2({Source2}) imm({ImmediateValue}) argc({ArgCount})";
 }
