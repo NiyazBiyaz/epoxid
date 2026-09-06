@@ -7,12 +7,23 @@ namespace Epoxid.CodeGenV2;
 internal class CodeBuilder
 {
     private readonly List<Register> registers = [];
-    private readonly List<EpObject> constants = [];
+    private readonly List<EpObject> constants =
+    [
+        EpConstants.None,
+        EpConstants.True,
+        EpConstants.False,
+        EpConstants.Ellipsis,
+    ];
     private readonly List<string> freeVariables = [];
 
     private readonly List<ControlFlowBlock> cfgBlocks = [];
 
     private ControlFlowBlock currentBlock = new();
+
+    public const int NoneConstantIndex = 0;
+    public const int TrueConstantIndex = 1;
+    public const int FalseConstantIndex = 2;
+    public const int EllipsisConstantIndex = 3;
 
     public Label PutLabel(Label label)
     {
@@ -80,7 +91,7 @@ internal class CodeBuilder
 
     #region Opcodes
 
-    public void RegisterToRegister(Opcode opcode, Register dest, Register src1, Register src2)
+    public Register RegisterToRegister(Opcode opcode, Register dest, Register src1, Register src2)
     {
         if (!opcode.IsRegisterToRegister)
             throw new ArgumentOutOfRangeException(nameof(opcode));
@@ -93,9 +104,11 @@ internal class CodeBuilder
             Source2 = src2,
         };
         addInstruction(instr);
+
+        return dest;
     }
 
-    public void LdVar(Register dest, int varIndex)
+    public Register LdVar(Register dest, int varIndex)
     {
         var instr = new IntermediateInstruction
         {
@@ -104,9 +117,11 @@ internal class CodeBuilder
             ImmediateValue = varIndex,
         };
         addInstruction(instr);
+
+        return dest;
     }
 
-    public void LdConst(Register dest, int varIndex)
+    public Register LdConst(Register dest, int varIndex)
     {
         var instr = new IntermediateInstruction
         {
@@ -115,9 +130,11 @@ internal class CodeBuilder
             ImmediateValue = varIndex,
         };
         addInstruction(instr);
+
+        return dest;
     }
 
-    public void Call(Register func, Register dest, int argCount)
+    public Register Call(Register func, Register dest, int argCount)
     {
         var instr = new IntermediateInstruction
         {
@@ -127,9 +144,11 @@ internal class CodeBuilder
             ArgCount = argCount,
         };
         addInstruction(instr);
+
+        return dest;
     }
 
-    public void Move(Register dest, Register source)
+    public Register Move(Register dest, Register source)
     {
         var instr = new IntermediateInstruction
         {
@@ -138,6 +157,8 @@ internal class CodeBuilder
             Source1 = source,
         };
         addInstruction(instr);
+
+        return dest;
     }
 
     public void RetC(int constIndex)
@@ -148,6 +169,8 @@ internal class CodeBuilder
             ImmediateValue = constIndex,
         };
         addInstruction(instr);
+
+        endCfgBlock();
     }
 
     public void Brc(Label label)

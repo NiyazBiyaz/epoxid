@@ -47,13 +47,13 @@ internal enum Opcode : byte
     NEq,
 
     /// <summary>
-    /// Determines that object from <see cref="Instruction.RegSrc1"/> is less than <see cref="Instruction.RegDest"/>
+    /// Determines that object from <see cref="Instruction.RegSrc1"/> is less than <see cref="Instruction.RegSrc2"/>
     /// and stores result in <see cref="Instruction.RegDest"/>
     /// </summary>
     LsTh,
 
     /// <summary>
-    /// Determines that object from <see cref="Instruction.RegSrc1"/> is greater than <see cref="Instruction.RegDest"/>
+    /// Determines that object from <see cref="Instruction.RegSrc1"/> is greater than <see cref="Instruction.RegSrc2"/>
     /// and stores result in <see cref="Instruction.RegDest"/>
     /// </summary>
     GrTh,
