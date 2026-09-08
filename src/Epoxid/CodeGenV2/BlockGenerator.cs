@@ -93,6 +93,7 @@ internal class BlockGenerator
                     builder.BrFl(elseLabel, conditionRegister);
 
                     generateStatements(builder, whileStmt.Block.GetStatements());
+                    builder.Brc(headLabel);
 
                     builder.PutLabel(elseLabel);
                     if (whileStmt.Else != null)
