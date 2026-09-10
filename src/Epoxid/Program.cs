@@ -40,11 +40,11 @@ public static class Program
 
         generator.GenerateCode(builder);
 
-        foreach (var block in builder.CfgBlocks)
-        {
-            System.Console.WriteLine(block);
-            System.Console.WriteLine("---------------");
-        }
+        builder.ResolveRegisterAddresses();
+
+        var code = builder.Compile();
+
+        Console.WriteLine(code);
 
         return 0;
     }

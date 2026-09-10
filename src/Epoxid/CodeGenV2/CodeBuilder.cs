@@ -16,13 +16,13 @@ internal class CodeBuilder
     ];
     private readonly List<string> freeVariables = [];
 
-#if DEBUG
     private int virtualRegistersCount = 0;
-#endif
 
     public readonly List<ControlFlowBlock> CfgBlocks = [];
 
-    private ControlFlowBlock currentBlock = new();
+    private ControlFlowBlock currentBlock = new(0);
+
+    private int stackSize = 0;
 
     public const int NoneConstantIndex = 0;
     public const int TrueConstantIndex = 1;
@@ -35,20 +35,17 @@ internal class CodeBuilder
             endCfgBlock();
 
         label.Target = currentBlock;
+        currentBlock.LabelsCount++;
 
         return label;
     }
 
     public Register AllocateRegister()
     {
-#if DEBUG
         var reg = new Register
         {
-            Mnemonics = virtualRegistersCount++,
+            Id = virtualRegistersCount++,
         };
-#else
-        var reg = new Register();
-#endif
         registers.Add(reg);
         return reg;
     }
@@ -86,13 +83,88 @@ internal class CodeBuilder
         }
     }
 
+    public void ResolveRegisterAddresses()
+    {
+        var singleBlock = CfgBlocks[0];
+
+        for (int instructionNumber = 0; instructionNumber < singleBlock.Instructions.Count; instructionNumber++)
+        {
+            var instruction = singleBlock.Instructions[instructionNumber];
+
+            instruction.Destination?.Usage.AddUsage(instructionNumber);
+            instruction.Source1?.Usage.AddUsage(instructionNumber);
+            instruction.Source2?.Usage.AddUsage(instructionNumber);
+        }
+
+        for (int leftIndex = 0; leftIndex < registers.Count; leftIndex++)
+        {
+            var thisRegister = registers[leftIndex];
+            for (int rightIndex = leftIndex + 1; rightIndex < registers.Count; rightIndex++)
+            {
+                var otherRegister = registers[rightIndex];
+
+                if (thisRegister.Usage.CollidesWith(otherRegister.Usage))
+                {
+                    thisRegister.LifetimeCollisions.Add(otherRegister);
+                    otherRegister.LifetimeCollisions.Add(thisRegister);
+                }
+            }
+        }
+
+        // We have up to 256 registers, so this is absolutely fine to use greedy coloring.
+        var descendingByCollisions = registers.OrderByDescending(r => r.LifetimeCollisions.Count);
+        int stackSize = 0;
+        Span<bool> neighborColors = stackalloc bool[256];
+        neighborColors.Clear();
+        foreach (var register in descendingByCollisions)
+        {
+            foreach (var neighbor in register.LifetimeCollisions)
+            {
+                if (neighbor.Address is not int neighborColor)
+                    continue;
+
+                neighborColors[neighborColor] = true;
+            }
+
+            int result = neighborColors.IndexOf(false);
+            register.Address = result;
+            stackSize = int.Max(stackSize, result + 1);
+            neighborColors.Clear();
+        }
+
+        this.stackSize = stackSize;
+    }
+
+    public void ResolveLabels()
+    {
+        int instructionCount = 0;
+        foreach (var block in CfgBlocks)
+        {
+            block.StartInstructionAddress = instructionCount;
+            instructionCount += block.Instructions.Count;
+        }
+    }
+
+    public CodeObject Compile()
+    {
+        var singleBlock = CfgBlocks[0];
+
+        var instructions = singleBlock
+            .Instructions
+            .Select((instr, relativeAddress) => instr.Compile(relativeAddress + singleBlock.StartInstructionAddress));
+
+        return new()
+        {
+            Constants = [.. constants],
+            VarNames = [.. freeVariables],
+            StackSize = stackSize,
+            Instructions = [.. instructions],
+        };
+    }
+
     private void addInstruction(IntermediateInstruction instruction)
     {
         currentBlock.Instructions.Add(instruction);
-
-        instruction.Destination?.LastUsage = instruction;
-        instruction.Source1?.LastUsage = instruction;
-        instruction.Source2?.LastUsage = instruction;
 
         if (instruction.Opcode.IsEndOfCfgBlock)
             endCfgBlock();
@@ -101,7 +173,19 @@ internal class CodeBuilder
     private void endCfgBlock()
     {
         CfgBlocks.Add(currentBlock);
-        currentBlock = new();
+
+        if (currentBlock.EndInstruction.Opcode is Opcode.BrFl or Opcode.BrTr)
+        {
+            currentBlock.SetBranchedLabel(currentBlock.EndInstruction.JumpLabel ?? throw new InvalidOperationException());
+        }
+
+        var next = new ControlFlowBlock(CfgBlocks.Count);
+
+        if (currentBlock.EndInstruction.Opcode is not (Opcode.Ret or Opcode.RetC))
+        {
+            currentBlock.Next = next;
+        }
+        currentBlock = next;
     }
 
     #region Opcodes

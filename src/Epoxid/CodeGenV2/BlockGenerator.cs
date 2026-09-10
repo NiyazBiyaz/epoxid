@@ -28,6 +28,11 @@ internal class BlockGenerator
 
     public void GenerateCode(CodeBuilder builder)
     {
+        // Redundant instruction to make CFG analysis on entrypoint easier.
+        // Will be removed by optimizer.
+        var fakeRegister = builder.AllocateRegister();
+        builder.Move(fakeRegister, fakeRegister);
+
         generateStatements(builder, blockStatements);
         builder.RetC(CodeBuilder.NoneConstantIndex);
     }

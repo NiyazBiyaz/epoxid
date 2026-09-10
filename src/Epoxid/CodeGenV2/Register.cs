@@ -4,8 +4,9 @@ internal class Register : IEquatable<Register>
 {
     public int? Address = null;
 
+    public UsageSpan Usage { get; } = new();
 
-    public IntermediateInstruction? LastUsage { get; set; } = null;
+    public List<Register> LifetimeCollisions { get; } = [];
 
     public bool Equals(Register? other)
     {
@@ -22,8 +23,6 @@ internal class Register : IEquatable<Register>
         return ReferenceEquals(this, other);
     }
 
-#if DEBUG
-    public required int Mnemonics { get; init; }
-    public override string ToString() => $"r{Mnemonics}";
-#endif
+    public required int Id { get; init; }
+    public override string ToString() => $"r{Id}";
 }
