@@ -18,6 +18,8 @@ internal class CodeBuilder
 
     private int virtualRegistersCount = 0;
 
+    private int callCount = 0;
+
     public readonly List<ControlFlowBlock> CfgBlocks = [];
 
     private ControlFlowBlock currentBlock = new(0);
@@ -49,6 +51,21 @@ internal class CodeBuilder
         registers.Add(reg);
         return reg;
     }
+
+    public Register AllocateRegister(int callId, int relativeAddress, int callSize)
+    {
+        var reg = new Register
+        {
+            Id = virtualRegistersCount++,
+            CallId = callId,
+            CallRelativeAddress = relativeAddress,
+            CallCount = callSize,
+        };
+        registers.Add(reg);
+        return reg;
+    }
+
+    public int StartCall() => callCount++;
 
     public int AddVariable(string variable)
     {
@@ -94,6 +111,18 @@ internal class CodeBuilder
             instruction.Destination?.Usage.AddUsage(instructionNumber);
             instruction.Source1?.Usage.AddUsage(instructionNumber);
             instruction.Source2?.Usage.AddUsage(instructionNumber);
+
+            if (instruction.ArgCount != null)
+            {
+                var callRegs = registers.Where(r => r.CallId == instruction.Destination!.CallId);
+
+                foreach (var reg in callRegs)
+                {
+                    if (reg.CallRelativeAddress < 2)
+                        continue;
+                    reg.Usage.AddUsage(instructionNumber);
+                }
+            }
         }
 
         for (int leftIndex = 0; leftIndex < registers.Count; leftIndex++)
@@ -112,12 +141,16 @@ internal class CodeBuilder
         }
 
         // We have up to 256 registers, so this is absolutely fine to use greedy coloring.
-        var descendingByCollisions = registers.OrderByDescending(r => r.LifetimeCollisions.Count);
+        var descendingByCollisions = registers.OrderByDescending(r => r.ColoringSortScore);
         int stackSize = 0;
+
         Span<bool> neighborColors = stackalloc bool[256];
-        neighborColors.Clear();
         foreach (var register in descendingByCollisions)
         {
+            neighborColors.Clear();
+            if (register.Address != null)
+                continue;
+
             foreach (var neighbor in register.LifetimeCollisions)
             {
                 if (neighbor.Address is not int neighborColor)
@@ -126,13 +159,58 @@ internal class CodeBuilder
                 neighborColors[neighborColor] = true;
             }
 
+            if (register.CallId != null)
+            {
+                int addressBase = 0;
+                for (; addressBase < 256; addressBase++)
+                {
+                    var neededRegisters = neighborColors.Slice(addressBase, register.CallCount!.Value);
+
+                    if (!neededRegisters.Contains(true))
+                        break;
+                }
+
+                foreach (var callRegister in registers.Where(r => r.CallId == register.CallId))
+                {
+                    int callRegAddress = (callRegister.CallRelativeAddress ?? throw new InvalidOperationException()) + addressBase;
+                    callRegister.Address = callRegAddress;
+                    stackSize = int.Max(stackSize, callRegAddress + 1);
+                }
+                continue;
+            }
+
             int result = neighborColors.IndexOf(false);
             register.Address = result;
             stackSize = int.Max(stackSize, result + 1);
-            neighborColors.Clear();
         }
 
         this.stackSize = stackSize;
+    }
+
+    public void Optimize()
+    {
+        var singleBlock = CfgBlocks[0];
+
+        for (int index = 0; index < singleBlock.Instructions.Count; index++)
+        {
+            var instr = singleBlock.Instructions[index];
+            if (instr.Opcode == Opcode.Move)
+            {
+                if (instr.Source1!.Address == instr.Destination!.Address)
+                {
+                    singleBlock.Instructions.RemoveAt(index);
+                    index--;
+                }
+            }
+            if (instr.Opcode == Opcode.LdConst)
+            {
+                if (instr.ImmediateValue == NoneConstantIndex && instr.Destination!.CallId != null)
+                {
+                    singleBlock.Instructions.RemoveAt(index);
+                    index--;
+                }
+            }
+        }
     }
 
     public void ResolveLabels()

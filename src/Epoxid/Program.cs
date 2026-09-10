@@ -3,6 +3,8 @@ using Epoxid.CodeGenV2;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
+using Epoxid.Runtime;
+using Epoxid.VM;
 
 [assembly: InternalsVisibleTo("Epoxid.Tests")]
 
@@ -41,10 +43,18 @@ public static class Program
         generator.GenerateCode(builder);
 
         builder.ResolveRegisterAddresses();
+        builder.Optimize();
 
         var code = builder.Compile();
 
         Console.WriteLine(code);
+        Console.WriteLine("-------------");
+
+        var engine = new Engine();
+        var env = new Runtime.Environment();
+        env.Scopes.Push(Builtins.BuiltinsScope);
+
+        engine.RunCode(code, [], env);
 
         return 0;
     }

@@ -331,11 +331,14 @@ internal class BlockGenerator
                 }
 
                 // Place all call stuff in a row
-                funcRegister = builder.Move(builder.AllocateRegister(), funcRegister);
-                resultRegister = builder.LdConst(builder.AllocateRegister(), CodeBuilder.NoneConstantIndex);
+                int callId = builder.StartCall();
+                int relativeRegisterAddress = 0;
+                int callSize = 2 + argRegisters.Length;
+                funcRegister = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), funcRegister);
+                resultRegister = builder.LdConst(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), CodeBuilder.NoneConstantIndex);
                 for (int i = 0; i < argRegisters.Length; i++)
                 {
-                    argRegisters[i] = builder.Move(builder.AllocateRegister(), argRegisters[i]);
+                    argRegisters[i] = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), argRegisters[i]);
                 }
 
                 return builder.Call(funcRegister, resultRegister, argRegisters.Length);
