@@ -194,22 +194,27 @@ internal class CodeBuilder
         for (int index = 0; index < singleBlock.Instructions.Count; index++)
         {
             var instr = singleBlock.Instructions[index];
-            if (instr.Opcode == Opcode.Move)
+            switch (instr)
             {
-                if (instr.Source1!.Address == instr.Destination!.Address)
+                case { Opcode: Opcode.Move, Source1: Register src1, Destination: Register dest } when src1.Address == dest.Address:
+                    removeInstruction(singleBlock.Instructions, ref index);
+                    break;
+
+                case
                 {
-                    singleBlock.Instructions.RemoveAt(index);
-                    index--;
-                }
+                    Opcode: Opcode.LdConst,
+                    ImmediateValue: NoneConstantIndex,
+                    Destination: Register dest,
+                } when dest.CallId is not null:
+                    removeInstruction(singleBlock.Instructions, ref index);
+                    break;
             }
-            if (instr.Opcode == Opcode.LdConst)
-            {
-                if (instr.ImmediateValue == NoneConstantIndex && instr.Destination!.CallId != null)
-                {
-                    singleBlock.Instructions.RemoveAt(index);
-                    index--;
-                }
-            }
+        }
+
+        static void removeInstruction(List<IntermediateInstruction> instructions, ref int indexToRemove)
+        {
+            instructions.RemoveAt(indexToRemove);
+            indexToRemove--;
         }
     }
 
