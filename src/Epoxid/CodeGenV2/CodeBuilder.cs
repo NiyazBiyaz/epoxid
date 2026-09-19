@@ -158,7 +158,7 @@ internal class CodeBuilder
 
                 if (!visited.Contains(branchedBlock))
                 {
-                    if (block.EndInstruction.Opcode == Opcode.Brc)
+                    if (block.LastInstruction.Opcode == Opcode.Brc)
                         level = level.Take(level.Count() - branchedBlock.BranchedReferenceCount);
 
                     if (--pendingBranchReferenceCounts[branchedBlock] == 0)
@@ -239,60 +239,29 @@ internal class CodeBuilder
         this.stackSize = stackSize;
     }
 
-    public void Optimize()
-    {
-        foreach (var block in cfgBlocks)
-        {
-            for (int index = 0; index < block.Instructions.Count; index++)
-            {
-                var instr = block.Instructions[index];
-                switch (instr)
-                {
-                    case { Opcode: Opcode.Move, Source1: Register src1, Destination: Register dest } when src1.Address == dest.Address:
-                        removeInstruction(block.Instructions, ref index);
-                        break;
-
-                    case
-                    {
-                        Opcode: Opcode.LdConst,
-                        ImmediateValue: NoneConstantIndex,
-                        Destination: Register dest,
-                    } when dest.CallId is not null:
-                        removeInstruction(block.Instructions, ref index);
-                        break;
-                }
-            }
-        }
-
-        static void removeInstruction(List<IntermediateInstruction> instructions, ref int indexToRemove)
-        {
-            instructions.RemoveAt(indexToRemove);
-            indexToRemove--;
-        }
-    }
-
-    public void ResolveLabels()
-    {
-        int instructionCount = 0;
-        foreach (var block in cfgBlocks)
-        {
-            block.StartInstructionAddress = instructionCount;
-            instructionCount += block.Instructions.Count;
-        }
-    }
-
     public CodeObject Compile()
     {
-        int totalInstructionCount = cfgBlocks.Sum(static b => b.Instructions.Count);
-        var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: totalInstructionCount);
+        List<InstructionRepr> instructions1 = cfgBlocks
+            .SelectMany(b => b.Instructions.Select(i => new InstructionRepr(i, b.Id)))
+            .ToList();
 
-        foreach (var block in cfgBlocks)
+        var instructions2 = new List<InstructionRepr>();
+
+        optimize(instructions1, instructions2, getOptimizedFirstPass);
+        instructions1.Clear();
+        optimize(instructions2, instructions1, getOptimizedSecondPass);
+
+        var optimized = instructions1;
+        for (int i = 0; i < optimized.Count; i++)
         {
-            for (int relativeAddress = 0; relativeAddress < block.Instructions.Count; relativeAddress++)
-            {
-                var irInstruction = block.Instructions[relativeAddress];
-                instructions.Add(irInstruction.Compile(relativeAddress + block.StartInstructionAddress));
-            }
+            optimized[i].Instruction.Address = i;
+        }
+
+        var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: optimized.Count);
+
+        foreach (var repr in optimized)
+        {
+            instructions.Add(repr.Instruction.Compile());
         }
 
         return new()
@@ -302,6 +271,87 @@ internal class CodeBuilder
             StackSize = stackSize,
             Instructions = instructions.ToImmutable(),
         };
+    }
+
+    private readonly record struct InstructionRepr(IntermediateInstruction Instruction, int BlockId);
+
+    private static void optimize(List<InstructionRepr> source, List<InstructionRepr> dest, Func<InstructionRepr, InstructionRepr?, OptimizerResult> pass)
+    {
+        for (int index = 0; index < source.Count; index++)
+        {
+            var instr = source[index];
+
+            OptimizerResult optimized;
+            if (index + 1 < source.Count)
+            {
+                optimized = pass(instr, source[index + 1]);
+            }
+            else
+            {
+                optimized = pass(instr, null);
+            }
+
+            switch (optimized)
+            {
+                case OptimizerResult.Keep:
+                    dest.Add(instr);
+                    break;
+                case OptimizerResult.Remove:
+                    break;
+                case OptimizerResult.RemoveBoth:
+                    index += 1;
+                    break;
+            }
+        }
+    }
+
+    private static OptimizerResult getOptimizedFirstPass(InstructionRepr instr, InstructionRepr? next)
+        => instr.Instruction switch
+        {
+            {
+                Opcode: Opcode.Move,
+                Source1.Address: int src1,
+                Destination.Address: int dest,
+            } when src1 == dest => OptimizerResult.Remove,
+            {
+                Opcode: Opcode.LdConst,
+                ImmediateValue: NoneConstantIndex,
+                Destination.CallId: not null,
+            } => OptimizerResult.Remove,
+            {
+                Opcode: Opcode.Brc or Opcode.BrTr or Opcode.BrFl,
+                JumpLabel.Target.Id: var targetId,
+            } when targetId == next?.BlockId => OptimizerResult.Remove,
+
+            _ => OptimizerResult.Keep,
+        };
+
+    private static OptimizerResult getOptimizedSecondPass(InstructionRepr instr, InstructionRepr? next)
+        => (instr, next) switch
+        {
+            {
+                instr.Instruction:
+                {
+                    Opcode: Opcode.Move,
+                    Destination.Address: int dest,
+                    Source1.Address: int src1,
+                },
+                next.Instruction:
+                {
+                    Opcode: Opcode.Move,
+                    Destination.Address: int nextDest,
+                    Source1.Address: int nextSrc1,
+                }
+            } when dest == nextSrc1 && src1 == nextDest => OptimizerResult.RemoveBoth,
+
+            _ => OptimizerResult.Keep,
+        };
+
+    private enum OptimizerResult
+    {
+        Keep,
+        Remove,
+        RemoveBoth,
     }
 
     private void addInstruction(IntermediateInstruction instruction)
@@ -316,14 +366,14 @@ internal class CodeBuilder
     {
         cfgBlocks.Add(currentBlock);
 
-        if (currentBlock.EndInstruction.Opcode is Opcode.BrFl or Opcode.BrTr or Opcode.Brc)
+        if (currentBlock.LastInstruction.Opcode is Opcode.BrFl or Opcode.BrTr or Opcode.Brc)
         {
-            currentBlock.SetBranchedLabel(currentBlock.EndInstruction.JumpLabel ?? throw new InvalidOperationException());
+            currentBlock.SetBranchedLabel(currentBlock.LastInstruction.JumpLabel ?? throw new InvalidOperationException());
         }
 
         var next = new ControlFlowBlock(cfgBlocks.Count);
 
-        if (currentBlock.EndInstruction.Opcode is not (Opcode.Ret or Opcode.RetC))
+        if (currentBlock.LastInstruction.Opcode is not (Opcode.Ret or Opcode.RetC or Opcode.Brc))
         {
             currentBlock.Next = next;
         }

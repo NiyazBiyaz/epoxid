@@ -43,8 +43,6 @@ public static class Program
         generator.GenerateCode(builder);
 
         builder.ResolveRegisterAddresses();
-        builder.Optimize();
-        builder.ResolveLabels();
 
         var code = builder.Compile();
 

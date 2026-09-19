@@ -14,11 +14,13 @@ internal record IntermediateInstruction
     public int? ImmediateValue { get; init; } = null;
     public int? ArgCount { get; init; } = null;
 
+    public int Address { get; set; }
+
     private int dest => Destination!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Destination}'");
     private int src1 => Source1!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Source1}'");
     private int src2 => Source2!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Source2}'");
     private int immediateValue => ImmediateValue ?? throw new NullReferenceException("ImmediateValue is not set");
-    private int targetAddress => JumpLabel!.Target?.StartInstructionAddress ?? throw new NullReferenceException("Target is not set for the label");
+    private int targetAddress => JumpLabel!.Target?.FirstInstruction.Address ?? throw new NullReferenceException("Target is not set for the label");
     private int argCount => ArgCount ?? throw new NullReferenceException($"ArgCount is not set");
 
     public Label? JumpLabel
@@ -36,7 +38,7 @@ internal record IntermediateInstruction
         }
     } = null;
 
-    public Instruction Compile(int instructionAddress)
+    public Instruction Compile()
     {
         switch (Opcode)
         {
@@ -49,14 +51,14 @@ internal record IntermediateInstruction
             case Opcode.Brc:
                 checked
                 {
-                    short jumpValue = (short)(targetAddress - instructionAddress);
+                    short jumpValue = (short)(targetAddress - Address);
                     return new(Opcode.Brc, 0, jumpValue);
                 }
 
             case var branch and (Opcode.BrFl or Opcode.BrTr):
                 checked
                 {
-                    short jumpValue = (short)(targetAddress - instructionAddress);
+                    short jumpValue = (short)(targetAddress - Address);
                     return new(branch, (byte)dest, jumpValue);
                 }
 

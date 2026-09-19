@@ -16,17 +16,25 @@ internal class ControlFlowBlock(int id)
 
     public ImmutableArray<int> BranchLevel { get; set; }
 
-    public int StartInstructionAddress { get; set; }
-
     public List<IntermediateInstruction> Instructions { get; } = [];
 
-    public IntermediateInstruction EndInstruction
+    public IntermediateInstruction LastInstruction
     {
         get
         {
             Debug.Assert(Instructions.Count > 0);
 
             return Instructions[^1];
+        }
+    }
+
+    public IntermediateInstruction FirstInstruction
+    {
+        get
+        {
+            Debug.Assert(Instructions.Count > 0);
+
+            return Instructions[0];
         }
     }
 
