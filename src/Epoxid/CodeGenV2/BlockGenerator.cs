@@ -98,7 +98,7 @@ internal class BlockGenerator
                     builder.BrFl(elseLabel, conditionRegister);
 
                     generateStatements(builder, whileStmt.Block.GetStatements());
-                    builder.Brc(headLabel);
+                    builder.Brc(headLabel, true);
 
                     builder.PutLabel(elseLabel);
                     if (whileStmt.Else != null)
@@ -157,7 +157,7 @@ internal class BlockGenerator
                     throw new Exception("Invalid program: 'continue' outside of loop");
                 }
 
-                builder.Brc(loop.HeadLabel);
+                builder.Brc(loop.HeadLabel, true);
 
                 break;
             }

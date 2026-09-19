@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
@@ -20,7 +21,7 @@ internal class CodeBuilder
 
     private int callCount = 0;
 
-    public readonly List<ControlFlowBlock> CfgBlocks = [];
+    private readonly List<ControlFlowBlock> cfgBlocks = [];
 
     private ControlFlowBlock currentBlock = new(0);
 
@@ -37,7 +38,7 @@ internal class CodeBuilder
             endCfgBlock();
 
         label.Target = currentBlock;
-        currentBlock.LabelsCount++;
+        currentBlock.AddReferredLabel(label);
 
         return label;
     }
@@ -102,28 +103,79 @@ internal class CodeBuilder
 
     public void ResolveRegisterAddresses()
     {
-        var singleBlock = CfgBlocks[0];
+        var firstBlock = cfgBlocks[0];
 
-        for (int instructionNumber = 0; instructionNumber < singleBlock.Instructions.Count; instructionNumber++)
+        var visited = new HashSet<ControlFlowBlock>();
+        var pendingBranchReferenceCounts = cfgBlocks
+            .Select(static block => (block, block.BranchedReferenceCount))
+            .ToDictionary();
+
+        void markupRegistersOfBlock(ControlFlowBlock block, IEnumerable<int> level)
         {
-            var instruction = singleBlock.Instructions[instructionNumber];
+            visited.Add(block);
 
-            instruction.Destination?.Usage.AddUsage(instructionNumber);
-            instruction.Source1?.Usage.AddUsage(instructionNumber);
-            instruction.Source2?.Usage.AddUsage(instructionNumber);
+            block.BranchLevel = [.. level, block.Id];
 
-            if (instruction.ArgCount != null)
+            for (int instructionNumber = 0; instructionNumber < block.Instructions.Count; instructionNumber++)
             {
-                var callRegs = registers.Where(r => r.CallId == instruction.Destination!.CallId);
+                var instruction = block.Instructions[instructionNumber];
 
-                foreach (var reg in callRegs)
+                safelyAddUsage(block, instructionNumber, instruction.Destination);
+                safelyAddUsage(block, instructionNumber, instruction.Source1);
+                safelyAddUsage(block, instructionNumber, instruction.Source2);
+
+                if (instruction.ArgCount != null)
                 {
-                    if (reg.CallRelativeAddress < 2)
-                        continue;
-                    reg.Usage.AddUsage(instructionNumber);
+                    var callRegisters = registers.Where(r => r.CallId == instruction.Destination!.CallId);
+
+                    foreach (var reg in callRegisters)
+                    {
+                        // First two registers of call instruction already set as used
+                        if (reg.CallRelativeAddress < 2)
+                            continue;
+
+                        safelyAddUsage(block, instructionNumber, reg);
+                    }
+                }
+
+                static void safelyAddUsage(ControlFlowBlock block, int instructionNumber, Register? register)
+                {
+                    if (register == null)
+                        return;
+
+                    if (!register.BlocksUsages.TryGetValue(block, out var usage))
+                    {
+                        usage = register.BlocksUsages[block] = new();
+                    }
+
+                    usage.AddUsedInstruction(instructionNumber);
+                }
+            }
+
+            if (block.Branched is ControlFlowBlock branchedBlock)
+            {
+                level = level.Append(block.Id);
+
+                if (!visited.Contains(branchedBlock))
+                {
+                    if (block.EndInstruction.Opcode == Opcode.Brc)
+                        level = level.Take(level.Count() - branchedBlock.BranchedReferenceCount);
+
+                    if (--pendingBranchReferenceCounts[branchedBlock] == 0)
+                        markupRegistersOfBlock(branchedBlock, level);
+                }
+            }
+            if (block.Next is ControlFlowBlock nextBlock)
+            {
+                if (pendingBranchReferenceCounts[nextBlock] == 0 && !visited.Contains(nextBlock))
+                {
+                    level = level.Take(level.Count() - nextBlock.BranchedReferenceCount);
+                    markupRegistersOfBlock(nextBlock, level);
                 }
             }
         }
+
+        markupRegistersOfBlock(firstBlock, []);
 
         for (int leftIndex = 0; leftIndex < registers.Count; leftIndex++)
         {
@@ -132,7 +184,7 @@ internal class CodeBuilder
             {
                 var otherRegister = registers[rightIndex];
 
-                if (thisRegister.Usage.CollidesWith(otherRegister.Usage))
+                if (thisRegister.CollidesWith(otherRegister))
                 {
                     thisRegister.LifetimeCollisions.Add(otherRegister);
                     otherRegister.LifetimeCollisions.Add(thisRegister);
@@ -189,25 +241,26 @@ internal class CodeBuilder
 
     public void Optimize()
     {
-        var singleBlock = CfgBlocks[0];
-
-        for (int index = 0; index < singleBlock.Instructions.Count; index++)
+        foreach (var block in cfgBlocks)
         {
-            var instr = singleBlock.Instructions[index];
-            switch (instr)
+            for (int index = 0; index < block.Instructions.Count; index++)
             {
-                case { Opcode: Opcode.Move, Source1: Register src1, Destination: Register dest } when src1.Address == dest.Address:
-                    removeInstruction(singleBlock.Instructions, ref index);
-                    break;
-
-                case
+                var instr = block.Instructions[index];
+                switch (instr)
                 {
-                    Opcode: Opcode.LdConst,
-                    ImmediateValue: NoneConstantIndex,
-                    Destination: Register dest,
-                } when dest.CallId is not null:
-                    removeInstruction(singleBlock.Instructions, ref index);
-                    break;
+                    case { Opcode: Opcode.Move, Source1: Register src1, Destination: Register dest } when src1.Address == dest.Address:
+                        removeInstruction(block.Instructions, ref index);
+                        break;
+
+                    case
+                    {
+                        Opcode: Opcode.LdConst,
+                        ImmediateValue: NoneConstantIndex,
+                        Destination: Register dest,
+                    } when dest.CallId is not null:
+                        removeInstruction(block.Instructions, ref index);
+                        break;
+                }
             }
         }
 
@@ -221,7 +274,7 @@ internal class CodeBuilder
     public void ResolveLabels()
     {
         int instructionCount = 0;
-        foreach (var block in CfgBlocks)
+        foreach (var block in cfgBlocks)
         {
             block.StartInstructionAddress = instructionCount;
             instructionCount += block.Instructions.Count;
@@ -230,18 +283,24 @@ internal class CodeBuilder
 
     public CodeObject Compile()
     {
-        var singleBlock = CfgBlocks[0];
+        int totalInstructionCount = cfgBlocks.Sum(static b => b.Instructions.Count);
+        var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: totalInstructionCount);
 
-        var instructions = singleBlock
-            .Instructions
-            .Select((instr, relativeAddress) => instr.Compile(relativeAddress + singleBlock.StartInstructionAddress));
+        foreach (var block in cfgBlocks)
+        {
+            for (int relativeAddress = 0; relativeAddress < block.Instructions.Count; relativeAddress++)
+            {
+                var irInstruction = block.Instructions[relativeAddress];
+                instructions.Add(irInstruction.Compile(relativeAddress + block.StartInstructionAddress));
+            }
+        }
 
         return new()
         {
             Constants = [.. constants],
             VarNames = [.. freeVariables],
             StackSize = stackSize,
-            Instructions = [.. instructions],
+            Instructions = instructions.ToImmutable(),
         };
     }
 
@@ -255,14 +314,14 @@ internal class CodeBuilder
 
     private void endCfgBlock()
     {
-        CfgBlocks.Add(currentBlock);
+        cfgBlocks.Add(currentBlock);
 
-        if (currentBlock.EndInstruction.Opcode is Opcode.BrFl or Opcode.BrTr)
+        if (currentBlock.EndInstruction.Opcode is Opcode.BrFl or Opcode.BrTr or Opcode.Brc)
         {
             currentBlock.SetBranchedLabel(currentBlock.EndInstruction.JumpLabel ?? throw new InvalidOperationException());
         }
 
-        var next = new ControlFlowBlock(CfgBlocks.Count);
+        var next = new ControlFlowBlock(cfgBlocks.Count);
 
         if (currentBlock.EndInstruction.Opcode is not (Opcode.Ret or Opcode.RetC))
         {
@@ -353,7 +412,7 @@ internal class CodeBuilder
         addInstruction(instr);
     }
 
-    public void Brc(Label label)
+    public void Brc(Label label, bool backwardJump = false)
     {
         var instr = new IntermediateInstruction
         {
@@ -361,6 +420,9 @@ internal class CodeBuilder
             JumpLabel = label,
         };
         addInstruction(instr);
+
+        if (!backwardJump)
+            label.BranchUsageCount++;
     }
 
     public void BrTr(Label label, Register condition)
@@ -372,6 +434,8 @@ internal class CodeBuilder
             Destination = condition,
         };
         addInstruction(instr);
+
+        label.BranchUsageCount++;
     }
 
     public void BrFl(Label label, Register condition)
@@ -383,6 +447,8 @@ internal class CodeBuilder
             Destination = condition,
         };
         addInstruction(instr);
+
+        label.BranchUsageCount++;
     }
 
     #endregion

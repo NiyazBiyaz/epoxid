@@ -44,6 +44,7 @@ public static class Program
 
         builder.ResolveRegisterAddresses();
         builder.Optimize();
+        builder.ResolveLabels();
 
         var code = builder.Compile();
 

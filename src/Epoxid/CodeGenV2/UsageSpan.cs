@@ -5,7 +5,7 @@ internal class UsageSpan
     public int First { get; private set; } = -1;
     public int Last { get; private set; } = -1;
 
-    public void AddUsage(int newUsage)
+    public void AddUsedInstruction(int newUsage)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(newUsage, nameof(newUsage));
         if (newUsage < First || newUsage < Last)
