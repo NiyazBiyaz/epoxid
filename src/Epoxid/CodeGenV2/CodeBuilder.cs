@@ -283,9 +283,20 @@ internal class CodeBuilder
         optimize(instructions2, instructions1, getOptimizedSecondPass);
 
         var optimized = instructions1;
-        for (int i = 0; i < optimized.Count; i++)
+
+        // Optimizer doesn't patches back cfg blocks, so if block was deleted completely,
+        // branch that was referred to this block wouldn't be able to locate jump label
+        // correctly. So this is why this address marking that strange.
+        int previousBlockId = 0;
+        for (int instructionNumber = 0; instructionNumber < optimized.Count; instructionNumber++)
         {
-            optimized[i].Instruction.Address = i;
+            var repr = optimized[instructionNumber];
+            repr.Instruction.Address = instructionNumber;
+
+            while (previousBlockId < repr.BlockId)
+            {
+                cfgBlocks[++previousBlockId].FirstInstruction.Address = instructionNumber;
+            }
         }
 
         var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: optimized.Count);

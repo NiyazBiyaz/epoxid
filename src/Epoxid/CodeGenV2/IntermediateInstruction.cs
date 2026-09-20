@@ -20,7 +20,7 @@ internal record IntermediateInstruction
     private int src1 => Source1!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Source1}'");
     private int src2 => Source2!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Source2}'");
     private int immediateValue => ImmediateValue ?? throw new NullReferenceException("ImmediateValue is not set");
-    private int targetAddress => JumpLabel!.Target?.FirstInstruction.Address ?? throw new NullReferenceException("Target is not set for the label");
+    private int targetAddress => JumpLabel?.Target?.FirstInstruction.Address ?? throw new NullReferenceException("Target is not set for the label");
     private int argCount => ArgCount ?? throw new NullReferenceException($"ArgCount is not set");
 
     public Label? JumpLabel

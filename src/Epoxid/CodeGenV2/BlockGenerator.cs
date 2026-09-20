@@ -133,8 +133,11 @@ internal class BlockGenerator
                     throw new NotImplementedException();
                 }
 
-                var result = locals[simpleAssignment.Target.RawString] = getExpressionRegister(builder, expression);
-                storeVariable(builder, result, simpleAssignment.Target.RawString);
+                string variableName = simpleAssignment.Target.RawString;
+                var variableRegister = ensureLocal(builder, variableName);
+
+                getExpressionRegister(builder, expression, variableRegister);
+                storeVariable(builder, variableRegister, variableName);
 
                 break;
             }
@@ -191,9 +194,9 @@ internal class BlockGenerator
         }
     }
 
-    private Register getExpressionRegister(CodeBuilder builder, INamedExpressionView expression)
+    private Register getExpressionRegister(CodeBuilder builder, INamedExpressionView expression, Register? resultRegister = null)
     {
-        var resultRegister = builder.AllocateRegister();
+        resultRegister ??= builder.AllocateRegister();
 
         switch (expression)
         {
@@ -533,5 +536,17 @@ internal class BlockGenerator
         {
             builder.AddToLoopLifetime(variableValue);
         }
+    }
+
+    // TODO: remove it
+    private Register ensureLocal(CodeBuilder builder, string localName)
+    {
+        if (!locals.TryGetValue(localName, out var register))
+        {
+            register = builder.AllocateRegister();
+            locals[localName] = register;
+        }
+
+        return register;
     }
 }
