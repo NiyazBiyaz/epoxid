@@ -5,19 +5,19 @@ internal class UsageSpan
     public int First { get; private set; } = -1;
     public int Last { get; private set; } = -1;
 
-    public void AddUsedInstruction(int newUsage)
+    public void AddUsagePoint(int pointNumber)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(newUsage, nameof(newUsage));
-        if (newUsage < First || newUsage < Last)
-            throw new ArgumentOutOfRangeException(nameof(newUsage), "new usage has less lifetime than already set");
+        ArgumentOutOfRangeException.ThrowIfNegative(pointNumber, nameof(pointNumber));
+        if (pointNumber < First || pointNumber < Last)
+            return;
 
-        if (First == -1 || First == newUsage)
+        if (First == -1 || First == pointNumber)
         {
-            First = newUsage;
+            First = pointNumber;
         }
         else
         {
-            Last = newUsage;
+            Last = pointNumber;
         }
     }
 
@@ -28,4 +28,10 @@ internal class UsageSpan
 
         return int.Max(First, other.First) < int.Min(Last, other.Last);
     }
+
+    public static readonly UsageSpan Full = new()
+    {
+        First = 0,
+        Last = int.MaxValue
+    };
 }

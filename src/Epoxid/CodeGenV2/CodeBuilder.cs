@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
@@ -27,6 +28,11 @@ internal class CodeBuilder
 
     private int stackSize = 0;
 
+    private bool pendingLoopLifetime = false;
+
+    private readonly HashSet<Register> loopLifetimeRegisters = [];
+    private ControlFlowBlock? loopLifetimeStart;
+
     public const int NoneConstantIndex = 0;
     public const int TrueConstantIndex = 1;
     public const int FalseConstantIndex = 2;
@@ -36,6 +42,12 @@ internal class CodeBuilder
     {
         if (currentBlock.Instructions.Count != 0)
             endCfgBlock();
+
+        if (pendingLoopLifetime)
+        {
+            pendingLoopLifetime = false;
+            loopLifetimeStart = currentBlock;
+        }
 
         label.Target = currentBlock;
         currentBlock.AddReferredLabel(label);
@@ -66,7 +78,26 @@ internal class CodeBuilder
         return reg;
     }
 
-    public int StartCall() => callCount++;
+    public void BeginLoopLifetime()
+    {
+        loopLifetimeRegisters.Clear();
+        pendingLoopLifetime = true;
+    }
+
+    public void EndLoopLifetime()
+    {
+        Debug.Assert(loopLifetimeStart != null);
+
+        foreach (var register in loopLifetimeRegisters)
+        {
+            register.BlocksUsages.Add(loopLifetimeStart, UsageSpan.Full);
+            register.BlocksUsages.Add(currentBlock, UsageSpan.Full);
+        }
+    }
+
+    public void AddToLoopLifetime(Register register) => loopLifetimeRegisters.Add(register);
+
+    public int BeginNewCall() => callCount++;
 
     public int AddVariable(string variable)
     {
@@ -148,7 +179,7 @@ internal class CodeBuilder
                         usage = register.BlocksUsages[block] = new();
                     }
 
-                    usage.AddUsedInstruction(instructionNumber);
+                    usage.AddUsagePoint(instructionNumber);
                 }
             }
 

@@ -14,6 +14,8 @@ internal class BlockGenerator
     private readonly Stack<IntermediateLoop> loops = [];
     private readonly Dictionary<string, Register> locals = [];
 
+    private bool inLoop => loops.Count > 0;
+
     private readonly IEnumerable<IStatementView> blockStatements;
 
     public BlockGenerator(FileView file)
@@ -28,11 +30,6 @@ internal class BlockGenerator
 
     public void GenerateCode(CodeBuilder builder)
     {
-        // Redundant instruction to make CFG analysis on entrypoint easier.
-        // Will be removed by optimizer.
-        var fakeRegister = builder.AllocateRegister();
-        builder.Move(fakeRegister, fakeRegister);
-
         generateStatements(builder, blockStatements);
         builder.RetC(CodeBuilder.NoneConstantIndex);
     }
@@ -91,7 +88,7 @@ internal class BlockGenerator
                     var headLabel = new Label();
                     var elseLabel = new Label();
                     var endLabel = new Label();
-                    loops.Push(new IntermediateLoop(headLabel, endLabel));
+                    beginLoop(builder, new IntermediateLoop(headLabel, endLabel));
 
                     builder.PutLabel(headLabel);
                     var conditionRegister = getExpressionRegister(builder, whileStmt.Condition);
@@ -107,6 +104,8 @@ internal class BlockGenerator
                     }
 
                     builder.PutLabel(endLabel);
+
+                    endLoop(builder);
 
                     break;
                 }
@@ -134,7 +133,8 @@ internal class BlockGenerator
                     throw new NotImplementedException();
                 }
 
-                locals[simpleAssignment.Target.RawString] = getExpressionRegister(builder, expression);
+                var result = locals[simpleAssignment.Target.RawString] = getExpressionRegister(builder, expression);
+                storeVariable(builder, result, simpleAssignment.Target.RawString);
 
                 break;
             }
@@ -199,7 +199,8 @@ internal class BlockGenerator
         {
             case AssignmentExpressionView assignment:
             {
-                locals[assignment.Target.RawString] = getExpressionRegister(builder, assignment.Value);
+                resultRegister = locals[assignment.Target.RawString] = getExpressionRegister(builder, assignment.Value);
+                storeVariable(builder, resultRegister, assignment.Target.RawString);
                 break;
             }
             case IfExpressionView ifExpression:
@@ -218,7 +219,7 @@ internal class BlockGenerator
 
                 builder.PutLabel(endLabel);
 
-                return resultRegister;
+                break;
             }
             case DisjunctionView disjunction:
             {
@@ -323,6 +324,17 @@ internal class BlockGenerator
                         default:
                             throw new UnreachableException();
                     }
+
+                    // Place all call stuff in a row
+                    int callId = builder.BeginNewCall();
+                    int relativeRegisterAddress = 0;
+                    int callSize = 2 + argRegisters.Length;
+                    funcRegister = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), funcRegister);
+                    resultRegister = builder.LdConst(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), CodeBuilder.NoneConstantIndex);
+                    for (int i = 0; i < argRegisters.Length; i++)
+                    {
+                        argRegisters[i] = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), argRegisters[i]);
+                    }
                 }
                 finally
                 {
@@ -330,18 +342,8 @@ internal class BlockGenerator
                         ArrayPool<Register>.Shared.Return(argRegistersArray);
                 }
 
-                // Place all call stuff in a row
-                int callId = builder.StartCall();
-                int relativeRegisterAddress = 0;
-                int callSize = 2 + argRegisters.Length;
-                funcRegister = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), funcRegister);
-                resultRegister = builder.LdConst(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), CodeBuilder.NoneConstantIndex);
-                for (int i = 0; i < argRegisters.Length; i++)
-                {
-                    argRegisters[i] = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), argRegisters[i]);
-                }
-
-                return builder.Call(funcRegister, resultRegister, argRegisters.Length);
+                builder.Call(funcRegister, resultRegister, argRegisters.Length);
+                break;
             }
 
             case AtomPrimaryView atom:
@@ -503,5 +505,33 @@ internal class BlockGenerator
         }
 
         return builder.LdConst(resultRegister, builder.AddConstant(new EpString(strValue)));
+    }
+
+    private void beginLoop(CodeBuilder builder, IntermediateLoop newLoop)
+    {
+        if (loops.Count == 0)
+        {
+            builder.BeginLoopLifetime();
+        }
+
+        loops.Push(newLoop);
+    }
+
+    private void endLoop(CodeBuilder builder)
+    {
+        loops.Pop();
+
+        if (loops.Count == 0)
+        {
+            builder.EndLoopLifetime();
+        }
+    }
+
+    private void storeVariable(CodeBuilder builder, Register variableValue, string variableName)
+    {
+        if (inLoop)
+        {
+            builder.AddToLoopLifetime(variableValue);
+        }
     }
 }
