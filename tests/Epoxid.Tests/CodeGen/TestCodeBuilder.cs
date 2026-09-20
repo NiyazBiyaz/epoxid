@@ -3,7 +3,7 @@ using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
 
-namespace Epoxid.Tests.SyntaxAnalysis;
+namespace Epoxid.Tests.CodeGen;
 
 public class TestCodeBuilder
 {

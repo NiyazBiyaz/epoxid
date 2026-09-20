@@ -4,7 +4,7 @@ using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
 
-namespace Epoxid.Tests.SyntaxAnalysis;
+namespace Epoxid.Tests.CodeGen;
 
 public class TestFunctionValidator
 {
