@@ -185,7 +185,8 @@ internal class CodeBuilder
 
             if (block.Branched is ControlFlowBlock branchedBlock)
             {
-                level = level.Append(block.Id);
+                if (block.Branched != block.Next)
+                    level = level.Append(block.Id);
 
                 if (!visited.Contains(branchedBlock))
                 {

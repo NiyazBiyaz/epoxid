@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Epoxid.CodeGenV2;
 
 internal class Register : IEquatable<Register>
@@ -44,11 +46,14 @@ internal class Register : IEquatable<Register>
             }
         }
 
-        var thisFirstBlock = BlocksUsages.GetAt(0).Key;
-        var thisLastBlock = BlocksUsages.GetAt(BlocksUsages.Count - 1).Key;
+        int thisMostCommonPrefixLength = getMostCommonPrefixLength();
+        int otherMostCommonPrefixLength = other.getMostCommonPrefixLength();
 
-        var otherFirstBlock = other.BlocksUsages.GetAt(0).Key;
-        var otherLastBlock = other.BlocksUsages.GetAt(other.BlocksUsages.Count - 1).Key;
+        var thisFirstBlock = BlocksUsages.Keys.MinBy(b => b.BranchLevel.GetAtOrLast(thisMostCommonPrefixLength))!;
+        var thisLastBlock = BlocksUsages.Keys.MaxBy(b => b.BranchLevel.GetAtOrLast(thisMostCommonPrefixLength))!;
+
+        var otherFirstBlock = other.BlocksUsages.Keys.MinBy(b => b.BranchLevel.GetAtOrLast(otherMostCommonPrefixLength))!;
+        var otherLastBlock = other.BlocksUsages.Keys.MaxBy(b => b.BranchLevel.GetAtOrLast(otherMostCommonPrefixLength))!;
 
         if (thisFirstBlock == otherFirstBlock)
         {
@@ -58,9 +63,6 @@ internal class Register : IEquatable<Register>
         {
             return true;
         }
-
-        int thisMostCommonPrefixLength = getMostCommonPrefixLength();
-        int otherMostCommonPrefixLength = other.getMostCommonPrefixLength();
 
         bool thisFirstBlockIsDetermined = thisFirstBlock.BranchLevel.Length == thisMostCommonPrefixLength + 1;
         bool thisLastBlockIsDetermined = thisLastBlock.BranchLevel.Length == thisMostCommonPrefixLength + 1;
@@ -89,7 +91,7 @@ internal class Register : IEquatable<Register>
     private int getMostCommonPrefixLength()
     {
         var left = BlocksUsages.GetAt(0).Key.BranchLevel.AsSpan();
-        int mostCommonPrefixLength = default;
+        int mostCommonPrefixLength = left.Length;
         for (int i = 1; i < BlocksUsages.Count; i++)
         {
             var right = BlocksUsages.GetAt(i).Key.BranchLevel.AsSpan();
@@ -106,4 +108,18 @@ internal class Register : IEquatable<Register>
 
     public required int Id { get; init; }
     public override string ToString() => $"r{Id}";
+}
+
+file static class ImmutableArrayExtensions
+{
+    extension(ImmutableArray<int> level)
+    {
+        public int GetAtOrLast(int index)
+        {
+            if (index < level.Length)
+                return level[index];
+            else
+                return level[^1];
+        }
+    }
 }

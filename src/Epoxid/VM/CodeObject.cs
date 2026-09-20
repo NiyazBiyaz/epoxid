@@ -94,9 +94,9 @@ internal class CodeObject
                     break;
 
                 case Opcode.Call or Opcode.CallK:
-                    sb.Append(formatRegister(instr.RegSrc1));
-                    sb.Append(delimiter);
                     sb.Append(formatRegister(instr.RegDest));
+                    sb.Append(delimiter);
+                    sb.Append(formatRegister(instr.RegSrc1));
                     sb.Append(delimiter);
                     sb.Append(instr.RegSrc2);
 

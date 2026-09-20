@@ -1,0 +1,12 @@
+phrase = input("Say something: ")
+number = 1
+while number < 31:
+    if number % 3 == 0 and number % 5 == 0:
+        print("Bau bau!")
+    elif number % 3 == 0:
+        print("Fluffy")
+    elif number % 5 == 0:
+        print("Fuzzy")
+    else:
+        print(number, phrase)
+    number = number + 1

@@ -95,6 +95,9 @@ internal class BlockGenerator
                     builder.BrFl(elseLabel, conditionRegister);
 
                     generateStatements(builder, whileStmt.Block.GetStatements());
+
+                    endLoop(builder);
+
                     builder.Brc(headLabel, true);
 
                     builder.PutLabel(elseLabel);
@@ -104,8 +107,6 @@ internal class BlockGenerator
                     }
 
                     builder.PutLabel(endLabel);
-
-                    endLoop(builder);
 
                     break;
                 }
@@ -333,7 +334,12 @@ internal class BlockGenerator
                     int relativeRegisterAddress = 0;
                     int callSize = 2 + argRegisters.Length;
                     funcRegister = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), funcRegister);
-                    resultRegister = builder.LdConst(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), CodeBuilder.NoneConstantIndex);
+
+                    resultRegister.CallId = callId;
+                    resultRegister.CallRelativeAddress = relativeRegisterAddress++;
+                    resultRegister.CallCount = callSize;
+                    builder.LdConst(resultRegister, CodeBuilder.NoneConstantIndex);
+
                     for (int i = 0; i < argRegisters.Length; i++)
                     {
                         argRegisters[i] = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), argRegisters[i]);
@@ -357,9 +363,7 @@ internal class BlockGenerator
 
                     YieldGroupExpressionView yieldGroupExpression => throw new NotImplementedException(),
 
-                    NameAtomView nameAtom => locals.TryGetValue(nameAtom.Value.RawString, out var localRegister)
-                        ? localRegister
-                        : builder.LdVar(resultRegister, builder.AddVariable(nameAtom.Value.RawString)),
+                    NameAtomView nameAtom => getVariable(builder, nameAtom.Value.RawString),
 
                     NumberAtomView number => builder.LdConst(resultRegister,
                         builder.AddConstant(NumberParser.GetNumberType(number.Value.RawString) switch
@@ -536,6 +540,23 @@ internal class BlockGenerator
         {
             builder.AddToLoopLifetime(variableValue);
         }
+    }
+
+    private Register getVariable(CodeBuilder builder, string variableName, Register? resultRegister = null)
+    {
+        if (!locals.TryGetValue(variableName, out var localRegister))
+        {
+            localRegister = resultRegister;
+            localRegister ??= builder.AllocateRegister();
+            builder.LdVar(localRegister, builder.AddVariable(variableName));
+        }
+
+        if (inLoop)
+        {
+            builder.AddToLoopLifetime(localRegister);
+        }
+
+        return localRegister;
     }
 
     // TODO: remove it
