@@ -211,7 +211,7 @@ internal class BlockGenerator
             {
                 if (!loops.TryPeek(out var loop))
                 {
-                    throw new Exception("Invalid program: 'break' outside of loop");
+                    throw new SyntaxErrorException("Invalid program: 'break' outside of loop");
                 }
 
                 builder.Brc(loop.EndLabel);
@@ -222,7 +222,7 @@ internal class BlockGenerator
             {
                 if (!loops.TryPeek(out var loop))
                 {
-                    throw new Exception("Invalid program: 'continue' outside of loop");
+                    throw new SyntaxErrorException("Invalid program: 'continue' outside of loop");
                 }
 
                 builder.Brc(loop.HeadLabel, true);
