@@ -40,11 +40,20 @@ internal class Engine
                     break;
 
                 case Opcode.LdVar:
+                {
                     var variable = environment.SearchVariable(code.VarNames[instr.Immediate16])
                         ?? throw new Exception("NameError: TODO");
 
                     frame[instr.RegDest] = variable;
                     break;
+                }
+
+                case Opcode.StVar:
+                {
+                    environment.Module.Bind(code.VarNames[instr.Immediate16], frame[instr.RegDest]);
+
+                    break;
+                }
 
                 case Opcode.Ret:
                     result = frame[instr.RegSrc1];

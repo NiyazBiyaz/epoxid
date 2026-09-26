@@ -119,6 +119,12 @@ internal enum Opcode : byte
     LdVar,
 
     /// <summary>
+    /// <b>St</b>ores value from <see cref="Instruction.RegDest"/> to the environment <b>var</b>iable whose name is
+    /// stored in <see cref="CodeObject.VarNames"/> with index stored in <see cref="Instruction.Immediate16"/>.
+    /// </summary>
+    StVar,
+
+    /// <summary>
     /// <b>L</b>oa<b>d</b>s argument passed to the frame with index <see cref="Instruction.RegSrc1"/> and stores it
     /// in the <see cref="Instruction.RegDest"/>
     /// </summary>

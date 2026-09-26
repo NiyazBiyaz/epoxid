@@ -1,9 +1,11 @@
 using System.Buffers;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
 using Epoxid.Runtime.Objects;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
+using Epoxid.SyntaxAnalysis.Common.Ast;
 using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.VM;
 
@@ -12,7 +14,7 @@ namespace Epoxid.CodeGenV2;
 internal class BlockGenerator
 {
     private readonly Stack<IntermediateLoop> loops = [];
-    private readonly Dictionary<string, Register> locals = [];
+    private readonly Dictionary<string, Variable> variables = [];
 
     private bool inLoop => loops.Count > 0;
 
@@ -21,15 +23,78 @@ internal class BlockGenerator
     public BlockGenerator(FileView file)
     {
         blockStatements = file.Statements;
+
+        scanVariables(true);
     }
 
     public BlockGenerator(BlockView block)
     {
         blockStatements = block.GetStatements();
+
+        scanVariables(false);
+    }
+
+    private void scanVariables(bool initGlobal)
+    {
+        var topLevelStmts = blockStatements.GetTopLevelStatements().ToImmutableArray();
+
+        var locallyAssigned = topLevelStmts
+            .SelectMany(stmt => stmt.ChildrenAndSelf())
+            .SelectMany<IRedView, string>(ast => ast switch
+            {
+                AssignmentExpressionView assignmentExpression => [assignmentExpression.Target.RawString],
+                AssignmentView assignment => assignment switch
+                {
+                    SimpleAssignmentView simple => [simple.Target.RawString],
+                    AnnotatedParenthesizedAssignmentView view => throw new NotImplementedException(),
+                    CascadeAssignmentView view => throw new NotImplementedException(),
+                    AnnotatedAssignmentView view => throw new NotImplementedException(),
+                    AugmentedAssignmentView view => throw new NotImplementedException(),
+                    AnnotatedSubscriptAttributeAssignmentView view => throw new NotImplementedException(),
+                    _ => throw new UnreachableException(),
+                },
+
+                FunctionDefView func => [func.FunctionDef.Name.RawString],
+
+                ClassDefView classDef => [classDef.Name.RawString],
+
+                _ => [],
+            })
+            .ToHashSet();
+
+        foreach (var name in locallyAssigned)
+        {
+            var variable = new Variable()
+            {
+                Name = name,
+                Kind = initGlobal ? VariableKind.Global : VariableKind.Local,
+            };
+            variables.Add(name, variable);
+        }
+
+        foreach (var funcOrClassDef in topLevelStmts)
+        {
+            if (funcOrClassDef is FunctionDefView funcDef)
+            {
+                // TODO
+            }
+            else if (funcOrClassDef is ClassDefView classDef)
+            {
+                // TODO
+            }
+        }
     }
 
     public void GenerateCode(CodeBuilder builder)
     {
+        foreach (var variable in variables.Values)
+        {
+            if (variable.Kind == VariableKind.Local)
+            {
+                variable.Register = builder.AllocateRegister();
+            }
+        }
+
         generateStatements(builder, blockStatements);
         builder.RetC(CodeBuilder.NoneConstantIndex);
     }
@@ -134,11 +199,10 @@ internal class BlockGenerator
                     throw new NotImplementedException();
                 }
 
-                string variableName = simpleAssignment.Target.RawString;
-                var variableRegister = ensureLocal(builder, variableName);
+                var variable = variables[simpleAssignment.Target.RawString];
 
-                getExpressionRegister(builder, expression, variableRegister);
-                storeVariable(builder, variableRegister, variableName);
+                var result = getExpressionRegister(builder, expression, variable.Register);
+                storeVariable(builder, variable, result);
 
                 break;
             }
@@ -203,8 +267,9 @@ internal class BlockGenerator
         {
             case AssignmentExpressionView assignment:
             {
-                resultRegister = locals[assignment.Target.RawString] = getExpressionRegister(builder, assignment.Value);
-                storeVariable(builder, resultRegister, assignment.Target.RawString);
+                var variable = variables[assignment.Target.RawString];
+                var result = getExpressionRegister(builder, assignment.Value, variable.Register);
+                storeVariable(builder, variable, result);
                 break;
             }
             case IfExpressionView ifExpression:
@@ -534,40 +599,45 @@ internal class BlockGenerator
         }
     }
 
-    private void storeVariable(CodeBuilder builder, Register variableValue, string variableName)
+    private void storeVariable(CodeBuilder builder, Variable variable, Register source)
     {
-        if (inLoop)
+        if (variable.Kind == VariableKind.Global)
         {
-            builder.AddToLoopLifetime(variableValue);
+            builder.StVar(source, builder.AddVariable(variable.Name));
+        }
+        else if (variable.Kind == VariableKind.Cell)
+        {
+            throw new NotImplementedException();
+            // builder.StCell(variableValue, variable.CellNumber);
+        }
+        else if (inLoop)
+        {
+            Debug.Assert(variable.Register != null);
+
+            builder.AddToLoopLifetime(variable.Register);
         }
     }
 
-    private Register getVariable(CodeBuilder builder, string variableName, Register? resultRegister = null)
+    private Register getVariable(CodeBuilder builder, string variableName)
     {
-        if (!locals.TryGetValue(variableName, out var localRegister))
+        var resultRegister = builder.AllocateRegister();
+
+        if (variables.TryGetValue(variableName, out var variable))
         {
-            localRegister = resultRegister;
-            localRegister ??= builder.AllocateRegister();
-            builder.LdVar(localRegister, builder.AddVariable(variableName));
+            if (variable.Kind == VariableKind.Cell)
+            {
+                throw new NotImplementedException();
+                // return builder.LdCell(resultRegister, variable.CellNumber);
+            }
+            else if (variable.Kind == VariableKind.Local && inLoop)
+            {
+                Debug.Assert(variable.Register != null);
+
+                builder.AddToLoopLifetime(variable.Register);
+                return variable.Register;
+            }
         }
 
-        if (inLoop)
-        {
-            builder.AddToLoopLifetime(localRegister);
-        }
-
-        return localRegister;
-    }
-
-    // TODO: remove it
-    private Register ensureLocal(CodeBuilder builder, string localName)
-    {
-        if (!locals.TryGetValue(localName, out var register))
-        {
-            register = builder.AllocateRegister();
-            locals[localName] = register;
-        }
-
-        return register;
+        return builder.LdVar(resultRegister, builder.AddVariable(variableName));
     }
 }

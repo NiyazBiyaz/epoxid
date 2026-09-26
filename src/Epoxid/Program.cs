@@ -50,8 +50,11 @@ public static class Program
         Console.WriteLine("-------------");
 
         var engine = new Engine();
-        var env = new Runtime.Environment();
-        env.Scopes.Push(Builtins.BuiltinsScope);
+        var env = new Runtime.Environment()
+        {
+            Builtins = Builtins.BuiltinsScope,
+            Module = new(),
+        };
 
         engine.RunCode(code, [], env);
 

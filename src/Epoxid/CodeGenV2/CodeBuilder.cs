@@ -455,6 +455,17 @@ internal class CodeBuilder
         return dest;
     }
 
+    public void StVar(Register source, int varIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.StVar,
+            Destination = source,
+            ImmediateValue = varIndex,
+        };
+        addInstruction(instr);
+    }
+
     public Register LdConst(Register dest, int varIndex)
     {
         var instr = new IntermediateInstruction

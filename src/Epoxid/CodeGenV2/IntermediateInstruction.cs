@@ -40,60 +40,30 @@ internal record IntermediateInstruction
 
     public Instruction Compile()
     {
-        switch (Opcode)
+        checked
         {
-            case var reg2Reg when reg2Reg.IsRegisterToRegister:
-                checked
-                {
-                    return new(reg2Reg, (byte)dest, (byte)src1, (byte)src2);
-                }
+            return Opcode switch
+            {
+                var reg2Reg when reg2Reg.IsRegisterToRegister => new(reg2Reg, (byte)dest, (byte)src1, (byte)src2),
 
-            case Opcode.Brc:
-                checked
-                {
-                    short jumpValue = (short)(targetAddress - Address);
-                    return new(Opcode.Brc, 0, jumpValue);
-                }
+                Opcode.Brc => new(Opcode.Brc, 0, (short)(targetAddress - Address)),
 
-            case var branch and (Opcode.BrFl or Opcode.BrTr):
-                checked
-                {
-                    short jumpValue = (short)(targetAddress - Address);
-                    return new(branch, (byte)dest, jumpValue);
-                }
+                var branch and (Opcode.BrFl or Opcode.BrTr) => new(branch, (byte)dest, (short)(targetAddress - Address)),
 
-            case Opcode.Move:
-                checked
-                {
-                    return new(Opcode.Move, (byte)dest, (byte)src1, 0);
-                }
+                Opcode.Move => new(Opcode.Move, (byte)dest, (byte)src1, 0),
 
-            case Opcode.RetC:
-                checked
-                {
-                    return new(Opcode.RetC, 0, (short)immediateValue);
-                }
+                Opcode.RetC => new(Opcode.RetC, 0, (short)immediateValue),
 
-            case Opcode.Ret:
-                checked
-                {
-                    return new(Opcode.Ret, 0, (byte)dest);
-                }
+                Opcode.Ret => new(Opcode.Ret, 0, (byte)dest),
 
-            case var load and (Opcode.LdConst or Opcode.LdVar):
-                checked
-                {
-                    return new(load, (byte)dest, (short)immediateValue);
-                }
+                var load and (Opcode.LdConst or Opcode.LdVar) => new(load, (byte)dest, (short)immediateValue),
 
-            case Opcode.Call:
-                checked
-                {
-                    return new(Opcode.Call, (byte)dest, (byte)src1, (byte)argCount);
-                }
+                var store and Opcode.StVar => new(store, (byte)dest, (short)immediateValue),
 
-            default:
-                throw new UnreachableException();
+                Opcode.Call => new(Opcode.Call, (byte)dest, (byte)src1, (byte)argCount),
+
+                _ => throw new UnreachableException(),
+            };
         }
     }
 
