@@ -47,5 +47,17 @@ public class EpType : EpObject
 
     public BinaryFunction? DunderGt { get; set; }
 
+    public BinaryFunction? DunderIAdd { get; set; }
+
+    public BinaryFunction? DunderISub { get; set; }
+
+    public BinaryFunction? DunderIMul { get; set; }
+
+    public BinaryFunction? DunderITrueDiv { get; set; }
+
+    public BinaryFunction? DunderIMod { get; set; }
+
+    public BinaryFunction? DunderIPow { get; set; } // See above.
+
     #endregion
 }

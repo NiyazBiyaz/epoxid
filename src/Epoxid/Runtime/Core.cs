@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Epoxid.Runtime.Objects;
 
 namespace Epoxid.Runtime;
@@ -186,5 +187,77 @@ internal static class Core
         }
 
         return left.DunderClass.DunderGt(left, right);
+    }
+
+    internal static bool TryInPlaceAdd(EpObject target, EpObject right, [NotNullWhen(true)] out EpObject? result)
+    {
+        if (target.DunderClass.DunderIAdd == null)
+        {
+            result = null;
+            return false;
+        }
+
+        result = target.DunderClass.DunderIAdd(target, right);
+        return true;
+    }
+
+    internal static bool TryInPlaceSubtract(EpObject target, EpObject right, [NotNullWhen(true)] out EpObject? result)
+    {
+        if (target.DunderClass.DunderISub == null)
+        {
+            result = null;
+            return false;
+        }
+
+        result = target.DunderClass.DunderISub(target, right);
+        return true;
+    }
+
+    internal static bool TryInPlaceMultiply(EpObject target, EpObject right, [NotNullWhen(true)] out EpObject? result)
+    {
+        if (target.DunderClass.DunderIMul == null)
+        {
+            result = null;
+            return false;
+        }
+
+        result = target.DunderClass.DunderIMul(target, right);
+        return true;
+    }
+
+    internal static bool TryInPlaceTrueDivide(EpObject target, EpObject right, [NotNullWhen(true)] out EpObject? result)
+    {
+        if (target.DunderClass.DunderITrueDiv == null)
+        {
+            result = null;
+            return false;
+        }
+
+        result = target.DunderClass.DunderITrueDiv(target, right);
+        return true;
+    }
+
+    internal static bool TryInPlaceModule(EpObject target, EpObject right, [NotNullWhen(true)] out EpObject? result)
+    {
+        if (target.DunderClass.DunderIMod == null)
+        {
+            result = null;
+            return false;
+        }
+
+        result = target.DunderClass.DunderIMod(target, right);
+        return true;
+    }
+
+    internal static bool TryInPlacePower(EpObject target, EpObject right, [NotNullWhen(true)] out EpObject? result)
+    {
+        if (target.DunderClass.DunderIPow == null)
+        {
+            result = null;
+            return false;
+        }
+
+        result = target.DunderClass.DunderIPow(target, right);
+        return true;
     }
 }

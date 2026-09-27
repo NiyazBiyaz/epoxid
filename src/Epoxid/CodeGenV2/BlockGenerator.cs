@@ -46,10 +46,21 @@ internal class BlockGenerator
                 AssignmentView assignment => assignment switch
                 {
                     SimpleAssignmentView simple => [simple.Target.RawString],
+
+                    AugmentedAssignmentView augAssign => augAssign.Target switch
+                    {
+                        NameSingleTargetView name => [name.Value.RawString],
+
+                        CompositeSingleTargetView composite => throw new NotImplementedException(),
+
+                        GroupedTargetView grouped => throw new NotImplementedException(),
+
+                        _ => throw new UnreachableException()
+                    },
+
                     AnnotatedParenthesizedAssignmentView view => throw new NotImplementedException(),
                     CascadeAssignmentView view => throw new NotImplementedException(),
                     AnnotatedAssignmentView view => throw new NotImplementedException(),
-                    AugmentedAssignmentView view => throw new NotImplementedException(),
                     AnnotatedSubscriptAttributeAssignmentView view => throw new NotImplementedException(),
                     _ => throw new UnreachableException(),
                 },
@@ -206,7 +217,39 @@ internal class BlockGenerator
 
                 break;
             }
+            case AugmentedAssignmentView augAssignment:
+            {
+                if (augAssignment.Rhs is not IExpressionView expression)
+                {
+                    throw new NotImplementedException();
+                }
 
+                if (augAssignment.Target is NameSingleTargetView name)
+                {
+                    var variable = variables[name.Value.RawString];
+
+                    var lhs = variable.Register ?? getVariable(builder, name.Value.RawString);
+                    var rhs = getExpressionRegister(builder, expression);
+
+                    var inPlaceResult = augAssignment.Operator.Type switch
+                    {
+                        TokenType.PlusEqual => builder.InAdd(lhs, rhs),
+                        TokenType.MinusEqual => builder.InSub(lhs, rhs),
+                        TokenType.StarEqual => builder.InMul(lhs, rhs),
+                        TokenType.SlashEqual => builder.InTDiv(lhs, rhs),
+                        TokenType.PercentEqual => builder.InMod(lhs, rhs),
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    storeVariable(builder, variable, inPlaceResult);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                break;
+            }
             case BreakStatementView:
             {
                 if (!loops.TryPeek(out var loop))
@@ -239,7 +282,6 @@ internal class BlockGenerator
             }
             case IImportStatementView:
             case AnnotatedSubscriptAttributeAssignmentView:
-            case AugmentedAssignmentView:
             case AnnotatedParenthesizedAssignmentView:
             case AnnotatedAssignmentView:
             case CascadeAssignmentView:

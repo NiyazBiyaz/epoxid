@@ -442,6 +442,71 @@ internal class CodeBuilder
         return dest;
     }
 
+    public Register InAdd(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InAdd,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register InSub(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InSub,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register InMul(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InMul,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register InTDiv(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InTDiv,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register InMod(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InMod,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
     public Register LdVar(Register dest, int varIndex)
     {
         var instr = new IntermediateInstruction

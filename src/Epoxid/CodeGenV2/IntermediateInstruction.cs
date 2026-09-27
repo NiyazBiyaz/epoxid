@@ -46,6 +46,8 @@ internal record IntermediateInstruction
             {
                 var reg2Reg when reg2Reg.IsRegisterToRegister => new(reg2Reg, (byte)dest, (byte)src1, (byte)src2),
 
+                var inPlace when inPlace.IsInPlace => new(inPlace, (byte)dest, (byte)src1, 0),
+
                 Opcode.Brc => new(Opcode.Brc, 0, (short)(targetAddress - Address)),
 
                 var branch and (Opcode.BrFl or Opcode.BrTr) => new(branch, (byte)dest, (short)(targetAddress - Address)),

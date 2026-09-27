@@ -27,51 +27,48 @@ internal class Engine
                 throw new ArgumentException("Invalid code object: code never returns");
             }
 
-            var instr = code.Instructions[programCounter];
+            var current = code.Instructions[programCounter];
 
-            switch (instr.Opcode)
+            switch (current.Opcode)
             {
                 case Opcode.LdConst:
-                    frame[instr.RegDest] = code.Constants[instr.Immediate16];
+                    frame[current.RegDest] = code.Constants[current.Immediate16];
                     break;
 
                 case Opcode.LdArg:
-                    frame[instr.RegDest] = argSpan[instr.RegSrc1];
+                    frame[current.RegDest] = argSpan[current.RegSrc1];
                     break;
 
                 case Opcode.LdVar:
                 {
-                    var variable = environment.SearchVariable(code.VarNames[instr.Immediate16])
+                    var variable = environment.SearchVariable(code.VarNames[current.Immediate16])
                         ?? throw new Exception("NameError: TODO");
 
-                    frame[instr.RegDest] = variable;
+                    frame[current.RegDest] = variable;
                     break;
                 }
 
                 case Opcode.StVar:
-                {
-                    environment.Module.Bind(code.VarNames[instr.Immediate16], frame[instr.RegDest]);
-
+                    environment.Module.Bind(code.VarNames[current.Immediate16], frame[current.RegDest]);
                     break;
-                }
 
                 case Opcode.Ret:
-                    result = frame[instr.RegSrc1];
+                    result = frame[current.RegSrc1];
                     frame.Clear();
                     stop = true;
                     break;
 
                 case Opcode.RetC:
-                    result = code.Constants[instr.Immediate16];
+                    result = code.Constants[current.Immediate16];
                     frame.Clear();
                     stop = true;
                     break;
 
                 case Opcode.Call:
                 {
-                    var arguments = frame.Slice(instr.RegDest + 1, instr.RegSrc2);
-                    var func = frame[instr.RegSrc1];
-                    frame[instr.RegDest] = Core.CallFunction(func, arguments);
+                    var arguments = frame.Slice(current.RegDest + 1, current.RegSrc2);
+                    var func = frame[current.RegSrc1];
+                    frame[current.RegDest] = Core.CallFunction(func, arguments);
                     break;
                 }
 
@@ -81,68 +78,118 @@ internal class Engine
                 }
 
                 case Opcode.Move:
-                    frame[instr.RegDest] = frame[instr.RegSrc1];
+                    frame[current.RegDest] = frame[current.RegSrc1];
                     break;
 
                 case Opcode.Brc:
-                    programCounter += instr.Immediate16;
+                    programCounter += current.Immediate16;
                     goto nextInstruction;
 
                 case Opcode.BrTr:
-                    if (Core.ConvertToBool(frame[instr.RegDest]))
+                    if (Core.ConvertToBool(frame[current.RegDest]))
                     {
-                        programCounter += instr.Immediate16;
+                        programCounter += current.Immediate16;
                         goto nextInstruction;
                     }
                     break;
 
                 case Opcode.BrFl:
-                    if (!Core.ConvertToBool(frame[instr.RegDest]))
+                    if (!Core.ConvertToBool(frame[current.RegDest]))
                     {
-                        programCounter += instr.Immediate16;
+                        programCounter += current.Immediate16;
                         goto nextInstruction;
                     }
                     break;
 
                 // Register-to-register section
                 case Opcode.Add:
-                    frame[instr.RegDest] = Core.AddObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.AddObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.Sub:
-                    frame[instr.RegDest] = Core.SubtractObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.SubtractObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.Mul:
-                    frame[instr.RegDest] = Core.MultiplyObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.MultiplyObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.TDiv:
-                    frame[instr.RegDest] = Core.TrueDivideObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.TrueDivideObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.Mod:
-                    frame[instr.RegDest] = Core.ModuleObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.ModuleObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.Eq:
-                    frame[instr.RegDest] = Core.EqualObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.EqualObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.NEq:
-                    frame[instr.RegDest] = Core.NotEqualObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.NotEqualObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.LsTh:
-                    frame[instr.RegDest] = Core.LessThanObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.LessThanObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
                 case Opcode.GrTh:
-                    frame[instr.RegDest] = Core.GreaterThanObjects(frame[instr.RegSrc1], frame[instr.RegSrc2]);
+                    frame[current.RegDest] = Core.GreaterThanObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
                     break;
 
+                case Opcode.InAdd:
+                {
+                    if (!Core.TryInPlaceAdd(frame[current.RegDest], frame[current.RegSrc1], out var value))
+                    {
+                        value = Core.AddObjects(frame[current.RegDest], frame[current.RegSrc1]);
+                    }
+                    frame[current.RegDest] = value;
+                    break;
+                }
+
+                case Opcode.InSub:
+                {
+                    if (!Core.TryInPlaceSubtract(frame[current.RegDest], frame[current.RegSrc1], out var value))
+                    {
+                        value = Core.SubtractObjects(frame[current.RegDest], frame[current.RegSrc1]);
+                    }
+                    frame[current.RegDest] = value;
+                    break;
+                }
+
+                case Opcode.InMul:
+                {
+                    if (!Core.TryInPlaceMultiply(frame[current.RegDest], frame[current.RegSrc1], out var value))
+                    {
+                        value = Core.MultiplyObjects(frame[current.RegDest], frame[current.RegSrc1]);
+                    }
+                    frame[current.RegDest] = value;
+                    break;
+                }
+
+                case Opcode.InTDiv:
+                {
+                    if (!Core.TryInPlaceTrueDivide(frame[current.RegDest], frame[current.RegSrc1], out var value))
+                    {
+                        value = Core.TrueDivideObjects(frame[current.RegDest], frame[current.RegSrc1]);
+                    }
+                    frame[current.RegDest] = value;
+                    break;
+                }
+
+                case Opcode.InMod:
+                {
+                    if (!Core.TryInPlaceModule(frame[current.RegDest], frame[current.RegSrc1], out var value))
+                    {
+                        value = Core.ModuleObjects(frame[current.RegDest], frame[current.RegSrc1]);
+                    }
+                    frame[current.RegDest] = value;
+                    break;
+                }
+
                 default:
-                    throw new InvalidOperationException($"Invalid opcode value: {instr.Opcode}");
+                    throw new InvalidOperationException($"Invalid opcode value: {current.Opcode}");
             }
 
             programCounter += 1;

@@ -87,6 +87,17 @@ internal class CodeObject
                     sb.Append('"');
                     break;
 
+                case Opcode.StVar:
+                    sb.Append(formatRegister(instr.RegDest));
+                    sb.Append(delimiter);
+                    sb.Append(instr.Immediate16);
+                    sb.Append(indent);
+                    sb.Append(indent);
+                    sb.Append('"');
+                    sb.Append(VarNames[instr.Immediate16]);
+                    sb.Append('"');
+                    break;
+
                 case Opcode.Move:
                     sb.Append(formatRegister(instr.RegDest));
                     sb.Append(delimiter);
@@ -125,6 +136,12 @@ internal class CodeObject
                         sb.Append(formatRegister(instr.RegSrc1));
                         sb.Append(delimiter);
                         sb.Append(formatRegister(instr.RegSrc2));
+                    }
+                    else if (instr.Opcode.IsInPlace)
+                    {
+                        sb.Append(formatRegister(instr.RegDest));
+                        sb.Append(delimiter);
+                        sb.Append(formatRegister(instr.RegSrc1));
                     }
                     break;
             }

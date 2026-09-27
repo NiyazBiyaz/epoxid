@@ -59,6 +59,41 @@ internal enum Opcode : byte
     GrTh,
 
     /// <summary>
+    /// <b>In</b>-place <b>add</b> object from <see cref="Instruction.RegDest"/> to object from <see cref="Instruction.RegSrc1"/>
+    /// if first supports it, otherwise add object from <see cref="Instruction.RegDest"/> to object from
+    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
+    /// </summary>
+    InAdd,
+
+    /// <summary>
+    /// <b>In</b>-place <b>sub</b>tract from object <see cref="Instruction.RegDest"/> object from <see cref="Instruction.RegSrc1"/>
+    /// if first supports it, otherwise subtract from object <see cref="Instruction.RegDest"/> object from
+    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
+    /// </summary>
+    InSub,
+
+    /// <summary>
+    /// <b>In</b>-place <b>mul</b>tiply object from <see cref="Instruction.RegDest"/> by object from <see cref="Instruction.RegSrc1"/>
+    /// if first supports it, otherwise multiply object from <see cref="Instruction.RegDest"/> by object from
+    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
+    /// </summary>
+    InMul,
+
+    /// <summary>
+    /// <b>In</b>-place <b>t</b>rue-<b>div</b>ide object from <see cref="Instruction.RegDest"/> by object from <see cref="Instruction.RegSrc1"/>
+    /// if first supports it, otherwise true-divide object from <see cref="Instruction.RegDest"/> by object from
+    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
+    /// </summary>
+    InTDiv,
+
+    /// <summary>
+    /// <b>In</b>-place get <b>mod</b>ule of object from <see cref="Instruction.RegDest"/> by object from <see cref="Instruction.RegSrc1"/>
+    /// if first supports it, otherwise get module of object from <see cref="Instruction.RegDest"/> by object from
+    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
+    /// </summary>
+    InMod,
+
+    /// <summary>
     /// <b>Call</b>s the function that stored in the <see cref="Instruction.RegSrc1"/> with <see cref="Instruction.RegSrc2"/>
     /// number of positional arguments starting from register <see cref="Instruction.RegDest"/>+1 and stores returned
     /// value in the <see cref="Instruction.RegDest"/>
@@ -135,7 +170,9 @@ internal static class OpcodeExtensions
 {
     extension(Opcode opcode)
     {
-        public bool IsRegisterToRegister => opcode < Opcode.Call;
+        public bool IsRegisterToRegister => opcode < Opcode.InAdd;
+
+        public bool IsInPlace => opcode is >= Opcode.InAdd and < Opcode.Call;
 
         public bool IsBranch => opcode >= Opcode.Brc && opcode <= Opcode.BrFl;
 
