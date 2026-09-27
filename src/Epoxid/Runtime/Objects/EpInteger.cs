@@ -5,27 +5,27 @@ namespace Epoxid.Runtime.Objects;
 
 public class EpInteger : EpObject
 {
-    // long is not that small as int and still fast/convenient to use.
-    internal readonly long Value;
+    // 'int' because in compilable version it's 32-bit, so it is better for consistency
+    internal readonly int Value;
 
-    public EpInteger(long value)
+    public EpInteger(int value)
         : base(EpConstants.Int)
     {
         Value = value;
     }
 
     // For bool inheritance.
-    protected EpInteger(EpType derivedType, long value)
+    protected EpInteger(EpType derivedType, int value)
         : base(derivedType)
     {
         Value = value;
     }
 
-    public static explicit operator long(EpInteger integer) => integer.Value;
-    public static explicit operator EpInteger(long integer) => new(integer);
+    public static explicit operator int(EpInteger integer) => integer.Value;
+    public static explicit operator EpInteger(int integer) => new(integer);
 
-    public static bool operator ==(EpInteger left, long right) => left.Value == right;
-    public static bool operator !=(EpInteger left, long right) => left.Value != right;
+    public static bool operator ==(EpInteger left, int right) => left.Value == right;
+    public static bool operator !=(EpInteger left, int right) => left.Value != right;
 
     public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 
@@ -107,7 +107,7 @@ public class EpInteger : EpObject
         {
             case EpInteger otherInt when otherInt.Value > 0:
             {
-                long result = checked((long)BigInteger.Pow(selfInt.Value, (int)otherInt.Value));
+                int result = (int)BigInteger.Pow(selfInt.Value, otherInt.Value);
                 return (EpInteger)result;
             }
             case EpInteger otherInt when otherInt.Value < 0:
