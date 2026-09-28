@@ -2,7 +2,7 @@ using Epoxid.Runtime.Objects;
 
 namespace Epoxid.VM;
 
-internal enum Opcode : byte
+public enum Opcode : byte
 {
     /// <summary>
     /// <b>Add</b>s object from <see cref="Instruction.RegSrc1"/> to object from <see cref="Instruction.RegSrc2"/>

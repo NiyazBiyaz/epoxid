@@ -50,7 +50,8 @@ public static class Program
         Console.WriteLine("-------------");
 
         var engine = new Engine();
-        var env = new Runtime.Environment()
+        Engine.SetCurrentEngine(engine);
+        var env = new EpEnvironment()
         {
             Builtins = Builtins.BuiltinsScope,
             Module = new(),

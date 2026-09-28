@@ -8,7 +8,7 @@ public class EpBuiltinFunction : EpBaseFunction
         FrameCall = function;
     }
 
-    public EpBuiltinFunction(string name, FrameKeywordCallFunction function)
+    public EpBuiltinFunction(string name, FrameCallKeywordFunction function)
         : base(EpConstants.NativeFunction, name)
     {
         FrameKeywordCall = function;
@@ -16,7 +16,7 @@ public class EpBuiltinFunction : EpBaseFunction
 
     public FrameCallFunction? FrameCall { get; }
 
-    public FrameKeywordCallFunction? FrameKeywordCall { get; }
+    public FrameCallKeywordFunction? FrameKeywordCall { get; }
 
     internal readonly static EpType Type = new("native_function", [EpConstants.Object], EpConstants.Type);
 }

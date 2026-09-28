@@ -17,6 +17,7 @@ public static class Builtins
     {
         constructFunc("print", print, print_params);
         constructFunc("input", input, input_params);
+        BuiltinsScope.Bind("int", EpConstants.Int);
     }
 
     private static void constructFunc(string name, FrameCallFunction function, FunctionParametersDescription description)
@@ -28,7 +29,7 @@ public static class Builtins
         BuiltinsScope.Bind(name, func);
     }
 
-    private static void constructFunc(string name, FrameKeywordCallFunction function, FunctionParametersDescription description)
+    private static void constructFunc(string name, FrameCallKeywordFunction function, FunctionParametersDescription description)
     {
         var func = new EpBuiltinFunction(name, function)
         {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace Epoxid.VM;
 
 [DebuggerDisplay("{Opcode}")]
-internal readonly struct Instruction
+public readonly struct Instruction
 {
     private readonly uint rawData;
 

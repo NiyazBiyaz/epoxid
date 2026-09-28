@@ -39,8 +39,8 @@ public static class EpConstants
         NoneType = EpNone.Type;
         EllipsisType = EpEllipsis.Type;
 
-        Function = new("function", [Object], Type);
-        NativeFunction = new("native_function", [Object], Type);
+        Function = EpFunction.Type;
+        NativeFunction = EpFunction.Type;
 
         True = new(true);
         False = new(false);

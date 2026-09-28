@@ -10,4 +10,4 @@ public delegate EpObject TernaryFunction(EpObject self, EpObject args, EpObject 
 
 public delegate EpObject FrameCallFunction(ReadOnlySpan<EpObject> args);
 
-public delegate EpObject FrameKeywordCallFunction(ReadOnlySpan<EpObject> args, EpDict kwargs);
+public delegate EpObject FrameCallKeywordFunction(ReadOnlySpan<EpObject> args, EpDict kwargs);

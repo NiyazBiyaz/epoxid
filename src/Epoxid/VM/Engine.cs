@@ -3,7 +3,7 @@ using Epoxid.Runtime.Objects;
 
 namespace Epoxid.VM;
 
-internal class Engine
+public class Engine
 {
     private const int register_stack_count = 10_000;
 
@@ -11,8 +11,21 @@ internal class Engine
 
     private int stackCount = 0;
 
-    public EpObject RunCode(CodeObject code, ReadOnlySpan<EpObject> argSpan, Runtime.Environment environment)
+    // TODO: Probably change approach to something like thread-local Engine.
+    // So this is why a private: we can add something like thread id to get/set methods.
+    private static Engine currentEngine = null!;
+
+    internal static void SetCurrentEngine(Engine engine) => currentEngine = engine;
+
+    internal static Engine GetCurrentEngine() => currentEngine;
+
+    public EpObject RunCode(CodeObject code, ReadOnlySpan<EpObject> argSpan, EpEnvironment environment)
     {
+        if (currentEngine == null)
+        {
+            throw new InvalidOperationException("CurrentEngine is not set, execution of frames can cause an error.");
+        }
+
         EpObject result = default!;
         var frame = registerStack.AsSpan(stackCount, code.StackSize);
         stackCount += code.StackSize;

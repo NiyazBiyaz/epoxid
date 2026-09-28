@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Epoxid.Runtime.Objects;
+using Epoxid.VM;
 
 namespace Epoxid.Runtime;
 
@@ -28,8 +29,17 @@ internal static class Core
 
                 return builtin.FrameCall(args);
 
-            case EpFunction userFunc:
-                throw new NotImplementedException();
+            case EpFunction func:
+            {
+                var eng = Engine.GetCurrentEngine();
+
+                if (func.Environment == null)
+                {
+                    throw new ArgumentException("Given function object doesn't have Environment bound on.", nameof(funcObject));
+                }
+
+                return eng.RunCode(func.Code, args, func.Environment.Value);
+            }
 
             default:
                 throw new ArgumentException("Argument is not callable Epoxid object");
@@ -57,7 +67,7 @@ internal static class Core
 
                 return builtin.FrameKeywordCall(args, kwDict);
 
-            case EpFunction userFunc:
+            case EpFunction func:
                 throw new NotImplementedException();
 
             default:

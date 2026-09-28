@@ -4,7 +4,7 @@ using Epoxid.Runtime.Objects;
 
 namespace Epoxid.VM;
 
-internal class CodeObject
+public class CodeObject
 {
     public required ImmutableArray<Instruction> Instructions { get; init; }
     public required ImmutableArray<EpObject> Constants { get; init; }

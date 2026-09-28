@@ -2,7 +2,7 @@ using Epoxid.Runtime.Objects;
 
 namespace Epoxid.Runtime;
 
-public readonly record struct Environment
+public readonly record struct EpEnvironment
 {
     public required Scope Builtins { get; init; }
     public required Scope Module { get; init; }

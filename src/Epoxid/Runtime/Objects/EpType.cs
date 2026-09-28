@@ -18,10 +18,11 @@ public class EpType : EpObject
         DunderBases = bases;
     }
 
+    public override string ToString() => $"<class '{DunderName}'>";
+
     #region Methods slots
 
-    // Not supported yet.
-    //public FrameKeywordCall? DunderCall { get; set; }
+    public EpFunction? DunderCall { get; set; }
 
     public BinaryFunction? DunderAdd { get; set; }
 
