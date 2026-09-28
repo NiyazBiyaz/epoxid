@@ -1141,6 +1141,9 @@ internal partial class GrammarParser(ITokenNodeStream _tokenStream) : BaseParser
 }
 
 #region Type definitions.
+/// <summary>
+/// Node class that represents <i>Grammar</i>.
+/// </summary>
 internal sealed partial record GrammarNode : GreenNode
 {
     internal KeywordsNode? Keywords => Children![1] as KeywordsNode;
@@ -1150,6 +1153,9 @@ internal sealed partial record GrammarNode : GreenNode
         => new GrammarView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Grammar</i>.
+/// </summary>
 internal sealed partial class GrammarView : RedView
 {
     internal GrammarView(GrammarNode green, int position, IRedView? parent)
@@ -1200,6 +1206,9 @@ internal sealed partial class GrammarView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Metadata</i>.
+/// </summary>
 internal sealed partial record MetadataNode : GreenNode
 {
     internal TokenNode Key => (TokenNode)Children![1];
@@ -1208,6 +1217,9 @@ internal sealed partial record MetadataNode : GreenNode
         => new MetadataView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Metadata</i>.
+/// </summary>
 internal sealed partial class MetadataView : RedView
 {
     internal MetadataView(MetadataNode green, int position, IRedView? parent)
@@ -1244,6 +1256,14 @@ internal sealed partial class MetadataView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Rule</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ArmedRuleNode</i><br/>
+/// 2. <i>SingleAlternativeRuleNode</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(ArmedRuleNode), typeof(SingleAlternativeRuleNode))]
 internal abstract partial record RuleNode : GreenNode
 {
@@ -1251,6 +1271,14 @@ internal abstract partial record RuleNode : GreenNode
     internal TokenNode Name => (TokenNode)Children![1];
 }
 
+/// <summary>
+/// View class that represents <i>Rule</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>ArmedRuleView</i><br/>
+/// 2. <i>SingleAlternativeRuleView</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(ArmedRuleView), typeof(SingleAlternativeRuleView))]
 internal abstract partial class RuleView : RedView
 {
@@ -1288,6 +1316,9 @@ internal abstract partial class RuleView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>ArmedRule</i>.
+/// </summary>
 internal sealed partial record ArmedRuleNode : RuleNode
 {
     internal NodeArray<ArmNode> Arms => (NodeArray<ArmNode>)Children![5];
@@ -1295,6 +1326,9 @@ internal sealed partial record ArmedRuleNode : RuleNode
         => new ArmedRuleView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>ArmedRule</i>.
+/// </summary>
 internal sealed partial class ArmedRuleView : RuleView
 {
     internal ArmedRuleView(ArmedRuleNode green, int position, IRedView? parent)
@@ -1317,6 +1351,9 @@ internal sealed partial class ArmedRuleView : RuleView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>SingleAlternativeRule</i>.
+/// </summary>
 internal sealed partial record SingleAlternativeRuleNode : RuleNode
 {
     internal AlternativeNode Alternative => (AlternativeNode)Children![3];
@@ -1324,6 +1361,9 @@ internal sealed partial record SingleAlternativeRuleNode : RuleNode
         => new SingleAlternativeRuleView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>SingleAlternativeRule</i>.
+/// </summary>
 internal sealed partial class SingleAlternativeRuleView : RuleView
 {
     internal SingleAlternativeRuleView(SingleAlternativeRuleNode green, int position, IRedView? parent)
@@ -1346,6 +1386,9 @@ internal sealed partial class SingleAlternativeRuleView : RuleView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Arm</i>.
+/// </summary>
 internal sealed partial record ArmNode : GreenNode
 {
     internal AlternativeNode Alternative => (AlternativeNode)Children![1];
@@ -1353,6 +1396,9 @@ internal sealed partial record ArmNode : GreenNode
         => new ArmView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Arm</i>.
+/// </summary>
 internal sealed partial class ArmView : RedView
 {
     internal ArmView(ArmNode green, int position, IRedView? parent)
@@ -1375,6 +1421,9 @@ internal sealed partial class ArmView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Decorator</i>.
+/// </summary>
 internal sealed partial record DecoratorNode : GreenNode
 {
     internal TokenNode Value => (TokenNode)Children![1];
@@ -1382,6 +1431,9 @@ internal sealed partial record DecoratorNode : GreenNode
         => new DecoratorView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Decorator</i>.
+/// </summary>
 internal sealed partial class DecoratorView : RedView
 {
     internal DecoratorView(DecoratorNode green, int position, IRedView? parent)
@@ -1404,6 +1456,9 @@ internal sealed partial class DecoratorView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Alternative</i>.
+/// </summary>
 internal sealed partial record AlternativeNode : GreenNode
 {
     internal NodeArray<MoleculeNode> Molecules => (NodeArray<MoleculeNode>)Children![0];
@@ -1412,6 +1467,9 @@ internal sealed partial record AlternativeNode : GreenNode
         => new AlternativeView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Alternative</i>.
+/// </summary>
 internal sealed partial class AlternativeView : RedView
 {
     internal AlternativeView(AlternativeNode green, int position, IRedView? parent)
@@ -1448,6 +1506,9 @@ internal sealed partial class AlternativeView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>GroupDecorator</i>.
+/// </summary>
 internal sealed partial record GroupDecoratorNode : GreenNode
 {
     internal TokenNode Value => (TokenNode)Children![1];
@@ -1455,6 +1516,9 @@ internal sealed partial record GroupDecoratorNode : GreenNode
         => new GroupDecoratorView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>GroupDecorator</i>.
+/// </summary>
 internal sealed partial class GroupDecoratorView : RedView
 {
     internal GroupDecoratorView(GroupDecoratorNode green, int position, IRedView? parent)
@@ -1477,11 +1541,41 @@ internal sealed partial class GroupDecoratorView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Molecule</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>OptionalGroupNode</i><br/>
+/// 2. <i>PositiveLookaheadNode</i><br/>
+/// 3. <i>NegativeLookaheadNode</i><br/>
+/// 4. <i>OptionalNode</i><br/>
+/// 5. <i>GatherNode</i><br/>
+/// 6. <i>RepeatOneMoreNode</i><br/>
+/// 7. <i>RepeatZeroMoreNode</i><br/>
+/// 8. <i>AtomMoleculeNode</i><br/>
+/// 9. <i>CutNode</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(OptionalGroupNode), typeof(PositiveLookaheadNode), typeof(NegativeLookaheadNode), typeof(OptionalNode), typeof(GatherNode), typeof(RepeatOneMoreNode), typeof(RepeatZeroMoreNode), typeof(AtomMoleculeNode), typeof(CutNode))]
 internal abstract partial record MoleculeNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>Molecule</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>OptionalGroupView</i><br/>
+/// 2. <i>PositiveLookaheadView</i><br/>
+/// 3. <i>NegativeLookaheadView</i><br/>
+/// 4. <i>OptionalView</i><br/>
+/// 5. <i>GatherView</i><br/>
+/// 6. <i>RepeatOneMoreView</i><br/>
+/// 7. <i>RepeatZeroMoreView</i><br/>
+/// 8. <i>AtomMoleculeView</i><br/>
+/// 9. <i>CutView</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(OptionalGroupView), typeof(PositiveLookaheadView), typeof(NegativeLookaheadView), typeof(OptionalView), typeof(GatherView), typeof(RepeatOneMoreView), typeof(RepeatZeroMoreView), typeof(AtomMoleculeView), typeof(CutView))]
 internal abstract partial class MoleculeView : RedView
 {
@@ -1491,6 +1585,9 @@ internal abstract partial class MoleculeView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>OptionalGroup</i>.
+/// </summary>
 internal sealed partial record OptionalGroupNode : MoleculeNode
 {
     private global::System.Collections.Immutable.ImmutableArray<AlternativeNode>? _field_Alternatives = null;
@@ -1500,18 +1597,21 @@ internal sealed partial record OptionalGroupNode : MoleculeNode
         {
             if (_field_Alternatives is null)
             {
-                var _tmp = AstAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeNode>();
+                var _tmp = SeparatedAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeNode>();
                 _field_Alternatives = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Alternatives.Value;
         }
     }
-    internal NodeArray<GreenNode> AstAlternatives => (NodeArray<GreenNode>)Children![2];
+    internal NodeArray<GreenNode> SeparatedAlternatives => (NodeArray<GreenNode>)Children![2];
     internal GroupDecoratorNode? Decorator => Children![1] as GroupDecoratorNode;
     public override OptionalGroupView GetView(int position, IRedView? parent)
         => new OptionalGroupView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>OptionalGroup</i>.
+/// </summary>
 internal sealed partial class OptionalGroupView : MoleculeView
 {
     internal OptionalGroupView(OptionalGroupNode green, int position, IRedView? parent)
@@ -1520,14 +1620,14 @@ internal sealed partial class OptionalGroupView : MoleculeView
     }
 
     private ViewArray<RedView>? _ast_field_alternatives = null;
-    internal ViewArray<RedView> AstAlternatives
+    internal ViewArray<RedView> SeparatedAlternatives
     {
         get
         {
             if (_ast_field_alternatives == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _ast_field_alternatives = new ViewArray<RedView>(((OptionalGroupNode)base.Green).AstAlternatives, _positionOfField, this);
+                _ast_field_alternatives = new ViewArray<RedView>(((OptionalGroupNode)base.Green).SeparatedAlternatives, _positionOfField, this);
             }
             return _ast_field_alternatives.Value;
         }
@@ -1539,7 +1639,7 @@ internal sealed partial class OptionalGroupView : MoleculeView
         {
             if (_field_alternatives == null)
             {
-                var _tmp = AstAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeView>();
+                var _tmp = SeparatedAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeView>();
                 _field_alternatives = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_alternatives.Value;
@@ -1561,6 +1661,9 @@ internal sealed partial class OptionalGroupView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>PositiveLookahead</i>.
+/// </summary>
 internal sealed partial record PositiveLookaheadNode : MoleculeNode
 {
     internal AtomNode Atom => (AtomNode)Children![1];
@@ -1568,6 +1671,9 @@ internal sealed partial record PositiveLookaheadNode : MoleculeNode
         => new PositiveLookaheadView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>PositiveLookahead</i>.
+/// </summary>
 internal sealed partial class PositiveLookaheadView : MoleculeView
 {
     internal PositiveLookaheadView(PositiveLookaheadNode green, int position, IRedView? parent)
@@ -1590,6 +1696,9 @@ internal sealed partial class PositiveLookaheadView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>NegativeLookahead</i>.
+/// </summary>
 internal sealed partial record NegativeLookaheadNode : MoleculeNode
 {
     internal AtomNode Atom => (AtomNode)Children![1];
@@ -1597,6 +1706,9 @@ internal sealed partial record NegativeLookaheadNode : MoleculeNode
         => new NegativeLookaheadView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NegativeLookahead</i>.
+/// </summary>
 internal sealed partial class NegativeLookaheadView : MoleculeView
 {
     internal NegativeLookaheadView(NegativeLookaheadNode green, int position, IRedView? parent)
@@ -1619,6 +1731,9 @@ internal sealed partial class NegativeLookaheadView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Optional</i>.
+/// </summary>
 internal sealed partial record OptionalNode : MoleculeNode
 {
     internal AtomNode Atom => (AtomNode)Children![1];
@@ -1626,6 +1741,9 @@ internal sealed partial record OptionalNode : MoleculeNode
         => new OptionalView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Optional</i>.
+/// </summary>
 internal sealed partial class OptionalView : MoleculeView
 {
     internal OptionalView(OptionalNode green, int position, IRedView? parent)
@@ -1648,6 +1766,9 @@ internal sealed partial class OptionalView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Gather</i>.
+/// </summary>
 internal sealed partial record GatherNode : MoleculeNode
 {
     internal AtomNode ValueAtom => (AtomNode)Children![0];
@@ -1656,6 +1777,9 @@ internal sealed partial record GatherNode : MoleculeNode
         => new GatherView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Gather</i>.
+/// </summary>
 internal sealed partial class GatherView : MoleculeView
 {
     internal GatherView(GatherNode green, int position, IRedView? parent)
@@ -1692,6 +1816,9 @@ internal sealed partial class GatherView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>RepeatOneMore</i>.
+/// </summary>
 internal sealed partial record RepeatOneMoreNode : MoleculeNode
 {
     internal AtomNode Atom => (AtomNode)Children![0];
@@ -1699,6 +1826,9 @@ internal sealed partial record RepeatOneMoreNode : MoleculeNode
         => new RepeatOneMoreView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>RepeatOneMore</i>.
+/// </summary>
 internal sealed partial class RepeatOneMoreView : MoleculeView
 {
     internal RepeatOneMoreView(RepeatOneMoreNode green, int position, IRedView? parent)
@@ -1721,6 +1851,9 @@ internal sealed partial class RepeatOneMoreView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>RepeatZeroMore</i>.
+/// </summary>
 internal sealed partial record RepeatZeroMoreNode : MoleculeNode
 {
     internal AtomNode Atom => (AtomNode)Children![0];
@@ -1728,6 +1861,9 @@ internal sealed partial record RepeatZeroMoreNode : MoleculeNode
         => new RepeatZeroMoreView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>RepeatZeroMore</i>.
+/// </summary>
 internal sealed partial class RepeatZeroMoreView : MoleculeView
 {
     internal RepeatZeroMoreView(RepeatZeroMoreNode green, int position, IRedView? parent)
@@ -1750,6 +1886,9 @@ internal sealed partial class RepeatZeroMoreView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>AtomMolecule</i>.
+/// </summary>
 internal sealed partial record AtomMoleculeNode : MoleculeNode
 {
     internal AtomNode Atom => (AtomNode)Children![0];
@@ -1757,6 +1896,9 @@ internal sealed partial record AtomMoleculeNode : MoleculeNode
         => new AtomMoleculeView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>AtomMolecule</i>.
+/// </summary>
 internal sealed partial class AtomMoleculeView : MoleculeView
 {
     internal AtomMoleculeView(AtomMoleculeNode green, int position, IRedView? parent)
@@ -1779,12 +1921,18 @@ internal sealed partial class AtomMoleculeView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Cut</i>.
+/// </summary>
 internal sealed partial record CutNode : MoleculeNode
 {
     public override CutView GetView(int position, IRedView? parent)
         => new CutView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Cut</i>.
+/// </summary>
 internal sealed partial class CutView : MoleculeView
 {
     internal CutView(CutNode green, int position, IRedView? parent)
@@ -1793,11 +1941,29 @@ internal sealed partial class CutView : MoleculeView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Atom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>GroupAtomNode</i><br/>
+/// 2. <i>NameAtomNode</i><br/>
+/// 3. <i>StringAtomNode</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(GroupAtomNode), typeof(NameAtomNode), typeof(StringAtomNode))]
 internal abstract partial record AtomNode : GreenNode
 {
 }
 
+/// <summary>
+/// View class that represents <i>Atom</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>GroupAtomView</i><br/>
+/// 2. <i>NameAtomView</i><br/>
+/// 3. <i>StringAtomView</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(GroupAtomView), typeof(NameAtomView), typeof(StringAtomView))]
 internal abstract partial class AtomView : RedView
 {
@@ -1807,6 +1973,9 @@ internal abstract partial class AtomView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>GroupAtom</i>.
+/// </summary>
 internal sealed partial record GroupAtomNode : AtomNode
 {
     private global::System.Collections.Immutable.ImmutableArray<AlternativeNode>? _field_Alternatives = null;
@@ -1816,18 +1985,21 @@ internal sealed partial record GroupAtomNode : AtomNode
         {
             if (_field_Alternatives is null)
             {
-                var _tmp = AstAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeNode>();
+                var _tmp = SeparatedAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeNode>();
                 _field_Alternatives = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Alternatives.Value;
         }
     }
-    internal NodeArray<GreenNode> AstAlternatives => (NodeArray<GreenNode>)Children![2];
+    internal NodeArray<GreenNode> SeparatedAlternatives => (NodeArray<GreenNode>)Children![2];
     internal GroupDecoratorNode? Decorator => Children![1] as GroupDecoratorNode;
     public override GroupAtomView GetView(int position, IRedView? parent)
         => new GroupAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>GroupAtom</i>.
+/// </summary>
 internal sealed partial class GroupAtomView : AtomView
 {
     internal GroupAtomView(GroupAtomNode green, int position, IRedView? parent)
@@ -1836,14 +2008,14 @@ internal sealed partial class GroupAtomView : AtomView
     }
 
     private ViewArray<RedView>? _ast_field_alternatives = null;
-    internal ViewArray<RedView> AstAlternatives
+    internal ViewArray<RedView> SeparatedAlternatives
     {
         get
         {
             if (_ast_field_alternatives == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _ast_field_alternatives = new ViewArray<RedView>(((GroupAtomNode)base.Green).AstAlternatives, _positionOfField, this);
+                _ast_field_alternatives = new ViewArray<RedView>(((GroupAtomNode)base.Green).SeparatedAlternatives, _positionOfField, this);
             }
             return _ast_field_alternatives.Value;
         }
@@ -1855,7 +2027,7 @@ internal sealed partial class GroupAtomView : AtomView
         {
             if (_field_alternatives == null)
             {
-                var _tmp = AstAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeView>();
+                var _tmp = SeparatedAlternatives.Where(static (_, i) => i % 2 == 0).Cast<AlternativeView>();
                 _field_alternatives = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_alternatives.Value;
@@ -1877,6 +2049,9 @@ internal sealed partial class GroupAtomView : AtomView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>NameAtom</i>.
+/// </summary>
 internal sealed partial record NameAtomNode : AtomNode
 {
     internal TokenNode Value => (TokenNode)Children![0];
@@ -1884,6 +2059,9 @@ internal sealed partial record NameAtomNode : AtomNode
         => new NameAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NameAtom</i>.
+/// </summary>
 internal sealed partial class NameAtomView : AtomView
 {
     internal NameAtomView(NameAtomNode green, int position, IRedView? parent)
@@ -1906,6 +2084,9 @@ internal sealed partial class NameAtomView : AtomView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>StringAtom</i>.
+/// </summary>
 internal sealed partial record StringAtomNode : AtomNode
 {
     internal TokenNode Value => (TokenNode)Children![0];
@@ -1913,6 +2094,9 @@ internal sealed partial record StringAtomNode : AtomNode
         => new StringAtomView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>StringAtom</i>.
+/// </summary>
 internal sealed partial class StringAtomView : AtomView
 {
     internal StringAtomView(StringAtomNode green, int position, IRedView? parent)
@@ -1935,12 +2119,28 @@ internal sealed partial class StringAtomView : AtomView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Action</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>InferredActionNode</i><br/>
+/// 2. <i>NamedActionNode</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(InferredActionNode), typeof(NamedActionNode))]
 internal abstract partial record ActionNode : GreenNode
 {
     internal ArgumentsNode? Arguments => Children![3] as ArgumentsNode;
 }
 
+/// <summary>
+/// View class that represents <i>Action</i>.
+/// </summary>
+/// <remarks>
+/// Inheritors:<br/>
+/// 1. <i>InferredActionView</i><br/>
+/// 2. <i>NamedActionView</i><br/>
+/// </remarks>
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(InferredActionView), typeof(NamedActionView))]
 internal abstract partial class ActionView : RedView
 {
@@ -1964,12 +2164,18 @@ internal abstract partial class ActionView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>InferredAction</i>.
+/// </summary>
 internal sealed partial record InferredActionNode : ActionNode
 {
     public override InferredActionView GetView(int position, IRedView? parent)
         => new InferredActionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>InferredAction</i>.
+/// </summary>
 internal sealed partial class InferredActionView : ActionView
 {
     internal InferredActionView(InferredActionNode green, int position, IRedView? parent)
@@ -1978,6 +2184,9 @@ internal sealed partial class InferredActionView : ActionView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>NamedAction</i>.
+/// </summary>
 internal sealed partial record NamedActionNode : ActionNode
 {
     internal TokenNode Name => (TokenNode)Children![1];
@@ -1985,6 +2194,9 @@ internal sealed partial record NamedActionNode : ActionNode
         => new NamedActionView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>NamedAction</i>.
+/// </summary>
 internal sealed partial class NamedActionView : ActionView
 {
     internal NamedActionView(NamedActionNode green, int position, IRedView? parent)
@@ -2007,6 +2219,9 @@ internal sealed partial class NamedActionView : ActionView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Arguments</i>.
+/// </summary>
 internal sealed partial record ArgumentsNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<TargetNode>? _field_Value = null;
@@ -2016,17 +2231,20 @@ internal sealed partial record ArgumentsNode : GreenNode
         {
             if (_field_Value is null)
             {
-                var _tmp = AstValue.Where(static (_, i) => i % 2 == 0).Cast<TargetNode>();
+                var _tmp = SeparatedValue.Where(static (_, i) => i % 2 == 0).Cast<TargetNode>();
                 _field_Value = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Value.Value;
         }
     }
-    internal NodeArray<GreenNode> AstValue => (NodeArray<GreenNode>)Children![0];
+    internal NodeArray<GreenNode> SeparatedValue => (NodeArray<GreenNode>)Children![0];
     public override ArgumentsView GetView(int position, IRedView? parent)
         => new ArgumentsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Arguments</i>.
+/// </summary>
 internal sealed partial class ArgumentsView : RedView
 {
     internal ArgumentsView(ArgumentsNode green, int position, IRedView? parent)
@@ -2035,14 +2253,14 @@ internal sealed partial class ArgumentsView : RedView
     }
 
     private ViewArray<RedView>? _ast_field_value = null;
-    internal ViewArray<RedView> AstValue
+    internal ViewArray<RedView> SeparatedValue
     {
         get
         {
             if (_ast_field_value == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _ast_field_value = new ViewArray<RedView>(((ArgumentsNode)base.Green).AstValue, _positionOfField, this);
+                _ast_field_value = new ViewArray<RedView>(((ArgumentsNode)base.Green).SeparatedValue, _positionOfField, this);
             }
             return _ast_field_value.Value;
         }
@@ -2054,7 +2272,7 @@ internal sealed partial class ArgumentsView : RedView
         {
             if (_field_value == null)
             {
-                var _tmp = AstValue.Where(static (_, i) => i % 2 == 0).Cast<TargetView>();
+                var _tmp = SeparatedValue.Where(static (_, i) => i % 2 == 0).Cast<TargetView>();
                 _field_value = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_value.Value;
@@ -2062,6 +2280,9 @@ internal sealed partial class ArgumentsView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Target</i>.
+/// </summary>
 internal sealed partial record TargetNode : GreenNode
 {
     internal TokenNode Field => (TokenNode)Children![0];
@@ -2070,6 +2291,9 @@ internal sealed partial record TargetNode : GreenNode
         => new TargetView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Target</i>.
+/// </summary>
 internal sealed partial class TargetView : RedView
 {
     internal TargetView(TargetNode green, int position, IRedView? parent)
@@ -2106,6 +2330,9 @@ internal sealed partial class TargetView : RedView
     }
 }
 
+/// <summary>
+/// Node class that represents <i>Keywords</i>.
+/// </summary>
 internal sealed partial record KeywordsNode : GreenNode
 {
     private global::System.Collections.Immutable.ImmutableArray<TokenNode>? _field_Keywords = null;
@@ -2115,17 +2342,20 @@ internal sealed partial record KeywordsNode : GreenNode
         {
             if (_field_Keywords is null)
             {
-                var _tmp = AstKeywords.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
+                var _tmp = SeparatedKeywords.Where(static (_, i) => i % 2 == 0).Cast<TokenNode>();
                 _field_Keywords = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_Keywords.Value;
         }
     }
-    internal NodeArray<GreenNode> AstKeywords => (NodeArray<GreenNode>)Children![4];
+    internal NodeArray<GreenNode> SeparatedKeywords => (NodeArray<GreenNode>)Children![4];
     public override KeywordsView GetView(int position, IRedView? parent)
         => new KeywordsView(this, position, parent);
 }
 
+/// <summary>
+/// View class that represents <i>Keywords</i>.
+/// </summary>
 internal sealed partial class KeywordsView : RedView
 {
     internal KeywordsView(KeywordsNode green, int position, IRedView? parent)
@@ -2134,14 +2364,14 @@ internal sealed partial class KeywordsView : RedView
     }
 
     private ViewArray<RedView>? _ast_field_keywords = null;
-    internal ViewArray<RedView> AstKeywords
+    internal ViewArray<RedView> SeparatedKeywords
     {
         get
         {
             if (_ast_field_keywords == null)
             {
                 var _positionOfField = base.GetPositionFor(4);
-                _ast_field_keywords = new ViewArray<RedView>(((KeywordsNode)base.Green).AstKeywords, _positionOfField, this);
+                _ast_field_keywords = new ViewArray<RedView>(((KeywordsNode)base.Green).SeparatedKeywords, _positionOfField, this);
             }
             return _ast_field_keywords.Value;
         }
@@ -2153,7 +2383,7 @@ internal sealed partial class KeywordsView : RedView
         {
             if (_field_keywords == null)
             {
-                var _tmp = AstKeywords.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
+                var _tmp = SeparatedKeywords.Where(static (_, i) => i % 2 == 0).Cast<TokenView>();
                 _field_keywords = global::System.Collections.Immutable.ImmutableArray.ToImmutableArray(_tmp);
             }
             return _field_keywords.Value;

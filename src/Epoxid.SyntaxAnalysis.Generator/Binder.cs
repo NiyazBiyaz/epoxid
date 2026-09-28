@@ -428,8 +428,8 @@ internal class Binder
         },
         StringAtomView str => new BoundStringAlternativeEntry()
         {
-            Name = nameScope.NextString() + quant.AddSuffix(count),
             Value = StringParser.ParseQuoted(str.Value.RawString),
+            Name = StringParser.ParseQuoted(str.Value.RawString) + "_Keyword" + quant.AddSuffix(count), // TODO: maybe add some safety
             Quantifier = quant,
             MinRepeatCount = count,
             Positiveness = positive,

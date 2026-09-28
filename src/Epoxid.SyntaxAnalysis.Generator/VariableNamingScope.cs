@@ -28,7 +28,5 @@ internal class VariableNamingScope
         return name;
     }
 
-    public string NextString() => NextName("_string_token");
-
     public string NextTypeName() => NextNamePreserveCase("_PegenNetAnonymousType");
 }

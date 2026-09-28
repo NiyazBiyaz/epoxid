@@ -243,25 +243,25 @@ Block:
 
 Decorator: '@' NamedExpression NewLine -> new(Value=named_expression)
 
-# Class definitions
-# -----------------
+# Class definition
+# ----------------
 
 ClassDef:
     | Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block -> new(
         Decorators=decorator_Star, Name=name, TypeParameters=type_parameters, Arguments=class_def_args, Block=block)
 
-# Function definitions
-# --------------------
+# Function definition
+# -------------------
 
 FunctionDef:
-    | Decorator* FunctionDefRaw -> new(Decorators=decorator_Star, FunctionDef=function_def_raw)
-
-FunctionDefRaw:
-    | 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-        SyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
-
-    | 'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-        AsyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
+    | Decorator* -'async' 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> new(
+        Decorators=decorator_Star,
+        AsyncKeyword=async_Keyword,
+        Name=name,
+        TypeParameters=type_parameters, 
+        Parameters=parameters, 
+        ReturnHint=function_return_hint, 
+        Block=block)
 
 # In original grammar parser forces from code to use proper orders of default values and sections 
 # but it makes output AST hierarchy very complicated, so better to validate it when compiling.

@@ -16,7 +16,12 @@ namespace Epoxid.SyntaxAnalysis;
 public sealed partial record FunctionDefNode : GreenNode, ICompoundStatementNode
 {
     public NodeArray<DecoratorNode> Decorators => (NodeArray<DecoratorNode>)Children![0];
-    public FunctionDefRawNode FunctionDef => (FunctionDefRawNode)Children![1];
+    public TokenNode? AsyncKeyword => Children![1] as TokenNode;
+    public TokenNode Name => (TokenNode)Children![3];
+    public TypeParametersNode? TypeParameters => Children![4] as TypeParametersNode;
+    public ParametersNode? Parameters => Children![6] as ParametersNode;
+    public FunctionReturnHintNode? ReturnHint => Children![8] as FunctionReturnHintNode;
+    public BlockNode Block => (BlockNode)Children![10];
     public override FunctionDefView GetView(int position, IRedView? parent)
         => new FunctionDefView(this, position, parent);
 }
@@ -45,17 +50,87 @@ public sealed partial class FunctionDefView : RedView, ICompoundStatementView
         }
     }
 
-    private FunctionDefRawView? _field_functionDef = null;
-    public FunctionDefRawView FunctionDef
+    private TokenView? _field_asyncKeyword = null;
+    public TokenView? AsyncKeyword
     {
         get
         {
-            if (_field_functionDef == null)
+            if (_field_asyncKeyword == null && ((FunctionDefNode)base.Green).AsyncKeyword != null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_functionDef = (FunctionDefRawView)((FunctionDefNode)base.Green).FunctionDef!.GetView(_positionOfField, this);
+                _field_asyncKeyword = (TokenView)((FunctionDefNode)base.Green).AsyncKeyword!.GetView(_positionOfField, this);
             }
-            return (FunctionDefRawView)_field_functionDef;
+            return (TokenView?)_field_asyncKeyword;
+        }
+    }
+
+    private TokenView? _field_name = null;
+    public TokenView Name
+    {
+        get
+        {
+            if (_field_name == null)
+            {
+                var _positionOfField = base.GetPositionFor(3);
+                _field_name = (TokenView)((FunctionDefNode)base.Green).Name!.GetView(_positionOfField, this);
+            }
+            return (TokenView)_field_name;
+        }
+    }
+
+    private TypeParametersView? _field_typeParameters = null;
+    public TypeParametersView? TypeParameters
+    {
+        get
+        {
+            if (_field_typeParameters == null && ((FunctionDefNode)base.Green).TypeParameters != null)
+            {
+                var _positionOfField = base.GetPositionFor(4);
+                _field_typeParameters = (TypeParametersView)((FunctionDefNode)base.Green).TypeParameters!.GetView(_positionOfField, this);
+            }
+            return (TypeParametersView?)_field_typeParameters;
+        }
+    }
+
+    private ParametersView? _field_parameters = null;
+    public ParametersView? Parameters
+    {
+        get
+        {
+            if (_field_parameters == null && ((FunctionDefNode)base.Green).Parameters != null)
+            {
+                var _positionOfField = base.GetPositionFor(6);
+                _field_parameters = (ParametersView)((FunctionDefNode)base.Green).Parameters!.GetView(_positionOfField, this);
+            }
+            return (ParametersView?)_field_parameters;
+        }
+    }
+
+    private FunctionReturnHintView? _field_returnHint = null;
+    public FunctionReturnHintView? ReturnHint
+    {
+        get
+        {
+            if (_field_returnHint == null && ((FunctionDefNode)base.Green).ReturnHint != null)
+            {
+                var _positionOfField = base.GetPositionFor(8);
+                _field_returnHint = (FunctionReturnHintView)((FunctionDefNode)base.Green).ReturnHint!.GetView(_positionOfField, this);
+            }
+            return (FunctionReturnHintView?)_field_returnHint;
+        }
+    }
+
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
+        {
+            if (_field_block == null)
+            {
+                var _positionOfField = base.GetPositionFor(10);
+                _field_block = (BlockView)((FunctionDefNode)base.Green).Block!.GetView(_positionOfField, this);
+            }
+            return (BlockView)_field_block;
         }
     }
 }

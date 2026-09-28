@@ -289,7 +289,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'type'       TypeAlias
             base.LogAlternativeEntered("&'type'       TypeAlias");
             IGreenNode? type_alias;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_type_Keyword()
                 &&
                 (type_alias = rule_TypeAlias()) is not null
             )
@@ -299,7 +299,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'type'       TypeAlias");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_type_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("type") != null;
@@ -348,7 +348,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'return'     ReturnStatement
             base.LogAlternativeEntered("&'return'     ReturnStatement");
             IGreenNode? return_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_return_Keyword()
                 &&
                 (return_statement = rule_ReturnStatement()) is not null
             )
@@ -358,7 +358,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'return'     ReturnStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_return_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("return") != null;
@@ -371,7 +371,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'raise'      RaiseStatement
             base.LogAlternativeEntered("&'raise'      RaiseStatement");
             IGreenNode? raise_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_raise_Keyword()
                 &&
                 (raise_statement = rule_RaiseStatement()) is not null
             )
@@ -381,7 +381,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'raise'      RaiseStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_raise_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("raise") != null;
@@ -394,7 +394,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'pass'       PassStatement
             base.LogAlternativeEntered("&'pass'       PassStatement");
             IGreenNode? pass_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_pass_Keyword()
                 &&
                 (pass_statement = rule_PassStatement()) is not null
             )
@@ -404,7 +404,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'pass'       PassStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_pass_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("pass") != null;
@@ -417,7 +417,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'del'        DeleteStatement
             base.LogAlternativeEntered("&'del'        DeleteStatement");
             IGreenNode? delete_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_del_Keyword()
                 &&
                 (delete_statement = rule_DeleteStatement()) is not null
             )
@@ -427,7 +427,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'del'        DeleteStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_del_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("del") != null;
@@ -440,7 +440,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'yield'      YieldStatement
             base.LogAlternativeEntered("&'yield'      YieldStatement");
             IGreenNode? yield_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_yield_Keyword()
                 &&
                 (yield_statement = rule_YieldStatement()) is not null
             )
@@ -450,7 +450,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'yield'      YieldStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_yield_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("yield") != null;
@@ -463,7 +463,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'assert'     AssertStatement
             base.LogAlternativeEntered("&'assert'     AssertStatement");
             IGreenNode? assert_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_assert_Keyword()
                 &&
                 (assert_statement = rule_AssertStatement()) is not null
             )
@@ -473,7 +473,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'assert'     AssertStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_assert_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("assert") != null;
@@ -486,7 +486,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'break'      BreakStatement
             base.LogAlternativeEntered("&'break'      BreakStatement");
             IGreenNode? break_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_break_Keyword()
                 &&
                 (break_statement = rule_BreakStatement()) is not null
             )
@@ -496,7 +496,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'break'      BreakStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_break_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("break") != null;
@@ -509,7 +509,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'continue'   ContinueStatement
             base.LogAlternativeEntered("&'continue'   ContinueStatement");
             IGreenNode? continue_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_continue_Keyword()
                 &&
                 (continue_statement = rule_ContinueStatement()) is not null
             )
@@ -519,7 +519,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'continue'   ContinueStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_continue_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("continue") != null;
@@ -532,7 +532,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'global'     GlobalStatement
             base.LogAlternativeEntered("&'global'     GlobalStatement");
             IGreenNode? global_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_global_Keyword()
                 &&
                 (global_statement = rule_GlobalStatement()) is not null
             )
@@ -542,7 +542,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'global'     GlobalStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_global_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("global") != null;
@@ -555,7 +555,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'nonlocal'   NonlocalStatement
             base.LogAlternativeEntered("&'nonlocal'   NonlocalStatement");
             IGreenNode? nonlocal_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_nonlocal_Keyword()
                 &&
                 (nonlocal_statement = rule_NonlocalStatement()) is not null
             )
@@ -565,7 +565,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'nonlocal'   NonlocalStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_nonlocal_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("nonlocal") != null;
@@ -597,11 +597,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'from'
             base.LogAlternativeEntered("'from'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("from")) is not null)
+            IGreenNode? from_Keyword;
+            if ((from_Keyword = Expect("from")) is not null)
             {
                 base.LogAlternativeSucceed("'from'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)from_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'from'");
@@ -610,11 +610,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'import'
             base.LogAlternativeEntered("'import'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("import")) is not null)
+            IGreenNode? import_Keyword;
+            if ((import_Keyword = Expect("import")) is not null)
             {
                 base.LogAlternativeSucceed("'import'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)import_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'import'");
@@ -623,11 +623,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'lazy'
             base.LogAlternativeEntered("'lazy'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("lazy")) is not null)
+            IGreenNode? lazy_Keyword;
+            if ((lazy_Keyword = Expect("lazy")) is not null)
             {
                 base.LogAlternativeSucceed("'lazy'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)lazy_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'lazy'");
@@ -695,7 +695,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'if' IfStatement
             base.LogAlternativeEntered("&'if' IfStatement");
             IGreenNode? if_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_if_Keyword()
                 &&
                 (if_statement = rule_IfStatement()) is not null
             )
@@ -705,7 +705,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'if' IfStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_if_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("if") != null;
@@ -787,7 +787,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'try' TryStatement
             base.LogAlternativeEntered("&'try' TryStatement");
             IGreenNode? try_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_try_Keyword()
                 &&
                 (try_statement = rule_TryStatement()) is not null
             )
@@ -797,7 +797,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'try' TryStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_try_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("try") != null;
@@ -810,7 +810,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // &'while' WhileStatement
             base.LogAlternativeEntered("&'while' WhileStatement");
             IGreenNode? while_statement;
-            if (_LookaheadHelper__string_token()
+            if (_LookaheadHelper_while_Keyword()
                 &&
                 (while_statement = rule_WhileStatement()) is not null
             )
@@ -820,7 +820,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("&'while' WhileStatement");
-            bool _LookaheadHelper__string_token()
+            bool _LookaheadHelper_while_Keyword()
             {
                 int _mark = base.Mark();
                 bool _wasParsed = Expect("while") != null;
@@ -848,11 +848,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'def'
             base.LogAlternativeEntered("'def'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("def")) is not null)
+            IGreenNode? def_Keyword;
+            if ((def_Keyword = Expect("def")) is not null)
             {
                 base.LogAlternativeSucceed("'def'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)def_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'def'");
@@ -874,11 +874,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'async'
             base.LogAlternativeEntered("'async'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("async")) is not null)
+            IGreenNode? async_Keyword;
+            if ((async_Keyword = Expect("async")) is not null)
             {
                 base.LogAlternativeSucceed("'async'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)async_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'async'");
@@ -903,11 +903,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'class'
             base.LogAlternativeEntered("'class'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("class")) is not null)
+            IGreenNode? class_Keyword;
+            if ((class_Keyword = Expect("class")) is not null)
             {
                 base.LogAlternativeSucceed("'class'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)class_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'class'");
@@ -945,11 +945,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'with'
             base.LogAlternativeEntered("'with'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("with")) is not null)
+            IGreenNode? with_Keyword;
+            if ((with_Keyword = Expect("with")) is not null)
             {
                 base.LogAlternativeSucceed("'with'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)with_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'with'");
@@ -958,11 +958,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'async'
             base.LogAlternativeEntered("'async'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("async")) is not null)
+            IGreenNode? async_Keyword;
+            if ((async_Keyword = Expect("async")) is not null)
             {
                 base.LogAlternativeSucceed("'async'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)async_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'async'");
@@ -987,11 +987,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'for'
             base.LogAlternativeEntered("'for'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("for")) is not null)
+            IGreenNode? for_Keyword;
+            if ((for_Keyword = Expect("for")) is not null)
             {
                 base.LogAlternativeSucceed("'for'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)for_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'for'");
@@ -1000,11 +1000,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'async'
             base.LogAlternativeEntered("'async'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("async")) is not null)
+            IGreenNode? async_Keyword;
+            if ((async_Keyword = Expect("async")) is not null)
             {
                 base.LogAlternativeSucceed("'async'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)async_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'async'");
@@ -1586,9 +1586,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'return' -StarExpressionVariant -> new(Expression=star_expression_variant)
             base.LogAlternativeEntered("'return' -StarExpressionVariant");
-            IGreenNode? _string_token;
+            IGreenNode? return_Keyword;
             IGreenNode? star_expression_variant;
-            if ((_string_token = Expect("return")) is not null
+            if ((return_Keyword = Expect("return")) is not null
                 &&
                 ((star_expression_variant = rule_StarExpressionVariant()) is not null || true) // Optional
             )
@@ -1597,7 +1597,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new ReturnStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        return_Keyword,
                         star_expression_variant ?? VoidNode.Instance,
                     ]),
                 };
@@ -1628,15 +1628,15 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'raise' Expression 'from' Expression -> RaiseFromStatement(NewException=expression, OldExpression=expression1)
             base.LogAlternativeEntered("'raise' Expression 'from' Expression");
-            IGreenNode? _string_token;
+            IGreenNode? raise_Keyword;
             IGreenNode? expression;
-            IGreenNode? _string_token1;
+            IGreenNode? from_Keyword;
             IGreenNode? expression1;
-            if ((_string_token = Expect("raise")) is not null
+            if ((raise_Keyword = Expect("raise")) is not null
                 &&
                 (expression = rule_Expression()) is not null
                 &&
-                (_string_token1 = Expect("from")) is not null
+                (from_Keyword = Expect("from")) is not null
                 &&
                 (expression1 = rule_Expression()) is not null
             )
@@ -1645,9 +1645,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new RaiseFromStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        raise_Keyword,
                         expression,
-                        _string_token1,
+                        from_Keyword,
                         expression1,
                     ]),
                 };
@@ -1659,9 +1659,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'raise' Expression -> RaiseFromScratchStatement(Exception=expression)
             base.LogAlternativeEntered("'raise' Expression");
-            IGreenNode? _string_token;
+            IGreenNode? raise_Keyword;
             IGreenNode? expression;
-            if ((_string_token = Expect("raise")) is not null
+            if ((raise_Keyword = Expect("raise")) is not null
                 &&
                 (expression = rule_Expression()) is not null
             )
@@ -1670,7 +1670,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new RaiseFromScratchStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        raise_Keyword,
                         expression,
                     ]),
                 };
@@ -1682,14 +1682,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'raise' -> PassedRaiseStatement()
             base.LogAlternativeEntered("'raise'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("raise")) is not null)
+            IGreenNode? raise_Keyword;
+            if ((raise_Keyword = Expect("raise")) is not null)
             {
                 base.LogAlternativeSucceed("'raise'");
                 _res = new PassedRaiseStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        raise_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -1716,14 +1716,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'pass' -> new()
             base.LogAlternativeEntered("'pass'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("pass")) is not null)
+            IGreenNode? pass_Keyword;
+            if ((pass_Keyword = Expect("pass")) is not null)
             {
                 base.LogAlternativeSucceed("'pass'");
                 _res = new PassStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        pass_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -1750,14 +1750,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'break' -> new()
             base.LogAlternativeEntered("'break'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("break")) is not null)
+            IGreenNode? break_Keyword;
+            if ((break_Keyword = Expect("break")) is not null)
             {
                 base.LogAlternativeSucceed("'break'");
                 _res = new BreakStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        break_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -1784,14 +1784,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'continue' -> new()
             base.LogAlternativeEntered("'continue'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("continue")) is not null)
+            IGreenNode? continue_Keyword;
+            if ((continue_Keyword = Expect("continue")) is not null)
             {
                 base.LogAlternativeSucceed("'continue'");
                 _res = new ContinueStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        continue_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -1818,9 +1818,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'global' Name+.',' -> new(Variables=name_Gather)
             base.LogAlternativeEntered("'global' Name+.','");
-            IGreenNode? _string_token;
+            IGreenNode? global_Keyword;
             INodeArray<GreenNode>? name_Gather;
-            if ((_string_token = Expect("global")) is not null
+            if ((global_Keyword = Expect("global")) is not null
                 &&
                 (name_Gather = _GatherHelper_name_Gather()) is not null
             )
@@ -1829,7 +1829,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new GlobalStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        global_Keyword,
                         name_Gather,
                     ]),
                 };
@@ -1879,9 +1879,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'nonlocal' Name+.',' -> new(Variables=name_Gather)
             base.LogAlternativeEntered("'nonlocal' Name+.','");
-            IGreenNode? _string_token;
+            IGreenNode? nonlocal_Keyword;
             INodeArray<GreenNode>? name_Gather;
-            if ((_string_token = Expect("nonlocal")) is not null
+            if ((nonlocal_Keyword = Expect("nonlocal")) is not null
                 &&
                 (name_Gather = _GatherHelper_name_Gather()) is not null
             )
@@ -1890,7 +1890,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new NonlocalStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        nonlocal_Keyword,
                         name_Gather,
                     ]),
                 };
@@ -1940,10 +1940,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'del' DeleteTarget+.',' -',' &(@inline ';' | NewLine) -> new(Targets=delete_target_Gather)
             base.LogAlternativeEntered("'del' DeleteTarget+.',' -',' &(@inline ';' | NewLine)");
-            IGreenNode? _string_token;
+            IGreenNode? del_Keyword;
             INodeArray<GreenNode>? delete_target_Gather;
             IGreenNode? comma;
-            if ((_string_token = Expect("del")) is not null
+            if ((del_Keyword = Expect("del")) is not null
                 &&
                 (delete_target_Gather = _GatherHelper_delete_target_Gather()) is not null
                 &&
@@ -1956,7 +1956,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new DeleteStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        del_Keyword,
                         delete_target_Gather,
                         comma ?? VoidNode.Instance,
                     ]),
@@ -2090,10 +2090,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'assert' Expression [',' Expression -> AssertMessage(Value=expression)] -> new(Guard=expression, Message=assert_message)
             base.LogAlternativeEntered("'assert' Expression [',' Expression -> AssertMessage(Value=expression)]");
-            IGreenNode? _string_token;
+            IGreenNode? assert_Keyword;
             IGreenNode? expression;
             IGreenNode? assert_message;
-            if ((_string_token = Expect("assert")) is not null
+            if ((assert_Keyword = Expect("assert")) is not null
                 &&
                 (expression = rule_Expression()) is not null
                 &&
@@ -2104,7 +2104,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AssertStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        assert_Keyword,
                         expression,
                         assert_message ?? VoidNode.Instance,
                     ]),
@@ -2262,9 +2262,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
             base.LogAlternativeEntered("'import' DottedName+.','");
-            IGreenNode? _string_token;
+            IGreenNode? import_Keyword;
             INodeArray<GreenNode>? dotted_name_Gather;
-            if ((_string_token = Expect("import")) is not null
+            if ((import_Keyword = Expect("import")) is not null
                 &&
                 (dotted_name_Gather = _GatherHelper_dotted_name_Gather()) is not null
             )
@@ -2273,7 +2273,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new ImportNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        import_Keyword,
                         dotted_name_Gather,
                     ]),
                 };
@@ -2323,12 +2323,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
             base.LogAlternativeEntered("'lazy' 'import' DottedName+.','");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? lazy_Keyword;
+            IGreenNode? import_Keyword;
             INodeArray<GreenNode>? dotted_name_Gather;
-            if ((_string_token = Expect("lazy")) is not null
+            if ((lazy_Keyword = Expect("lazy")) is not null
                 &&
-                (_string_token1 = Expect("import")) is not null
+                (import_Keyword = Expect("import")) is not null
                 &&
                 (dotted_name_Gather = _GatherHelper_dotted_name_Gather()) is not null
             )
@@ -2337,8 +2337,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new LazyImportNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        lazy_Keyword,
+                        import_Keyword,
                         dotted_name_Gather,
                     ]),
                 };
@@ -2427,9 +2427,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'as' Name -> AsName(Value=name)
             base.LogAlternativeEntered("'as' Name");
-            IGreenNode? _string_token;
+            IGreenNode? as_Keyword;
             IGreenNode? name;
-            if ((_string_token = Expect("as")) is not null
+            if ((as_Keyword = Expect("as")) is not null
                 &&
                 (name = Expect(TokenType.Name)) is not null
             )
@@ -2438,7 +2438,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AsNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        as_Keyword,
                         name,
                     ]),
                 };
@@ -2472,18 +2472,18 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
             //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
             base.LogAlternativeEntered("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
-            IGreenNode? _string_token;
+            IGreenNode? from_Keyword;
             INodeArray<TokenNode>? relative_import_dots_Star;
             IGreenNode? import_unit;
-            IGreenNode? _string_token1;
+            IGreenNode? import_Keyword;
             IGreenNode? import_from_targets;
-            if ((_string_token = Expect("from")) is not null
+            if ((from_Keyword = Expect("from")) is not null
                 &&
                 (relative_import_dots_Star = _RepeatHelper_relative_import_dots_Star()) is not null
                 &&
                 (import_unit = rule_ImportUnit()) is not null
                 &&
-                (_string_token1 = Expect("import")) is not null
+                (import_Keyword = Expect("import")) is not null
                 &&
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
@@ -2492,10 +2492,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new ImportFromModuleNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        from_Keyword,
                         relative_import_dots_Star,
                         import_unit,
-                        _string_token1,
+                        import_Keyword,
                         import_from_targets,
                     ]),
                 };
@@ -2519,15 +2519,15 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
             //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
             base.LogAlternativeEntered("'from' RelativeImportDots+ 'import' ImportFromTargets");
-            IGreenNode? _string_token;
+            IGreenNode? from_Keyword;
             INodeArray<TokenNode>? relative_import_dots_Plus;
-            IGreenNode? _string_token1;
+            IGreenNode? import_Keyword;
             IGreenNode? import_from_targets;
-            if ((_string_token = Expect("from")) is not null
+            if ((from_Keyword = Expect("from")) is not null
                 &&
                 (relative_import_dots_Plus = _RepeatHelper_relative_import_dots_Plus()) is not null
                 &&
-                (_string_token1 = Expect("import")) is not null
+                (import_Keyword = Expect("import")) is not null
                 &&
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
@@ -2536,9 +2536,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new ImportFromRelativeNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        from_Keyword,
                         relative_import_dots_Plus,
-                        _string_token1,
+                        import_Keyword,
                         import_from_targets,
                     ]),
                 };
@@ -2583,21 +2583,21 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
             //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
             base.LogAlternativeEntered("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? lazy_Keyword;
+            IGreenNode? from_Keyword;
             INodeArray<TokenNode>? relative_import_dots_Star;
             IGreenNode? import_unit;
-            IGreenNode? _string_token2;
+            IGreenNode? import_Keyword;
             IGreenNode? import_from_targets;
-            if ((_string_token = Expect("lazy")) is not null
+            if ((lazy_Keyword = Expect("lazy")) is not null
                 &&
-                (_string_token1 = Expect("from")) is not null
+                (from_Keyword = Expect("from")) is not null
                 &&
                 (relative_import_dots_Star = _RepeatHelper_relative_import_dots_Star()) is not null
                 &&
                 (import_unit = rule_ImportUnit()) is not null
                 &&
-                (_string_token2 = Expect("import")) is not null
+                (import_Keyword = Expect("import")) is not null
                 &&
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
@@ -2606,11 +2606,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new LazyImportFromModuleNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        lazy_Keyword,
+                        from_Keyword,
                         relative_import_dots_Star,
                         import_unit,
-                        _string_token2,
+                        import_Keyword,
                         import_from_targets,
                     ]),
                 };
@@ -2634,18 +2634,18 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> LazyImportFromRelative(
             //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
             base.LogAlternativeEntered("'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? lazy_Keyword;
+            IGreenNode? from_Keyword;
             INodeArray<TokenNode>? relative_import_dots_Plus;
-            IGreenNode? _string_token2;
+            IGreenNode? import_Keyword;
             IGreenNode? import_from_targets;
-            if ((_string_token = Expect("lazy")) is not null
+            if ((lazy_Keyword = Expect("lazy")) is not null
                 &&
-                (_string_token1 = Expect("from")) is not null
+                (from_Keyword = Expect("from")) is not null
                 &&
                 (relative_import_dots_Plus = _RepeatHelper_relative_import_dots_Plus()) is not null
                 &&
-                (_string_token2 = Expect("import")) is not null
+                (import_Keyword = Expect("import")) is not null
                 &&
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
@@ -2654,10 +2654,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new LazyImportFromRelativeNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        lazy_Keyword,
+                        from_Keyword,
                         relative_import_dots_Plus,
-                        _string_token2,
+                        import_Keyword,
                         import_from_targets,
                     ]),
                 };
@@ -3163,7 +3163,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             //         Decorators=decorator_Star, Name=name, TypeParameters=type_parameters, Arguments=class_def_args, Block=block)
             base.LogAlternativeEntered("Decorator* 'class' Name -TypeParameters ['(' -Arguments ')' -> ClassDefArgs(Value=arguments)] ':' Block");
             INodeArray<DecoratorNode>? decorator_Star;
-            IGreenNode? _string_token;
+            IGreenNode? class_Keyword;
             IGreenNode? name;
             IGreenNode? type_parameters;
             IGreenNode? class_def_args;
@@ -3171,7 +3171,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             IGreenNode? block;
             if ((decorator_Star = _RepeatHelper_decorator_Star()) is not null
                 &&
-                (_string_token = Expect("class")) is not null
+                (class_Keyword = Expect("class")) is not null
                 &&
                 (name = Expect(TokenType.Name)) is not null
                 &&
@@ -3189,7 +3189,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 {
                     Children = new NodeArray<IGreenNode>([
                         decorator_Star,
-                        _string_token,
+                        class_Keyword,
                         name,
                         type_parameters ?? VoidNode.Instance,
                         class_def_args ?? VoidNode.Instance,
@@ -3266,7 +3266,17 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region FunctionDef
     // FunctionDef:
-    //     | Decorator* FunctionDefRaw -> new(Decorators=decorator_Star, FunctionDef=function_def_raw)
+    //     | Decorator* -'async' 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> new(
+    //         Decorators=decorator_Star,
+    //         AsyncKeyword=async_Keyword,
+    //         Name=name,
+    //         TypeParameters=type_parameters, 
+    //         Parameters=parameters, 
+    //         ReturnHint=function_return_hint, 
+    //         Block=block)
+    //
+    //
+    //
     FunctionDefNode? rule_FunctionDef()
     {
         base.LogIncreaseLevel();
@@ -3274,26 +3284,69 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         FunctionDefNode? _res = null;
         {
-            // Decorator* FunctionDefRaw -> new(Decorators=decorator_Star, FunctionDef=function_def_raw)
-            base.LogAlternativeEntered("Decorator* FunctionDefRaw");
+            // Decorator* -'async' 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> new(
+            //         Decorators=decorator_Star,
+            //         AsyncKeyword=async_Keyword,
+            //         Name=name,
+            //         TypeParameters=type_parameters, 
+            //         Parameters=parameters, 
+            //         ReturnHint=function_return_hint, 
+            //         Block=block)
+            base.LogAlternativeEntered("Decorator* -'async' 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
             INodeArray<DecoratorNode>? decorator_Star;
-            IGreenNode? function_def_raw;
+            IGreenNode? async_Keyword;
+            IGreenNode? def_Keyword;
+            IGreenNode? name;
+            IGreenNode? type_parameters;
+            IGreenNode? left_paren;
+            IGreenNode? parameters;
+            IGreenNode? right_paren;
+            IGreenNode? function_return_hint;
+            IGreenNode? colon;
+            IGreenNode? block;
             if ((decorator_Star = _RepeatHelper_decorator_Star()) is not null
                 &&
-                (function_def_raw = rule_FunctionDefRaw()) is not null
+                ((async_Keyword = Expect("async")) is not null || true) // Optional
+                &&
+                (def_Keyword = Expect("def")) is not null
+                &&
+                (name = Expect(TokenType.Name)) is not null
+                &&
+                ((type_parameters = rule_TypeParameters()) is not null || true) // Optional
+                &&
+                (left_paren = Expect(TokenType.LeftParen)) is not null
+                &&
+                ((parameters = rule_Parameters()) is not null || true) // Optional
+                &&
+                (right_paren = Expect(TokenType.RightParen)) is not null
+                &&
+                ((function_return_hint = rule_FunctionReturnHint()) is not null || true) // Optional
+                &&
+                (colon = Expect(TokenType.Colon)) is not null
+                &&
+                (block = rule_Block()) is not null
             )
             {
-                base.LogAlternativeSucceed("Decorator* FunctionDefRaw");
+                base.LogAlternativeSucceed("Decorator* -'async' 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
                 _res = new FunctionDefNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         decorator_Star,
-                        function_def_raw,
+                        async_Keyword ?? VoidNode.Instance,
+                        def_Keyword,
+                        name,
+                        type_parameters ?? VoidNode.Instance,
+                        left_paren,
+                        parameters ?? VoidNode.Instance,
+                        right_paren,
+                        function_return_hint ?? VoidNode.Instance,
+                        colon,
+                        block,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("Decorator* FunctionDefRaw");
+            base.LogAlternativeFailed("Decorator* -'async' 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
             NodeArray<DecoratorNode>? _RepeatHelper_decorator_Star()
             {
                 DecoratorNode? _node = rule_Decorator();
@@ -3314,134 +3367,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // FunctionDef
-
-    #region FunctionDefRaw
-    // FunctionDefRaw:
-    //     | 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-    //         SyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
-    //
-    //     | 'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-    //         AsyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
-    //
-    //
-    //
-    FunctionDefRawNode? rule_FunctionDefRaw()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("FunctionDefRaw");
-        int _mark = base.Mark();
-        FunctionDefRawNode? _res = null;
-        {
-            // 'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-            //         SyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
-            base.LogAlternativeEntered("'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-            IGreenNode? _string_token;
-            IGreenNode? name;
-            IGreenNode? type_parameters;
-            IGreenNode? left_paren;
-            IGreenNode? parameters;
-            IGreenNode? right_paren;
-            IGreenNode? function_return_hint;
-            IGreenNode? colon;
-            IGreenNode? block;
-            if ((_string_token = Expect("def")) is not null
-                &&
-                (name = Expect(TokenType.Name)) is not null
-                &&
-                ((type_parameters = rule_TypeParameters()) is not null || true) // Optional
-                &&
-                (left_paren = Expect(TokenType.LeftParen)) is not null
-                &&
-                ((parameters = rule_Parameters()) is not null || true) // Optional
-                &&
-                (right_paren = Expect(TokenType.RightParen)) is not null
-                &&
-                ((function_return_hint = rule_FunctionReturnHint()) is not null || true) // Optional
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-                _res = new SyncFunctionDefNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        name,
-                        type_parameters ?? VoidNode.Instance,
-                        left_paren,
-                        parameters ?? VoidNode.Instance,
-                        right_paren,
-                        function_return_hint ?? VoidNode.Instance,
-                        colon,
-                        block,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'def' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-        }
-        base.Reset(_mark);
-        {
-            // 'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block -> \
-            //         AsyncFunctionDef(Name=name, TypeParameters=type_parameters, Parameters=parameters, ReturnHint=function_return_hint, Block=block)
-            base.LogAlternativeEntered("'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-            IGreenNode? _string_token;
-            IGreenNode? name;
-            IGreenNode? type_parameters;
-            IGreenNode? left_paren;
-            IGreenNode? parameters;
-            IGreenNode? right_paren;
-            IGreenNode? function_return_hint;
-            IGreenNode? colon;
-            IGreenNode? block;
-            if ((_string_token = Expect("async")) is not null
-                &&
-                (name = Expect(TokenType.Name)) is not null
-                &&
-                ((type_parameters = rule_TypeParameters()) is not null || true) // Optional
-                &&
-                (left_paren = Expect(TokenType.LeftParen)) is not null
-                &&
-                ((parameters = rule_Parameters()) is not null || true) // Optional
-                &&
-                (right_paren = Expect(TokenType.RightParen)) is not null
-                &&
-                ((function_return_hint = rule_FunctionReturnHint()) is not null || true) // Optional
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-                _res = new AsyncFunctionDefNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        name,
-                        type_parameters ?? VoidNode.Instance,
-                        left_paren,
-                        parameters ?? VoidNode.Instance,
-                        right_paren,
-                        function_return_hint ?? VoidNode.Instance,
-                        colon,
-                        block,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'async' Name -TypeParameters '(' -Parameters ')' ['->' Expression -> FunctionReturnHint(Value=expression)] ':' Block");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("FunctionDefRaw");
-    _Return:
-        base.LogRuleExiting("FunctionDefRaw");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // FunctionDefRaw
 
     #region FunctionReturnHint
     // ['->' Expression -> FunctionReturnHint(Value=expression)]
@@ -3786,13 +3711,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'if' NamedExpression ':' Block ElifStatement* -ElseBlock -> new(
             //         Condition=named_expression, Block=block, Elifs=elif_statement_Star, Else=else_block)
             base.LogAlternativeEntered("'if' NamedExpression ':' Block ElifStatement* -ElseBlock");
-            IGreenNode? _string_token;
+            IGreenNode? if_Keyword;
             IGreenNode? named_expression;
             IGreenNode? colon;
             IGreenNode? block;
             INodeArray<ElifStatementNode>? elif_statement_Star;
             IGreenNode? else_block;
-            if ((_string_token = Expect("if")) is not null
+            if ((if_Keyword = Expect("if")) is not null
                 &&
                 (named_expression = rule_NamedExpression()) is not null
                 &&
@@ -3809,7 +3734,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new IfStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        if_Keyword,
                         named_expression,
                         colon,
                         block,
@@ -3852,11 +3777,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'elif' NamedExpression ':' Block -> new(Condition=named_expression, Block=block)
             base.LogAlternativeEntered("'elif' NamedExpression ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? elif_Keyword;
             IGreenNode? named_expression;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("elif")) is not null
+            if ((elif_Keyword = Expect("elif")) is not null
                 &&
                 (named_expression = rule_NamedExpression()) is not null
                 &&
@@ -3869,7 +3794,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new ElifStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        elif_Keyword,
                         named_expression,
                         colon,
                         block,
@@ -3899,10 +3824,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'else' ':' Block -> new(Block=block)
             base.LogAlternativeEntered("'else' ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? else_Keyword;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("else")) is not null
+            if ((else_Keyword = Expect("else")) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -3913,7 +3838,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new ElseBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        else_Keyword,
                         colon,
                         block,
                     ]),
@@ -3942,12 +3867,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'while' NamedExpression ':' Block -ElseBlock -> new(Condition=named_expression, Block=block, Else=else_block)
             base.LogAlternativeEntered("'while' NamedExpression ':' Block -ElseBlock");
-            IGreenNode? _string_token;
+            IGreenNode? while_Keyword;
             IGreenNode? named_expression;
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? else_block;
-            if ((_string_token = Expect("while")) is not null
+            if ((while_Keyword = Expect("while")) is not null
                 &&
                 (named_expression = rule_NamedExpression()) is not null
                 &&
@@ -3962,7 +3887,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new WhileStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        while_Keyword,
                         named_expression,
                         colon,
                         block,
@@ -4003,18 +3928,18 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
             //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
             base.LogAlternativeEntered("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
-            IGreenNode? _string_token;
+            IGreenNode? for_Keyword;
             IGreenNode? assignment_target_variant;
-            IGreenNode? _string_token1;
+            IGreenNode? in_Keyword;
             IGreenNode? star_expression_variant;
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? else_block;
-            if ((_string_token = Expect("for")) is not null
+            if ((for_Keyword = Expect("for")) is not null
                 &&
                 (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
-                (_string_token1 = Expect("in")) is not null
+                (in_Keyword = Expect("in")) is not null
                 &&
                 (_cut = true)
                 &&
@@ -4031,9 +3956,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new NormalForStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        for_Keyword,
                         assignment_target_variant,
-                        _string_token1,
+                        in_Keyword,
                         star_expression_variant,
                         colon,
                         block,
@@ -4054,21 +3979,21 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
             //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
             base.LogAlternativeEntered("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? async_Keyword;
+            IGreenNode? for_Keyword;
             IGreenNode? assignment_target_variant;
-            IGreenNode? _string_token2;
+            IGreenNode? in_Keyword;
             IGreenNode? star_expression_variant;
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? else_block;
-            if ((_string_token = Expect("async")) is not null
+            if ((async_Keyword = Expect("async")) is not null
                 &&
-                (_string_token1 = Expect("for")) is not null
+                (for_Keyword = Expect("for")) is not null
                 &&
                 (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
-                (_string_token2 = Expect("in")) is not null
+                (in_Keyword = Expect("in")) is not null
                 &&
                 (_cut = true)
                 &&
@@ -4085,10 +4010,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AsyncForStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        async_Keyword,
+                        for_Keyword,
                         assignment_target_variant,
-                        _string_token2,
+                        in_Keyword,
                         star_expression_variant,
                         colon,
                         block,
@@ -4126,11 +4051,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
             base.LogAlternativeEntered("'with' WithItems ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? with_Keyword;
             IGreenNode? with_items;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("with")) is not null
+            if ((with_Keyword = Expect("with")) is not null
                 &&
                 (with_items = rule_WithItems()) is not null
                 &&
@@ -4143,7 +4068,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new SyncWithStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        with_Keyword,
                         with_items,
                         colon,
                         block,
@@ -4157,14 +4082,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
             base.LogAlternativeEntered("'async' 'with' WithItems ':' Block");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? async_Keyword;
+            IGreenNode? with_Keyword;
             IGreenNode? with_items;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("async")) is not null
+            if ((async_Keyword = Expect("async")) is not null
                 &&
-                (_string_token1 = Expect("with")) is not null
+                (with_Keyword = Expect("with")) is not null
                 &&
                 (with_items = rule_WithItems()) is not null
                 &&
@@ -4177,8 +4102,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AsyncWithStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        async_Keyword,
+                        with_Keyword,
                         with_items,
                         colon,
                         block,
@@ -4325,11 +4250,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':') -> NamedWithItem(Expression=expression, Target=assignment_target)
             base.LogAlternativeEntered("Expression 'as' AssignmentTarget &(@inline ',' | ')' | ':')");
             IGreenNode? expression;
-            IGreenNode? _string_token;
+            IGreenNode? as_Keyword;
             IGreenNode? assignment_target;
             if ((expression = rule_Expression()) is not null
                 &&
-                (_string_token = Expect("as")) is not null
+                (as_Keyword = Expect("as")) is not null
                 &&
                 (assignment_target = rule_AssignmentTarget()) is not null
                 &&
@@ -4341,7 +4266,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 {
                     Children = new NodeArray<IGreenNode>([
                         expression,
-                        _string_token,
+                        as_Keyword,
                         assignment_target,
                     ]),
                 };
@@ -4456,11 +4381,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'try' ':' Block FinallyBlock -> TryFinallyStatement(Try=block, Finally=finally_block)
             base.LogAlternativeEntered("'try' ':' Block FinallyBlock");
-            IGreenNode? _string_token;
+            IGreenNode? try_Keyword;
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? finally_block;
-            if ((_string_token = Expect("try")) is not null
+            if ((try_Keyword = Expect("try")) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -4473,7 +4398,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new TryFinallyStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        try_Keyword,
                         colon,
                         block,
                         finally_block,
@@ -4488,13 +4413,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'try' ':' Block ExceptBlock+ -ElseBlock -FinallyBlock -> TryExceptStatement(
             //         Try=block, Excepts=except_block_Plus, Else=else_block, Finally=finally_block)
             base.LogAlternativeEntered("'try' ':' Block ExceptBlock+ -ElseBlock -FinallyBlock");
-            IGreenNode? _string_token;
+            IGreenNode? try_Keyword;
             IGreenNode? colon;
             IGreenNode? block;
             INodeArray<ExceptBlockNode>? except_block_Plus;
             IGreenNode? else_block;
             IGreenNode? finally_block;
-            if ((_string_token = Expect("try")) is not null
+            if ((try_Keyword = Expect("try")) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -4511,7 +4436,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new TryExceptStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        try_Keyword,
                         colon,
                         block,
                         except_block_Plus,
@@ -4539,13 +4464,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'try' ':' Block ExceptStarBlock+ -ElseBlock -FinallyBlock -> TryExceptStarStatement(
             //         Try=block, Excepts=except_star_block_Plus, Else=else_block, Finally=finally_block)
             base.LogAlternativeEntered("'try' ':' Block ExceptStarBlock+ -ElseBlock -FinallyBlock");
-            IGreenNode? _string_token;
+            IGreenNode? try_Keyword;
             IGreenNode? colon;
             IGreenNode? block;
             INodeArray<ExceptStarBlockNode>? except_star_block_Plus;
             IGreenNode? else_block;
             IGreenNode? finally_block;
-            if ((_string_token = Expect("try")) is not null
+            if ((try_Keyword = Expect("try")) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -4562,7 +4487,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new TryExceptStarStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        try_Keyword,
                         colon,
                         block,
                         except_star_block_Plus,
@@ -4609,11 +4534,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' Expression ':' Block -> PlainExceptBlock(Exception=expression, Block=block)
             base.LogAlternativeEntered("'except' Expression ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             IGreenNode? expression;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (expression = rule_Expression()) is not null
                 &&
@@ -4626,7 +4551,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new PlainExceptBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         expression,
                         colon,
                         block,
@@ -4640,17 +4565,17 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' Expression 'as' Name ':' Block -> AliasExceptBlock(Exception=expression, Alias=name, Block=block)
             base.LogAlternativeEntered("'except' Expression 'as' Name ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             IGreenNode? expression;
-            IGreenNode? _string_token1;
+            IGreenNode? as_Keyword;
             IGreenNode? name;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (expression = rule_Expression()) is not null
                 &&
-                (_string_token1 = Expect("as")) is not null
+                (as_Keyword = Expect("as")) is not null
                 &&
                 (name = Expect(TokenType.Name)) is not null
                 &&
@@ -4663,9 +4588,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AliasExceptBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         expression,
-                        _string_token1,
+                        as_Keyword,
                         name,
                         colon,
                         block,
@@ -4679,12 +4604,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' Expression+.',' -',' ':' Block -> MultipleExceptBlock(Exceptions=expression_Gather, Block=block)
             base.LogAlternativeEntered("'except' Expression+.',' -',' ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             INodeArray<GreenNode>? expression_Gather;
             IGreenNode? comma;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (expression_Gather = _GatherHelper_expression_Gather()) is not null
                 &&
@@ -4699,7 +4624,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new MultipleExceptBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         expression_Gather,
                         comma ?? VoidNode.Instance,
                         colon,
@@ -4736,10 +4661,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' ':' Block -> EmptyExceptBlock(Block=block)
             base.LogAlternativeEntered("'except' ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -4750,7 +4675,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new EmptyExceptBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         colon,
                         block,
                     ]),
@@ -4782,12 +4707,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' '*' Expression ':' Block -> PlainExceptStarBlock(Exception=expression, Block=block)
             base.LogAlternativeEntered("'except' '*' Expression ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             IGreenNode? star;
             IGreenNode? expression;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (star = Expect(TokenType.Star)) is not null
                 &&
@@ -4802,7 +4727,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new PlainExceptStarBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         star,
                         expression,
                         colon,
@@ -4817,20 +4742,20 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' '*' Expression 'as' Name ':' Block -> AliasExceptStarBlock(Exception=expression, Alias=name, Block=block)
             base.LogAlternativeEntered("'except' '*' Expression 'as' Name ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             IGreenNode? star;
             IGreenNode? expression;
-            IGreenNode? _string_token1;
+            IGreenNode? as_Keyword;
             IGreenNode? name;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (star = Expect(TokenType.Star)) is not null
                 &&
                 (expression = rule_Expression()) is not null
                 &&
-                (_string_token1 = Expect("as")) is not null
+                (as_Keyword = Expect("as")) is not null
                 &&
                 (name = Expect(TokenType.Name)) is not null
                 &&
@@ -4843,10 +4768,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AliasExceptStarBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         star,
                         expression,
-                        _string_token1,
+                        as_Keyword,
                         name,
                         colon,
                         block,
@@ -4860,13 +4785,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'except' '*' Expression+.',' -',' ':' Block -> MultipleExceptStarBlock(Exceptions=expression_Gather, Block=block)
             base.LogAlternativeEntered("'except' '*' Expression+.',' -',' ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? except_Keyword;
             IGreenNode? star;
             INodeArray<GreenNode>? expression_Gather;
             IGreenNode? comma;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("except")) is not null
+            if ((except_Keyword = Expect("except")) is not null
                 &&
                 (star = Expect(TokenType.Star)) is not null
                 &&
@@ -4883,7 +4808,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new MultipleExceptStarBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        except_Keyword,
                         star,
                         expression_Gather,
                         comma ?? VoidNode.Instance,
@@ -4937,10 +4862,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'finally' ':' Block -> new(Value=block)
             base.LogAlternativeEntered("'finally' ':' Block");
-            IGreenNode? _string_token;
+            IGreenNode? finally_Keyword;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((_string_token = Expect("finally")) is not null
+            if ((finally_Keyword = Expect("finally")) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -4951,7 +4876,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new FinallyBlockNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        finally_Keyword,
                         colon,
                         block,
                     ]),
@@ -4980,12 +4905,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'type' Name -TypeParameters '=' Expression -> new(Name=name, TypeParameters=type_parameters, Value=expression)
             base.LogAlternativeEntered("'type' Name -TypeParameters '=' Expression");
-            IGreenNode? _string_token;
+            IGreenNode? type_Keyword;
             IGreenNode? name;
             IGreenNode? type_parameters;
             IGreenNode? equal;
             IGreenNode? expression;
-            if ((_string_token = Expect("type")) is not null
+            if ((type_Keyword = Expect("type")) is not null
                 &&
                 (name = Expect(TokenType.Name)) is not null
                 &&
@@ -5000,7 +4925,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new TypeAliasNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        type_Keyword,
                         name,
                         type_parameters ?? VoidNode.Instance,
                         equal,
@@ -5386,17 +5311,17 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // Arithmetic 'if' Arithmetic 'else' Expression -> new(Condition=arithmetic1, Then=arithmetic, Else=expression)
             base.LogAlternativeEntered("Arithmetic 'if' Arithmetic 'else' Expression");
             IGreenNode? arithmetic;
-            IGreenNode? _string_token;
+            IGreenNode? if_Keyword;
             IGreenNode? arithmetic1;
-            IGreenNode? _string_token1;
+            IGreenNode? else_Keyword;
             IGreenNode? expression;
             if ((arithmetic = rule_Arithmetic()) is not null
                 &&
-                (_string_token = Expect("if")) is not null
+                (if_Keyword = Expect("if")) is not null
                 &&
                 (arithmetic1 = rule_Arithmetic()) is not null
                 &&
-                (_string_token1 = Expect("else")) is not null
+                (else_Keyword = Expect("else")) is not null
                 &&
                 (expression = rule_Expression()) is not null
             )
@@ -5406,9 +5331,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 {
                     Children = new NodeArray<IGreenNode>([
                         arithmetic,
-                        _string_token,
+                        if_Keyword,
                         arithmetic1,
-                        _string_token1,
+                        else_Keyword,
                         expression,
                     ]),
                 };
@@ -5503,11 +5428,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'or'
             base.LogAlternativeEntered("'or'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("or")) is not null)
+            IGreenNode? or_Keyword;
+            if ((or_Keyword = Expect("or")) is not null)
             {
                 base.LogAlternativeSucceed("'or'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)or_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'or'");
@@ -5516,11 +5441,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'and'
             base.LogAlternativeEntered("'and'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("and")) is not null)
+            IGreenNode? and_Keyword;
+            if ((and_Keyword = Expect("and")) is not null)
             {
                 base.LogAlternativeSucceed("'and'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)and_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'and'");
@@ -5529,11 +5454,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'not'
             base.LogAlternativeEntered("'not'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("not")) is not null)
+            IGreenNode? not_Keyword;
+            if ((not_Keyword = Expect("not")) is not null)
             {
                 base.LogAlternativeSucceed("'not'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)not_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'not'");
@@ -5542,11 +5467,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'in'
             base.LogAlternativeEntered("'in'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("in")) is not null)
+            IGreenNode? in_Keyword;
+            if ((in_Keyword = Expect("in")) is not null)
             {
                 base.LogAlternativeSucceed("'in'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)in_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'in'");
@@ -5555,11 +5480,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'is'
             base.LogAlternativeEntered("'is'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("is")) is not null)
+            IGreenNode? is_Keyword;
+            if ((is_Keyword = Expect("is")) is not null)
             {
                 base.LogAlternativeSucceed("'is'");
-                _res = (TokenNode?)_string_token;
+                _res = (TokenNode?)is_Keyword;
                 goto _Return;
             }
             base.LogAlternativeFailed("'is'");
@@ -5664,12 +5589,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'yield' 'from' Expression -> YieldFromExpression(Expression=expression)
             base.LogAlternativeEntered("'yield' 'from' Expression");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? yield_Keyword;
+            IGreenNode? from_Keyword;
             IGreenNode? expression;
-            if ((_string_token = Expect("yield")) is not null
+            if ((yield_Keyword = Expect("yield")) is not null
                 &&
-                (_string_token1 = Expect("from")) is not null
+                (from_Keyword = Expect("from")) is not null
                 &&
                 (expression = rule_Expression()) is not null
             )
@@ -5678,8 +5603,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new YieldFromExpressionNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        yield_Keyword,
+                        from_Keyword,
                         expression,
                     ]),
                 };
@@ -5691,9 +5616,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'yield' -StarExpressions -> YieldStarExpression(Expression=star_expressions)
             base.LogAlternativeEntered("'yield' -StarExpressions");
-            IGreenNode? _string_token;
+            IGreenNode? yield_Keyword;
             IGreenNode? star_expressions;
-            if ((_string_token = Expect("yield")) is not null
+            if ((yield_Keyword = Expect("yield")) is not null
                 &&
                 ((star_expressions = rule_StarExpressions()) is not null || true) // Optional
             )
@@ -5702,7 +5627,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new YieldStarExpressionNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        yield_Keyword,
                         star_expressions ?? VoidNode.Instance,
                     ]),
                 };
@@ -6343,9 +6268,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'not' InversionExpression -> new(Inversion=inversion_expression)
             base.LogAlternativeEntered("'not' InversionExpression");
-            IGreenNode? _string_token;
+            IGreenNode? not_Keyword;
             IGreenNode? inversion_expression;
-            if ((_string_token = Expect("not")) is not null
+            if ((not_Keyword = Expect("not")) is not null
                 &&
                 (inversion_expression = rule_InversionExpression()) is not null
             )
@@ -6354,7 +6279,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new InversionNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        not_Keyword,
                         inversion_expression,
                     ]),
                 };
@@ -6630,12 +6555,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'not' 'in' BitwiseOrExpression  -> NotInOperation(Right=bitwise_or_expression)
             base.LogAlternativeEntered("'not' 'in' BitwiseOrExpression");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? not_Keyword;
+            IGreenNode? in_Keyword;
             IGreenNode? bitwise_or_expression;
-            if ((_string_token = Expect("not")) is not null
+            if ((not_Keyword = Expect("not")) is not null
                 &&
-                (_string_token1 = Expect("in")) is not null
+                (in_Keyword = Expect("in")) is not null
                 &&
                 (bitwise_or_expression = rule_BitwiseOrExpression()) is not null
             )
@@ -6644,8 +6569,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new NotInOperationNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        not_Keyword,
+                        in_Keyword,
                         bitwise_or_expression,
                     ]),
                 };
@@ -6657,9 +6582,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'in' BitwiseOrExpression        -> InOperation(Right=bitwise_or_expression)
             base.LogAlternativeEntered("'in' BitwiseOrExpression");
-            IGreenNode? _string_token;
+            IGreenNode? in_Keyword;
             IGreenNode? bitwise_or_expression;
-            if ((_string_token = Expect("in")) is not null
+            if ((in_Keyword = Expect("in")) is not null
                 &&
                 (bitwise_or_expression = rule_BitwiseOrExpression()) is not null
             )
@@ -6668,7 +6593,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new InOperationNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        in_Keyword,
                         bitwise_or_expression,
                     ]),
                 };
@@ -6680,12 +6605,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'is' 'not' BitwiseOrExpression  -> IsNotOperation(Right=bitwise_or_expression)
             base.LogAlternativeEntered("'is' 'not' BitwiseOrExpression");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? is_Keyword;
+            IGreenNode? not_Keyword;
             IGreenNode? bitwise_or_expression;
-            if ((_string_token = Expect("is")) is not null
+            if ((is_Keyword = Expect("is")) is not null
                 &&
-                (_string_token1 = Expect("not")) is not null
+                (not_Keyword = Expect("not")) is not null
                 &&
                 (bitwise_or_expression = rule_BitwiseOrExpression()) is not null
             )
@@ -6694,8 +6619,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new IsNotOperationNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        is_Keyword,
+                        not_Keyword,
                         bitwise_or_expression,
                     ]),
                 };
@@ -6707,9 +6632,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'is' BitwiseOrExpression        -> IsOperation(Right=bitwise_or_expression)
             base.LogAlternativeEntered("'is' BitwiseOrExpression");
-            IGreenNode? _string_token;
+            IGreenNode? is_Keyword;
             IGreenNode? bitwise_or_expression;
-            if ((_string_token = Expect("is")) is not null
+            if ((is_Keyword = Expect("is")) is not null
                 &&
                 (bitwise_or_expression = rule_BitwiseOrExpression()) is not null
             )
@@ -6718,7 +6643,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new IsOperationNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        is_Keyword,
                         bitwise_or_expression,
                     ]),
                 };
@@ -7966,9 +7891,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'await' RawPrimary -> new(Value=raw_primary)
             base.LogAlternativeEntered("'await' RawPrimary");
-            IGreenNode? _string_token;
+            IGreenNode? await_Keyword;
             IGreenNode? raw_primary;
-            if ((_string_token = Expect("await")) is not null
+            if ((await_Keyword = Expect("await")) is not null
                 &&
                 (raw_primary = rule_RawPrimary()) is not null
             )
@@ -7977,7 +7902,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AwaitPrimaryNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        await_Keyword,
                         raw_primary,
                     ]),
                 };
@@ -8795,14 +8720,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'True' -> TrueAtom()
             base.LogAlternativeEntered("'True'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("True")) is not null)
+            IGreenNode? True_Keyword;
+            if ((True_Keyword = Expect("True")) is not null)
             {
                 base.LogAlternativeSucceed("'True'");
                 _res = new TrueAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        True_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -8813,14 +8738,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'False' -> FalseAtom()
             base.LogAlternativeEntered("'False'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("False")) is not null)
+            IGreenNode? False_Keyword;
+            if ((False_Keyword = Expect("False")) is not null)
             {
                 base.LogAlternativeSucceed("'False'");
                 _res = new FalseAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        False_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -8831,14 +8756,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'None' -> NoneAtom()
             base.LogAlternativeEntered("'None'");
-            IGreenNode? _string_token;
-            if ((_string_token = Expect("None")) is not null)
+            IGreenNode? None_Keyword;
+            if ((None_Keyword = Expect("None")) is not null)
             {
                 base.LogAlternativeSucceed("'None'");
                 _res = new NoneAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        None_Keyword,
                     ]),
                 };
                 goto _Return;
@@ -10078,19 +10003,19 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> AsyncForIfClause(
             //         Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
             base.LogAlternativeEntered("'async' 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
-            IGreenNode? _string_token;
-            IGreenNode? _string_token1;
+            IGreenNode? async_Keyword;
+            IGreenNode? for_Keyword;
             IGreenNode? assignment_target_variant;
-            IGreenNode? _string_token2;
+            IGreenNode? in_Keyword;
             IGreenNode? disjunction;
             INodeArray<IfClauseNode>? if_clause_Star;
-            if ((_string_token = Expect("async")) is not null
+            if ((async_Keyword = Expect("async")) is not null
                 &&
-                (_string_token1 = Expect("for")) is not null
+                (for_Keyword = Expect("for")) is not null
                 &&
                 (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
-                (_string_token2 = Expect("in")) is not null
+                (in_Keyword = Expect("in")) is not null
                 &&
                 (_cut = true)
                 &&
@@ -10103,10 +10028,10 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new AsyncForIfClauseNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
-                        _string_token1,
+                        async_Keyword,
+                        for_Keyword,
                         assignment_target_variant,
-                        _string_token2,
+                        in_Keyword,
                         disjunction,
                         if_clause_Star,
                     ]),
@@ -10136,16 +10061,16 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             // 'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))* -> NormalForIfClause(
             //         Variables=assignment_target_variant, Iterable=disjunction, Conditions=if_clause_Star)
             base.LogAlternativeEntered("'for' AssignmentTargetVariant 'in' ~ Disjunction ('if' Disjunction -> IfClause(Condition=disjunction))*");
-            IGreenNode? _string_token;
+            IGreenNode? for_Keyword;
             IGreenNode? assignment_target_variant;
-            IGreenNode? _string_token1;
+            IGreenNode? in_Keyword;
             IGreenNode? disjunction;
             INodeArray<IfClauseNode>? if_clause_Star;
-            if ((_string_token = Expect("for")) is not null
+            if ((for_Keyword = Expect("for")) is not null
                 &&
                 (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
                 &&
-                (_string_token1 = Expect("in")) is not null
+                (in_Keyword = Expect("in")) is not null
                 &&
                 (_cut = true)
                 &&
@@ -10158,9 +10083,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new NormalForIfClauseNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        for_Keyword,
                         assignment_target_variant,
-                        _string_token1,
+                        in_Keyword,
                         disjunction,
                         if_clause_Star,
                     ]),
@@ -10205,9 +10130,9 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         {
             // 'if' Disjunction -> IfClause(Condition=disjunction)
             base.LogAlternativeEntered("'if' Disjunction");
-            IGreenNode? _string_token;
+            IGreenNode? if_Keyword;
             IGreenNode? disjunction;
-            if ((_string_token = Expect("if")) is not null
+            if ((if_Keyword = Expect("if")) is not null
                 &&
                 (disjunction = rule_Disjunction()) is not null
             )
@@ -10216,7 +10141,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 _res = new IfClauseNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        _string_token,
+                        if_Keyword,
                         disjunction,
                     ]),
                 };

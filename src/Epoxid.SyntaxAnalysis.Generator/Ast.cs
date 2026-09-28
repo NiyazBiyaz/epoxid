@@ -18,7 +18,7 @@ internal partial class GroupAtomView : IGroup
 {
     ImmutableArray<AlternativeView> IGroup.Alternatives => Alternatives;
 
-    ViewArray<RedView> IGroup.AstAlternatives => AstAlternatives;
+    ViewArray<RedView> IGroup.AstAlternatives => SeparatedAlternatives;
 
     GroupDecoratorView? IGroup.Decorator => Decorator;
 }
@@ -27,7 +27,7 @@ internal partial class OptionalGroupView : IGroup
 {
     ImmutableArray<AlternativeView> IGroup.Alternatives => Alternatives;
 
-    ViewArray<RedView> IGroup.AstAlternatives => AstAlternatives;
+    ViewArray<RedView> IGroup.AstAlternatives => SeparatedAlternatives;
 
     GroupDecoratorView? IGroup.Decorator => Decorator;
 }
