@@ -29,23 +29,15 @@ public static class Builtins
         BuiltinsScope.Bind(name, func);
     }
 
-    private static void constructFunc(string name, FrameCallKeywordFunction function, FunctionParametersDescription description)
-    {
-        var func = new EpBuiltinFunction(name, function)
-        {
-            ParamsDescription = description,
-        };
-        BuiltinsScope.Bind(name, func);
-    }
-
     private static readonly FunctionParametersDescription print_params = new()
     {
         VariadicPositionalParam = FunctionParameter.Args,
         KeywordOnlyParams = [new("end", false), new("file", false), new("sep", false)],
     };
 
-    private static EpNone print(ReadOnlySpan<EpObject> args, EpDict kwargs)
+    private static EpNone print(ReadOnlySpan<EpObject> args)
     {
+        var kwargs = args[^1];
         // Simple 'print' implementation on C# side.
         EpObject? end = null, sep = null;
 

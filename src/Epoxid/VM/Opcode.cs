@@ -1,5 +1,3 @@
-using Epoxid.Runtime.Objects;
-
 namespace Epoxid.VM;
 
 public enum Opcode : byte
@@ -101,14 +99,6 @@ public enum Opcode : byte
     Call = 64,
 
     /// <summary>
-    /// <b>Call</b>s the function that stored in the <see cref="Instruction.RegSrc1"/> with
-    /// <see cref="Instruction.RegSrc2"/> number of positional arguments and <b>k</b>eyword arguments stored
-    /// as <see cref="EpDict"/> in <see cref="Instruction.RegSrc2"/>+1 starting from register
-    /// <see cref="Instruction.RegDest"/> and stores returned value in the <see cref="Instruction.RegDest"/>
-    /// </summary>
-    CallK,
-
-    /// <summary>
     /// <b>Ret</b>urns from the current frame object stored in the <see cref="Instruction.RegDest"/>
     /// </summary>
     Ret,
@@ -162,7 +152,7 @@ public enum Opcode : byte
     StVar,
 
     /// <summary>
-    /// <b>L</b>oa<b>d</b>s argument passed to the frame with index <see cref="Instruction.RegSrc1"/> and stores it
+    /// <b>L</b>oa<b>d</b>s argument passed to the frame with index <see cref="Instruction.Immediate16"/> and stores it
     /// in the <see cref="Instruction.RegDest"/>
     /// </summary>
     LdArg,

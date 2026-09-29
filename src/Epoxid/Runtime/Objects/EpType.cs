@@ -22,7 +22,7 @@ public class EpType : EpObject
 
     #region Methods slots
 
-    public EpFunction? DunderCall { get; set; }
+    public FrameDunderCall? DunderCall { get; set; }
 
     public BinaryFunction? DunderAdd { get; set; }
 

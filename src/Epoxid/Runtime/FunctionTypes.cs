@@ -6,8 +6,6 @@ public delegate EpObject UnaryFunction(EpObject self);
 
 public delegate EpObject BinaryFunction(EpObject self, EpObject other);
 
-public delegate EpObject TernaryFunction(EpObject self, EpObject args, EpObject kwargs);
+public delegate EpObject FrameDunderCall(EpObject self, ReadOnlySpan<EpObject> args);
 
 public delegate EpObject FrameCallFunction(ReadOnlySpan<EpObject> args);
-
-public delegate EpObject FrameCallKeywordFunction(ReadOnlySpan<EpObject> args, EpDict kwargs);

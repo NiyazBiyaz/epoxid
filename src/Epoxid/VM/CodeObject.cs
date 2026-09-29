@@ -110,7 +110,7 @@ public class CodeObject
                     sb.Append(formatRegister(instr.RegSrc1));
                     break;
 
-                case Opcode.Call or Opcode.CallK:
+                case Opcode.Call:
                     sb.Append(formatRegister(instr.RegDest));
                     sb.Append(delimiter);
                     sb.Append(formatRegister(instr.RegSrc1));
@@ -120,7 +120,7 @@ public class CodeObject
                     sb.Append(indent);
                     sb.Append(indent);
                     sb.Append("Arg count: ");
-                    sb.Append(instr.RegSrc2 + (instr.Opcode == Opcode.CallK ? 1 : 0));
+                    sb.Append(instr.RegSrc2);
                     break;
 
                 case Opcode.Ret:

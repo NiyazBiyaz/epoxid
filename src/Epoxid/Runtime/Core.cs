@@ -7,24 +7,31 @@ namespace Epoxid.Runtime;
 
 internal static class Core
 {
-    internal static EpObject CallFunction(EpObject funcObject, ReadOnlySpan<EpObject> args)
+    internal static EpObject CallObject(EpObject callable, ReadOnlySpan<EpObject> args)
     {
-        var descr = ((EpBaseFunction)funcObject).ParamsDescription;
+        if (callable is not EpBaseFunction function)
+        {
+            if (callable.DunderClass.DunderCall == null)
+            {
+                throw new ArgumentException($"Object {callable.DunderClass.DunderName} is not callable.");
+            }
+
+            return callable.DunderClass.DunderCall(callable, args);
+        }
+
+        var descr = function.ParamsDescription;
 
         if (!descr.ArgumentsAreValid(args.Length, [], out string? message))
         {
-            throw new Exception($"TypeError: {string.Format(message, ((EpBaseFunction)funcObject).QualName)}");
+            throw new Exception($"TypeError: {string.Format(message, function.QualName)}");
         }
 
-        switch (funcObject)
+        switch (function)
         {
             case EpBuiltinFunction builtin:
                 if (builtin.FrameCall == null)
                 {
-                    if (builtin.FrameKeywordCall == null)
-                        throw new ArgumentException("Invalid function object: can't find any underlying function");
-
-                    return builtin.FrameKeywordCall(args, EpDict.Empty);
+                    throw new ArgumentException("Invalid function object: underlying method is not set");
                 }
 
                 return builtin.FrameCall(args);
@@ -35,43 +42,14 @@ internal static class Core
 
                 if (func.Environment == null)
                 {
-                    throw new ArgumentException("Given function object doesn't have Environment bound on.", nameof(funcObject));
+                    throw new ArgumentException("Given function object doesn't have Environment bound on.", nameof(callable));
                 }
 
                 return eng.RunCode(func.Code, args, func.Environment.Value);
             }
 
             default:
-                throw new ArgumentException("Argument is not callable Epoxid object");
-        }
-    }
-
-    internal static EpObject CallKeywordFunction(EpObject funcObject, ReadOnlySpan<EpObject> args, EpObject kwargs)
-    {
-        if (kwargs is not EpDict kwDict)
-        {
-            throw new ArgumentException("Keyword arguments is not Epoxid dictionary.");
-        }
-
-        var descr = ((EpBaseFunction)funcObject).ParamsDescription;
-
-        if (!descr.ArgumentsAreValid(args.Length, [], out string? message))
-        {
-            throw new Exception($"TypeError: {string.Format(message, ((EpBaseFunction)funcObject).QualName)}");
-        }
-
-        switch (funcObject)
-        {
-            case EpBuiltinFunction builtin:
-                Debug.Assert(builtin.FrameKeywordCall != null);
-
-                return builtin.FrameKeywordCall(args, kwDict);
-
-            case EpFunction func:
-                throw new NotImplementedException();
-
-            default:
-                throw new ArgumentException("Argument is not callable Epoxid object");
+                throw new UnreachableException($"Unknown function type: {function}");
         }
     }
 

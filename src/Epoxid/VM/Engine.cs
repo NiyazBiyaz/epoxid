@@ -49,7 +49,7 @@ public class Engine
                     break;
 
                 case Opcode.LdArg:
-                    frame[current.RegDest] = argSpan[current.RegSrc1];
+                    frame[current.RegDest] = argSpan[current.Immediate16];
                     break;
 
                 case Opcode.LdVar:
@@ -81,13 +81,8 @@ public class Engine
                 {
                     var arguments = frame.Slice(current.RegDest + 1, current.RegSrc2);
                     var func = frame[current.RegSrc1];
-                    frame[current.RegDest] = Core.CallFunction(func, arguments);
+                    frame[current.RegDest] = Core.CallObject(func, arguments);
                     break;
-                }
-
-                case Opcode.CallK:
-                {
-                    throw new NotImplementedException("Functions with keyword arguments is not supported yet.");
                 }
 
                 case Opcode.Move:
