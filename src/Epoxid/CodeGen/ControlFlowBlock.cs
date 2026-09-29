@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 
-namespace Epoxid.CodeGenV2;
+namespace Epoxid.CodeGen;
 
 [DebuggerDisplay("Block {Id}")]
 internal class ControlFlowBlock(int id)

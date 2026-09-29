@@ -1,6 +1,6 @@
 using Epoxid.SyntaxAnalysis;
 
-namespace Epoxid.CodeGenV2;
+namespace Epoxid.CodeGen;
 
 internal static class IEnumerableExtensions
 {

@@ -1,4 +1,4 @@
-namespace Epoxid.CodeGenV2;
+namespace Epoxid.CodeGen;
 
 internal class Label
 {

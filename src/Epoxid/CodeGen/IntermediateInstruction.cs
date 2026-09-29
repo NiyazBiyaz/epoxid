@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Epoxid.VM;
 
-namespace Epoxid.CodeGenV2;
+namespace Epoxid.CodeGen;
 
 internal record IntermediateInstruction
 {

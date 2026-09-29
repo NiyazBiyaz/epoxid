@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using Epoxid.CodeGenV2;
+using Epoxid.CodeGen;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;

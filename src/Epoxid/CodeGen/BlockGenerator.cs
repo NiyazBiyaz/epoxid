@@ -9,7 +9,7 @@ using Epoxid.SyntaxAnalysis.Common.Ast;
 using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.VM;
 
-namespace Epoxid.CodeGenV2;
+namespace Epoxid.CodeGen;
 
 internal class BlockGenerator
 {

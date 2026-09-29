@@ -1,158 +1,130 @@
-using System.Text;
+using System.Collections.Immutable;
+using System.Diagnostics;
 using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 using Epoxid.VM;
 
 namespace Epoxid.CodeGen;
 
-/// <summary>
-/// Class to manage indexes of variable names, constant values, registers in the final instruction.
-/// </summary>
 internal class CodeBuilder
 {
-    private readonly List<IntermediateInstruction> instructions = [];
     private readonly List<Register> registers = [];
-    private readonly List<Constant> constants = [];
-    private readonly List<Variable> freeVariables = [];
+    private readonly List<EpObject> constants =
+    [
+        EpConstants.None,
+        EpConstants.True,
+        EpConstants.False,
+        EpConstants.Ellipsis,
+    ];
+    internal IReadOnlyList<EpObject> Constants => constants;
 
-    private readonly Dictionary<InstructionId, ControlFlowBlock> controlFlowGraph = [];
+    private readonly List<string> freeVariables = [];
 
-    private readonly Stack<Label> pendingLabels = [];
-    private readonly Dictionary<InstructionId, Label> labels = [];
+    private int virtualRegistersCount = 0;
 
-    public CodeObject Dump()
+    private int callCount = 0;
+
+    private readonly List<ControlFlowBlock> cfgBlocks = [];
+
+    private ControlFlowBlock currentBlock = new(0);
+
+    private int stackSize = 0;
+
+    private bool pendingLoopLifetime = false;
+
+    private readonly HashSet<Register> loopLifetimeRegisters = [];
+    private ControlFlowBlock? loopLifetimeStart;
+
+    public bool CanBeCompleted { get; private set; }
+
+    public const int NoneConstantIndex = 0;
+    public const int TrueConstantIndex = 1;
+    public const int FalseConstantIndex = 2;
+    public const int EllipsisConstantIndex = 3;
+
+    public Label PutLabel(Label label)
     {
-        if (pendingLabels.Count != 0)
-            throw new InvalidOperationException("Cannot dump code object: builder have unresolved labels");
+        if (currentBlock.Instructions.Count != 0)
+            endCfgBlock();
 
-        resolveIndexes();
-
-        return new CodeObject
+        if (pendingLoopLifetime)
         {
-            Instructions = [.. instructions.Select(irI => irI.Lower())],
-            Constants = [.. constants.Select(c => c.Value)],
-            VarNames = [.. freeVariables.Select(v => v.Name)],
-            StackSize = registers.Count,
-        };
+            pendingLoopLifetime = false;
+            loopLifetimeStart = currentBlock;
+        }
+
+        label.Target = currentBlock;
+        currentBlock.AddReferredLabel(label);
+
+        return label;
     }
 
-    public void PutLabel(Label newLabel) => pendingLabels.Push(newLabel);
-
-    public void CreateControlFlowGraph()
-    {
-        for (int index = 0; index < instructions.Count; index++)
-        {
-            var instr = instructions[index];
-            int blockEnd = instructions.FindIndex(index, instr => instr.Opcode.IsEndOfCfgBlock);
-            controlFlowGraph[instr.Id] = instr.FlowBlock = new ControlFlowBlock
-            {
-                StartLabel = labels.TryGetValue(instr.Id, out var label) ? label : null,
-                Instructions = instructions[index..blockEnd].ToArray(),
-                EndInstruction = instructions[blockEnd],
-            };
-            index = blockEnd;
-        }
-
-        Console.WriteLine(string.Join(", ", controlFlowGraph));
-
-        foreach (var block in controlFlowGraph.Values)
-        {
-            if (block.EndInstruction.Opcode.IsBranch)
-            {
-                block.Next = controlFlowGraph[block.EndInstruction.Label!.Id];
-            }
-        }
-    }
-
-    public string DumpCfg()
-    {
-        var sb = new StringBuilder();
-
-        bool addLine = false;
-
-        foreach (var block in controlFlowGraph.Values)
-        {
-            if (addLine)
-                sb.Append("---------------------------\n");
-            addLine = true;
-
-            foreach (var instr in block.Instructions.Span)
-            {
-                sb.Append(instr.ToString());
-                sb.Append('\n');
-            }
-
-            sb.Append(block.EndInstruction.ToString());
-            sb.Append('\n');
-        }
-
-        return sb.ToString();
-    }
-
-    private void resolveIndexes()
-    {
-        foreach (var (i, instr) in instructions.Index())
-        {
-            instr.InstructionAddress = i;
-        }
-
-        foreach (var (i, reg) in registers.Index())
-        {
-            reg.StoredAddress = i;
-        }
-    }
-
-    private void addInstruction(IntermediateInstruction instruction)
-    {
-        instruction.Id = new(instructions.Count);
-
-        bool addToLabels = true;
-
-        while (pendingLabels.TryPop(out var label))
-        {
-            if (label.InstructionOnLabel != null)
-            {
-                throw new InvalidOperationException("Label already has attached instruction");
-            }
-
-            label.InstructionOnLabel = instruction;
-            label.Id = instruction.Id;
-
-            if (addToLabels)
-            {
-                labels[instruction.Id] = label;
-                addToLabels = false;
-            }
-        }
-
-        instructions.Add(instruction);
-
-        instruction.Dest?.LastUsedInstruction = instruction;
-        instruction.Src1?.LastUsedInstruction = instruction;
-        instruction.Src2?.LastUsedInstruction = instruction;
-    }
-
-    private Register allocateRegister()
+    public Register AllocateRegister()
     {
         var reg = new Register
         {
-            Id = registers.Count,
+            Id = virtualRegistersCount++,
         };
         registers.Add(reg);
         return reg;
     }
 
-    private Constant addConstant(EpObject value)
+    public Register AllocateRegister(int callId, int relativeAddress, int callSize)
     {
-        if (constants.FirstOrDefault(constant => byValueEpObjectEquals(constant.Value)) is Constant existingConstant)
-            return existingConstant;
-
-        var constant = new Constant(value)
+        var reg = new Register
         {
-            ImmediateValue = constants.Count,
+            Id = virtualRegistersCount++,
+            CallId = callId,
+            CallRelativeAddress = relativeAddress,
+            CallCount = callSize,
         };
-        constants.Add(constant);
-        return constant;
+        registers.Add(reg);
+        return reg;
+    }
+
+    public void BeginLoopLifetime()
+    {
+        loopLifetimeRegisters.Clear();
+        pendingLoopLifetime = true;
+    }
+
+    public void EndLoopLifetime()
+    {
+        Debug.Assert(loopLifetimeStart != null);
+
+        foreach (var register in loopLifetimeRegisters)
+        {
+            register.BlocksUsages.Add(loopLifetimeStart, UsageSpan.Full);
+            register.BlocksUsages.Add(currentBlock, UsageSpan.Full);
+        }
+    }
+
+    public void AddToLoopLifetime(Register register) => loopLifetimeRegisters.Add(register);
+
+    public int BeginNewCall() => callCount++;
+
+    public int AddVariable(string variable)
+    {
+        int existing = freeVariables.FindIndex(fv => fv == variable);
+        if (existing != -1)
+        {
+            return existing;
+        }
+        int newIndex = freeVariables.Count;
+        freeVariables.Add(variable);
+        return newIndex;
+    }
+
+    public int AddConstant(EpObject value)
+    {
+        int existing = constants.FindIndex(byValueEpObjectEquals);
+        if (existing != -1)
+        {
+            return existing;
+        }
+        int index = constants.Count;
+        constants.Add(value);
+        return index;
 
         bool byValueEpObjectEquals(EpObject constant)
         {
@@ -164,152 +136,530 @@ internal class CodeBuilder
         }
     }
 
-    private Variable addVariable(string name)
+    public CodeObject Compile()
     {
-        if (freeVariables.FirstOrDefault(var => var.Name == name) is Variable existingVariable)
-            return existingVariable;
+        resolveRegisterAddresses();
 
-        var variable = new Variable(name)
+        List<InstructionRepr> instructions1 = cfgBlocks
+            .SelectMany(b => b.Instructions.Select(i => new InstructionRepr(i, b.Id)))
+            .ToList();
+
+        var instructions2 = new List<InstructionRepr>();
+
+        optimize(instructions1, instructions2, getOptimizedFirstPass);
+        instructions1.Clear();
+        optimize(instructions2, instructions1, getOptimizedSecondPass);
+
+        var optimized = instructions1;
+
+        // Optimizer doesn't patches back cfg blocks, so if block was deleted completely,
+        // branch that was referred to this block wouldn't be able to locate jump label
+        // correctly. So this is why this address marking that strange.
+        int previousBlockId = 0;
+        for (int instructionNumber = 0; instructionNumber < optimized.Count; instructionNumber++)
         {
-            ImmediateValue = freeVariables.Count,
+            var repr = optimized[instructionNumber];
+            repr.Instruction.Address = instructionNumber;
+
+            while (previousBlockId < repr.BlockId)
+            {
+                cfgBlocks[++previousBlockId].FirstInstruction.Address = instructionNumber;
+            }
+        }
+
+        var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: optimized.Count);
+
+        foreach (var repr in optimized)
+        {
+            instructions.Add(repr.Instruction.Compile());
+        }
+
+        return new()
+        {
+            Constants = [.. constants],
+            VarNames = [.. freeVariables],
+            StackSize = stackSize,
+            Instructions = instructions.ToImmutable(),
         };
-        freeVariables.Add(variable);
-        return variable;
+    }
+
+    private readonly record struct InstructionRepr(IntermediateInstruction Instruction, int BlockId);
+
+    private static void optimize(List<InstructionRepr> source, List<InstructionRepr> dest, Func<InstructionRepr, InstructionRepr?, OptimizerResult> pass)
+    {
+        for (int index = 0; index < source.Count; index++)
+        {
+            var instr = source[index];
+
+            OptimizerResult optimized;
+            if (index + 1 < source.Count)
+            {
+                optimized = pass(instr, source[index + 1]);
+            }
+            else
+            {
+                optimized = pass(instr, null);
+            }
+
+            switch (optimized)
+            {
+                case OptimizerResult.Keep:
+                    dest.Add(instr);
+                    break;
+                case OptimizerResult.Remove:
+                    break;
+                case OptimizerResult.RemoveBoth:
+                    index += 1;
+                    break;
+            }
+        }
+    }
+
+    private static OptimizerResult getOptimizedFirstPass(InstructionRepr instr, InstructionRepr? next)
+        => instr.Instruction switch
+        {
+            {
+                Opcode: Opcode.Move,
+                Source1.Address: int src1,
+                Destination.Address: int dest,
+            } when src1 == dest => OptimizerResult.Remove,
+            {
+                Opcode: Opcode.LdConst,
+                ImmediateValue: NoneConstantIndex,
+                Destination.CallId: not null,
+            } => OptimizerResult.Remove,
+            {
+                Opcode: Opcode.Brc or Opcode.BrTr or Opcode.BrFl,
+                JumpLabel.Target.Id: var targetId,
+            } when targetId == next?.BlockId => OptimizerResult.Remove,
+
+            _ => OptimizerResult.Keep,
+        };
+
+    private static OptimizerResult getOptimizedSecondPass(InstructionRepr instr, InstructionRepr? next)
+        => (instr, next) switch
+        {
+            {
+                instr.Instruction:
+                {
+                    Opcode: Opcode.Move,
+                    Destination.Address: int dest,
+                    Source1.Address: int src1,
+                },
+                next.Instruction:
+                {
+                    Opcode: Opcode.Move,
+                    Destination.Address: int nextDest,
+                    Source1.Address: int nextSrc1,
+                }
+            } when dest == nextSrc1 && src1 == nextDest => OptimizerResult.RemoveBoth,
+
+            _ => OptimizerResult.Keep,
+        };
+
+    private enum OptimizerResult
+    {
+        Keep,
+        Remove,
+        RemoveBoth,
+    }
+
+    private void addInstruction(IntermediateInstruction instruction)
+    {
+        currentBlock.Instructions.Add(instruction);
+        CanBeCompleted = false;
+
+        if (instruction.Opcode.IsEndOfCfgBlock)
+        {
+            endCfgBlock();
+            CanBeCompleted = true;
+        }
+    }
+
+    private void resolveRegisterAddresses()
+    {
+        var firstBlock = cfgBlocks[0];
+
+        var visited = new HashSet<ControlFlowBlock>();
+        var pendingBranchReferenceCounts = cfgBlocks
+            .Select(static block => (block, block.BranchedReferenceCount))
+            .ToDictionary();
+
+        void markupRegistersOfBlock(ControlFlowBlock block, IEnumerable<int> level)
+        {
+            visited.Add(block);
+
+            block.BranchLevel = [.. level, block.Id];
+
+            for (int instructionNumber = 0; instructionNumber < block.Instructions.Count; instructionNumber++)
+            {
+                var instruction = block.Instructions[instructionNumber];
+
+                safelyAddUsage(block, instructionNumber, instruction.Destination);
+                safelyAddUsage(block, instructionNumber, instruction.Source1);
+                safelyAddUsage(block, instructionNumber, instruction.Source2);
+
+                if (instruction.ArgCount != null)
+                {
+                    var callRegisters = registers.Where(r => r.CallId == instruction.Destination!.CallId);
+
+                    foreach (var reg in callRegisters)
+                    {
+                        // First two registers of call instruction already set as used
+                        if (reg.CallRelativeAddress < 2)
+                            continue;
+
+                        safelyAddUsage(block, instructionNumber, reg);
+                    }
+                }
+
+                static void safelyAddUsage(ControlFlowBlock block, int instructionNumber, Register? register)
+                {
+                    if (register == null)
+                        return;
+
+                    if (!register.BlocksUsages.TryGetValue(block, out var usage))
+                    {
+                        usage = register.BlocksUsages[block] = new();
+                    }
+
+                    usage.AddUsagePoint(instructionNumber);
+                }
+            }
+
+            if (block.Branched is ControlFlowBlock branchedBlock)
+            {
+                if (block.Branched != block.Next)
+                    level = level.Append(block.Id);
+
+                if (!visited.Contains(branchedBlock))
+                {
+                    if (block.LastInstruction.Opcode == Opcode.Brc)
+                        level = level.Take(level.Count() - branchedBlock.BranchedReferenceCount);
+
+                    if (--pendingBranchReferenceCounts[branchedBlock] == 0)
+                        markupRegistersOfBlock(branchedBlock, level);
+                }
+            }
+            if (block.Next is ControlFlowBlock nextBlock)
+            {
+                if (pendingBranchReferenceCounts[nextBlock] == 0 && !visited.Contains(nextBlock))
+                {
+                    level = level.Take(level.Count() - nextBlock.BranchedReferenceCount);
+                    markupRegistersOfBlock(nextBlock, level);
+                }
+            }
+        }
+
+        markupRegistersOfBlock(firstBlock, []);
+
+        for (int leftIndex = 0; leftIndex < registers.Count; leftIndex++)
+        {
+            var thisRegister = registers[leftIndex];
+            for (int rightIndex = leftIndex + 1; rightIndex < registers.Count; rightIndex++)
+            {
+                var otherRegister = registers[rightIndex];
+
+                if (thisRegister.CollidesWith(otherRegister))
+                {
+                    thisRegister.LifetimeCollisions.Add(otherRegister);
+                    otherRegister.LifetimeCollisions.Add(thisRegister);
+                }
+            }
+        }
+
+        // We have up to 256 registers, so this is absolutely fine to use greedy coloring.
+        var descendingByCollisions = registers.OrderByDescending(r => r.ColoringSortScore);
+        int stackSize = 0;
+
+        Span<bool> neighborColors = stackalloc bool[256];
+        foreach (var register in descendingByCollisions)
+        {
+            neighborColors.Clear();
+            if (register.Address != null)
+                continue;
+
+            foreach (var neighbor in register.LifetimeCollisions)
+            {
+                if (neighbor.Address is not int neighborColor)
+                    continue;
+
+                neighborColors[neighborColor] = true;
+            }
+
+            if (register.CallId != null)
+            {
+                int addressBase = 0;
+                for (; addressBase < 256; addressBase++)
+                {
+                    var neededRegisters = neighborColors.Slice(addressBase, register.CallCount!.Value);
+
+                    if (!neededRegisters.Contains(true))
+                        break;
+                }
+
+                foreach (var callRegister in registers.Where(r => r.CallId == register.CallId))
+                {
+                    int callRegAddress = (callRegister.CallRelativeAddress ?? throw new InvalidOperationException()) + addressBase;
+                    callRegister.Address = callRegAddress;
+                    stackSize = int.Max(stackSize, callRegAddress + 1);
+                }
+                continue;
+            }
+
+            int result = neighborColors.IndexOf(false);
+            register.Address = result;
+            stackSize = int.Max(stackSize, result + 1);
+        }
+
+        this.stackSize = stackSize;
+    }
+
+    private void endCfgBlock()
+    {
+        cfgBlocks.Add(currentBlock);
+
+        if (currentBlock.LastInstruction.Opcode is Opcode.BrFl or Opcode.BrTr or Opcode.Brc)
+        {
+            currentBlock.SetBranchedLabel(currentBlock.LastInstruction.JumpLabel ?? throw new InvalidOperationException());
+        }
+
+        var next = new ControlFlowBlock(cfgBlocks.Count);
+
+        if (currentBlock.LastInstruction.Opcode is not (Opcode.Ret or Opcode.RetC or Opcode.Brc))
+        {
+            currentBlock.Next = next;
+        }
+        currentBlock = next;
     }
 
     #region Opcodes
 
-    public IntermediateInstruction RegisterToRegister(Opcode opcode, Register src1, Register src2)
+    public Register RegisterToRegister(Opcode opcode, Register dest, Register src1, Register src2)
     {
         if (!opcode.IsRegisterToRegister)
-            throw new ArgumentOutOfRangeException(nameof(opcode), "Invalid opcode value for this instruction format");
+            throw new ArgumentOutOfRangeException(nameof(opcode));
 
-        var instr = new IntermediateInstruction(opcode)
+        var instr = new IntermediateInstruction
         {
-            Dest = allocateRegister(),
-            Src1 = src1,
-            Src2 = src2,
+            Opcode = opcode,
+            Destination = dest,
+            Source1 = src1,
+            Source2 = src2,
         };
         addInstruction(instr);
 
-        return instr;
+        return dest;
     }
 
-    public IntermediateInstruction LdVar(string name)
+    public Register InAdd(Register dest, Register src1)
     {
-        var instr = new IntermediateInstruction(Opcode.LdVar)
+        var instr = new IntermediateInstruction
         {
-            Dest = allocateRegister(),
-            Variable = addVariable(name),
+            Opcode = Opcode.InAdd,
+            Destination = dest,
+            Source1 = src1,
         };
         addInstruction(instr);
 
-        return instr;
+        return dest;
     }
 
-    public IntermediateInstruction LdConst(EpObject value)
+    public Register InSub(Register dest, Register src1)
     {
-        var instr = new IntermediateInstruction(Opcode.LdConst)
+        var instr = new IntermediateInstruction
         {
-            Dest = allocateRegister(),
-            Constant = addConstant(value),
+            Opcode = Opcode.InSub,
+            Destination = dest,
+            Source1 = src1,
         };
         addInstruction(instr);
 
-        return instr;
+        return dest;
     }
 
-    public IntermediateInstruction Call(Register function, Register destination, int argCount)
+    public Register InMul(Register dest, Register src1)
     {
-        var instr = new IntermediateInstruction(Opcode.Call)
+        var instr = new IntermediateInstruction
         {
-            Dest = destination,
-            Src1 = function,
+            Opcode = Opcode.InMul,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register InTDiv(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InTDiv,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register InMod(Register dest, Register src1)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.InMod,
+            Destination = dest,
+            Source1 = src1,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register LdVar(Register dest, int varIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.LdVar,
+            Destination = dest,
+            ImmediateValue = varIndex,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public void StVar(Register source, int varIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.StVar,
+            Destination = source,
+            ImmediateValue = varIndex,
+        };
+        addInstruction(instr);
+    }
+
+    public Register LdConst(Register dest, int varIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.LdConst,
+            Destination = dest,
+            ImmediateValue = varIndex,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register LdArg(Register dest, int paramIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.LdArg,
+            Destination = dest,
+            ImmediateValue = paramIndex,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
+    public Register Call(Register func, Register dest, int argCount)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.Call,
+            Source1 = func,
+            Destination = dest,
             ArgCount = argCount,
         };
         addInstruction(instr);
 
-        return instr;
+        return dest;
     }
 
-    public IntermediateInstruction Move(Register source)
+    public Register Move(Register dest, Register source)
     {
-        var instr = new IntermediateInstruction(Opcode.Move)
+        var instr = new IntermediateInstruction
         {
-            Dest = allocateRegister(),
-            Src1 = source,
+            Opcode = Opcode.Move,
+            Destination = dest,
+            Source1 = source,
         };
         addInstruction(instr);
 
-        return instr;
+        return dest;
     }
 
-    public IntermediateInstruction Move(Register source, Register dest)
+    public void Ret(Register returnValue)
     {
-        var instr = new IntermediateInstruction(Opcode.Move)
+        var instr = new IntermediateInstruction
         {
-            Dest = dest,
-            Src1 = source,
+            Opcode = Opcode.Ret,
+            Destination = returnValue,
+        };
+        addInstruction(instr);
+    }
+    public void RetC(int constIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.RetC,
+            ImmediateValue = constIndex,
+        };
+        addInstruction(instr);
+    }
+
+    public void Brc(Label label, bool backwardJump = false)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.Brc,
+            JumpLabel = label,
         };
         addInstruction(instr);
 
-        return instr;
+        if (!backwardJump)
+            label.BranchUsageCount++;
     }
 
-    public IntermediateInstruction Ret(Register register)
+    public void BrTr(Label label, Register condition)
     {
-        var instr = new IntermediateInstruction(Opcode.Ret)
+        var instr = new IntermediateInstruction
         {
-            Src1 = register,
+            Opcode = Opcode.BrTr,
+            JumpLabel = label,
+            Destination = condition,
         };
         addInstruction(instr);
 
-        return instr;
+        label.BranchUsageCount++;
     }
 
-    public IntermediateInstruction RetC(EpObject constantValue)
+    public void BrFl(Label label, Register condition)
     {
-        var instr = new IntermediateInstruction(Opcode.RetC)
+        var instr = new IntermediateInstruction
         {
-            Constant = addConstant(constantValue),
+            Opcode = Opcode.BrFl,
+            JumpLabel = label,
+            Destination = condition,
         };
         addInstruction(instr);
 
-        return instr;
+        label.BranchUsageCount++;
     }
 
-    public IntermediateInstruction Brc(Label target)
+    public void BindFun(Register functionRegister)
     {
-        var instr = new IntermediateInstruction(Opcode.Brc)
+        var instr = new IntermediateInstruction
         {
-            Label = target,
+            Opcode = Opcode.BindFun,
+            Destination = functionRegister,
         };
         addInstruction(instr);
-
-        return instr;
-    }
-
-    public IntermediateInstruction BrTr(Label target, Register condition)
-    {
-        var instr = new IntermediateInstruction(Opcode.BrTr)
-        {
-            Label = target,
-            Dest = condition,
-        };
-        addInstruction(instr);
-
-        return instr;
-    }
-    public IntermediateInstruction BrFl(Label target, Register condition)
-    {
-        var instr = new IntermediateInstruction(Opcode.BrFl)
-        {
-            Label = target,
-            Dest = condition,
-        };
-        addInstruction(instr);
-
-        return instr;
     }
 
     #endregion

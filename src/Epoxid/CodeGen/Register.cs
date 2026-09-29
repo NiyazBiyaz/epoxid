@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Epoxid.CodeGenV2;
+namespace Epoxid.CodeGen;
 
 internal class Register : IEquatable<Register>
 {
