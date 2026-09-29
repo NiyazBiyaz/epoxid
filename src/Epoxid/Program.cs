@@ -5,6 +5,7 @@ using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.Runtime;
 using Epoxid.VM;
+using Epoxid.Runtime.Objects;
 
 [assembly: InternalsVisibleTo("Epoxid.Tests")]
 
@@ -40,14 +41,21 @@ public static class Program
         var builder = new CodeBuilder();
         var generator = new BlockGenerator(fileView);
 
-        generator.GenerateCode(builder);
-
-        builder.ResolveRegisterAddresses();
+        generator.GenerateModule(builder);
 
         var code = builder.Compile();
 
+#if DEBUG
         Console.WriteLine(code);
+
+        foreach (var function in builder.Constants.OfType<EpFunction>())
+        {
+            Console.WriteLine($"Code of function '{function.QualName}':");
+            Console.WriteLine(function.Code);
+        }
+
         Console.WriteLine("-------------");
+#endif
 
         var engine = new Engine();
         Engine.SetCurrentEngine(engine);

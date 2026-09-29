@@ -109,7 +109,7 @@ public enum Opcode : byte
     CallK,
 
     /// <summary>
-    /// <b>Ret</b>urns from the current frame object stored in the <see cref="Instruction.RegSrc1"/>
+    /// <b>Ret</b>urns from the current frame object stored in the <see cref="Instruction.RegDest"/>
     /// </summary>
     Ret,
 
@@ -135,6 +135,8 @@ public enum Opcode : byte
     /// <see cref="Instruction.RegDest"/> is equals to <b>False</b>
     /// </summary>
     BrFl,
+
+    BindFun,
 
     /// <summary>
     /// <b>Move</b>s object from <see cref="Instruction.RegSrc1"/> to <see cref="Instruction.RegDest"/>

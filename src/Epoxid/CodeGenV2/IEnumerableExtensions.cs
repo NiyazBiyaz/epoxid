@@ -11,7 +11,17 @@ internal static class IEnumerableExtensions
 
         private static IEnumerable<IStatementView> extractStatements(IStatementView statement) => statement switch
         {
-            BlockView block => block.GetStatements().SelectMany(extractStatements),
+            IfStatementView ifStmt => ifStmt.Block
+                .GetStatements()
+                .Concat(ifStmt.Elifs.SelectMany(elif => elif.Block.GetStatements()))
+                .Concat(ifStmt.Else?.Block.GetStatements() ?? []),
+
+            WhileStatementView whileStmt => whileStmt.Block
+                .GetStatements()
+                .Concat(whileStmt.Else?.Block.GetStatements() ?? []),
+
+            // TODO: ForStatement, WithStatement, TryStatement
+
             var other => [other],
         };
     }

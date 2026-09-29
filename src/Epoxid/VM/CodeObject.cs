@@ -87,6 +87,12 @@ public class CodeObject
                     sb.Append('"');
                     break;
 
+                case Opcode.LdArg:
+                    sb.Append(formatRegister(instr.RegDest));
+                    sb.Append(delimiter);
+                    sb.Append(instr.Immediate16);
+                    break;
+
                 case Opcode.StVar:
                     sb.Append(formatRegister(instr.RegDest));
                     sb.Append(delimiter);
@@ -118,7 +124,7 @@ public class CodeObject
                     break;
 
                 case Opcode.Ret:
-                    sb.Append(formatRegister(instr.RegSrc1));
+                    sb.Append(formatRegister(instr.RegDest));
                     break;
 
                 case Opcode.RetC:

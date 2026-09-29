@@ -7,6 +7,8 @@ public class Variable
     public VariableKind Kind { get; set; }
 
     internal Register? Register { get; set; }
+
+    internal int? ParameterPosition { get; set; }
 }
 
 public enum VariableKind

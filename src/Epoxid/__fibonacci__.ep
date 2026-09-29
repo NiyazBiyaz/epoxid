@@ -1,0 +1,12 @@
+def fibonacci(number):
+    first = 0 
+    second = 1
+    counter = 0
+    while counter < number:
+        tmp = first + second
+        first = second
+        second = tmp
+        counter += 1
+    return first
+
+print(fibonacci(42))

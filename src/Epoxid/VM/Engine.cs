@@ -66,7 +66,7 @@ public class Engine
                     break;
 
                 case Opcode.Ret:
-                    result = frame[current.RegSrc1];
+                    result = frame[current.RegDest];
                     frame.Clear();
                     stop = true;
                     break;
@@ -113,6 +113,21 @@ public class Engine
                         goto nextInstruction;
                     }
                     break;
+
+                case Opcode.BindFun:
+                {
+                    var dest = frame[current.RegDest];
+
+                    if (dest is not EpFunction function)
+                    {
+                        throw new InvalidOperationException($"Cannot bind environment: object is not a function: {dest}");
+                    }
+
+                    // TODO: add some stuff with cells etc
+                    function.Environment = environment;
+
+                    break;
+                }
 
                 // Register-to-register section
                 case Opcode.Add:

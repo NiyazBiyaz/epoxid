@@ -56,13 +56,15 @@ internal record IntermediateInstruction
 
                 Opcode.RetC => new(Opcode.RetC, 0, (short)immediateValue),
 
-                Opcode.Ret => new(Opcode.Ret, 0, (byte)dest),
+                Opcode.Ret => new(Opcode.Ret, (byte)dest, 0),
 
-                var load and (Opcode.LdConst or Opcode.LdVar) => new(load, (byte)dest, (short)immediateValue),
+                var load and (Opcode.LdConst or Opcode.LdVar or Opcode.LdArg) => new(load, (byte)dest, (short)immediateValue),
 
                 var store and Opcode.StVar => new(store, (byte)dest, (short)immediateValue),
 
                 Opcode.Call => new(Opcode.Call, (byte)dest, (byte)src1, (byte)argCount),
+
+                Opcode.BindFun => new(Opcode.BindFun, (byte)dest, 0),
 
                 _ => throw new UnreachableException(),
             };

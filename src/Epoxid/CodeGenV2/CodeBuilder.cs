@@ -16,6 +16,8 @@ internal class CodeBuilder
         EpConstants.False,
         EpConstants.Ellipsis,
     ];
+    internal IReadOnlyList<EpObject> Constants => constants;
+
     private readonly List<string> freeVariables = [];
 
     private int virtualRegistersCount = 0;
@@ -32,6 +34,8 @@ internal class CodeBuilder
 
     private readonly HashSet<Register> loopLifetimeRegisters = [];
     private ControlFlowBlock? loopLifetimeStart;
+
+    public bool CanBeCompleted { get; private set; }
 
     public const int NoneConstantIndex = 0;
     public const int TrueConstantIndex = 1;
@@ -132,7 +136,147 @@ internal class CodeBuilder
         }
     }
 
-    public void ResolveRegisterAddresses()
+    public CodeObject Compile()
+    {
+        resolveRegisterAddresses();
+
+        List<InstructionRepr> instructions1 = cfgBlocks
+            .SelectMany(b => b.Instructions.Select(i => new InstructionRepr(i, b.Id)))
+            .ToList();
+
+        var instructions2 = new List<InstructionRepr>();
+
+        optimize(instructions1, instructions2, getOptimizedFirstPass);
+        instructions1.Clear();
+        optimize(instructions2, instructions1, getOptimizedSecondPass);
+
+        var optimized = instructions1;
+
+        // Optimizer doesn't patches back cfg blocks, so if block was deleted completely,
+        // branch that was referred to this block wouldn't be able to locate jump label
+        // correctly. So this is why this address marking that strange.
+        int previousBlockId = 0;
+        for (int instructionNumber = 0; instructionNumber < optimized.Count; instructionNumber++)
+        {
+            var repr = optimized[instructionNumber];
+            repr.Instruction.Address = instructionNumber;
+
+            while (previousBlockId < repr.BlockId)
+            {
+                cfgBlocks[++previousBlockId].FirstInstruction.Address = instructionNumber;
+            }
+        }
+
+        var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: optimized.Count);
+
+        foreach (var repr in optimized)
+        {
+            instructions.Add(repr.Instruction.Compile());
+        }
+
+        return new()
+        {
+            Constants = [.. constants],
+            VarNames = [.. freeVariables],
+            StackSize = stackSize,
+            Instructions = instructions.ToImmutable(),
+        };
+    }
+
+    private readonly record struct InstructionRepr(IntermediateInstruction Instruction, int BlockId);
+
+    private static void optimize(List<InstructionRepr> source, List<InstructionRepr> dest, Func<InstructionRepr, InstructionRepr?, OptimizerResult> pass)
+    {
+        for (int index = 0; index < source.Count; index++)
+        {
+            var instr = source[index];
+
+            OptimizerResult optimized;
+            if (index + 1 < source.Count)
+            {
+                optimized = pass(instr, source[index + 1]);
+            }
+            else
+            {
+                optimized = pass(instr, null);
+            }
+
+            switch (optimized)
+            {
+                case OptimizerResult.Keep:
+                    dest.Add(instr);
+                    break;
+                case OptimizerResult.Remove:
+                    break;
+                case OptimizerResult.RemoveBoth:
+                    index += 1;
+                    break;
+            }
+        }
+    }
+
+    private static OptimizerResult getOptimizedFirstPass(InstructionRepr instr, InstructionRepr? next)
+        => instr.Instruction switch
+        {
+            {
+                Opcode: Opcode.Move,
+                Source1.Address: int src1,
+                Destination.Address: int dest,
+            } when src1 == dest => OptimizerResult.Remove,
+            {
+                Opcode: Opcode.LdConst,
+                ImmediateValue: NoneConstantIndex,
+                Destination.CallId: not null,
+            } => OptimizerResult.Remove,
+            {
+                Opcode: Opcode.Brc or Opcode.BrTr or Opcode.BrFl,
+                JumpLabel.Target.Id: var targetId,
+            } when targetId == next?.BlockId => OptimizerResult.Remove,
+
+            _ => OptimizerResult.Keep,
+        };
+
+    private static OptimizerResult getOptimizedSecondPass(InstructionRepr instr, InstructionRepr? next)
+        => (instr, next) switch
+        {
+            {
+                instr.Instruction:
+                {
+                    Opcode: Opcode.Move,
+                    Destination.Address: int dest,
+                    Source1.Address: int src1,
+                },
+                next.Instruction:
+                {
+                    Opcode: Opcode.Move,
+                    Destination.Address: int nextDest,
+                    Source1.Address: int nextSrc1,
+                }
+            } when dest == nextSrc1 && src1 == nextDest => OptimizerResult.RemoveBoth,
+
+            _ => OptimizerResult.Keep,
+        };
+
+    private enum OptimizerResult
+    {
+        Keep,
+        Remove,
+        RemoveBoth,
+    }
+
+    private void addInstruction(IntermediateInstruction instruction)
+    {
+        currentBlock.Instructions.Add(instruction);
+        CanBeCompleted = false;
+
+        if (instruction.Opcode.IsEndOfCfgBlock)
+        {
+            endCfgBlock();
+            CanBeCompleted = true;
+        }
+    }
+
+    private void resolveRegisterAddresses()
     {
         var firstBlock = cfgBlocks[0];
 
@@ -269,140 +413,6 @@ internal class CodeBuilder
         }
 
         this.stackSize = stackSize;
-    }
-
-    public CodeObject Compile()
-    {
-        List<InstructionRepr> instructions1 = cfgBlocks
-            .SelectMany(b => b.Instructions.Select(i => new InstructionRepr(i, b.Id)))
-            .ToList();
-
-        var instructions2 = new List<InstructionRepr>();
-
-        optimize(instructions1, instructions2, getOptimizedFirstPass);
-        instructions1.Clear();
-        optimize(instructions2, instructions1, getOptimizedSecondPass);
-
-        var optimized = instructions1;
-
-        // Optimizer doesn't patches back cfg blocks, so if block was deleted completely,
-        // branch that was referred to this block wouldn't be able to locate jump label
-        // correctly. So this is why this address marking that strange.
-        int previousBlockId = 0;
-        for (int instructionNumber = 0; instructionNumber < optimized.Count; instructionNumber++)
-        {
-            var repr = optimized[instructionNumber];
-            repr.Instruction.Address = instructionNumber;
-
-            while (previousBlockId < repr.BlockId)
-            {
-                cfgBlocks[++previousBlockId].FirstInstruction.Address = instructionNumber;
-            }
-        }
-
-        var instructions = ImmutableArray.CreateBuilder<Instruction>(initialCapacity: optimized.Count);
-
-        foreach (var repr in optimized)
-        {
-            instructions.Add(repr.Instruction.Compile());
-        }
-
-        return new()
-        {
-            Constants = [.. constants],
-            VarNames = [.. freeVariables],
-            StackSize = stackSize,
-            Instructions = instructions.ToImmutable(),
-        };
-    }
-
-    private readonly record struct InstructionRepr(IntermediateInstruction Instruction, int BlockId);
-
-    private static void optimize(List<InstructionRepr> source, List<InstructionRepr> dest, Func<InstructionRepr, InstructionRepr?, OptimizerResult> pass)
-    {
-        for (int index = 0; index < source.Count; index++)
-        {
-            var instr = source[index];
-
-            OptimizerResult optimized;
-            if (index + 1 < source.Count)
-            {
-                optimized = pass(instr, source[index + 1]);
-            }
-            else
-            {
-                optimized = pass(instr, null);
-            }
-
-            switch (optimized)
-            {
-                case OptimizerResult.Keep:
-                    dest.Add(instr);
-                    break;
-                case OptimizerResult.Remove:
-                    break;
-                case OptimizerResult.RemoveBoth:
-                    index += 1;
-                    break;
-            }
-        }
-    }
-
-    private static OptimizerResult getOptimizedFirstPass(InstructionRepr instr, InstructionRepr? next)
-        => instr.Instruction switch
-        {
-            {
-                Opcode: Opcode.Move,
-                Source1.Address: int src1,
-                Destination.Address: int dest,
-            } when src1 == dest => OptimizerResult.Remove,
-            {
-                Opcode: Opcode.LdConst,
-                ImmediateValue: NoneConstantIndex,
-                Destination.CallId: not null,
-            } => OptimizerResult.Remove,
-            {
-                Opcode: Opcode.Brc or Opcode.BrTr or Opcode.BrFl,
-                JumpLabel.Target.Id: var targetId,
-            } when targetId == next?.BlockId => OptimizerResult.Remove,
-
-            _ => OptimizerResult.Keep,
-        };
-
-    private static OptimizerResult getOptimizedSecondPass(InstructionRepr instr, InstructionRepr? next)
-        => (instr, next) switch
-        {
-            {
-                instr.Instruction:
-                {
-                    Opcode: Opcode.Move,
-                    Destination.Address: int dest,
-                    Source1.Address: int src1,
-                },
-                next.Instruction:
-                {
-                    Opcode: Opcode.Move,
-                    Destination.Address: int nextDest,
-                    Source1.Address: int nextSrc1,
-                }
-            } when dest == nextSrc1 && src1 == nextDest => OptimizerResult.RemoveBoth,
-
-            _ => OptimizerResult.Keep,
-        };
-
-    private enum OptimizerResult
-    {
-        Keep,
-        Remove,
-        RemoveBoth,
-    }
-
-    private void addInstruction(IntermediateInstruction instruction)
-    {
-        currentBlock.Instructions.Add(instruction);
-
-        if (instruction.Opcode.IsEndOfCfgBlock)
-            endCfgBlock();
     }
 
     private void endCfgBlock()
@@ -544,6 +554,19 @@ internal class CodeBuilder
         return dest;
     }
 
+    public Register LdArg(Register dest, int paramIndex)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.LdArg,
+            Destination = dest,
+            ImmediateValue = paramIndex,
+        };
+        addInstruction(instr);
+
+        return dest;
+    }
+
     public Register Call(Register func, Register dest, int argCount)
     {
         var instr = new IntermediateInstruction
@@ -571,6 +594,15 @@ internal class CodeBuilder
         return dest;
     }
 
+    public void Ret(Register returnValue)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.Ret,
+            Destination = returnValue,
+        };
+        addInstruction(instr);
+    }
     public void RetC(int constIndex)
     {
         var instr = new IntermediateInstruction
@@ -618,6 +650,16 @@ internal class CodeBuilder
         addInstruction(instr);
 
         label.BranchUsageCount++;
+    }
+
+    public void BindFun(Register functionRegister)
+    {
+        var instr = new IntermediateInstruction
+        {
+            Opcode = Opcode.BindFun,
+            Destination = functionRegister,
+        };
+        addInstruction(instr);
     }
 
     #endregion

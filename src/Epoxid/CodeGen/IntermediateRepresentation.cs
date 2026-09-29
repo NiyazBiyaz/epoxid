@@ -163,7 +163,7 @@ internal record IntermediateInstruction(Opcode Opcode)
 
         Opcode.LdVar => $"LdVar\t{Dest} {Variable}",
 
-        Opcode.Ret => $"Ret\t{Src1}",
+        Opcode.Ret => $"Ret\t{Dest}",
 
         Opcode.RetC => $"RetC\t{Constant}",
 

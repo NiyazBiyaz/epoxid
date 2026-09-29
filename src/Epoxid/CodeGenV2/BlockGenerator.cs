@@ -19,6 +19,7 @@ internal class BlockGenerator
     private bool inLoop => loops.Count > 0;
 
     private readonly IEnumerable<IStatementView> blockStatements;
+    private readonly bool isFunction;
 
     public BlockGenerator(FileView file)
     {
@@ -27,9 +28,11 @@ internal class BlockGenerator
         scanVariables(true);
     }
 
-    public BlockGenerator(BlockView block)
+    public BlockGenerator(BlockView block, Dictionary<string, Variable> closureVariables, bool isFunction)
     {
         blockStatements = block.GetStatements();
+        variables = closureVariables;
+        this.isFunction = isFunction;
 
         scanVariables(false);
     }
@@ -39,7 +42,12 @@ internal class BlockGenerator
         var topLevelStmts = blockStatements.GetTopLevelStatements().ToImmutableArray();
 
         var locallyAssigned = topLevelStmts
-            .SelectMany(stmt => stmt.ChildrenAndSelf())
+            .SelectMany(stmt => stmt switch
+            {
+                ClassDefView classDef => [classDef],
+                FunctionDefView functionDef => [functionDef],
+                _ => stmt.ChildrenAndSelf(),
+            })
             .SelectMany<IRedView, string>(ast => ast switch
             {
                 AssignmentExpressionView assignmentExpression => [assignmentExpression.Target.RawString],
@@ -65,7 +73,7 @@ internal class BlockGenerator
                     _ => throw new UnreachableException(),
                 },
 
-                FunctionDefView func => [func.FunctionDef.Name.RawString],
+                FunctionDefView func => [func.Name.RawString],
 
                 ClassDefView classDef => [classDef.Name.RawString],
 
@@ -83,6 +91,9 @@ internal class BlockGenerator
             variables.Add(name, variable);
         }
 
+        if (!isFunction)
+            return;
+
         foreach (var funcOrClassDef in topLevelStmts)
         {
             if (funcOrClassDef is FunctionDefView funcDef)
@@ -96,7 +107,7 @@ internal class BlockGenerator
         }
     }
 
-    public void GenerateCode(CodeBuilder builder)
+    public void GenerateModule(CodeBuilder builder)
     {
         foreach (var variable in variables.Values)
         {
@@ -108,6 +119,24 @@ internal class BlockGenerator
 
         generateStatements(builder, blockStatements);
         builder.RetC(CodeBuilder.NoneConstantIndex);
+    }
+
+    public void GenerateFunction(CodeBuilder builder)
+    {
+        foreach (var variable in variables.Values)
+        {
+            if (variable.Kind == VariableKind.Local && variable.ParameterPosition == null)
+            {
+                variable.Register = builder.AllocateRegister();
+            }
+        }
+
+        generateStatements(builder, blockStatements);
+
+        if (!builder.CanBeCompleted)
+        {
+            builder.RetC(CodeBuilder.NoneConstantIndex);
+        }
     }
 
     private void generateStatements(CodeBuilder builder, IEnumerable<IStatementView> statements)
@@ -186,10 +215,37 @@ internal class BlockGenerator
 
                     break;
                 }
+                case FunctionDefView functionDef:
+                {
+                    string functionName = functionDef.Name.RawString;
+
+                    var variable = variables[functionName];
+
+                    if (functionDef.AsyncKeyword != null)
+                        throw new NotImplementedException();
+
+                    var funcGenerator = new FunctionGenerator();
+
+                    var variablesCopy = variables.ToDictionary();
+
+                    var code = funcGenerator.GenerateCodeObject(functionDef, variablesCopy);
+                    var function = new EpFunction(functionName, code)
+                    {
+                        ParamsDescription = funcGenerator.GetParamsDescription(),
+                    };
+
+                    var functionConstant = builder.AddConstant(function);
+                    var functionRegister = variable.Register ?? builder.AllocateRegister();
+                    builder.LdConst(functionRegister, functionConstant);
+                    builder.BindFun(functionRegister);
+                    storeVariable(builder, variable, functionRegister);
+
+                    break;
+                }
+
                 case ClassDefView:
                 case ForStatementView:
                 case TryStatementView:
-                case FunctionDefView:
                 case WithStatementView:
                     throw new NotImplementedException();
 
@@ -276,10 +332,22 @@ internal class BlockGenerator
                 getExpressionRegister(builder, expression);
                 break;
 
-            case PassStatementView:
+            case ReturnStatementView returnStmt:
             {
+                if (returnStmt.Expression is not IExpressionView expression)
+                {
+                    throw new NotImplementedException();
+                }
+
+                var result = getExpressionRegister(builder, expression);
+
+                builder.Ret(result);
                 break;
             }
+
+            case PassStatementView:
+                break;
+
             case IImportStatementView:
             case AnnotatedSubscriptAttributeAssignmentView:
             case AnnotatedParenthesizedAssignmentView:
@@ -289,7 +357,6 @@ internal class BlockGenerator
             case TypeAliasView:
             case GlobalStatementView:
             case AssertStatementView:
-            case ReturnStatementView:
             case NonlocalStatementView:
             case RaiseStatementView:
             case DeleteStatementView:
@@ -652,11 +719,19 @@ internal class BlockGenerator
             throw new NotImplementedException();
             // builder.StCell(variableValue, variable.CellNumber);
         }
-        else if (inLoop)
+        else if (variable.Kind == VariableKind.Local)
         {
             Debug.Assert(variable.Register != null);
 
-            builder.AddToLoopLifetime(variable.Register);
+            if (variable.Register != source)
+            {
+                builder.Move(variable.Register, source);
+            }
+
+            if (inLoop)
+            {
+                builder.AddToLoopLifetime(variable.Register);
+            }
         }
     }
 
@@ -671,11 +746,21 @@ internal class BlockGenerator
                 throw new NotImplementedException();
                 // return builder.LdCell(resultRegister, variable.CellNumber);
             }
-            else if (variable.Kind == VariableKind.Local && inLoop)
+            else if (variable.Kind == VariableKind.Local)
             {
+                if (variable.ParameterPosition.HasValue && variable.Register == null)
+                {
+                    variable.Register = builder.AllocateRegister();
+                    builder.LdArg(variable.Register, variable.ParameterPosition.Value);
+                }
+
                 Debug.Assert(variable.Register != null);
 
-                builder.AddToLoopLifetime(variable.Register);
+                if (inLoop)
+                {
+                    builder.AddToLoopLifetime(variable.Register);
+                }
+
                 return variable.Register;
             }
         }
