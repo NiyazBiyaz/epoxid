@@ -1,6 +1,9 @@
+using Epoxid.SourceGeneration;
+
 namespace Epoxid.Runtime.Objects;
 
-public class EpType : EpObject
+[EpoxidType]
+public partial class EpType : EpObject
 {
     public string DunderName { get; }
     public EpType[] DunderBases { get; }

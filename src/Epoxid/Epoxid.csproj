@@ -15,6 +15,13 @@
     <ProjectReference Include="..\Epoxid.SyntaxAnalysis.Generator.Analyzers\Epoxid.SyntaxAnalysis.Generator.Analyzers.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\Epoxid.SourceGeneration\Epoxid.SourceGeneration.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>
   </ItemGroup>
+  
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
 
 </Project>

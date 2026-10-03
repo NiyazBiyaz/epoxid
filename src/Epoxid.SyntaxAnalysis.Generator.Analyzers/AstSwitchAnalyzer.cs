@@ -6,10 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Epoxid.SyntaxAnalysis.Generator.Analyzers;
 
-// Ok.
-#pragma warning disable RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-#pragma warning restore RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
 public class AstSwitchAnalyzer : DiagnosticAnalyzer
 {
     private const string wild_union_name = "Epoxid.SyntaxAnalysis.WildUnionAttribute";

@@ -5,6 +5,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/src/">
+    <Project Path="src/Epoxid.SourceGeneration/Epoxid.SourceGeneration.csproj" />
     <Project Path="src/Epoxid.SyntaxAnalysis.Generator.Analyzers/Epoxid.SyntaxAnalysis.Generator.Analyzers.csproj" />
     <Project Path="src/Epoxid.SyntaxAnalysis.Generator/Epoxid.SyntaxAnalysis.Generator.csproj" />
     <Project Path="src/Epoxid.SyntaxAnalysis/Epoxid.SyntaxAnalysis.csproj" />
