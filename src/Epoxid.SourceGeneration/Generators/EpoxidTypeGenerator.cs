@@ -22,6 +22,8 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(pipeline, emitFile);
     }
 
+    private const string generated_code_attribute = "[global::System.CodeDom.Compiler.GeneratedCode(\"Epoxid.SourceGeneration\", null)]";
+
     private static bool generatorCandidate(SyntaxNode node, CancellationToken ct)
     {
         if (node is not ClassDeclarationSyntax cl)
@@ -53,19 +55,17 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
 
             string propertyName = member.Name;
             string descriptorName = (string)attr.ConstructorArguments[0].Value!;
-            string typeString = SyntaxHelpers.GetGlobalQualifiedName(member.Type);
+            string typeName = SyntaxHelpers.GetGlobalQualifiedName(member.Type);
 
             slots.Add(new(
                 propertyName,
                 descriptorName,
-                typeString,
+                typeName,
+                member.Type.NullableAnnotation == NullableAnnotation.Annotated,
                 member.DeclaredAccessibility,
                 member.GetMethod.DeclaredAccessibility,
                 member.SetMethod.DeclaredAccessibility));
         }
-
-        if (slots.Count == 0)
-            return null;
 
         return new TargetData(
             target.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)),
@@ -96,16 +96,12 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
         using (builder.BlockScope())
         {
             builder.AddLines($"""
-            // Top bound of '{target.ClassName}' slots indexes
+            // Slots count of '{target.ClassName}' type.
+            {generated_code_attribute}
             protected const int {classSlotCount(target.ClassName)} = {classSlotCount(target.BaseClassName)} + {target.Slots.Length};
-            """);
-            builder.BlankLine();
 
-            builder.AddLines($$"""
-            private void allocateSlots()
-            {
-                base.AllocateSlots({{classSlotCount(target.ClassName)}});
-            }
+            {generated_code_attribute}
+            private protected override int SlotsCount => {classSlotCount(target.ClassName)};
             """);
 
             for (int i = 0; i < target.Slots.Length; i++)
@@ -117,13 +113,15 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
                 string getAccess = getAccessibilityString(slot.GetAccessibility);
                 string setAccess = getAccessibilityString(slot.SetAccessibility);
 
-                builder.AddLines($$"""
-                // Property of the '{{slot.DescriptorName}}' slot
-                {{accessibility}} partial {{slot.TypeString}} {{slot.PropertyName}}
+                builder.AddLines($"""
+                // Property of the '{slot.DescriptorName}' slot
+                {generated_code_attribute}
+                {accessibility} partial {slot.TypeString} {slot.PropertyName}
                 """);
 
                 using (builder.BlockScope())
                 {
+                    builder.AddLine(generated_code_attribute);
                     builder.BeginLine();
                     if (slot.GetAccessibility < slot.PropertyAccessibility)
                     {
@@ -136,12 +134,25 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
                     {
                         builder.AddLines($"""
                         {slotsBoundCheck(slot.PropertyName)}
-
                         var _span = base.DunderSlots.Span;
-                        return ({slot.TypeString})_span[{slotIndex(slot.PropertyName)}];
                         """);
+
+                        if (!slot.IsTypeNullable)
+                        {
+                            builder.AddLines($"""
+                            var _value = _span[{slotIndex(slot.PropertyName)}];
+                            if (_value == null)
+                                throw new global::System.NullReferenceException("'{slot.PropertyName}' slot value is null.");
+                            return ({slot.TypeString})_value;
+                            """);
+                        }
+                        else
+                        {
+                            builder.AddLine($"return ({slot.TypeString})_span[{slotIndex(slot.PropertyName)}];");
+                        }
                     }
 
+                    builder.AddLine(generated_code_attribute);
                     builder.BeginLine();
                     if (slot.SetAccessibility < slot.PropertyAccessibility)
                     {
@@ -162,9 +173,10 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
                 }
                 builder.BlankLine();
 
-                builder.AddLines($$"""
-                // Index of the slot '{{slot.DescriptorName}}'
-                private const int {{slotIndex(slot.PropertyName)}} = {{classSlotCount(target.BaseClassName)}} + {{i}};
+                builder.AddLines($"""
+                // Index of the slot '{slot.DescriptorName}'
+                {generated_code_attribute}
+                private const int {slotIndex(slot.PropertyName)} = {classSlotCount(target.BaseClassName)} + {i};
                 """);
             }
         }
@@ -176,7 +188,7 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
         static string slotsBoundCheck(string propertyName)
         {
             return $"""
-            if (base.DunderSlots.Length < {slotIndex(propertyName)})
+            if (base.DunderSlots.Length <= {slotIndex(propertyName)})
                 throw new global::System.Diagnostics.UnreachableException("Slot '{propertyName}' access error: slots have less size then slot index.");
             """;
         }
@@ -211,8 +223,12 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
     private record SlotData(
         string PropertyName,
         string DescriptorName,
-        string TypeString,
+        string TypeName,
+        bool IsTypeNullable,
         Accessibility PropertyAccessibility,
         Accessibility GetAccessibility,
-        Accessibility SetAccessibility);
+        Accessibility SetAccessibility)
+    {
+        public string TypeString => TypeName + (IsTypeNullable ? "?" : "");
+    }
 }

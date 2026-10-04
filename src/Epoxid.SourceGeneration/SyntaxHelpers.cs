@@ -24,6 +24,6 @@ public static class SyntaxHelpers
     public static string GetQualifiedName(ISymbol symbol)
         => symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
 
-    public static string GetGlobalQualifiedName(ISymbol symbol)
+    public static string GetGlobalQualifiedName(ITypeSymbol symbol)
         => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 }

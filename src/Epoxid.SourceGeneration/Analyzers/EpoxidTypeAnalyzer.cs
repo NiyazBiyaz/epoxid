@@ -10,8 +10,9 @@ namespace Epoxid.SourceGeneration.Analyzers;
 public class EpoxidTypeAnalyzer : DiagnosticAnalyzer
 {
     private static readonly ImmutableArray<DiagnosticDescriptor> supported_diagnostics = ImmutableArray.Create([
-        DiagnosticRules.MakePartial,
-        DiagnosticRules.MakeClassDerivedFromEpObject,
+        Rules.MakePartial,
+        Rules.MakeClassDerivedFromEpObject,
+        Rules.AddBaseInitializer,
     ]);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => supported_diagnostics;
@@ -21,6 +22,7 @@ public class EpoxidTypeAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
         context.RegisterSyntaxNodeAction(analyzeClass, SyntaxKind.ClassDeclaration);
+        context.RegisterSyntaxNodeAction(analyzeConstructors, SyntaxKind.ClassDeclaration);
     }
 
     private void analyzeClass(SyntaxNodeAnalysisContext context)
@@ -51,7 +53,7 @@ public class EpoxidTypeAnalyzer : DiagnosticAnalyzer
         bool isPartial = node.Modifiers.Any(mod => mod.IsKind(SyntaxKind.PartialKeyword));
 
         if (requiresPartial && !isPartial)
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticRules.MakePartial, node.GetLocation(), node));
+            context.ReportDiagnostic(Diagnostic.Create(Rules.MakePartial, node.GetLocation()));
 
         foreach (var prop in node.Members.OfType<PropertyDeclarationSyntax>())
             analyzePropertyNeedPartial(context, prop);
@@ -70,7 +72,7 @@ public class EpoxidTypeAnalyzer : DiagnosticAnalyzer
             .Any(SyntaxHelpers.IsSlotAttribute) ?? false;
 
         if (needPartial)
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticRules.MakePartial, node.Identifier.GetLocation(), node));
+            context.ReportDiagnostic(Diagnostic.Create(Rules.MakePartial, node.Identifier.GetLocation()));
     }
 
     private static void analyzeNeedToBeDerived(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax node)
@@ -84,6 +86,27 @@ public class EpoxidTypeAnalyzer : DiagnosticAnalyzer
         bool isEpoxidObject = SyntaxHelpers.IsEpoxidObject(context.SemanticModel.GetDeclaredSymbol(node));
 
         if (requiresDerived && !isEpoxidObject)
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticRules.MakeClassDerivedFromEpObject, node.GetLocation(), node));
+            context.ReportDiagnostic(Diagnostic.Create(Rules.MakeClassDerivedFromEpObject, node.GetLocation()));
+    }
+
+    private static void analyzeConstructors(SyntaxNodeAnalysisContext context)
+    {
+        var classSyntax = (ClassDeclarationSyntax)context.Node;
+
+        bool isEpoxidType = context.SemanticModel
+            .GetDeclaredSymbol(classSyntax)
+            ?.GetAttributes()
+            .Any(SyntaxHelpers.IsEpoxidTypeAttribute) ?? false;
+
+        if (!isEpoxidType)
+            return;
+
+        foreach (var ctor in classSyntax.Members.OfType<ConstructorDeclarationSyntax>())
+        {
+            if (ctor.Initializer is not ConstructorInitializerSyntax initializer)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Rules.AddBaseInitializer, ctor.GetLocation(), ctor));
+            }
+        }
     }
 }
