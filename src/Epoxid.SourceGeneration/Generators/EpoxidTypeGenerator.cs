@@ -23,6 +23,9 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
     }
 
     private const string generated_code_attribute = "[global::System.CodeDom.Compiler.GeneratedCode(\"Epoxid.SourceGeneration\", null)]";
+    private const string slot_offset = "global::Epoxid.Runtime.SlotOffset";
+    private const string readonly_dictionary_string_offset = $"global::System.Collections.ObjectModel.ReadOnlyDictionary<string, {slot_offset}>";
+    private const string dictionary_string_offset = $"global::System.Collections.Generic.Dictionary<string, {slot_offset}>";
 
     private static bool generatorCandidate(SyntaxNode node, CancellationToken ct)
     {
@@ -103,6 +106,18 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
             {generated_code_attribute}
             private protected override int SlotsCount => {classSlotCount(target.ClassName)};
             """);
+
+            builder.AddLines($"""
+            {generated_code_attribute}
+            private static readonly {readonly_dictionary_string_offset} slot_descriptors_mapping = new {dictionary_string_offset}
+            """);
+            using (builder.BlockScope(".AsReadOnly();"))
+            {
+                foreach (var slot in target.Slots)
+                {
+                    builder.AddLine($"[\"{slot.DescriptorName}\"] = new {slot_offset}({slotIndex(slot.PropertyName)}),");
+                }
+            }
 
             for (int i = 0; i < target.Slots.Length; i++)
             {
@@ -217,7 +232,7 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
         string BaseClassName,
         ValueArray<SlotData> Slots)
     {
-        public string Identifier => $"{ClassName}_{Slots.Length}.g.cs";
+        public string Identifier => $"{Namespace}+{ClassName}_{Slots.Length}.g.cs";
     }
 
     private record SlotData(

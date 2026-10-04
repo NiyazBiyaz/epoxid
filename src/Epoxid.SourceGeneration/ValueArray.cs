@@ -80,18 +80,7 @@ public readonly struct ValueArray<T> : IEnumerable<T>, IEquatable<ValueArray<T>>
         {
         }
 
-        public bool MoveNext()
-        {
-            if (index < values.Length)
-            {
-                index += 1;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool MoveNext() => ++index < values.Length;
 
         public void Reset() => index = 0;
     }

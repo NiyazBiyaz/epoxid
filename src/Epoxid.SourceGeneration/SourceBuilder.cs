@@ -11,11 +11,14 @@ public class SourceBuilder
 
     private int indent = 0;
 
-    public Block BlockScope()
+    public Block BlockScope(string blockEnd = "")
     {
         AddLine("{");
         indent += 1;
-        return new Block(this);
+        return new Block(this)
+        {
+            EndSuffix = blockEnd,
+        };
     }
 
     public void Add(string code) => builder.Append(code);
@@ -75,10 +78,12 @@ public class SourceBuilder
     {
         private readonly SourceBuilder builderReference = reference;
 
+        public readonly string EndSuffix { get; init; } = "";
+
         public void Dispose()
         {
             builderReference.indent -= 1;
-            builderReference.AddLine("}");
+            builderReference.AddLine("}" + EndSuffix);
         }
     }
 }

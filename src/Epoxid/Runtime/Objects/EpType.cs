@@ -32,6 +32,16 @@ public partial class EpType : EpObject
         DunderEq = DunderEqImplementation;
         DunderNe = DunderNeImplementation;
         DunderNew = DunderNewImplementation;
+
+        DunderDict ??= [];
+
+        foreach (var (descriptor, offset) in slot_descriptors_mapping)
+        {
+            if (!DunderDict.TryAdd((EpString)descriptor, new EpWrapperObject(offset)))
+            {
+                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{descriptor}'");
+            }
+        }
     }
 
     public override string ToString() => $"<class '{DunderName}'>";
