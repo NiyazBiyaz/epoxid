@@ -26,6 +26,7 @@ public class SlotGenerator : IIncrementalGenerator
     private const string slot_offset = "global::Epoxid.Runtime.SlotOffset";
     private const string readonly_dictionary_string_offset = $"global::System.Collections.ObjectModel.ReadOnlyDictionary<string, {slot_offset}>";
     private const string dictionary_string_offset = $"global::System.Collections.Generic.Dictionary<string, {slot_offset}>";
+    private const string collection_extensions_as_readonly = "global::System.Collections.Generic.CollectionExtensions.AsReadOnly";
 
     private static bool generatorCandidate(SyntaxNode node, CancellationToken ct)
     {
@@ -103,16 +104,22 @@ public class SlotGenerator : IIncrementalGenerator
             // Slots count of '{target.ClassName}' type.
             {generated_code_attribute}
             protected const int {classSlotCount(target.ClassName)} = {classSlotCount(target.BaseClassName)} + {target.Slots.Length};
-
-            {generated_code_attribute}
-            private protected override int SlotsCount => {classSlotCount(target.ClassName)};
             """);
+            builder.BlankLine();
 
             builder.AddLines($"""
             {generated_code_attribute}
-            private static readonly {readonly_dictionary_string_offset} slot_descriptors_mapping = new {dictionary_string_offset}
+            private protected override int SlotsCount => {classSlotCount(target.ClassName)};
             """);
-            using (builder.BlockScope(".AsReadOnly();"))
+            builder.BlankLine();
+
+            builder.AddLines($"""
+            {generated_code_attribute}
+            private static readonly {readonly_dictionary_string_offset} slot_descriptors_mapping
+                = {collection_extensions_as_readonly}(
+                new {dictionary_string_offset}
+            """);
+            using (builder.BlockScope(");"))
             {
                 foreach (var slot in target.Slots)
                 {

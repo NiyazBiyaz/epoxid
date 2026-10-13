@@ -8,11 +8,14 @@ partial class EmptyType
     // Slots count of 'EmptyType' type.
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     protected const int _EmptyTypeSlotCount = _EpObjectSlotCount + 0;
-    
+
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     private protected override int SlotsCount => _EmptyTypeSlotCount;
+
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping = new global::System.Collections.Generic.Dictionary<string, global::Epoxid.Runtime.SlotOffset>
+    private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping
+        = global::System.Collections.Generic.CollectionExtensions.AsReadOnly(
+        new global::System.Collections.Generic.Dictionary<string, global::Epoxid.Runtime.SlotOffset>
     {
-    }.AsReadOnly();
+    });
 }

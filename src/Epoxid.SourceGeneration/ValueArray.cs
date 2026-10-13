@@ -70,7 +70,7 @@ public readonly struct ValueArray<T> : IEnumerable<T>, IEquatable<ValueArray<T>>
     public struct Enumerator(ValueArray<T> values) : IEnumerator<T>
     {
         private readonly ValueArray<T> values = values;
-        private int index;
+        private int index = -1;
 
         public readonly T Current => values[index];
 
@@ -82,7 +82,7 @@ public readonly struct ValueArray<T> : IEnumerable<T>, IEquatable<ValueArray<T>>
 
         public bool MoveNext() => ++index < values.Length;
 
-        public void Reset() => index = 0;
+        public void Reset() => index = -1;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

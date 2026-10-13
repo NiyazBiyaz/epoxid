@@ -8,14 +8,18 @@ partial class ValueTypes
     // Slots count of 'ValueTypes' type.
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     protected const int _ValueTypesSlotCount = _EpObjectSlotCount + 2;
-    
+
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     private protected override int SlotsCount => _ValueTypesSlotCount;
+
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping = new global::System.Collections.Generic.Dictionary<string, global::Epoxid.Runtime.SlotOffset>
+    private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping
+        = global::System.Collections.Generic.CollectionExtensions.AsReadOnly(
+        new global::System.Collections.Generic.Dictionary<string, global::Epoxid.Runtime.SlotOffset>
     {
+        ["__pondering__"] = new global::Epoxid.Runtime.SlotOffset(_PonDeRing_Index),
         ["__bau__"] = new global::Epoxid.Runtime.SlotOffset(_Bau_Index),
-    }.AsReadOnly();
+    });
 
     // Property of the '__pondering__' slot
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]

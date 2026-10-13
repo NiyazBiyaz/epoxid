@@ -8,13 +8,17 @@ partial class OneSlot
     // Slots count of 'OneSlot' type.
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     protected const int _OneSlotSlotCount = _EpObjectSlotCount + 1;
-    
+
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     private protected override int SlotsCount => _OneSlotSlotCount;
+
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping = new global::System.Collections.Generic.Dictionary<string, global::Epoxid.Runtime.SlotOffset>
+    private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping
+        = global::System.Collections.Generic.CollectionExtensions.AsReadOnly(
+        new global::System.Collections.Generic.Dictionary<string, global::Epoxid.Runtime.SlotOffset>
     {
-    }.AsReadOnly();
+        ["__bau__"] = new global::Epoxid.Runtime.SlotOffset(_Bau_Index),
+    });
 
     // Property of the '__bau__' slot
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]

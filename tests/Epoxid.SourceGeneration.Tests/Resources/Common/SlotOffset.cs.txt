@@ -1,3 +1,5 @@
+using System;
+
 namespace Epoxid.Runtime;
 
 public class SlotOffset(int value) : IEquatable<SlotOffset>
