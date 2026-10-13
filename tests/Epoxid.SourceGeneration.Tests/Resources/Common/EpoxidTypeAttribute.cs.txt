@@ -1,0 +1,4 @@
+namespace Epoxid.SourceGeneration;
+
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class EpoxidTypeAttribute : Attribute;

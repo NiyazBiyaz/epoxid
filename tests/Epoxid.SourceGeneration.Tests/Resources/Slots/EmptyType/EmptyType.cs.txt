@@ -1,0 +1,9 @@
+using Epoxid.SourceGeneration;
+using Epoxid.Runtime.Objects;
+
+namespace Epoxid.Fluffy;
+
+[EpoxidType]
+public partial class EmptyType : EpObject
+{
+}

@@ -1,0 +1,10 @@
+namespace Epoxid.Runtime.Objects;
+
+public class EpObject
+{
+    protected const int _EpObjectSlotCount = 0;
+
+    private protected virtual int SlotsCount => _EpObjectSlotCount;
+
+    private protected Memory<object?> DunderSlots { get; set; }
+}

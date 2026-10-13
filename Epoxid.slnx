@@ -12,6 +12,7 @@
     <Project Path="src/Epoxid/Epoxid.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Epoxid.SourceGeneration.Tests/Epoxid.SourceGeneration.Tests.csproj" />
     <Project Path="tests/Epoxid.SyntaxAnalysis.Generator.Analyzers.Tests/Epoxid.SyntaxAnalysis.Generator.Analyzers.Tests.csproj" />
     <Project Path="tests/Epoxid.SyntaxAnalysis.Generator.Tests/Epoxid.SyntaxAnalysis.Generator.Tests.csproj" />
     <Project Path="tests/Epoxid.SyntaxAnalysis.Tests/Epoxid.SyntaxAnalysis.Tests.csproj" />

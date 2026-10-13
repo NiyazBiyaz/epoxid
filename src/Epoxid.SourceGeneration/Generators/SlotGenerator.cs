@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Epoxid.SourceGeneration.Generators;
 
 [Generator]
-public class EpoxidTypeGenerator : IIncrementalGenerator
+public class SlotGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -65,6 +65,7 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
                 descriptorName,
                 typeName,
                 member.Type.NullableAnnotation == NullableAnnotation.Annotated,
+                member.Type.IsValueType,
                 member.DeclaredAccessibility,
                 member.GetMethod.DeclaredAccessibility,
                 member.SetMethod.DeclaredAccessibility));
@@ -240,10 +241,11 @@ public class EpoxidTypeGenerator : IIncrementalGenerator
         string DescriptorName,
         string TypeName,
         bool IsTypeNullable,
+        bool IsValueType,
         Accessibility PropertyAccessibility,
         Accessibility GetAccessibility,
         Accessibility SetAccessibility)
     {
-        public string TypeString => TypeName + (IsTypeNullable ? "?" : "");
+        public string TypeString => TypeName + (IsTypeNullable && !IsValueType ? "?" : "");
     }
 }

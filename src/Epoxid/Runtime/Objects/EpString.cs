@@ -1,8 +1,10 @@
 using System.Text;
+using Epoxid.SourceGeneration;
 
 namespace Epoxid.Runtime.Objects;
 
-public class EpString : EpObject
+[EpoxidType]
+public partial class EpString : EpObject
 {
     internal readonly string Value;
 

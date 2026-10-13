@@ -1,0 +1,14 @@
+using Epoxid.SourceGeneration;
+using Epoxid.Runtime.Objects;
+
+namespace Epoxid.Fluffy;
+
+[EpoxidType]
+public partial class ValueTypes : EpObject
+{
+    [Slot("__pondering__")]
+    public partial int? PonDeRing { get; set; }
+
+    [Slot("__bau__")]
+    public partial long Bau { get; set; }
+}
