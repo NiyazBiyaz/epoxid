@@ -11,10 +11,10 @@ internal class CodeBuilder
     private readonly List<Register> registers = [];
     private readonly List<EpObject> constants =
     [
-        EpConstants.None,
-        EpConstants.True,
-        EpConstants.False,
-        EpConstants.Ellipsis,
+        EpNone.None,
+        EpBool.True,
+        EpBool.False,
+        EpEllipsis.Ellipsis,
     ];
     internal IReadOnlyList<EpObject> Constants => constants;
 

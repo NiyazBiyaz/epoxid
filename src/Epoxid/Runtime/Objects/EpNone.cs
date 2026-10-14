@@ -3,16 +3,18 @@ namespace Epoxid.Runtime.Objects;
 public class EpNone : EpObject
 {
     public EpNone()
-        : base(EpConstants.NoneType)
+        : base(NoneType)
     {
     }
 
-    internal static readonly EpType Type = new("NoneType", [EpConstants.Object], EpConstants.Type)
+    internal static readonly EpType NoneType = new("NoneType", [Object], EpType.Type)
     {
-        DunderBool = DunderBoolImplementation,
+        DunderBool = dunderBoolImplementation,
     };
+
+    public static readonly EpNone None = new();
 
     public override string ToString() => "None";
 
-    internal static EpBool DunderBoolImplementation(EpObject self) => EpConstants.False;
+    private static EpBool dunderBoolImplementation(EpObject self) => EpBool.False;
 }

@@ -2,9 +2,9 @@ using Epoxid.VM;
 
 namespace Epoxid.Runtime.Objects;
 
-public class EpFunction(string name, CodeObject code) : EpBaseFunction(EpConstants.Function, name)
+public class EpFunction(string name, CodeObject code) : EpBaseFunction(Function, name)
 {
-    internal readonly static EpType Type = new("function", [EpConstants.Object], EpConstants.Type);
+    internal readonly static EpType Function = new("function", [Object], EpType.Type);
 
     public CodeObject Code { get; } = code;
 

@@ -9,22 +9,22 @@ public class EpTuple : EpObject, IReadOnlyList<EpObject>
     private readonly EpObject[] items;
 
     public EpTuple(EpObject[] items)
-        : base(EpConstants.Tuple)
+        : base(Tuple)
     {
         this.items = items;
     }
 
     public EpTuple(ReadOnlySpan<EpObject> items)
-        : base(EpConstants.Tuple)
+        : base(Tuple)
     {
         this.items = [.. items];
     }
 
     public EpObject this[int index] => items[index];
 
-    internal static readonly EpType Type = new("tuple", [EpConstants.Object], EpConstants.Type)
+    internal static readonly EpType Tuple = new("tuple", [Object], EpType.Type)
     {
-        DunderLen = DunderLenImplementation,
+        DunderLen = dunderLenImplementation,
     };
 
     public int Count => items.Length;
@@ -35,7 +35,7 @@ public class EpTuple : EpObject, IReadOnlyList<EpObject>
 
     public static readonly EpTuple Empty = new([]);
 
-    internal static EpInteger DunderLenImplementation(EpObject self) => (EpInteger)((EpTuple)self).items.Length;
+    private static EpInteger dunderLenImplementation(EpObject self) => (EpInteger)((EpTuple)self).items.Length;
 }
 
 public static class EpTupleBuilder

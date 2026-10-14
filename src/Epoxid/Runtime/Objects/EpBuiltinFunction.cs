@@ -3,12 +3,12 @@ namespace Epoxid.Runtime.Objects;
 public class EpBuiltinFunction : EpBaseFunction
 {
     public EpBuiltinFunction(string name, FrameCallFunction function)
-        : base(EpConstants.NativeFunction, name)
+        : base(BuiltinFunction, name)
     {
         FrameCall = function;
     }
 
     public FrameCallFunction? FrameCall { get; }
 
-    internal readonly static EpType Type = new("native_function", [EpConstants.Object], EpConstants.Type);
+    internal readonly static EpType BuiltinFunction = new("native_function", [Object], EpType.Type);
 }

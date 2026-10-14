@@ -17,7 +17,7 @@ public static class Builtins
     {
         constructFunc("print", print, print_params);
         constructFunc("input", input, input_params);
-        BuiltinsScope.Bind("int", EpConstants.Int);
+        BuiltinsScope.Bind("int", EpInteger.Int);
     }
 
     private static void constructFunc(string name, FrameCallFunction function, FunctionParametersDescription description)
@@ -66,7 +66,7 @@ public static class Builtins
         }
         Console.Write(end);
 
-        return EpConstants.None;
+        return EpNone.None;
     }
 
     private static readonly FunctionParametersDescription input_params = new()

@@ -2,12 +2,14 @@ namespace Epoxid.Runtime.Objects;
 
 public class EpEllipsis : EpObject
 {
-    public EpEllipsis()
-        : base(EpConstants.EllipsisType)
+    private EpEllipsis()
+        : base(EllipsisType)
     {
     }
 
-    internal static readonly EpType Type = new("EllipsisType", [EpConstants.Object], EpConstants.Type);
+    internal static readonly EpType EllipsisType = new("EllipsisType", [Object], EpType.Type);
+
+    public static readonly EpEllipsis Ellipsis = new();
 
     public override string ToString() => "Ellipsis";
 }

@@ -9,7 +9,9 @@ public partial class EpType : EpObject
     public partial string DunderName { get; private set; }
 
     [Slot("__bases__")]
-    public partial EpType[] DunderBases { get; private set; }
+    public partial EpType[] DunderBases { get; internal set; }
+
+    public static readonly EpType Type = RuntimeInitializer.Type;
 
     internal EpType(string name, EpType[] bases)
         : base()

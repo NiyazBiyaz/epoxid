@@ -8,13 +8,13 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
     private readonly Dictionary<EpObject, EpObject> items;
 
     public EpDict(Dictionary<EpObject, EpObject> items)
-        : base(EpConstants.Dict)
+        : base(Dict)
     {
         this.items = items;
     }
 
     public EpDict()
-        : base(EpConstants.Dict)
+        : base(Dict)
     {
         items = [];
     }
@@ -27,9 +27,9 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
 
     public static readonly EpDict Empty = [];
 
-    internal static readonly EpType Type = new("dict", [EpConstants.Object], EpConstants.Type)
+    internal static readonly EpType Dict = new("dict", [Object], EpType.Type)
     {
-        DunderLen = DunderLenImplementation,
+        DunderLen = dunderLenImplementation,
     };
 
     public ICollection<EpObject> Keys => items.Keys;
@@ -62,5 +62,5 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    internal static EpInteger DunderLenImplementation(EpObject self) => (EpInteger)((EpDict)self).items.Count;
+    private static EpInteger dunderLenImplementation(EpObject self) => (EpInteger)((EpDict)self).items.Count;
 }

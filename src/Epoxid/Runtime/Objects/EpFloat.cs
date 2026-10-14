@@ -7,7 +7,7 @@ public class EpFloat : EpObject
     internal readonly double Value;
 
     public EpFloat(double value)
-        : base(EpConstants.Float)
+        : base(Float)
     {
         Value = value;
     }
@@ -15,19 +15,19 @@ public class EpFloat : EpObject
     public static explicit operator double(EpFloat psFloat) => psFloat.Value;
     public static explicit operator EpFloat(double clrFloat) => new(clrFloat);
 
-    internal static readonly EpType Type = new("float", [EpConstants.Object], EpConstants.Type)
+    internal static readonly EpType Float = new("float", [Object], EpType.Type)
     {
-        DunderAdd = DunderAddImplementation,
-        DunderSub = DunderSubImplementation,
-        DunderMul = DunderMulImplementation,
-        DunderTrueDiv = DunderTrueDivImplementation,
-        DunderMod = DunderModImplementation,
-        DunderPow = DunderPowImplementation,
-        DunderBool = DunderBoolImplementation,
-        DunderEq = DunderEqImplementation,
-        DunderNe = DunderNeImplementation,
-        DunderGt = DunderGtImplementation,
-        DunderLt = DunderLtImplementation,
+        DunderAdd = dunderAddImplementation,
+        DunderSub = dunderSubImplementation,
+        DunderMul = dunderMulImplementation,
+        DunderTrueDiv = dunderTrueDivImplementation,
+        DunderMod = dunderModImplementation,
+        DunderPow = dunderPowImplementation,
+        DunderBool = dunderBoolImplementation,
+        DunderEq = dunderEqImplementation,
+        DunderNe = dunderNeImplementation,
+        DunderGt = dunderGtImplementation,
+        DunderLt = dunderLtImplementation,
     };
 
     public override string ToString()
@@ -35,7 +35,7 @@ public class EpFloat : EpObject
         ? Value.ToString() + ".0" // I have no clue how to add .0 to this stupid double when converting to string, so...
         : Value.ToString(CultureInfo.InvariantCulture);
 
-    internal static EpObject DunderAddImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderAddImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
         return other switch
@@ -46,7 +46,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpObject DunderSubImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderSubImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
         return other switch
@@ -57,7 +57,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpObject DunderMulImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderMulImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
         return other switch
@@ -68,7 +68,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpObject DunderTrueDivImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderTrueDivImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
         return other switch
@@ -79,7 +79,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpObject DunderModImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderModImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
         return other switch
@@ -90,7 +90,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpObject DunderPowImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderPowImplementation(EpObject self, EpObject other)
     {
         var selfFloat = (EpFloat)self;
         return other switch
@@ -101,10 +101,10 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpBool DunderBoolImplementation(EpObject self)
-        => ((EpFloat)self).Value != 0d ? EpConstants.True : EpConstants.False;
+    private static EpBool dunderBoolImplementation(EpObject self)
+        => ((EpFloat)self).Value != 0d ? EpBool.True : EpBool.False;
 
-    internal static new EpBool DunderEqImplementation(EpObject self, EpObject other)
+    private static EpBool dunderEqImplementation(EpObject self, EpObject other)
     {
         var selfF = (EpFloat)self;
         return other switch
@@ -116,7 +116,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static new EpBool DunderNeImplementation(EpObject self, EpObject other)
+    private static EpBool dunderNeImplementation(EpObject self, EpObject other)
     {
         var selfF = (EpFloat)self;
         return other switch
@@ -128,8 +128,7 @@ public class EpFloat : EpObject
         };
     }
 
-
-    internal static EpBool DunderLtImplementation(EpObject self, EpObject other)
+    private static EpBool dunderLtImplementation(EpObject self, EpObject other)
     {
         var selfF = (EpFloat)self;
         return other switch
@@ -140,7 +139,7 @@ public class EpFloat : EpObject
         };
     }
 
-    internal static EpBool DunderGtImplementation(EpObject self, EpObject other)
+    private static EpBool dunderGtImplementation(EpObject self, EpObject other)
     {
         var selfF = (EpFloat)self;
         return other switch

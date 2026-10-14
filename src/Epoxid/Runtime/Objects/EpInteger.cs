@@ -9,7 +9,7 @@ public class EpInteger : EpObject
     internal readonly int Value;
 
     public EpInteger(int value)
-        : base(EpConstants.Int)
+        : base(Int)
     {
         Value = value;
     }
@@ -29,22 +29,22 @@ public class EpInteger : EpObject
 
     public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 
-    internal static readonly EpType Type = new("int", [EpConstants.Object], EpConstants.Type)
+    internal static readonly EpType Int = new("int", [Object], EpType.Type)
     {
-        DunderAdd = DunderAddImplementation,
-        DunderSub = DunderSubImplementation,
-        DunderMul = DunderMulImplementation,
-        DunderTrueDiv = DunderTrueDivImplementation,
-        DunderMod = DunderModImplementation,
-        DunderPow = DunderPowImplementation,
-        DunderBool = DunderBoolImplementation,
-        DunderEq = DunderEqImplementation,
-        DunderNe = DunderNeImplementation,
-        DunderGt = DunderGtImplementation,
-        DunderLt = DunderLtImplementation,
+        DunderAdd = dunderAddImplementation,
+        DunderSub = dunderSubImplementation,
+        DunderMul = dunderMulImplementation,
+        DunderTrueDiv = dunderTrueDivImplementation,
+        DunderMod = dunderModImplementation,
+        DunderPow = dunderPowImplementation,
+        DunderBool = dunderBoolImplementation,
+        DunderEq = dunderEqImplementation,
+        DunderNe = dunderNeImplementation,
+        DunderGt = dunderGtImplementation,
+        DunderLt = dunderLtImplementation,
     };
 
-    internal static EpObject DunderAddImplementation(EpObject self, EpObject other)
+    private static EpObject dunderAddImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         return other switch
@@ -55,7 +55,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpObject DunderSubImplementation(EpObject self, EpObject other)
+    private static EpObject dunderSubImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         return other switch
@@ -66,7 +66,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpObject DunderMulImplementation(EpObject self, EpObject other)
+    private static EpObject dunderMulImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         return other switch
@@ -78,7 +78,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpObject DunderTrueDivImplementation(EpObject self, EpObject other)
+    private static EpObject dunderTrueDivImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         return other switch
@@ -89,7 +89,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpObject DunderModImplementation(EpObject self, EpObject other)
+    private static EpObject dunderModImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         return other switch
@@ -100,7 +100,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpObject DunderPowImplementation(EpObject self, EpObject other)
+    private static EpObject dunderPowImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         switch (other)
@@ -125,10 +125,10 @@ public class EpInteger : EpObject
         throw new Exception($"TypeError: unsupported operand type(s) for **: 'int' and '{other.DunderClass.DunderName}'");
     }
 
-    internal static EpBool DunderBoolImplementation(EpObject self)
-        => ((EpInteger)self).Value != 0 ? EpConstants.True : EpConstants.False;
+    private static EpBool dunderBoolImplementation(EpObject self)
+        => ((EpInteger)self).Value != 0 ? EpBool.True : EpBool.False;
 
-    internal static new EpBool DunderEqImplementation(EpObject self, EpObject other)
+    private static EpBool dunderEqImplementation(EpObject self, EpObject other)
     {
         var selfI = (EpInteger)self;
         return other switch
@@ -140,7 +140,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static new EpBool DunderNeImplementation(EpObject self, EpObject other)
+    private static EpBool dunderNeImplementation(EpObject self, EpObject other)
     {
         var selfI = (EpInteger)self;
         return other switch
@@ -152,7 +152,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpBool DunderLtImplementation(EpObject self, EpObject other)
+    private static EpBool dunderLtImplementation(EpObject self, EpObject other)
     {
         var selfI = (EpInteger)self;
         return other switch
@@ -163,7 +163,7 @@ public class EpInteger : EpObject
         };
     }
 
-    internal static EpBool DunderGtImplementation(EpObject self, EpObject other)
+    private static EpBool dunderGtImplementation(EpObject self, EpObject other)
     {
         var selfI = (EpInteger)self;
         return other switch

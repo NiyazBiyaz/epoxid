@@ -14,6 +14,8 @@ public partial class EpObject
         set => DunderSlots.Span[dunder_dict_slot_index] = value;
     }
 
+    public static readonly EpType Object = RuntimeInitializer.Object;
+
     private const int dunder_dict_slot_index = 0;
 
 #pragma warning disable IDE1006 // Naming Styles

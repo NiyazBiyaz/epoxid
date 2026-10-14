@@ -5,19 +5,22 @@ public class EpBool : EpInteger
     internal new bool Value => base.Value != 0;
 
     internal EpBool(bool value)
-        : base(EpConstants.Bool, value ? 1 : 0)
+        : base(Bool, value ? 1 : 0)
     {
     }
 
-    internal static new readonly EpType Type = new("bool", [EpConstants.Int], EpConstants.Type)
+    internal static readonly EpType Bool = new("bool", [Int], EpType.Type)
     {
-        DunderBool = DunderBoolImplementation,
+        DunderBool = dunderBoolImplementation,
     };
 
     public static explicit operator bool(EpBool psBool) => psBool.Value;
-    public static explicit operator EpBool(bool clrBool) => clrBool ? EpConstants.True : EpConstants.False;
+    public static explicit operator EpBool(bool clrBool) => clrBool ? True : False;
+
+    public static readonly EpBool True = new(true);
+    public static readonly EpBool False = new(false);
 
     public override string ToString() => Value.ToString();
 
-    internal new static EpBool DunderBoolImplementation(EpObject self) => (EpBool)self;
+    private static EpBool dunderBoolImplementation(EpObject self) => (EpBool)self;
 }

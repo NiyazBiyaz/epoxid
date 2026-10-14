@@ -9,7 +9,7 @@ public partial class EpString : EpObject
     internal readonly string Value;
 
     public EpString(string value)
-        : base(EpConstants.Str)
+        : base(Str)
     {
         Value = value;
     }
@@ -17,13 +17,13 @@ public partial class EpString : EpObject
     public static explicit operator string(EpString str) => str.Value;
     public static explicit operator EpString(string str) => new(str);
 
-    internal static readonly EpType Type = new("str", [EpConstants.Object], EpConstants.Type)
+    internal static readonly EpType Str = new("str", [Object], EpType.Type)
     {
-        DunderAdd = DunderAddImplementation,
-        DunderMul = DunderMulImplementation,
-        DunderLen = DunderLenImplementation,
-        DunderEq = DunderEqImplementation,
-        DunderNe = DunderNeImplementation,
+        DunderAdd = dunderAddImplementation,
+        DunderMul = dunderMulImplementation,
+        DunderLen = dunderLenImplementation,
+        DunderEq = dunderEqImplementation,
+        DunderNe = dunderNeImplementation,
     };
 
     public override string ToString() => Value;
@@ -52,7 +52,7 @@ public partial class EpString : EpObject
         }
     }
 
-    internal static EpString DunderAddImplementation(EpObject self, EpObject other)
+    private static EpString dunderAddImplementation(EpObject self, EpObject other)
     {
         var selfStr = (EpString)self;
         return other switch
@@ -62,7 +62,7 @@ public partial class EpString : EpObject
         };
     }
 
-    internal static EpString DunderMulImplementation(EpObject self, EpObject other)
+    private static EpString dunderMulImplementation(EpObject self, EpObject other)
     {
         var selfStr = (EpString)self;
         return other switch
@@ -72,9 +72,9 @@ public partial class EpString : EpObject
         };
     }
 
-    internal static EpInteger DunderLenImplementation(EpObject self) => (EpInteger)((EpString)self).Value.Length;
+    private static EpInteger dunderLenImplementation(EpObject self) => (EpInteger)((EpString)self).Value.Length;
 
-    internal static new EpBool DunderEqImplementation(EpObject self, EpObject other)
+    private static EpBool dunderEqImplementation(EpObject self, EpObject other)
     {
         var selfS = (EpString)self;
         return other switch
@@ -85,7 +85,7 @@ public partial class EpString : EpObject
         };
     }
 
-    internal static new EpBool DunderNeImplementation(EpObject self, EpObject other)
+    private static EpBool dunderNeImplementation(EpObject self, EpObject other)
     {
         var selfS = (EpString)self;
         return other switch
