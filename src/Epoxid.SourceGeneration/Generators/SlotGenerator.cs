@@ -109,7 +109,7 @@ public class SlotGenerator : IIncrementalGenerator
 
             builder.AddLines($"""
             {generated_code_attribute}
-            private protected override int SlotsCount => {classSlotCount(target.ClassName)};
+            internal override int SlotsCount => {classSlotCount(target.ClassName)};
             """);
             builder.BlankLine();
 

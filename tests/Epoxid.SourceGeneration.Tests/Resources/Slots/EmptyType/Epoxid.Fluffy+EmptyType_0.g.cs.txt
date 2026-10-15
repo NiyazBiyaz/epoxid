@@ -10,7 +10,7 @@ partial class EmptyType
     protected const int _EmptyTypeSlotCount = _EpObjectSlotCount + 0;
 
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private protected override int SlotsCount => _EmptyTypeSlotCount;
+    internal override int SlotsCount => _EmptyTypeSlotCount;
 
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping

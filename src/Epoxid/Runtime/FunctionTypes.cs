@@ -6,6 +6,14 @@ public delegate EpObject UnaryFunction(EpObject self);
 
 public delegate EpObject BinaryFunction(EpObject self, EpObject other);
 
+public delegate EpObject DescriptorGetFunction(EpObject self, EpObject instance, EpObject owner);
+
+public delegate void DescriptorSetFunction(EpObject self, EpObject instance, EpObject value);
+
+public delegate EpObject GetAttributeFunction(EpObject self, EpObject name);
+
+public delegate void SetAttributeFunction(EpObject self, EpObject name, EpObject value);
+
 public delegate EpObject FrameDunderCall(EpObject self, ReadOnlySpan<EpObject> args);
 
 public delegate EpObject FrameCallFunction(ReadOnlySpan<EpObject> args);

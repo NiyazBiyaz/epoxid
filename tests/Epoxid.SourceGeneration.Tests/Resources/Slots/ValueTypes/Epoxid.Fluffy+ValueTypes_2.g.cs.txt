@@ -10,7 +10,7 @@ partial class ValueTypes
     protected const int _ValueTypesSlotCount = _EpObjectSlotCount + 2;
 
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private protected override int SlotsCount => _ValueTypesSlotCount;
+    internal override int SlotsCount => _ValueTypesSlotCount;
 
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping

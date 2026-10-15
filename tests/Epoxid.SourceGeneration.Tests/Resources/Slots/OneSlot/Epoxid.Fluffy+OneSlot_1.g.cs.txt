@@ -10,7 +10,7 @@ partial class OneSlot
     protected const int _OneSlotSlotCount = _EpObjectSlotCount + 1;
 
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private protected override int SlotsCount => _OneSlotSlotCount;
+    internal override int SlotsCount => _OneSlotSlotCount;
 
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     private static readonly global::System.Collections.ObjectModel.ReadOnlyDictionary<string, global::Epoxid.Runtime.SlotOffset> slot_descriptors_mapping

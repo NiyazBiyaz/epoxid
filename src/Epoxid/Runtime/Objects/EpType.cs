@@ -31,17 +31,14 @@ public partial class EpType : EpObject
 
     private void setupSlots()
     {
-        DunderEq = DunderEqImplementation;
-        DunderNe = DunderNeImplementation;
-        DunderNew = DunderNewImplementation;
-
         DunderDict ??= [];
 
-        foreach (var (descriptor, offset) in slot_descriptors_mapping)
+        foreach (var (descriptorName, offset) in slot_descriptors_mapping)
         {
-            if (!DunderDict.TryAdd((EpString)descriptor, new EpWrapperObject(offset)))
+            var slotDescriptor = new EpSlotDescriptor(offset, descriptorName);
+            if (!DunderDict.TryAdd((EpString)descriptorName, slotDescriptor))
             {
-                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{descriptor}'");
+                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{descriptorName}'");
             }
         }
     }
@@ -109,6 +106,21 @@ public partial class EpType : EpObject
 
     [Slot("__ipow__")]
     public partial BinaryFunction? DunderIPow { get; set; } // See above.
+
+    [Slot("__get__")]
+    public partial DescriptorGetFunction? DunderGet { get; set; }
+
+    [Slot("__set__")]
+    public partial DescriptorSetFunction? DunderSet { get; set; }
+
+    [Slot("__getattribute__")]
+    public partial GetAttributeFunction DunderGetAttribute { get; set; }
+
+    [Slot("__getattr__")]
+    public partial GetAttributeFunction? DunderGetAttr { get; set; }
+
+    [Slot("__setattr__")]
+    public partial SetAttributeFunction DunderSetAttr { get; set; }
 
     #endregion
 }

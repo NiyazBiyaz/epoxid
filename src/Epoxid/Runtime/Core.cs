@@ -248,4 +248,10 @@ internal static class Core
         result = target.DunderClass.DunderIPow(target, right);
         return true;
     }
+
+    internal static EpObject GetAttribute(EpObject obj, EpObject attributeName)
+        => obj.DunderClass.DunderGetAttribute(obj, attributeName);
+
+    internal static void SetAttribute(EpObject obj, EpObject attributeName, EpObject value)
+        => obj.DunderClass.DunderSetAttr(obj, attributeName, value);
 }
