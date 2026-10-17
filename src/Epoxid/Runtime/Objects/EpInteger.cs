@@ -1,12 +1,13 @@
 using System.Globalization;
 using System.Numerics;
+using Epoxid.SyntaxAnalysis.Common;
 
 namespace Epoxid.Runtime.Objects;
 
 public class EpInteger : EpObject
 {
     // 'int' because in compilable version it's 32-bit, so it is better for consistency
-    internal readonly int Value;
+    internal int Value { get; private set; }
 
     public EpInteger(int value)
         : base(Int)
@@ -31,6 +32,8 @@ public class EpInteger : EpObject
 
     internal static readonly EpType Int = new("int", [Object], EpType.Type)
     {
+        DunderNew = dunderNewImplementation,
+        DunderInit = dunderInitImplementation,
         DunderAdd = dunderAddImplementation,
         DunderSub = dunderSubImplementation,
         DunderMul = dunderMulImplementation,
@@ -43,6 +46,44 @@ public class EpInteger : EpObject
         DunderGt = dunderGtImplementation,
         DunderLt = dunderLtImplementation,
     };
+
+    private static EpInteger dunderNewImplementation(EpObject type) => new((EpType)type, 0);
+
+    private static EpNone dunderInitImplementation(EpObject self, ReadOnlySpan<EpObject> args)
+    {
+        if (self is not EpInteger selfInt)
+            throw new ArgumentException("'self' is not an integer object");
+
+        switch (args)
+        {
+            case []:
+                break;
+
+            case [EpString str]:
+            {
+                // TODO: maybe a 'TryX' method?
+                long value = NumberParser.ParseInteger(str.Value);
+                selfInt.Value = checked((int)value);
+                break;
+            }
+            case [EpFloat fl]:
+                selfInt.Value = (int)fl.Value;
+                break;
+
+            case [EpInteger integer]:
+                selfInt.Value = integer.Value;
+                break;
+
+            case [EpString str, EpInteger @base]:
+            {
+                throw new NotImplementedException();
+            }
+            default:
+                throw new NotImplementedException("Idk which error to put in here");
+        }
+
+        return EpNone.None;
+    }
 
     private static EpObject dunderAddImplementation(EpObject self, EpObject other)
     {
@@ -78,7 +119,7 @@ public class EpInteger : EpObject
         };
     }
 
-    private static EpObject dunderTrueDivImplementation(EpObject self, EpObject other)
+    private static EpFloat dunderTrueDivImplementation(EpObject self, EpObject other)
     {
         var selfInt = (EpInteger)self;
         return other switch

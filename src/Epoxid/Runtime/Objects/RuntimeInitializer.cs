@@ -8,10 +8,21 @@ internal static class RuntimeInitializer
 
     static RuntimeInitializer()
     {
-        Object = new("object", []);
-        Type = new("type", [Object]);
+        // We need to avoid using many static dependencies, so use empty ctors and set everything manually
+        Object = EpType.EmptyCtor();
+        Type = EpType.EmptyCtor();
 
+        Object.DunderSlots = new object?[Object.SlotsCount];
+        Object.DunderName = "object";
         Object.DunderClass = Type;
+        Object.DunderBases = [];
+
+        Type.DunderSlots = new object?[Type.SlotsCount];
+        Type.DunderName = "type";
         Type.DunderClass = Type;
+        Type.DunderBases = [Object];
+
+        Object.FillSlots();
+        Type.FillSlots();
     }
 }

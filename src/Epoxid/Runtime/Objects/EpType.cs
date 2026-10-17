@@ -6,7 +6,7 @@ namespace Epoxid.Runtime.Objects;
 public partial class EpType : EpObject
 {
     [Slot("__name__")]
-    public partial string DunderName { get; private set; }
+    public partial string DunderName { get; internal set; }
 
     [Slot("__bases__")]
     public partial EpType[] DunderBases { get; internal set; }
@@ -16,20 +16,27 @@ public partial class EpType : EpObject
     internal EpType(string name, EpType[] bases)
         : base()
     {
-        setupSlots();
+        FillSlots();
         DunderName = name;
         DunderBases = bases;
+    }
+
+    internal static EpType EmptyCtor() => new();
+
+    private EpType()
+        : base()
+    {
     }
 
     public EpType(string name, EpType[] bases, EpType type)
         : base(type)
     {
-        setupSlots();
+        FillSlots();
         DunderName = name;
         DunderBases = bases;
     }
 
-    private void setupSlots()
+    internal void FillSlots()
     {
         DunderDict ??= [];
 
@@ -41,9 +48,33 @@ public partial class EpType : EpObject
                 throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{descriptorName}'");
             }
         }
+
+        DunderCall = dunderCallImplementation;
     }
 
     public override string ToString() => $"<class '{DunderName}'>";
+
+    private EpObject dunderCallImplementation(EpObject self, ReadOnlySpan<EpObject> args)
+    {
+        switch (self)
+        {
+            case EpType typeItself when typeItself == Type:
+
+                throw new NotImplementedException();
+
+            case EpType otherType:
+            {
+                var newObject = otherType.DunderNew(otherType);
+
+                otherType.DunderInit?.Invoke(newObject, args);
+
+                return newObject;
+            }
+
+            default:
+                throw new ArgumentException("'self' is not a type object");
+        }
+    }
 
     #region Methods slots
 
@@ -52,6 +83,9 @@ public partial class EpType : EpObject
 
     [Slot("__call__")]
     public partial FrameDunderCall? DunderCall { get; set; }
+
+    [Slot("__init__")]
+    public partial FrameDunderCall? DunderInit { get; set; }
 
     [Slot("__add__")]
     public partial BinaryFunction? DunderAdd { get; set; }
