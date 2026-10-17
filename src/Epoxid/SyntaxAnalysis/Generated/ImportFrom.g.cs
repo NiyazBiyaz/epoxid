@@ -21,7 +21,8 @@ namespace Epoxid.SyntaxAnalysis;
 [global::Epoxid.SyntaxAnalysis.BaseRule(typeof(ImportFromModuleNode), typeof(ImportFromRelativeNode))]
 public abstract partial record ImportFromNode : GreenNode, IImportStatementNode
 {
-    public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![1];
+    public TokenNode? LazyKeyword => Children![0] as TokenNode;
+    public NodeArray<TokenNode> RelativePath => (NodeArray<TokenNode>)Children![2];
 }
 
 /// <summary>
@@ -40,6 +41,20 @@ public abstract partial class ImportFromView : RedView, IImportStatementView
     {
     }
 
+    private TokenView? _field_lazyKeyword = null;
+    public TokenView? LazyKeyword
+    {
+        get
+        {
+            if (_field_lazyKeyword == null && ((ImportFromNode)base.Green).LazyKeyword != null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_lazyKeyword = (TokenView)((ImportFromNode)base.Green).LazyKeyword!.GetView(_positionOfField, this);
+            }
+            return (TokenView?)_field_lazyKeyword;
+        }
+    }
+
     private ViewArray<TokenView>? _field_relativePath = null;
     public ViewArray<TokenView> RelativePath
     {
@@ -47,7 +62,7 @@ public abstract partial class ImportFromView : RedView, IImportStatementView
         {
             if (_field_relativePath == null)
             {
-                var _positionOfField = base.GetPositionFor(1);
+                var _positionOfField = base.GetPositionFor(2);
                 _field_relativePath = (ViewArray<TokenView>)new ViewArray<TokenView>(((ImportFromNode)base.Green).RelativePath, _positionOfField, this);
             }
             return (ViewArray<TokenView>)_field_relativePath;

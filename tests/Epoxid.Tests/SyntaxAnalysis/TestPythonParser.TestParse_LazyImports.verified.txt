@@ -1,7 +1,7 @@
 ﻿FileNode {
   Slot[0]: NodeArray() [
     SingleSimpleStatementNode {
-      Slot[0]: LazyImportNameNode {
+      Slot[0]: ImportNameNode {
         Slot[0]: Token(Type: Name, RawString: `lazy`),
         Slot[1]: Token(Type: Name, RawString: `import`),
         Slot[2]: NodeArray() [
@@ -16,7 +16,7 @@
       Slot[1]: Token(Type: NewLine, RawString: `\n`),
     },
     SingleSimpleStatementNode {
-      Slot[0]: LazyImportNameNode {
+      Slot[0]: ImportNameNode {
         Slot[0]: Token(Type: Name, RawString: `lazy`),
         Slot[1]: Token(Type: Name, RawString: `import`),
         Slot[2]: NodeArray() [
@@ -38,7 +38,7 @@
       Slot[1]: Token(Type: NewLine, RawString: `\n`),
     },
     SingleSimpleStatementNode {
-      Slot[0]: LazyImportFromModuleNode {
+      Slot[0]: ImportFromModuleNode {
         Slot[0]: Token(Type: Name, RawString: `lazy`),
         Slot[1]: Token(Type: Name, RawString: `from`),
         Slot[2]: NodeArray() [
@@ -70,7 +70,7 @@
       Slot[1]: Token(Type: NewLine, RawString: `\n`),
     },
     SingleSimpleStatementNode {
-      Slot[0]: LazyImportFromModuleNode {
+      Slot[0]: ImportFromModuleNode {
         Slot[0]: Token(Type: Name, RawString: `lazy`),
         Slot[1]: Token(Type: Name, RawString: `from`),
         Slot[2]: NodeArray() [
@@ -99,7 +99,7 @@
       Slot[1]: Token(Type: NewLine, RawString: `\n`),
     },
     SingleSimpleStatementNode {
-      Slot[0]: LazyImportFromModuleNode {
+      Slot[0]: ImportFromModuleNode {
         Slot[0]: Token(Type: Name, RawString: `lazy`),
         Slot[1]: Token(Type: Name, RawString: `from`),
         Slot[2]: NodeArray() [
@@ -121,7 +121,7 @@
       Slot[1]: Token(Type: NewLine, RawString: `\n`),
     },
     SingleSimpleStatementNode {
-      Slot[0]: LazyImportFromModuleNode {
+      Slot[0]: ImportFromModuleNode {
         Slot[0]: Token(Type: Name, RawString: `lazy`),
         Slot[1]: Token(Type: Name, RawString: `from`),
         Slot[2]: NodeArray() [

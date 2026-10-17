@@ -1334,25 +1334,90 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #region AugAssign
     // @inline
     // AugAssign:
+    //     | '|='
+    //     | '^='
+    //     | '&='
+    //     | '<<='
+    //     | '>>='
     //     | '+='
     //     | '-='
     //     | '*='
+    //     | '/='
+    //     | '//='
     //     | '@='
-    //     | '|='
     //     | '%='
-    //     | '&='
-    //     | '|='
-    //     | '^='
-    //     | '<<='
-    //     | '>>='
     //     | '**='
-    //     | '|='
     TokenNode? rule_AugAssign()
     {
         base.LogIncreaseLevel();
         base.LogRuleEntered("AugAssign");
         int _mark = base.Mark();
         TokenNode? _res = null;
+        {
+            // '|='
+            base.LogAlternativeEntered("'|='");
+            IGreenNode? vert_bar_equal;
+            if ((vert_bar_equal = Expect(TokenType.VertBarEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'|='");
+                _res = (TokenNode?)vert_bar_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'|='");
+        }
+        base.Reset(_mark);
+        {
+            // '^='
+            base.LogAlternativeEntered("'^='");
+            IGreenNode? circumflex_equal;
+            if ((circumflex_equal = Expect(TokenType.CircumflexEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'^='");
+                _res = (TokenNode?)circumflex_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'^='");
+        }
+        base.Reset(_mark);
+        {
+            // '&='
+            base.LogAlternativeEntered("'&='");
+            IGreenNode? ampersand_equal;
+            if ((ampersand_equal = Expect(TokenType.AmpersandEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'&='");
+                _res = (TokenNode?)ampersand_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'&='");
+        }
+        base.Reset(_mark);
+        {
+            // '<<='
+            base.LogAlternativeEntered("'<<='");
+            IGreenNode? left_shift_equal;
+            if ((left_shift_equal = Expect(TokenType.LeftShiftEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'<<='");
+                _res = (TokenNode?)left_shift_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'<<='");
+        }
+        base.Reset(_mark);
+        {
+            // '>>='
+            base.LogAlternativeEntered("'>>='");
+            IGreenNode? right_shift_equal;
+            if ((right_shift_equal = Expect(TokenType.RightShiftEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'>>='");
+                _res = (TokenNode?)right_shift_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'>>='");
+        }
+        base.Reset(_mark);
         {
             // '+='
             base.LogAlternativeEntered("'+='");
@@ -1393,6 +1458,32 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
+            // '/='
+            base.LogAlternativeEntered("'/='");
+            IGreenNode? slash_equal;
+            if ((slash_equal = Expect(TokenType.SlashEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'/='");
+                _res = (TokenNode?)slash_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'/='");
+        }
+        base.Reset(_mark);
+        {
+            // '//='
+            base.LogAlternativeEntered("'//='");
+            IGreenNode? double_slash_equal;
+            if ((double_slash_equal = Expect(TokenType.DoubleSlashEqual)) is not null)
+            {
+                base.LogAlternativeSucceed("'//='");
+                _res = (TokenNode?)double_slash_equal;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("'//='");
+        }
+        base.Reset(_mark);
+        {
             // '@='
             base.LogAlternativeEntered("'@='");
             IGreenNode? at_equal;
@@ -1403,19 +1494,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("'@='");
-        }
-        base.Reset(_mark);
-        {
-            // '|='
-            base.LogAlternativeEntered("'|='");
-            IGreenNode? vert_bar_equal;
-            if ((vert_bar_equal = Expect(TokenType.VertBarEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'|='");
-                _res = (TokenNode?)vert_bar_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'|='");
         }
         base.Reset(_mark);
         {
@@ -1432,71 +1510,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // '&='
-            base.LogAlternativeEntered("'&='");
-            IGreenNode? ampersand_equal;
-            if ((ampersand_equal = Expect(TokenType.AmpersandEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'&='");
-                _res = (TokenNode?)ampersand_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'&='");
-        }
-        base.Reset(_mark);
-        {
-            // '|='
-            base.LogAlternativeEntered("'|='");
-            IGreenNode? vert_bar_equal;
-            if ((vert_bar_equal = Expect(TokenType.VertBarEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'|='");
-                _res = (TokenNode?)vert_bar_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'|='");
-        }
-        base.Reset(_mark);
-        {
-            // '^='
-            base.LogAlternativeEntered("'^='");
-            IGreenNode? circumflex_equal;
-            if ((circumflex_equal = Expect(TokenType.CircumflexEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'^='");
-                _res = (TokenNode?)circumflex_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'^='");
-        }
-        base.Reset(_mark);
-        {
-            // '<<='
-            base.LogAlternativeEntered("'<<='");
-            IGreenNode? left_shift_equal;
-            if ((left_shift_equal = Expect(TokenType.LeftShiftEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'<<='");
-                _res = (TokenNode?)left_shift_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'<<='");
-        }
-        base.Reset(_mark);
-        {
-            // '>>='
-            base.LogAlternativeEntered("'>>='");
-            IGreenNode? right_shift_equal;
-            if ((right_shift_equal = Expect(TokenType.RightShiftEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'>>='");
-                _res = (TokenNode?)right_shift_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'>>='");
-        }
-        base.Reset(_mark);
-        {
             // '**='
             base.LogAlternativeEntered("'**='");
             IGreenNode? double_star_equal;
@@ -1507,19 +1520,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("'**='");
-        }
-        base.Reset(_mark);
-        {
-            // '|='
-            base.LogAlternativeEntered("'|='");
-            IGreenNode? vert_bar_equal;
-            if ((vert_bar_equal = Expect(TokenType.VertBarEqual)) is not null)
-            {
-                base.LogAlternativeSucceed("'|='");
-                _res = (TokenNode?)vert_bar_equal;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'|='");
         }
         base.Reset(_mark);
         base.LogRuleFailed("AugAssign");
@@ -2167,9 +2167,8 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // @memo
     // ImportStatement:
     //     | ImportName
-    //     | LazyImportName
     //     | ImportFrom
-    //     | LazyImportFrom
+    //
     //
     //
     //
@@ -2203,19 +2202,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // LazyImportName
-            base.LogAlternativeEntered("LazyImportName");
-            IGreenNode? lazy_import_name;
-            if ((lazy_import_name = rule_LazyImportName()) is not null)
-            {
-                base.LogAlternativeSucceed("LazyImportName");
-                _res = (LazyImportNameNode?)lazy_import_name;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("LazyImportName");
-        }
-        base.Reset(_mark);
-        {
             // ImportFrom
             base.LogAlternativeEntered("ImportFrom");
             IGreenNode? import_from;
@@ -2226,19 +2212,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("ImportFrom");
-        }
-        base.Reset(_mark);
-        {
-            // LazyImportFrom
-            base.LogAlternativeEntered("LazyImportFrom");
-            IGreenNode? lazy_import_from;
-            if ((lazy_import_from = rule_LazyImportFrom()) is not null)
-            {
-                base.LogAlternativeSucceed("LazyImportFrom");
-                _res = (LazyImportFromNode?)lazy_import_from;
-                goto _Return;
-            }
-            base.LogAlternativeFailed("LazyImportFrom");
         }
         base.Reset(_mark);
         base.LogRuleFailed("ImportStatement");
@@ -2252,7 +2225,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // ImportStatement
 
     #region ImportName
-    // ImportName: 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
+    // ImportName: -'lazy' 'import' DottedName+.',' -> new(LazyKeyword=lazy_Keyword, Import=dotted_name_Gather)
     ImportNameNode? rule_ImportName()
     {
         base.LogIncreaseLevel();
@@ -2260,26 +2233,30 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ImportNameNode? _res = null;
         {
-            // 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
-            base.LogAlternativeEntered("'import' DottedName+.','");
+            // -'lazy' 'import' DottedName+.',' -> new(LazyKeyword=lazy_Keyword, Import=dotted_name_Gather)
+            base.LogAlternativeEntered("-'lazy' 'import' DottedName+.','");
+            IGreenNode? lazy_Keyword;
             IGreenNode? import_Keyword;
             INodeArray<GreenNode>? dotted_name_Gather;
-            if ((import_Keyword = Expect("import")) is not null
+            if (((lazy_Keyword = Expect("lazy")) is not null || true) // Optional
+                &&
+                (import_Keyword = Expect("import")) is not null
                 &&
                 (dotted_name_Gather = _GatherHelper_dotted_name_Gather()) is not null
             )
             {
-                base.LogAlternativeSucceed("'import' DottedName+.','");
+                base.LogAlternativeSucceed("-'lazy' 'import' DottedName+.','");
                 _res = new ImportNameNode()
                 {
                     Children = new NodeArray<IGreenNode>([
+                        lazy_Keyword ?? VoidNode.Instance,
                         import_Keyword,
                         dotted_name_Gather,
                     ]),
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'import' DottedName+.','");
+            base.LogAlternativeFailed("-'lazy' 'import' DottedName+.','");
             NodeArray<GreenNode>? _GatherHelper_dotted_name_Gather()
             {
                 GreenNode? _node = rule_DottedName();
@@ -2311,71 +2288,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // ImportName
-
-    #region LazyImportName
-    // LazyImportName: 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
-    LazyImportNameNode? rule_LazyImportName()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("LazyImportName");
-        int _mark = base.Mark();
-        LazyImportNameNode? _res = null;
-        {
-            // 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
-            base.LogAlternativeEntered("'lazy' 'import' DottedName+.','");
-            IGreenNode? lazy_Keyword;
-            IGreenNode? import_Keyword;
-            INodeArray<GreenNode>? dotted_name_Gather;
-            if ((lazy_Keyword = Expect("lazy")) is not null
-                &&
-                (import_Keyword = Expect("import")) is not null
-                &&
-                (dotted_name_Gather = _GatherHelper_dotted_name_Gather()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'lazy' 'import' DottedName+.','");
-                _res = new LazyImportNameNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        lazy_Keyword,
-                        import_Keyword,
-                        dotted_name_Gather,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'lazy' 'import' DottedName+.','");
-            NodeArray<GreenNode>? _GatherHelper_dotted_name_Gather()
-            {
-                GreenNode? _node = rule_DottedName();
-                GreenNode? _separator;
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<GreenNode> _gathered = [(GreenNode)_node];
-                while (true)
-                {
-                    int _mark = base.Mark();
-                    _separator = Expect(TokenType.Comma);
-                    if (_separator == null) break;
-                    _node = rule_DottedName();
-                    if (_node == null)
-                    {
-                        base.Reset(_mark);
-                        break;
-                    }
-                    _gathered.Add((GreenNode)_separator);
-                    _gathered.Add((GreenNode)_node);
-                }
-                return [.. _gathered];
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("LazyImportName");
-    _Return:
-        base.LogRuleExiting("LazyImportName");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // LazyImportName
 
     #region DottedName
     // DottedName: ImportUnit ['as' Name -> AsName(Value=name)] -> new(Name=import_unit, Alias=as_name)
@@ -2457,11 +2369,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ImportFrom
     // ImportFrom:
-    //     | 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
-    //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
+    //     | -'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
+    //         LazyKeyword=lazy_Keyword, RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
     //
-    //     | 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
-    //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
+    //     | -'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
+    //         LazyKeyword=lazy_Keyword, RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
     ImportFromNode? rule_ImportFrom()
     {
         base.LogIncreaseLevel();
@@ -2469,15 +2381,18 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         ImportFromNode? _res = null;
         {
-            // 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
-            //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
-            base.LogAlternativeEntered("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
+            // -'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
+            //         LazyKeyword=lazy_Keyword, RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
+            base.LogAlternativeEntered("-'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
+            IGreenNode? lazy_Keyword;
             IGreenNode? from_Keyword;
             INodeArray<TokenNode>? relative_import_dots_Star;
             IGreenNode? import_unit;
             IGreenNode? import_Keyword;
             IGreenNode? import_from_targets;
-            if ((from_Keyword = Expect("from")) is not null
+            if (((lazy_Keyword = Expect("lazy")) is not null || true) // Optional
+                &&
+                (from_Keyword = Expect("from")) is not null
                 &&
                 (relative_import_dots_Star = _RepeatHelper_relative_import_dots_Star()) is not null
                 &&
@@ -2488,10 +2403,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
             {
-                base.LogAlternativeSucceed("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
+                base.LogAlternativeSucceed("-'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
                 _res = new ImportFromModuleNode()
                 {
                     Children = new NodeArray<IGreenNode>([
+                        lazy_Keyword ?? VoidNode.Instance,
                         from_Keyword,
                         relative_import_dots_Star,
                         import_unit,
@@ -2501,7 +2417,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
+            base.LogAlternativeFailed("-'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
             NodeArray<TokenNode>? _RepeatHelper_relative_import_dots_Star()
             {
                 TokenNode? _node = rule_RelativeImportDots();
@@ -2516,14 +2432,17 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
-            //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
-            base.LogAlternativeEntered("'from' RelativeImportDots+ 'import' ImportFromTargets");
+            // -'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
+            //         LazyKeyword=lazy_Keyword, RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
+            base.LogAlternativeEntered("-'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
+            IGreenNode? lazy_Keyword;
             IGreenNode? from_Keyword;
             INodeArray<TokenNode>? relative_import_dots_Plus;
             IGreenNode? import_Keyword;
             IGreenNode? import_from_targets;
-            if ((from_Keyword = Expect("from")) is not null
+            if (((lazy_Keyword = Expect("lazy")) is not null || true) // Optional
+                &&
+                (from_Keyword = Expect("from")) is not null
                 &&
                 (relative_import_dots_Plus = _RepeatHelper_relative_import_dots_Plus()) is not null
                 &&
@@ -2532,10 +2451,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 (import_from_targets = rule_ImportFromTargets()) is not null
             )
             {
-                base.LogAlternativeSucceed("'from' RelativeImportDots+ 'import' ImportFromTargets");
+                base.LogAlternativeSucceed("-'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
                 _res = new ImportFromRelativeNode()
                 {
                     Children = new NodeArray<IGreenNode>([
+                        lazy_Keyword ?? VoidNode.Instance,
                         from_Keyword,
                         relative_import_dots_Plus,
                         import_Keyword,
@@ -2544,7 +2464,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'from' RelativeImportDots+ 'import' ImportFromTargets");
+            base.LogAlternativeFailed("-'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
             NodeArray<TokenNode>? _RepeatHelper_relative_import_dots_Plus()
             {
                 TokenNode? _node = rule_RelativeImportDots();
@@ -2565,125 +2485,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // ImportFrom
-
-    #region LazyImportFrom
-    // LazyImportFrom:
-    //     | 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
-    //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
-    //
-    //     | 'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> LazyImportFromRelative(
-    //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
-    LazyImportFromNode? rule_LazyImportFrom()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("LazyImportFrom");
-        int _mark = base.Mark();
-        LazyImportFromNode? _res = null;
-        {
-            // 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
-            //         RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
-            base.LogAlternativeEntered("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
-            IGreenNode? lazy_Keyword;
-            IGreenNode? from_Keyword;
-            INodeArray<TokenNode>? relative_import_dots_Star;
-            IGreenNode? import_unit;
-            IGreenNode? import_Keyword;
-            IGreenNode? import_from_targets;
-            if ((lazy_Keyword = Expect("lazy")) is not null
-                &&
-                (from_Keyword = Expect("from")) is not null
-                &&
-                (relative_import_dots_Star = _RepeatHelper_relative_import_dots_Star()) is not null
-                &&
-                (import_unit = rule_ImportUnit()) is not null
-                &&
-                (import_Keyword = Expect("import")) is not null
-                &&
-                (import_from_targets = rule_ImportFromTargets()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
-                _res = new LazyImportFromModuleNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        lazy_Keyword,
-                        from_Keyword,
-                        relative_import_dots_Star,
-                        import_unit,
-                        import_Keyword,
-                        import_from_targets,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets");
-            NodeArray<TokenNode>? _RepeatHelper_relative_import_dots_Star()
-            {
-                TokenNode? _node = rule_RelativeImportDots();
-                if (_node == null) return [];
-                global::System.Collections.Generic.List<TokenNode> _result = [_node];
-                while ((_node = rule_RelativeImportDots()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        {
-            // 'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> LazyImportFromRelative(
-            //         RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
-            base.LogAlternativeEntered("'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
-            IGreenNode? lazy_Keyword;
-            IGreenNode? from_Keyword;
-            INodeArray<TokenNode>? relative_import_dots_Plus;
-            IGreenNode? import_Keyword;
-            IGreenNode? import_from_targets;
-            if ((lazy_Keyword = Expect("lazy")) is not null
-                &&
-                (from_Keyword = Expect("from")) is not null
-                &&
-                (relative_import_dots_Plus = _RepeatHelper_relative_import_dots_Plus()) is not null
-                &&
-                (import_Keyword = Expect("import")) is not null
-                &&
-                (import_from_targets = rule_ImportFromTargets()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
-                _res = new LazyImportFromRelativeNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        lazy_Keyword,
-                        from_Keyword,
-                        relative_import_dots_Plus,
-                        import_Keyword,
-                        import_from_targets,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets");
-            NodeArray<TokenNode>? _RepeatHelper_relative_import_dots_Plus()
-            {
-                TokenNode? _node = rule_RelativeImportDots();
-                if (_node == null) return null;
-                global::System.Collections.Generic.List<TokenNode> _result = [_node];
-                while ((_node = rule_RelativeImportDots()) != null)
-                {
-                    _result.Add(_node);
-                }
-                return [.. _result];
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("LazyImportFrom");
-    _Return:
-        base.LogRuleExiting("LazyImportFrom");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // LazyImportFrom
 
     #region RelativeImportDots
     // @inline
@@ -3909,11 +3710,12 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region ForStatement
     // ForStatement:
-    //     | 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
-    //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
-    //
-    //     | 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
-    //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
+    //     | -'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> new(
+    //         AsyncKeyword=async_Keyword,
+    //         Targets=assignment_target_variant,
+    //         Expression=star_expression_variant,
+    //         Block=block,
+    //         Else=else_block)
     //
     //
     //
@@ -3925,60 +3727,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         ForStatementNode? _res = null;
         bool _cut = false;
         {
-            // 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
-            //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
-            base.LogAlternativeEntered("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
-            IGreenNode? for_Keyword;
-            IGreenNode? assignment_target_variant;
-            IGreenNode? in_Keyword;
-            IGreenNode? star_expression_variant;
-            IGreenNode? colon;
-            IGreenNode? block;
-            IGreenNode? else_block;
-            if ((for_Keyword = Expect("for")) is not null
-                &&
-                (assignment_target_variant = rule_AssignmentTargetVariant()) is not null
-                &&
-                (in_Keyword = Expect("in")) is not null
-                &&
-                (_cut = true)
-                &&
-                (star_expression_variant = rule_StarExpressionVariant()) is not null
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-                &&
-                ((else_block = rule_ElseBlock()) is not null || true) // Optional
-            )
-            {
-                base.LogAlternativeSucceed("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
-                _res = new NormalForStatementNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        for_Keyword,
-                        assignment_target_variant,
-                        in_Keyword,
-                        star_expression_variant,
-                        colon,
-                        block,
-                        else_block ?? VoidNode.Instance,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
-        }
-        base.Reset(_mark);
-        if (_cut)
-        {
-            _res = null;
-            goto _Return;
-        }
-        {
-            // 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
-            //         Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
-            base.LogAlternativeEntered("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
+            // -'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> new(
+            //         AsyncKeyword=async_Keyword,
+            //         Targets=assignment_target_variant,
+            //         Expression=star_expression_variant,
+            //         Block=block,
+            //         Else=else_block)
+            base.LogAlternativeEntered("-'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
             IGreenNode? async_Keyword;
             IGreenNode? for_Keyword;
             IGreenNode? assignment_target_variant;
@@ -3987,7 +3742,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             IGreenNode? colon;
             IGreenNode? block;
             IGreenNode? else_block;
-            if ((async_Keyword = Expect("async")) is not null
+            if (((async_Keyword = Expect("async")) is not null || true) // Optional
                 &&
                 (for_Keyword = Expect("for")) is not null
                 &&
@@ -4006,11 +3761,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 ((else_block = rule_ElseBlock()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
-                _res = new AsyncForStatementNode()
+                base.LogAlternativeSucceed("-'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
+                _res = new ForStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        async_Keyword,
+                        async_Keyword ?? VoidNode.Instance,
                         for_Keyword,
                         assignment_target_variant,
                         in_Keyword,
@@ -4022,7 +3777,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
+            base.LogAlternativeFailed("-'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock");
         }
         base.Reset(_mark);
         if (_cut)
@@ -4040,8 +3795,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
 
     #region WithStatement
     // WithStatement:
-    //     | 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
-    //     | 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
+    //     | -'async' 'with' WithItems ':' Block -> new(AsyncKeyword=async_Keyword, Items=with_items, Block=block)
     WithStatementNode? rule_WithStatement()
     {
         base.LogIncreaseLevel();
@@ -4049,45 +3803,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         int _mark = base.Mark();
         WithStatementNode? _res = null;
         {
-            // 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
-            base.LogAlternativeEntered("'with' WithItems ':' Block");
-            IGreenNode? with_Keyword;
-            IGreenNode? with_items;
-            IGreenNode? colon;
-            IGreenNode? block;
-            if ((with_Keyword = Expect("with")) is not null
-                &&
-                (with_items = rule_WithItems()) is not null
-                &&
-                (colon = Expect(TokenType.Colon)) is not null
-                &&
-                (block = rule_Block()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'with' WithItems ':' Block");
-                _res = new SyncWithStatementNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        with_Keyword,
-                        with_items,
-                        colon,
-                        block,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'with' WithItems ':' Block");
-        }
-        base.Reset(_mark);
-        {
-            // 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
-            base.LogAlternativeEntered("'async' 'with' WithItems ':' Block");
+            // -'async' 'with' WithItems ':' Block -> new(AsyncKeyword=async_Keyword, Items=with_items, Block=block)
+            base.LogAlternativeEntered("-'async' 'with' WithItems ':' Block");
             IGreenNode? async_Keyword;
             IGreenNode? with_Keyword;
             IGreenNode? with_items;
             IGreenNode? colon;
             IGreenNode? block;
-            if ((async_Keyword = Expect("async")) is not null
+            if (((async_Keyword = Expect("async")) is not null || true) // Optional
                 &&
                 (with_Keyword = Expect("with")) is not null
                 &&
@@ -4098,11 +3821,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 (block = rule_Block()) is not null
             )
             {
-                base.LogAlternativeSucceed("'async' 'with' WithItems ':' Block");
-                _res = new AsyncWithStatementNode()
+                base.LogAlternativeSucceed("-'async' 'with' WithItems ':' Block");
+                _res = new WithStatementNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        async_Keyword,
+                        async_Keyword ?? VoidNode.Instance,
                         with_Keyword,
                         with_items,
                         colon,
@@ -4111,7 +3834,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("'async' 'with' WithItems ':' Block");
+            base.LogAlternativeFailed("-'async' 'with' WithItems ':' Block");
         }
         base.Reset(_mark);
         base.LogRuleFailed("WithStatement");
@@ -7776,7 +7499,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             if ((primary = rule_Primary()) is not null)
             {
                 base.LogAlternativeSucceed("Primary");
-                _res = (IPrimaryNode?)primary;
+                _res = (PrimaryNode?)primary;
                 goto _Return;
             }
             base.LogAlternativeFailed("Primary");
@@ -7836,40 +7559,212 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // Power
 
     #region Primary
-    // @union
+    private readonly IMemoContainer<PrimaryNode> _memo_Primary = CreateContainer<PrimaryNode>();
+    PrimaryNode? rule_Primary()
+    {
+        base.LogIncreaseLevel();
+        base.LogLeftRecursionRuleEntered("Primary");
+        PrimaryNode? _res = null;
+        int _mark = base.Mark();
+        int _lastMark = base.Mark();
+        if (_memo_Primary.TryGetCache(_mark, out var _memoized))
+        {
+            base.LogRuleMemoUsed("Primary", _mark, _memoized);
+            base.LogDecreaseLevel();
+            base.Reset(_memoized.EndPosition);
+            return _memoized.Cache;
+        }
+        base.LogStartGrow("Primary");
+        while (true)
+        {
+            _memo_Primary.UpdateCache(_mark, base.Mark(), _res);
+            base.Reset(_mark);
+            base.LogNextGrow("Primary");
+            var _rawResult = raw_rule_Primary();
+            if (_rawResult == null || base.Mark() <= _lastMark)
+            {
+                break;
+            }
+            _lastMark = base.Mark();
+            _res = _rawResult;
+        }
+        base.Reset(_lastMark);
+        base.LogEndGrow("Primary", _res == null);
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    // @memo
     // Primary:
-    //     | AwaitPrimary
-    //     | RawPrimary
-    IPrimaryNode? rule_Primary()
+    //     | -'await' Primary '.' Name -> DotOperationPrimary(AwaitKeyword=await_Keyword, Left=primary, Right=name)
+    //
+    //     | -'await' Primary GeneratorExpression -> CallWithGeneratorPrimary(
+    //         AwaitKeyword=await_Keyword, Function=primary, Argument=generator_expression)
+    //
+    //     | -'await' Primary '(' -Arguments ')' -> CallWithArgumentsPrimary(
+    //         AwaitKeyword=await_Keyword, Function=primary, Arguments=arguments)
+    //
+    //     | -'await' Primary '[' Slices ']' -> SubscriptPrimary(
+    //         AwaitKeyword=await_Keyword, Target=primary, Subscript=slices)
+    //
+    //     | -'await' Atom -> AtomPrimary(AwaitKeyword=await_Keyword, Atom=atom)
+    PrimaryNode? raw_rule_Primary()
     {
         base.LogIncreaseLevel();
         base.LogRuleEntered("Primary");
         int _mark = base.Mark();
-        IPrimaryNode? _res = null;
+        PrimaryNode? _res = null;
         {
-            // AwaitPrimary
-            base.LogAlternativeEntered("AwaitPrimary");
-            IGreenNode? await_primary;
-            if ((await_primary = rule_AwaitPrimary()) is not null)
+            // -'await' Primary '.' Name -> DotOperationPrimary(AwaitKeyword=await_Keyword, Left=primary, Right=name)
+            base.LogAlternativeEntered("-'await' Primary '.' Name");
+            IGreenNode? await_Keyword;
+            IGreenNode? primary;
+            IGreenNode? dot;
+            IGreenNode? name;
+            if (((await_Keyword = Expect("await")) is not null || true) // Optional
+                &&
+                (primary = rule_Primary()) is not null
+                &&
+                (dot = Expect(TokenType.Dot)) is not null
+                &&
+                (name = Expect(TokenType.Name)) is not null
+            )
             {
-                base.LogAlternativeSucceed("AwaitPrimary");
-                _res = (AwaitPrimaryNode?)await_primary;
+                base.LogAlternativeSucceed("-'await' Primary '.' Name");
+                _res = new DotOperationPrimaryNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        await_Keyword ?? VoidNode.Instance,
+                        primary,
+                        dot,
+                        name,
+                    ]),
+                };
                 goto _Return;
             }
-            base.LogAlternativeFailed("AwaitPrimary");
+            base.LogAlternativeFailed("-'await' Primary '.' Name");
         }
         base.Reset(_mark);
         {
-            // RawPrimary
-            base.LogAlternativeEntered("RawPrimary");
-            IGreenNode? raw_primary;
-            if ((raw_primary = rule_RawPrimary()) is not null)
+            // -'await' Primary GeneratorExpression -> CallWithGeneratorPrimary(
+            //         AwaitKeyword=await_Keyword, Function=primary, Argument=generator_expression)
+            base.LogAlternativeEntered("-'await' Primary GeneratorExpression");
+            IGreenNode? await_Keyword;
+            IGreenNode? primary;
+            IGreenNode? generator_expression;
+            if (((await_Keyword = Expect("await")) is not null || true) // Optional
+                &&
+                (primary = rule_Primary()) is not null
+                &&
+                (generator_expression = rule_GeneratorExpression()) is not null
+            )
             {
-                base.LogAlternativeSucceed("RawPrimary");
-                _res = (RawPrimaryNode?)raw_primary;
+                base.LogAlternativeSucceed("-'await' Primary GeneratorExpression");
+                _res = new CallWithGeneratorPrimaryNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        await_Keyword ?? VoidNode.Instance,
+                        primary,
+                        generator_expression,
+                    ]),
+                };
                 goto _Return;
             }
-            base.LogAlternativeFailed("RawPrimary");
+            base.LogAlternativeFailed("-'await' Primary GeneratorExpression");
+        }
+        base.Reset(_mark);
+        {
+            // -'await' Primary '(' -Arguments ')' -> CallWithArgumentsPrimary(
+            //         AwaitKeyword=await_Keyword, Function=primary, Arguments=arguments)
+            base.LogAlternativeEntered("-'await' Primary '(' -Arguments ')'");
+            IGreenNode? await_Keyword;
+            IGreenNode? primary;
+            IGreenNode? left_paren;
+            IGreenNode? arguments;
+            IGreenNode? right_paren;
+            if (((await_Keyword = Expect("await")) is not null || true) // Optional
+                &&
+                (primary = rule_Primary()) is not null
+                &&
+                (left_paren = Expect(TokenType.LeftParen)) is not null
+                &&
+                ((arguments = rule_Arguments()) is not null || true) // Optional
+                &&
+                (right_paren = Expect(TokenType.RightParen)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("-'await' Primary '(' -Arguments ')'");
+                _res = new CallWithArgumentsPrimaryNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        await_Keyword ?? VoidNode.Instance,
+                        primary,
+                        left_paren,
+                        arguments ?? VoidNode.Instance,
+                        right_paren,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("-'await' Primary '(' -Arguments ')'");
+        }
+        base.Reset(_mark);
+        {
+            // -'await' Primary '[' Slices ']' -> SubscriptPrimary(
+            //         AwaitKeyword=await_Keyword, Target=primary, Subscript=slices)
+            base.LogAlternativeEntered("-'await' Primary '[' Slices ']'");
+            IGreenNode? await_Keyword;
+            IGreenNode? primary;
+            IGreenNode? left_square_bracket;
+            IGreenNode? slices;
+            IGreenNode? right_square_bracket;
+            if (((await_Keyword = Expect("await")) is not null || true) // Optional
+                &&
+                (primary = rule_Primary()) is not null
+                &&
+                (left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
+                &&
+                (slices = rule_Slices()) is not null
+                &&
+                (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("-'await' Primary '[' Slices ']'");
+                _res = new SubscriptPrimaryNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        await_Keyword ?? VoidNode.Instance,
+                        primary,
+                        left_square_bracket,
+                        slices,
+                        right_square_bracket,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("-'await' Primary '[' Slices ']'");
+        }
+        base.Reset(_mark);
+        {
+            // -'await' Atom -> AtomPrimary(AwaitKeyword=await_Keyword, Atom=atom)
+            base.LogAlternativeEntered("-'await' Atom");
+            IGreenNode? await_Keyword;
+            IGreenNode? atom;
+            if (((await_Keyword = Expect("await")) is not null || true) // Optional
+                &&
+                (atom = rule_Atom()) is not null
+            )
+            {
+                base.LogAlternativeSucceed("-'await' Atom");
+                _res = new AtomPrimaryNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        await_Keyword ?? VoidNode.Instance,
+                        atom,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("-'await' Atom");
         }
         base.Reset(_mark);
         base.LogRuleFailed("Primary");
@@ -7879,231 +7774,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         return _res;
     }
     #endregion // Primary
-
-    #region AwaitPrimary
-    // AwaitPrimary: 'await' RawPrimary -> new(Value=raw_primary)
-    AwaitPrimaryNode? rule_AwaitPrimary()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("AwaitPrimary");
-        int _mark = base.Mark();
-        AwaitPrimaryNode? _res = null;
-        {
-            // 'await' RawPrimary -> new(Value=raw_primary)
-            base.LogAlternativeEntered("'await' RawPrimary");
-            IGreenNode? await_Keyword;
-            IGreenNode? raw_primary;
-            if ((await_Keyword = Expect("await")) is not null
-                &&
-                (raw_primary = rule_RawPrimary()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("'await' RawPrimary");
-                _res = new AwaitPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        await_Keyword,
-                        raw_primary,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("'await' RawPrimary");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("AwaitPrimary");
-    _Return:
-        base.LogRuleExiting("AwaitPrimary");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // AwaitPrimary
-
-    #region RawPrimary
-    private readonly IMemoContainer<RawPrimaryNode> _memo_RawPrimary = CreateContainer<RawPrimaryNode>();
-    RawPrimaryNode? rule_RawPrimary()
-    {
-        base.LogIncreaseLevel();
-        base.LogLeftRecursionRuleEntered("RawPrimary");
-        RawPrimaryNode? _res = null;
-        int _mark = base.Mark();
-        int _lastMark = base.Mark();
-        if (_memo_RawPrimary.TryGetCache(_mark, out var _memoized))
-        {
-            base.LogRuleMemoUsed("RawPrimary", _mark, _memoized);
-            base.LogDecreaseLevel();
-            base.Reset(_memoized.EndPosition);
-            return _memoized.Cache;
-        }
-        base.LogStartGrow("RawPrimary");
-        while (true)
-        {
-            _memo_RawPrimary.UpdateCache(_mark, base.Mark(), _res);
-            base.Reset(_mark);
-            base.LogNextGrow("RawPrimary");
-            var _rawResult = raw_rule_RawPrimary();
-            if (_rawResult == null || base.Mark() <= _lastMark)
-            {
-                break;
-            }
-            _lastMark = base.Mark();
-            _res = _rawResult;
-        }
-        base.Reset(_lastMark);
-        base.LogEndGrow("RawPrimary", _res == null);
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    // @memo
-    // RawPrimary:
-    //     | RawPrimary '.' Name -> DotOperationPrimary(Left=raw_primary, Right=name)
-    //     | RawPrimary GeneratorExpression -> CallWithGeneratorPrimary(Function=raw_primary, Argument=generator_expression)
-    //     | RawPrimary '(' -Arguments ')' -> CallWithArgumentsPrimary(Function=raw_primary, Arguments=arguments)
-    //     | RawPrimary '[' Slices ']' -> SubscriptPrimary(Target=raw_primary, Subscript=slices)
-    //     | Atom -> AtomPrimary(Atom  =atom)
-    RawPrimaryNode? raw_rule_RawPrimary()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("RawPrimary");
-        int _mark = base.Mark();
-        RawPrimaryNode? _res = null;
-        {
-            // RawPrimary '.' Name -> DotOperationPrimary(Left=raw_primary, Right=name)
-            base.LogAlternativeEntered("RawPrimary '.' Name");
-            IGreenNode? raw_primary;
-            IGreenNode? dot;
-            IGreenNode? name;
-            if ((raw_primary = rule_RawPrimary()) is not null
-                &&
-                (dot = Expect(TokenType.Dot)) is not null
-                &&
-                (name = Expect(TokenType.Name)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("RawPrimary '.' Name");
-                _res = new DotOperationPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        raw_primary,
-                        dot,
-                        name,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("RawPrimary '.' Name");
-        }
-        base.Reset(_mark);
-        {
-            // RawPrimary GeneratorExpression -> CallWithGeneratorPrimary(Function=raw_primary, Argument=generator_expression)
-            base.LogAlternativeEntered("RawPrimary GeneratorExpression");
-            IGreenNode? raw_primary;
-            IGreenNode? generator_expression;
-            if ((raw_primary = rule_RawPrimary()) is not null
-                &&
-                (generator_expression = rule_GeneratorExpression()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("RawPrimary GeneratorExpression");
-                _res = new CallWithGeneratorPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        raw_primary,
-                        generator_expression,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("RawPrimary GeneratorExpression");
-        }
-        base.Reset(_mark);
-        {
-            // RawPrimary '(' -Arguments ')' -> CallWithArgumentsPrimary(Function=raw_primary, Arguments=arguments)
-            base.LogAlternativeEntered("RawPrimary '(' -Arguments ')'");
-            IGreenNode? raw_primary;
-            IGreenNode? left_paren;
-            IGreenNode? arguments;
-            IGreenNode? right_paren;
-            if ((raw_primary = rule_RawPrimary()) is not null
-                &&
-                (left_paren = Expect(TokenType.LeftParen)) is not null
-                &&
-                ((arguments = rule_Arguments()) is not null || true) // Optional
-                &&
-                (right_paren = Expect(TokenType.RightParen)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("RawPrimary '(' -Arguments ')'");
-                _res = new CallWithArgumentsPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        raw_primary,
-                        left_paren,
-                        arguments ?? VoidNode.Instance,
-                        right_paren,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("RawPrimary '(' -Arguments ')'");
-        }
-        base.Reset(_mark);
-        {
-            // RawPrimary '[' Slices ']' -> SubscriptPrimary(Target=raw_primary, Subscript=slices)
-            base.LogAlternativeEntered("RawPrimary '[' Slices ']'");
-            IGreenNode? raw_primary;
-            IGreenNode? left_square_bracket;
-            IGreenNode? slices;
-            IGreenNode? right_square_bracket;
-            if ((raw_primary = rule_RawPrimary()) is not null
-                &&
-                (left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
-                &&
-                (slices = rule_Slices()) is not null
-                &&
-                (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("RawPrimary '[' Slices ']'");
-                _res = new SubscriptPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        raw_primary,
-                        left_square_bracket,
-                        slices,
-                        right_square_bracket,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("RawPrimary '[' Slices ']'");
-        }
-        base.Reset(_mark);
-        {
-            // Atom -> AtomPrimary(Atom  =atom)
-            base.LogAlternativeEntered("Atom");
-            IGreenNode? atom;
-            if ((atom = rule_Atom()) is not null)
-            {
-                base.LogAlternativeSucceed("Atom");
-                _res = new AtomPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        atom,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Atom");
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("RawPrimary");
-    _Return:
-        base.LogRuleExiting("RawPrimary");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // RawPrimary
 
     #region Slices
     // Slices:

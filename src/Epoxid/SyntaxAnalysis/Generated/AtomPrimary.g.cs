@@ -13,9 +13,9 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>AtomPrimary</i>.
 /// </summary>
-public sealed partial record AtomPrimaryNode : RawPrimaryNode
+public sealed partial record AtomPrimaryNode : PrimaryNode
 {
-    public IAtomNode Atom => (IAtomNode)Children![0];
+    public IAtomNode Atom => (IAtomNode)Children![1];
     public override AtomPrimaryView GetView(int position, IRedView? parent)
         => new AtomPrimaryView(this, position, parent);
 }
@@ -23,7 +23,7 @@ public sealed partial record AtomPrimaryNode : RawPrimaryNode
 /// <summary>
 /// View class that represents <i>AtomPrimary</i>.
 /// </summary>
-public sealed partial class AtomPrimaryView : RawPrimaryView
+public sealed partial class AtomPrimaryView : PrimaryView
 {
     public AtomPrimaryView(AtomPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
@@ -37,7 +37,7 @@ public sealed partial class AtomPrimaryView : RawPrimaryView
         {
             if (_field_atom == null)
             {
-                var _positionOfField = base.GetPositionFor(0);
+                var _positionOfField = base.GetPositionFor(1);
                 _field_atom = (IAtomView)((AtomPrimaryNode)base.Green).Atom!.GetView(_positionOfField, this);
             }
             return (IAtomView)_field_atom;

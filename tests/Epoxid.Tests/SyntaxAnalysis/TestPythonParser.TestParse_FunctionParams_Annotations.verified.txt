@@ -16,7 +16,8 @@
               Slot[1]: AnnotationNode {
                 Slot[0]: Token(Type: Colon, RawString: `:`),
                 Slot[1]: AtomPrimaryNode {
-                  Slot[0]: NameAtomNode {
+                  Slot[0]: VoidNode(),
+                  Slot[1]: NameAtomNode {
                     Slot[0]: Token(Type: Name, RawString: `Fluffy`),
                   },
                 },
@@ -30,7 +31,8 @@
               Slot[1]: AnnotationNode {
                 Slot[0]: Token(Type: Colon, RawString: `:`),
                 Slot[1]: AtomPrimaryNode {
-                  Slot[0]: NameAtomNode {
+                  Slot[0]: VoidNode(),
+                  Slot[1]: NameAtomNode {
                     Slot[0]: Token(Type: Name, RawString: `Fuzzy`),
                   },
                 },
@@ -46,7 +48,8 @@
       Slot[10]: OneLinedBlockNode {
         Slot[0]: SingleSimpleStatementNode {
           Slot[0]: AtomPrimaryNode {
-            Slot[0]: EllipsisAtomNode {
+            Slot[0]: VoidNode(),
+            Slot[1]: EllipsisAtomNode {
               Slot[0]: Token(Type: Ellipsis, RawString: `...`),
             },
           },

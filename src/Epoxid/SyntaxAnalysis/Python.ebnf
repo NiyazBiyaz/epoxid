@@ -137,19 +137,19 @@ EqualAnnotatedRhs: '=' AnnotatedRhs -> new(Value=annotated_rhs)
 
 @inline
 AugAssign:
+    | '|='
+    | '^='
+    | '&='
+    | '<<='
+    | '>>='
     | '+='
     | '-='
     | '*='
+    | '/='
+    | '//='
     | '@='
-    | '|='
     | '%='
-    | '&='
-    | '|='
-    | '^='
-    | '<<='
-    | '>>='
     | '**='
-    | '|='
 
 @union
 AnnotatedRhs:
@@ -183,35 +183,25 @@ AssertStatement: 'assert' Expression [',' Expression -> AssertMessage(Value=expr
 @memo
 ImportStatement:
     | ImportName
-    | LazyImportName
     | ImportFrom
-    | LazyImportFrom
 
 # Import Statements
 # =================
 
 # CPython uses the `?` (`-` here) and NULL check for lazy. But it feels more like a hack, so make different rules for that.
 # If changed: don't forget to change lazy also because it's just copypaste.
+# Upd: TODO: there's new way to use keywords as fields, so we don't need that 'hack' anymore.
 
-ImportName: 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
-
-LazyImportName: 'lazy' 'import' DottedName+.',' -> new(Import=dotted_name_Gather)
+ImportName: -'lazy' 'import' DottedName+.',' -> new(LazyKeyword=lazy_Keyword, Import=dotted_name_Gather)
 
 DottedName: ImportUnit ['as' Name -> AsName(Value=name)] -> new(Name=import_unit, Alias=as_name)
 
 ImportFrom:
-    | 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
-        RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
+    | -'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> ImportFromModule(
+        LazyKeyword=lazy_Keyword, RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
 
-    | 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
-        RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
-
-LazyImportFrom:
-    | 'lazy' 'from' RelativeImportDots* ImportUnit 'import' ImportFromTargets -> LazyImportFromModule(
-        RelativePath=relative_import_dots_Star, Path=import_unit, Targets=import_from_targets)
-
-    | 'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> LazyImportFromRelative(
-        RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
+    | -'lazy' 'from' RelativeImportDots+ 'import' ImportFromTargets -> ImportFromRelative(
+        LazyKeyword=lazy_Keyword, RelativePath=relative_import_dots_Plus, Targets=import_from_targets)
 
 @inline
 RelativeImportDots:
@@ -298,18 +288,18 @@ WhileStatement: 'while' NamedExpression ':' Block -ElseBlock -> new(Condition=na
 # -------------
 
 ForStatement:
-    | 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> NormalForStatement(
-        Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
-
-    | 'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> AsyncForStatement(
-        Targets=assignment_target_variant, Expression=star_expression_variant, Block=block, Else=else_block)
+    | -'async' 'for' AssignmentTargetVariant 'in' ~ StarExpressionVariant ':' Block -ElseBlock -> new(
+        AsyncKeyword=async_Keyword,
+        Targets=assignment_target_variant,
+        Expression=star_expression_variant,
+        Block=block,
+        Else=else_block)
 
 # With statement
 # --------------
 
 WithStatement:
-    | 'with' WithItems ':' Block -> SyncWithStatement(Items=with_items, Block=block)
-    | 'async' 'with' WithItems ':' Block -> AsyncWithStatement(Items=with_items, Block=block)
+    | -'async' 'with' WithItems ':' Block -> new(AsyncKeyword=async_Keyword, Items=with_items, Block=block)
 
 WithItems:
     | '(' WithItem+.',' -',' ')' -> ParenthesizedWithItems(Items=with_item_Gather)
@@ -572,20 +562,20 @@ Power: Primary '**' FactorExpression -> new(Left=primary, Right=factor_expressio
 # Primary elements
 # ----------------
 
-@union
-Primary:
-    | AwaitPrimary
-    | RawPrimary
-
-AwaitPrimary: 'await' RawPrimary -> new(Value=raw_primary)
-
 @memo
-RawPrimary:
-    | RawPrimary '.' Name -> DotOperationPrimary(Left=raw_primary, Right=name)
-    | RawPrimary GeneratorExpression -> CallWithGeneratorPrimary(Function=raw_primary, Argument=generator_expression)
-    | RawPrimary '(' -Arguments ')' -> CallWithArgumentsPrimary(Function=raw_primary, Arguments=arguments)
-    | RawPrimary '[' Slices ']' -> SubscriptPrimary(Target=raw_primary, Subscript=slices)
-    | Atom -> AtomPrimary(Atom  =atom)
+Primary:
+    | -'await' Primary '.' Name -> DotOperationPrimary(AwaitKeyword=await_Keyword, Left=primary, Right=name)
+
+    | -'await' Primary GeneratorExpression -> CallWithGeneratorPrimary(
+        AwaitKeyword=await_Keyword, Function=primary, Argument=generator_expression)
+
+    | -'await' Primary '(' -Arguments ')' -> CallWithArgumentsPrimary(
+        AwaitKeyword=await_Keyword, Function=primary, Arguments=arguments)
+
+    | -'await' Primary '[' Slices ']' -> SubscriptPrimary(
+        AwaitKeyword=await_Keyword, Target=primary, Subscript=slices)
+
+    | -'await' Atom -> AtomPrimary(AwaitKeyword=await_Keyword, Atom=atom)
 
 Slices:
     | Slice !',' -> OneSliceSubscript(Value=slice)

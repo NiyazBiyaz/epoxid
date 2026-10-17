@@ -13,29 +13,64 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>WithStatement</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>SyncWithStatementNode</i><br/>
-/// 2. <i>AsyncWithStatementNode</i><br/>
-/// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(SyncWithStatementNode), typeof(AsyncWithStatementNode))]
-public abstract partial record WithStatementNode : GreenNode, ICompoundStatementNode
+public sealed partial record WithStatementNode : GreenNode, ICompoundStatementNode
 {
+    public TokenNode? AsyncKeyword => Children![0] as TokenNode;
+    public WithItemsNode Items => (WithItemsNode)Children![2];
+    public BlockNode Block => (BlockNode)Children![4];
+    public override WithStatementView GetView(int position, IRedView? parent)
+        => new WithStatementView(this, position, parent);
 }
 
 /// <summary>
 /// View class that represents <i>WithStatement</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>SyncWithStatementView</i><br/>
-/// 2. <i>AsyncWithStatementView</i><br/>
-/// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(SyncWithStatementView), typeof(AsyncWithStatementView))]
-public abstract partial class WithStatementView : RedView, ICompoundStatementView
+public sealed partial class WithStatementView : RedView, ICompoundStatementView
 {
     public WithStatementView(WithStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private TokenView? _field_asyncKeyword = null;
+    public TokenView? AsyncKeyword
+    {
+        get
+        {
+            if (_field_asyncKeyword == null && ((WithStatementNode)base.Green).AsyncKeyword != null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_asyncKeyword = (TokenView)((WithStatementNode)base.Green).AsyncKeyword!.GetView(_positionOfField, this);
+            }
+            return (TokenView?)_field_asyncKeyword;
+        }
+    }
+
+    private WithItemsView? _field_items = null;
+    public WithItemsView Items
+    {
+        get
+        {
+            if (_field_items == null)
+            {
+                var _positionOfField = base.GetPositionFor(2);
+                _field_items = (WithItemsView)((WithStatementNode)base.Green).Items!.GetView(_positionOfField, this);
+            }
+            return (WithItemsView)_field_items;
+        }
+    }
+
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
+        {
+            if (_field_block == null)
+            {
+                var _positionOfField = base.GetPositionFor(4);
+                _field_block = (BlockView)((WithStatementNode)base.Green).Block!.GetView(_positionOfField, this);
+            }
+            return (BlockView)_field_block;
+        }
     }
 }

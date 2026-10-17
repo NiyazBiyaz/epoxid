@@ -13,10 +13,10 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>CallWithGeneratorPrimary</i>.
 /// </summary>
-public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
+public sealed partial record CallWithGeneratorPrimaryNode : PrimaryNode
 {
-    public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
-    public GeneratorExpressionNode Argument => (GeneratorExpressionNode)Children![1];
+    public PrimaryNode Function => (PrimaryNode)Children![1];
+    public GeneratorExpressionNode Argument => (GeneratorExpressionNode)Children![2];
     public override CallWithGeneratorPrimaryView GetView(int position, IRedView? parent)
         => new CallWithGeneratorPrimaryView(this, position, parent);
 }
@@ -24,24 +24,24 @@ public sealed partial record CallWithGeneratorPrimaryNode : RawPrimaryNode
 /// <summary>
 /// View class that represents <i>CallWithGeneratorPrimary</i>.
 /// </summary>
-public sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
+public sealed partial class CallWithGeneratorPrimaryView : PrimaryView
 {
     public CallWithGeneratorPrimaryView(CallWithGeneratorPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private RawPrimaryView? _field_function = null;
-    public RawPrimaryView Function
+    private PrimaryView? _field_function = null;
+    public PrimaryView Function
     {
         get
         {
             if (_field_function == null)
             {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_function = (RawPrimaryView)((CallWithGeneratorPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
+                var _positionOfField = base.GetPositionFor(1);
+                _field_function = (PrimaryView)((CallWithGeneratorPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
             }
-            return (RawPrimaryView)_field_function;
+            return (PrimaryView)_field_function;
         }
     }
 
@@ -52,7 +52,7 @@ public sealed partial class CallWithGeneratorPrimaryView : RawPrimaryView
         {
             if (_field_argument == null)
             {
-                var _positionOfField = base.GetPositionFor(1);
+                var _positionOfField = base.GetPositionFor(2);
                 _field_argument = (GeneratorExpressionView)((CallWithGeneratorPrimaryNode)base.Green).Argument!.GetView(_positionOfField, this);
             }
             return (GeneratorExpressionView)_field_argument;

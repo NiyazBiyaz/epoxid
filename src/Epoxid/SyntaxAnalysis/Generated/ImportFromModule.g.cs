@@ -15,8 +15,8 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record ImportFromModuleNode : ImportFromNode
 {
-    public ImportUnitNode Path => (ImportUnitNode)Children![2];
-    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
+    public ImportUnitNode Path => (ImportUnitNode)Children![3];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![5];
     public override ImportFromModuleView GetView(int position, IRedView? parent)
         => new ImportFromModuleView(this, position, parent);
 }
@@ -38,7 +38,7 @@ public sealed partial class ImportFromModuleView : ImportFromView
         {
             if (_field_path == null)
             {
-                var _positionOfField = base.GetPositionFor(2);
+                var _positionOfField = base.GetPositionFor(3);
                 _field_path = (ImportUnitView)((ImportFromModuleNode)base.Green).Path!.GetView(_positionOfField, this);
             }
             return (ImportUnitView)_field_path;
@@ -52,7 +52,7 @@ public sealed partial class ImportFromModuleView : ImportFromView
         {
             if (_field_targets == null)
             {
-                var _positionOfField = base.GetPositionFor(4);
+                var _positionOfField = base.GetPositionFor(5);
                 _field_targets = (ImportFromTargetsView)((ImportFromModuleNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
             return (ImportFromTargetsView)_field_targets;

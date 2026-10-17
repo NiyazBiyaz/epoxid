@@ -16,9 +16,9 @@ namespace Epoxid.SyntaxAnalysis;
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>PowerNode</i><br/>
-/// 2. <i>IPrimaryNode</i><br/>
+/// 2. <i>PrimaryNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(PowerNode), typeof(IPrimaryNode))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(PowerNode), typeof(PrimaryNode))]
 public partial interface IPowerExpressionNode : IGreenNode, IFactorExpressionNode;
 
 /// <summary>
@@ -27,7 +27,7 @@ public partial interface IPowerExpressionNode : IGreenNode, IFactorExpressionNod
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>PowerView</i><br/>
-/// 2. <i>IPrimaryView</i><br/>
+/// 2. <i>PrimaryView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(PowerView), typeof(IPrimaryView))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(PowerView), typeof(PrimaryView))]
 public partial interface IPowerExpressionView : IRedView, IFactorExpressionView;

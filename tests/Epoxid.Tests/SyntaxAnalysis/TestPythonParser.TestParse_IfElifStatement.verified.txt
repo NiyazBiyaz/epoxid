@@ -3,7 +3,8 @@
     IfStatementNode {
       Slot[0]: Token(Type: Name, RawString: `if`),
       Slot[1]: AtomPrimaryNode {
-        Slot[0]: NameAtomNode {
+        Slot[0]: VoidNode(),
+        Slot[1]: NameAtomNode {
           Slot[0]: Token(Type: Name, RawString: `fluffy`),
         },
       },
@@ -14,14 +15,16 @@
         Slot[2]: NodeArray() [
           SingleSimpleStatementNode {
             Slot[0]: CallWithArgumentsPrimaryNode {
-              Slot[0]: AtomPrimaryNode {
-                Slot[0]: NameAtomNode {
+              Slot[0]: VoidNode(),
+              Slot[1]: AtomPrimaryNode {
+                Slot[0]: VoidNode(),
+                Slot[1]: NameAtomNode {
                   Slot[0]: Token(Type: Name, RawString: `bau`),
                 },
               },
-              Slot[1]: Token(Type: LeftParen, RawString: `(`),
-              Slot[2]: VoidNode(),
-              Slot[3]: Token(Type: RightParen, RawString: `)`),
+              Slot[2]: Token(Type: LeftParen, RawString: `(`),
+              Slot[3]: VoidNode(),
+              Slot[4]: Token(Type: RightParen, RawString: `)`),
             },
             Slot[1]: Token(Type: NewLine, RawString: `\n`),
           },
@@ -32,7 +35,8 @@
         ElifStatementNode {
           Slot[0]: Token(Type: Name, RawString: `elif`),
           Slot[1]: AtomPrimaryNode {
-            Slot[0]: NameAtomNode {
+            Slot[0]: VoidNode(),
+            Slot[1]: NameAtomNode {
               Slot[0]: Token(Type: Name, RawString: `fuzzy`),
             },
           },
@@ -43,14 +47,16 @@
             Slot[2]: NodeArray() [
               SingleSimpleStatementNode {
                 Slot[0]: CallWithArgumentsPrimaryNode {
-                  Slot[0]: AtomPrimaryNode {
-                    Slot[0]: NameAtomNode {
+                  Slot[0]: VoidNode(),
+                  Slot[1]: AtomPrimaryNode {
+                    Slot[0]: VoidNode(),
+                    Slot[1]: NameAtomNode {
                       Slot[0]: Token(Type: Name, RawString: `baubau`),
                     },
                   },
-                  Slot[1]: Token(Type: LeftParen, RawString: `(`),
-                  Slot[2]: VoidNode(),
-                  Slot[3]: Token(Type: RightParen, RawString: `)`),
+                  Slot[2]: Token(Type: LeftParen, RawString: `(`),
+                  Slot[3]: VoidNode(),
+                  Slot[4]: Token(Type: RightParen, RawString: `)`),
                 },
                 Slot[1]: Token(Type: NewLine, RawString: `\n`),
               },

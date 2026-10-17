@@ -450,7 +450,6 @@ internal class BlockGenerator
             }
             case FactorView factor:
             case PowerView power:
-            case AwaitPrimaryView awaitPrimary:
             case DotOperationPrimaryView dotPrimary:
             case SubscriptPrimaryView subscript:
             case CallWithGeneratorPrimaryView callGenerator:

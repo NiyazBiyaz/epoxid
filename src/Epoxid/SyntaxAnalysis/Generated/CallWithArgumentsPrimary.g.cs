@@ -13,10 +13,10 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>CallWithArgumentsPrimary</i>.
 /// </summary>
-public sealed partial record CallWithArgumentsPrimaryNode : RawPrimaryNode
+public sealed partial record CallWithArgumentsPrimaryNode : PrimaryNode
 {
-    public RawPrimaryNode Function => (RawPrimaryNode)Children![0];
-    public ArgumentsNode? Arguments => Children![2] as ArgumentsNode;
+    public PrimaryNode Function => (PrimaryNode)Children![1];
+    public ArgumentsNode? Arguments => Children![3] as ArgumentsNode;
     public override CallWithArgumentsPrimaryView GetView(int position, IRedView? parent)
         => new CallWithArgumentsPrimaryView(this, position, parent);
 }
@@ -24,24 +24,24 @@ public sealed partial record CallWithArgumentsPrimaryNode : RawPrimaryNode
 /// <summary>
 /// View class that represents <i>CallWithArgumentsPrimary</i>.
 /// </summary>
-public sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
+public sealed partial class CallWithArgumentsPrimaryView : PrimaryView
 {
     public CallWithArgumentsPrimaryView(CallWithArgumentsPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private RawPrimaryView? _field_function = null;
-    public RawPrimaryView Function
+    private PrimaryView? _field_function = null;
+    public PrimaryView Function
     {
         get
         {
             if (_field_function == null)
             {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_function = (RawPrimaryView)((CallWithArgumentsPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
+                var _positionOfField = base.GetPositionFor(1);
+                _field_function = (PrimaryView)((CallWithArgumentsPrimaryNode)base.Green).Function!.GetView(_positionOfField, this);
             }
-            return (RawPrimaryView)_field_function;
+            return (PrimaryView)_field_function;
         }
     }
 
@@ -52,7 +52,7 @@ public sealed partial class CallWithArgumentsPrimaryView : RawPrimaryView
         {
             if (_field_arguments == null && ((CallWithArgumentsPrimaryNode)base.Green).Arguments != null)
             {
-                var _positionOfField = base.GetPositionFor(2);
+                var _positionOfField = base.GetPositionFor(3);
                 _field_arguments = (ArgumentsView)((CallWithArgumentsPrimaryNode)base.Green).Arguments!.GetView(_positionOfField, this);
             }
             return (ArgumentsView?)_field_arguments;

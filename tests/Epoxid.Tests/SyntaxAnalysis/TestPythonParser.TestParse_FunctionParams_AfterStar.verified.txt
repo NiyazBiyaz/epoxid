@@ -36,7 +36,8 @@
       Slot[10]: OneLinedBlockNode {
         Slot[0]: SingleSimpleStatementNode {
           Slot[0]: AtomPrimaryNode {
-            Slot[0]: EllipsisAtomNode {
+            Slot[0]: VoidNode(),
+            Slot[1]: EllipsisAtomNode {
               Slot[0]: Token(Type: Ellipsis, RawString: `...`),
             },
           },

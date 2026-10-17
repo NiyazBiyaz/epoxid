@@ -13,10 +13,10 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>SubscriptPrimary</i>.
 /// </summary>
-public sealed partial record SubscriptPrimaryNode : RawPrimaryNode
+public sealed partial record SubscriptPrimaryNode : PrimaryNode
 {
-    public RawPrimaryNode Target => (RawPrimaryNode)Children![0];
-    public SlicesNode Subscript => (SlicesNode)Children![2];
+    public PrimaryNode Target => (PrimaryNode)Children![1];
+    public SlicesNode Subscript => (SlicesNode)Children![3];
     public override SubscriptPrimaryView GetView(int position, IRedView? parent)
         => new SubscriptPrimaryView(this, position, parent);
 }
@@ -24,24 +24,24 @@ public sealed partial record SubscriptPrimaryNode : RawPrimaryNode
 /// <summary>
 /// View class that represents <i>SubscriptPrimary</i>.
 /// </summary>
-public sealed partial class SubscriptPrimaryView : RawPrimaryView
+public sealed partial class SubscriptPrimaryView : PrimaryView
 {
     public SubscriptPrimaryView(SubscriptPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private RawPrimaryView? _field_target = null;
-    public RawPrimaryView Target
+    private PrimaryView? _field_target = null;
+    public PrimaryView Target
     {
         get
         {
             if (_field_target == null)
             {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_target = (RawPrimaryView)((SubscriptPrimaryNode)base.Green).Target!.GetView(_positionOfField, this);
+                var _positionOfField = base.GetPositionFor(1);
+                _field_target = (PrimaryView)((SubscriptPrimaryNode)base.Green).Target!.GetView(_positionOfField, this);
             }
-            return (RawPrimaryView)_field_target;
+            return (PrimaryView)_field_target;
         }
     }
 
@@ -52,7 +52,7 @@ public sealed partial class SubscriptPrimaryView : RawPrimaryView
         {
             if (_field_subscript == null)
             {
-                var _positionOfField = base.GetPositionFor(2);
+                var _positionOfField = base.GetPositionFor(3);
                 _field_subscript = (SlicesView)((SubscriptPrimaryNode)base.Green).Subscript!.GetView(_positionOfField, this);
             }
             return (SlicesView)_field_subscript;

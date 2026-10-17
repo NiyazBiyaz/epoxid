@@ -15,6 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record ImportNameNode : GreenNode, IImportStatementNode
 {
+    public TokenNode? LazyKeyword => Children![0] as TokenNode;
     private global::System.Collections.Immutable.ImmutableArray<DottedNameNode>? _field_Import = null;
     public global::System.Collections.Immutable.ImmutableArray<DottedNameNode> Import
     {
@@ -28,7 +29,7 @@ public sealed partial record ImportNameNode : GreenNode, IImportStatementNode
             return _field_Import.Value;
         }
     }
-    public NodeArray<GreenNode> SeparatedImport => (NodeArray<GreenNode>)Children![1];
+    public NodeArray<GreenNode> SeparatedImport => (NodeArray<GreenNode>)Children![2];
     public override ImportNameView GetView(int position, IRedView? parent)
         => new ImportNameView(this, position, parent);
 }
@@ -43,6 +44,20 @@ public sealed partial class ImportNameView : RedView, IImportStatementView
     {
     }
 
+    private TokenView? _field_lazyKeyword = null;
+    public TokenView? LazyKeyword
+    {
+        get
+        {
+            if (_field_lazyKeyword == null && ((ImportNameNode)base.Green).LazyKeyword != null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_lazyKeyword = (TokenView)((ImportNameNode)base.Green).LazyKeyword!.GetView(_positionOfField, this);
+            }
+            return (TokenView?)_field_lazyKeyword;
+        }
+    }
+
     private ViewArray<RedView>? _ast_field_import = null;
     public ViewArray<RedView> SeparatedImport
     {
@@ -50,7 +65,7 @@ public sealed partial class ImportNameView : RedView, IImportStatementView
         {
             if (_ast_field_import == null)
             {
-                var _positionOfField = base.GetPositionFor(1);
+                var _positionOfField = base.GetPositionFor(2);
                 _ast_field_import = new ViewArray<RedView>(((ImportNameNode)base.Green).SeparatedImport, _positionOfField, this);
             }
             return _ast_field_import.Value;

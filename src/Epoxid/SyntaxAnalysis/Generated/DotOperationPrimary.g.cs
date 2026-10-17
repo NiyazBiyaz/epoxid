@@ -13,10 +13,10 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>DotOperationPrimary</i>.
 /// </summary>
-public sealed partial record DotOperationPrimaryNode : RawPrimaryNode
+public sealed partial record DotOperationPrimaryNode : PrimaryNode
 {
-    public RawPrimaryNode Left => (RawPrimaryNode)Children![0];
-    public TokenNode Right => (TokenNode)Children![2];
+    public PrimaryNode Left => (PrimaryNode)Children![1];
+    public TokenNode Right => (TokenNode)Children![3];
     public override DotOperationPrimaryView GetView(int position, IRedView? parent)
         => new DotOperationPrimaryView(this, position, parent);
 }
@@ -24,24 +24,24 @@ public sealed partial record DotOperationPrimaryNode : RawPrimaryNode
 /// <summary>
 /// View class that represents <i>DotOperationPrimary</i>.
 /// </summary>
-public sealed partial class DotOperationPrimaryView : RawPrimaryView
+public sealed partial class DotOperationPrimaryView : PrimaryView
 {
     public DotOperationPrimaryView(DotOperationPrimaryNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private RawPrimaryView? _field_left = null;
-    public RawPrimaryView Left
+    private PrimaryView? _field_left = null;
+    public PrimaryView Left
     {
         get
         {
             if (_field_left == null)
             {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_left = (RawPrimaryView)((DotOperationPrimaryNode)base.Green).Left!.GetView(_positionOfField, this);
+                var _positionOfField = base.GetPositionFor(1);
+                _field_left = (PrimaryView)((DotOperationPrimaryNode)base.Green).Left!.GetView(_positionOfField, this);
             }
-            return (RawPrimaryView)_field_left;
+            return (PrimaryView)_field_left;
         }
     }
 
@@ -52,7 +52,7 @@ public sealed partial class DotOperationPrimaryView : RawPrimaryView
         {
             if (_field_right == null)
             {
-                var _positionOfField = base.GetPositionFor(2);
+                var _positionOfField = base.GetPositionFor(3);
                 _field_right = (TokenView)((DotOperationPrimaryNode)base.Green).Right!.GetView(_positionOfField, this);
             }
             return (TokenView)_field_right;

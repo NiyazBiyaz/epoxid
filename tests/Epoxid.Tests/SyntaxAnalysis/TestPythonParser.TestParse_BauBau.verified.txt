@@ -2,16 +2,19 @@
   Slot[0]: NodeArray() [
     SingleSimpleStatementNode {
       Slot[0]: CallWithArgumentsPrimaryNode {
-        Slot[0]: AtomPrimaryNode {
-          Slot[0]: NameAtomNode {
+        Slot[0]: VoidNode(),
+        Slot[1]: AtomPrimaryNode {
+          Slot[0]: VoidNode(),
+          Slot[1]: NameAtomNode {
             Slot[0]: Token(Type: Name, RawString: `print`),
           },
         },
-        Slot[1]: Token(Type: LeftParen, RawString: `(`),
-        Slot[2]: ArgumentsWithPositionalNode {
+        Slot[2]: Token(Type: LeftParen, RawString: `(`),
+        Slot[3]: ArgumentsWithPositionalNode {
           Slot[0]: NodeArray() [
             AtomPrimaryNode {
-              Slot[0]: StringValueAtomNode {
+              Slot[0]: VoidNode(),
+              Slot[1]: StringValueAtomNode {
                 Slot[0]: NodeArray() [
                   StringConstantNode {
                     Slot[0]: Token(Type: StringLiteral, RawString: `"Bau bau!"`),
@@ -23,7 +26,7 @@
           Slot[1]: VoidNode(),
           Slot[2]: VoidNode(),
         },
-        Slot[3]: Token(Type: RightParen, RawString: `)`),
+        Slot[4]: Token(Type: RightParen, RawString: `)`),
       },
       Slot[1]: Token(Type: NewLine, RawString: `\n`),
     },

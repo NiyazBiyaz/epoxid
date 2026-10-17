@@ -6,7 +6,8 @@
         Slot[1]: EqualAnnotatedRhsNode {
           Slot[0]: Token(Type: Equal, RawString: `=`),
           Slot[1]: AtomPrimaryNode {
-            Slot[0]: EllipsisAtomNode {
+            Slot[0]: VoidNode(),
+            Slot[1]: EllipsisAtomNode {
               Slot[0]: Token(Type: Ellipsis, RawString: `...`),
             },
           },
@@ -20,7 +21,8 @@
         Slot[1]: EqualAnnotatedRhsNode {
           Slot[0]: Token(Type: Equal, RawString: `=`),
           Slot[1]: AtomPrimaryNode {
-            Slot[0]: TrueAtomNode {
+            Slot[0]: VoidNode(),
+            Slot[1]: TrueAtomNode {
               Slot[0]: Token(Type: Name, RawString: `True`),
             },
           },
@@ -34,7 +36,8 @@
         Slot[1]: EqualAnnotatedRhsNode {
           Slot[0]: Token(Type: Equal, RawString: `=`),
           Slot[1]: AtomPrimaryNode {
-            Slot[0]: NumberAtomNode {
+            Slot[0]: VoidNode(),
+            Slot[1]: NumberAtomNode {
               Slot[0]: Token(Type: Number, RawString: `789`),
             },
           },

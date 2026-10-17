@@ -15,7 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record ImportFromRelativeNode : ImportFromNode
 {
-    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![3];
+    public ImportFromTargetsNode Targets => (ImportFromTargetsNode)Children![4];
     public override ImportFromRelativeView GetView(int position, IRedView? parent)
         => new ImportFromRelativeView(this, position, parent);
 }
@@ -37,7 +37,7 @@ public sealed partial class ImportFromRelativeView : ImportFromView
         {
             if (_field_targets == null)
             {
-                var _positionOfField = base.GetPositionFor(3);
+                var _positionOfField = base.GetPositionFor(4);
                 _field_targets = (ImportFromTargetsView)((ImportFromRelativeNode)base.Green).Targets!.GetView(_positionOfField, this);
             }
             return (ImportFromTargetsView)_field_targets;

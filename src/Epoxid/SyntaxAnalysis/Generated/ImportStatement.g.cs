@@ -16,11 +16,9 @@ namespace Epoxid.SyntaxAnalysis;
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>ImportNameNode</i><br/>
-/// 2. <i>LazyImportNameNode</i><br/>
-/// 3. <i>ImportFromNode</i><br/>
-/// 4. <i>LazyImportFromNode</i><br/>
+/// 2. <i>ImportFromNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(ImportNameNode), typeof(LazyImportNameNode), typeof(ImportFromNode), typeof(LazyImportFromNode))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(ImportNameNode), typeof(ImportFromNode))]
 public partial interface IImportStatementNode : IGreenNode, ISimpleStatementNode;
 
 /// <summary>
@@ -29,9 +27,7 @@ public partial interface IImportStatementNode : IGreenNode, ISimpleStatementNode
 /// <remarks>
 /// Implementors:<br/>
 /// 1. <i>ImportNameView</i><br/>
-/// 2. <i>LazyImportNameView</i><br/>
-/// 3. <i>ImportFromView</i><br/>
-/// 4. <i>LazyImportFromView</i><br/>
+/// 2. <i>ImportFromView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(ImportNameView), typeof(LazyImportNameView), typeof(ImportFromView), typeof(LazyImportFromView))]
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(ImportNameView), typeof(ImportFromView))]
 public partial interface IImportStatementView : IRedView, ISimpleStatementView;

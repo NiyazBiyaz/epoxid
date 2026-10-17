@@ -11,23 +11,52 @@ using Epoxid.SyntaxAnalysis.Common.Ast;
 namespace Epoxid.SyntaxAnalysis;
 
 /// <summary>
-/// Node interface that represents <i>Primary</i>.
+/// Node class that represents <i>Primary</i>.
 /// </summary>
 /// <remarks>
-/// Implementors:<br/>
-/// 1. <i>AwaitPrimaryNode</i><br/>
-/// 2. <i>RawPrimaryNode</i><br/>
+/// Inheritors:<br/>
+/// 1. <i>DotOperationPrimaryNode</i><br/>
+/// 2. <i>CallWithGeneratorPrimaryNode</i><br/>
+/// 3. <i>CallWithArgumentsPrimaryNode</i><br/>
+/// 4. <i>SubscriptPrimaryNode</i><br/>
+/// 5. <i>AtomPrimaryNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(AwaitPrimaryNode), typeof(RawPrimaryNode))]
-public partial interface IPrimaryNode : IGreenNode, IPowerExpressionNode;
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DotOperationPrimaryNode), typeof(CallWithGeneratorPrimaryNode), typeof(CallWithArgumentsPrimaryNode), typeof(SubscriptPrimaryNode), typeof(AtomPrimaryNode))]
+public abstract partial record PrimaryNode : GreenNode, IPowerExpressionNode
+{
+    public TokenNode? AwaitKeyword => Children![0] as TokenNode;
+}
 
 /// <summary>
-/// View interface that represents <i>Primary</i>.
+/// View class that represents <i>Primary</i>.
 /// </summary>
 /// <remarks>
-/// Implementors:<br/>
-/// 1. <i>AwaitPrimaryView</i><br/>
-/// 2. <i>RawPrimaryView</i><br/>
+/// Inheritors:<br/>
+/// 1. <i>DotOperationPrimaryView</i><br/>
+/// 2. <i>CallWithGeneratorPrimaryView</i><br/>
+/// 3. <i>CallWithArgumentsPrimaryView</i><br/>
+/// 4. <i>SubscriptPrimaryView</i><br/>
+/// 5. <i>AtomPrimaryView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(AwaitPrimaryView), typeof(RawPrimaryView))]
-public partial interface IPrimaryView : IRedView, IPowerExpressionView;
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DotOperationPrimaryView), typeof(CallWithGeneratorPrimaryView), typeof(CallWithArgumentsPrimaryView), typeof(SubscriptPrimaryView), typeof(AtomPrimaryView))]
+public abstract partial class PrimaryView : RedView, IPowerExpressionView
+{
+    public PrimaryView(PrimaryNode green, int position, IRedView? parent)
+        : base(green, position, parent)
+    {
+    }
+
+    private TokenView? _field_awaitKeyword = null;
+    public TokenView? AwaitKeyword
+    {
+        get
+        {
+            if (_field_awaitKeyword == null && ((PrimaryNode)base.Green).AwaitKeyword != null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_awaitKeyword = (TokenView)((PrimaryNode)base.Green).AwaitKeyword!.GetView(_positionOfField, this);
+            }
+            return (TokenView?)_field_awaitKeyword;
+        }
+    }
+}

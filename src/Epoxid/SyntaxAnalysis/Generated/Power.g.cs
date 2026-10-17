@@ -15,7 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record PowerNode : GreenNode, IPowerExpressionNode
 {
-    public IPrimaryNode Left => (IPrimaryNode)Children![0];
+    public PrimaryNode Left => (PrimaryNode)Children![0];
     public IFactorExpressionNode Right => (IFactorExpressionNode)Children![2];
     public override PowerView GetView(int position, IRedView? parent)
         => new PowerView(this, position, parent);
@@ -31,17 +31,17 @@ public sealed partial class PowerView : RedView, IPowerExpressionView
     {
     }
 
-    private IPrimaryView? _field_left = null;
-    public IPrimaryView Left
+    private PrimaryView? _field_left = null;
+    public PrimaryView Left
     {
         get
         {
             if (_field_left == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_left = (IPrimaryView)((PowerNode)base.Green).Left!.GetView(_positionOfField, this);
+                _field_left = (PrimaryView)((PowerNode)base.Green).Left!.GetView(_positionOfField, this);
             }
-            return (IPrimaryView)_field_left;
+            return (PrimaryView)_field_left;
         }
     }
 

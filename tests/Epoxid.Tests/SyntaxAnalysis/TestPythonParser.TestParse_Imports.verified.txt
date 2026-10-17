@@ -2,8 +2,9 @@
   Slot[0]: NodeArray() [
     SingleSimpleStatementNode {
       Slot[0]: ImportNameNode {
-        Slot[0]: Token(Type: Name, RawString: `import`),
-        Slot[1]: NodeArray() [
+        Slot[0]: VoidNode(),
+        Slot[1]: Token(Type: Name, RawString: `import`),
+        Slot[2]: NodeArray() [
           DottedNameNode {
             Slot[0]: SingleImportUnitNode {
               Slot[0]: Token(Type: Name, RawString: `bau`),
@@ -16,8 +17,9 @@
     },
     SingleSimpleStatementNode {
       Slot[0]: ImportNameNode {
-        Slot[0]: Token(Type: Name, RawString: `import`),
-        Slot[1]: NodeArray() [
+        Slot[0]: VoidNode(),
+        Slot[1]: Token(Type: Name, RawString: `import`),
+        Slot[2]: NodeArray() [
           DottedNameNode {
             Slot[0]: DottedImportUnitNode {
               Slot[0]: SingleImportUnitNode {
@@ -37,14 +39,15 @@
     },
     SingleSimpleStatementNode {
       Slot[0]: ImportFromModuleNode {
-        Slot[0]: Token(Type: Name, RawString: `from`),
-        Slot[1]: NodeArray() [
+        Slot[0]: VoidNode(),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
         ],
-        Slot[2]: SingleImportUnitNode {
+        Slot[3]: SingleImportUnitNode {
           Slot[0]: Token(Type: Name, RawString: `fwmc`),
         },
-        Slot[3]: Token(Type: Name, RawString: `import`),
-        Slot[4]: ImportFromNamesNode {
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromNamesNode {
           Slot[0]: NodeArray() [
             AliasedNameNode {
               Slot[0]: Token(Type: Name, RawString: `fuzzy`),
@@ -68,14 +71,15 @@
     },
     SingleSimpleStatementNode {
       Slot[0]: ImportFromModuleNode {
-        Slot[0]: Token(Type: Name, RawString: `from`),
-        Slot[1]: NodeArray() [
+        Slot[0]: VoidNode(),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
         ],
-        Slot[2]: SingleImportUnitNode {
+        Slot[3]: SingleImportUnitNode {
           Slot[0]: Token(Type: Name, RawString: `fwmc`),
         },
-        Slot[3]: Token(Type: Name, RawString: `import`),
-        Slot[4]: ImportFromGroupNode {
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromGroupNode {
           Slot[0]: Token(Type: LeftParen, RawString: `(`),
           Slot[1]: NodeArray() [
             AliasedNameNode {
@@ -96,15 +100,16 @@
     },
     SingleSimpleStatementNode {
       Slot[0]: ImportFromModuleNode {
-        Slot[0]: Token(Type: Name, RawString: `from`),
-        Slot[1]: NodeArray() [
+        Slot[0]: VoidNode(),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
           Token(Type: Dot, RawString: `.`),
         ],
-        Slot[2]: SingleImportUnitNode {
+        Slot[3]: SingleImportUnitNode {
           Slot[0]: Token(Type: Name, RawString: `pondering`),
         },
-        Slot[3]: Token(Type: Name, RawString: `import`),
-        Slot[4]: ImportFromNamesNode {
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromNamesNode {
           Slot[0]: NodeArray() [
             AliasedNameNode {
               Slot[0]: Token(Type: Name, RawString: `baubau`),
@@ -117,20 +122,21 @@
     },
     SingleSimpleStatementNode {
       Slot[0]: ImportFromModuleNode {
-        Slot[0]: Token(Type: Name, RawString: `from`),
-        Slot[1]: NodeArray() [
+        Slot[0]: VoidNode(),
+        Slot[1]: Token(Type: Name, RawString: `from`),
+        Slot[2]: NodeArray() [
           Token(Type: Ellipsis, RawString: `...`),
           Token(Type: Dot, RawString: `.`),
         ],
-        Slot[2]: DottedImportUnitNode {
+        Slot[3]: DottedImportUnitNode {
           Slot[0]: SingleImportUnitNode {
             Slot[0]: Token(Type: Name, RawString: `halo`),
           },
           Slot[1]: Token(Type: Dot, RawString: `.`),
           Slot[2]: Token(Type: Name, RawString: `halo`),
         },
-        Slot[3]: Token(Type: Name, RawString: `import`),
-        Slot[4]: ImportFromNamesNode {
+        Slot[4]: Token(Type: Name, RawString: `import`),
+        Slot[5]: ImportFromNamesNode {
           Slot[0]: NodeArray() [
             AliasedNameNode {
               Slot[0]: Token(Type: Name, RawString: `baubau`),

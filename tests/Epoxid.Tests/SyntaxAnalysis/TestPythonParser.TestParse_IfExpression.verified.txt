@@ -3,7 +3,8 @@
     SingleSimpleStatementNode {
       Slot[0]: IfExpressionNode {
         Slot[0]: AtomPrimaryNode {
-          Slot[0]: StringValueAtomNode {
+          Slot[0]: VoidNode(),
+          Slot[1]: StringValueAtomNode {
             Slot[0]: NodeArray() [
               StringConstantNode {
                 Slot[0]: Token(Type: StringLiteral, RawString: `"bau bau!"`),
@@ -19,13 +20,15 @@
                 ComparisonNode {
                   Slot[0]: SumNode {
                     Slot[0]: AtomPrimaryNode {
-                      Slot[0]: NumberAtomNode {
+                      Slot[0]: VoidNode(),
+                      Slot[1]: NumberAtomNode {
                         Slot[0]: Token(Type: Number, RawString: `34`),
                       },
                     },
                     Slot[1]: Token(Type: Plus, RawString: `+`),
                     Slot[2]: AtomPrimaryNode {
-                      Slot[0]: NumberAtomNode {
+                      Slot[0]: VoidNode(),
+                      Slot[1]: NumberAtomNode {
                         Slot[0]: Token(Type: Number, RawString: `35`),
                       },
                     },
@@ -34,7 +37,8 @@
                     EqOperationNode {
                       Slot[0]: Token(Type: EqEqual, RawString: `==`),
                       Slot[1]: AtomPrimaryNode {
-                        Slot[0]: NumberAtomNode {
+                        Slot[0]: VoidNode(),
+                        Slot[1]: NumberAtomNode {
                           Slot[0]: Token(Type: Number, RawString: `69`),
                         },
                       },
@@ -47,7 +51,8 @@
         },
         Slot[3]: Token(Type: Name, RawString: `else`),
         Slot[4]: AtomPrimaryNode {
-          Slot[0]: StringValueAtomNode {
+          Slot[0]: VoidNode(),
+          Slot[1]: StringValueAtomNode {
             Slot[0]: NodeArray() [
               StringConstantNode {
                 Slot[0]: Token(Type: StringLiteral, RawString: `"HOEH?!?"`),

@@ -13,29 +13,94 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>ForStatement</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>NormalForStatementNode</i><br/>
-/// 2. <i>AsyncForStatementNode</i><br/>
-/// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(NormalForStatementNode), typeof(AsyncForStatementNode))]
-public abstract partial record ForStatementNode : GreenNode, ICompoundStatementNode
+public sealed partial record ForStatementNode : GreenNode, ICompoundStatementNode
 {
+    public TokenNode? AsyncKeyword => Children![0] as TokenNode;
+    public IAssignmentTargetVariantNode Targets => (IAssignmentTargetVariantNode)Children![2];
+    public IStarExpressionVariantNode Expression => (IStarExpressionVariantNode)Children![4];
+    public BlockNode Block => (BlockNode)Children![6];
+    public ElseBlockNode? Else => Children![7] as ElseBlockNode;
+    public override ForStatementView GetView(int position, IRedView? parent)
+        => new ForStatementView(this, position, parent);
 }
 
 /// <summary>
 /// View class that represents <i>ForStatement</i>.
 /// </summary>
-/// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>NormalForStatementView</i><br/>
-/// 2. <i>AsyncForStatementView</i><br/>
-/// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(NormalForStatementView), typeof(AsyncForStatementView))]
-public abstract partial class ForStatementView : RedView, ICompoundStatementView
+public sealed partial class ForStatementView : RedView, ICompoundStatementView
 {
     public ForStatementView(ForStatementNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
+    }
+
+    private TokenView? _field_asyncKeyword = null;
+    public TokenView? AsyncKeyword
+    {
+        get
+        {
+            if (_field_asyncKeyword == null && ((ForStatementNode)base.Green).AsyncKeyword != null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_asyncKeyword = (TokenView)((ForStatementNode)base.Green).AsyncKeyword!.GetView(_positionOfField, this);
+            }
+            return (TokenView?)_field_asyncKeyword;
+        }
+    }
+
+    private IAssignmentTargetVariantView? _field_targets = null;
+    public IAssignmentTargetVariantView Targets
+    {
+        get
+        {
+            if (_field_targets == null)
+            {
+                var _positionOfField = base.GetPositionFor(2);
+                _field_targets = (IAssignmentTargetVariantView)((ForStatementNode)base.Green).Targets!.GetView(_positionOfField, this);
+            }
+            return (IAssignmentTargetVariantView)_field_targets;
+        }
+    }
+
+    private IStarExpressionVariantView? _field_expression = null;
+    public IStarExpressionVariantView Expression
+    {
+        get
+        {
+            if (_field_expression == null)
+            {
+                var _positionOfField = base.GetPositionFor(4);
+                _field_expression = (IStarExpressionVariantView)((ForStatementNode)base.Green).Expression!.GetView(_positionOfField, this);
+            }
+            return (IStarExpressionVariantView)_field_expression;
+        }
+    }
+
+    private BlockView? _field_block = null;
+    public BlockView Block
+    {
+        get
+        {
+            if (_field_block == null)
+            {
+                var _positionOfField = base.GetPositionFor(6);
+                _field_block = (BlockView)((ForStatementNode)base.Green).Block!.GetView(_positionOfField, this);
+            }
+            return (BlockView)_field_block;
+        }
+    }
+
+    private ElseBlockView? _field_else = null;
+    public ElseBlockView? Else
+    {
+        get
+        {
+            if (_field_else == null && ((ForStatementNode)base.Green).Else != null)
+            {
+                var _positionOfField = base.GetPositionFor(7);
+                _field_else = (ElseBlockView)((ForStatementNode)base.Green).Else!.GetView(_positionOfField, this);
+            }
+            return (ElseBlockView?)_field_else;
+        }
     }
 }
