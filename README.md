@@ -13,7 +13,7 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 
 ### Here is the my current goals:
 - [x] Run `print("Bau Bau!")`
-- [ ] Turing complete
+- [x] Turing complete
 - [ ] Basic classes, functions, simple object semantics
 - [x] Bytecode VM (on top of the CLR)
 - [ ] Calling CLR code
@@ -22,16 +22,6 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 - [ ] Pure (almost) Python support
 - [ ] Std re-implementation (using .NET std as backend)
 - [ ] Another cool stuff
-
-### Already implemented:
-- Tokenizer supporting full Python spec.
-- PEG-parser generator (inspired by CPython's [pegen](https://github.com/we-like-parsers/pegen/)).
-- Python parser.
-
-### Currently working on:
-- Improving Python parser.
-- Runtime basics.
-- Bytecode VM and compiler for it.
 
 ### v0.2.0 roadmap:
 
@@ -43,7 +33,6 @@ In the second i have goal to make good alternative for the [Python.NET](https://
 - `sys` module subset
 - `for`-loops, iterator classes
 - `list` class
-- Various VM optimizations
 
 ## Getting started
 
@@ -91,7 +80,8 @@ dotnet test
 
 **[FizzBuzz](https://wikipedia.org/wiki/Fizz_buzz)** game in Epoxid with some extensions and adapted to the current state of project:
 
-```ep
+```epoxid
+# See source in src/Epoxid/__fluffyFuzzy__.ep
 phrase = input("Say something: ")
 number = 0
 while number < 31:
@@ -103,7 +93,25 @@ while number < 31:
         print("Fuzzy")
     else:
         print(number, phrase)
-    number = number + 1
+    number += 1
+```
+
+**Fibonacci number** computing function. Since 'int' type is a 32-bit integer, it cannot compute large numbers, also it would be unchecked.
+
+```epoxid
+# See source in src/Epoxid/__fibonacci__.ep
+def fibonacci(number):
+    first = 0 
+    second = 1
+    counter = 0
+    while counter < number:
+        tmp = first + second
+        first = second
+        second = tmp
+        counter += 1
+    return first
+
+print(fibonacci(42))
 ```
 
 ---
