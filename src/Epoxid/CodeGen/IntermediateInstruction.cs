@@ -1,75 +1,91 @@
 using System.Diagnostics;
+using System.Text;
 using Epoxid.VM;
 
 namespace Epoxid.CodeGen;
 
+[DebuggerDisplay("{getDebuggerDisplay(),nq}")]
 internal record IntermediateInstruction
 {
-    public required Opcode Opcode { get; init; }
+    public Opcode Opcode { get; init; }
+    public bool IsLabel { get; init; }
+    public IntermediateInstruction? JumpTarget { get; init; }
+    public int ArgumentValue { get; init; }
 
-    public Register? Destination { get; init; } = null;
-    public Register? Source1 { get; init; } = null;
-    public Register? Source2 { get; init; } = null;
+    public int? Index { get; set; } = null;
 
-    public int? ImmediateValue { get; init; } = null;
-    public int? ArgCount { get; init; } = null;
-
-    public int Address { get; set; }
-
-    private int dest => Destination!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Destination}'");
-    private int src1 => Source1!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Source1}'");
-    private int src2 => Source2!.Address ?? throw new NullReferenceException($"Address is not set for the register '{Source2}'");
-    private int immediateValue => ImmediateValue ?? throw new NullReferenceException("ImmediateValue is not set");
-    private int targetAddress => JumpLabel?.Target?.FirstInstruction.Address ?? throw new NullReferenceException("Target is not set for the label");
-    private int argCount => ArgCount ?? throw new NullReferenceException($"ArgCount is not set");
-
-    public Label? JumpLabel
+    public int? JumpDelta => Opcode switch
     {
-        get;
-        init
-        {
-            if (value != null && !Opcode.IsBranch)
-                throw new InvalidOperationException("Only branch opcodes can have jumps");
+        Opcode.BrcBack => Index - JumpTarget?.Index,
+        _ => JumpTarget?.Index - Index,
+    };
 
-            if (value == null && Opcode.IsBranch)
-                throw new InvalidOperationException("Branch opcodes should have JumpToBlock value set");
-
-            field = value;
-        }
-    } = null;
-
-    public Instruction Compile()
+    public int StackDelta => Opcode switch
     {
-        checked
+        Opcode.Add or
+        Opcode.Sub or
+        Opcode.Mul or
+        Opcode.TDiv or
+        Opcode.Mod or
+        Opcode.Eq or
+        Opcode.NEq or
+        Opcode.LsTh or
+        Opcode.GrTh or
+        Opcode.InAdd or
+        Opcode.InSub or
+        Opcode.InMul or
+        Opcode.InTDiv or
+        Opcode.InMod => -1,
+
+        // ArgumentValue = call arguments count
+        // StackDelta = 1 (return) - 1 (function) - ArgCount = -ArgCount
+        Opcode.Call => -ArgumentValue,
+
+        Opcode.Ret => -1,
+
+        Opcode.BrcForw or Opcode.BrcBack => 0,
+        Opcode.BrPopTr or Opcode.BrPopFl => -1,
+        Opcode.BrPeekTr or Opcode.BrPeekFl => 0,
+        Opcode.BindFun => 0,
+        Opcode.Pop => -ArgumentValue,
+
+        Opcode.LdConst or
+        Opcode.LdArg or
+        Opcode.LdVar or
+        Opcode.LdLocal or
+        Opcode.LdCell => +1,
+
+        Opcode.StVar or Opcode.StCell or Opcode.StLocal => -1,
+
+        Opcode.GAttr => 0,
+        Opcode.SAttr => -1,
+
+        Opcode.Ext1 or Opcode.Ext2 or Opcode.Ext3 => 0,
+
+        _ => throw new UnreachableException($"Unknown Opcode value: {Opcode}"),
+    };
+
+    private string getDebuggerDisplay()
+    {
+        var sb = new StringBuilder();
+        if (Index is int index)
         {
-            return Opcode switch
-            {
-                var reg2Reg when reg2Reg.IsRegisterToRegister => new(reg2Reg, (byte)dest, (byte)src1, (byte)src2),
-
-                var inPlace when inPlace.IsInPlace => new(inPlace, (byte)dest, (byte)src1, 0),
-
-                Opcode.Brc => new(Opcode.Brc, 0, (short)(targetAddress - Address)),
-
-                var branch and (Opcode.BrFl or Opcode.BrTr) => new(branch, (byte)dest, (short)(targetAddress - Address)),
-
-                Opcode.Move => new(Opcode.Move, (byte)dest, (byte)src1, 0),
-
-                Opcode.RetC => new(Opcode.RetC, 0, (short)immediateValue),
-
-                Opcode.Ret => new(Opcode.Ret, (byte)dest, 0),
-
-                var load and (Opcode.LdConst or Opcode.LdVar or Opcode.LdArg) => new(load, (byte)dest, (short)immediateValue),
-
-                var store and Opcode.StVar => new(store, (byte)dest, (short)immediateValue),
-
-                Opcode.Call => new(Opcode.Call, (byte)dest, (byte)src1, (byte)argCount),
-
-                Opcode.BindFun => new(Opcode.BindFun, (byte)dest, 0),
-
-                _ => throw new UnreachableException(),
-            };
+            sb.Append(index);
+            sb.Append(": ");
         }
+
+        if (IsLabel)
+        {
+            sb.Append("Label");
+        }
+        else
+        {
+            sb.Append(Opcode.ToString());
+            sb.Append('(');
+            sb.Append(ArgumentValue);
+            sb.Append(')');
+        }
+
+        return sb.ToString();
     }
-
-    public override string ToString() => $"{Opcode}\trd({Destination}) rs1({Source1}) rs2({Source2}) imm({ImmediateValue}) argc({ArgCount})";
 }

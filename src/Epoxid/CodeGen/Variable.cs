@@ -1,19 +1,39 @@
 namespace Epoxid.CodeGen;
 
-public class Variable
+internal class Variable
 {
+    public required VariableKind Kind { get; set; }
+    public required VariableUsages Usage { get; set; }
+    public required DeclarationScopeKind ScopeKind { get; init; }
     public required string Name { get; init; }
 
-    public VariableKind Kind { get; set; }
-
-    internal Register? Register { get; set; }
-
-    internal int? ParameterPosition { get; set; }
+    public override string ToString() => $"Variable({Name}; {Kind}; {Usage}; {ScopeKind})";
 }
 
-public enum VariableKind
+internal enum VariableKind
 {
+    GlobalExplicit,
+    GlobalImplicit,
     Local,
     Cell,
+    Free,
+}
+
+[Flags]
+internal enum VariableUsages
+{
+    Used = 1,
+    DefinedLocal = 1 << 1,
+    DefinedParam = 1 << 2,
+    DefinedNonlocal = 1 << 3,
+    DefinedGlobal = 1 << 4,
+}
+
+internal enum DeclarationScopeKind
+{
+    None,
     Global,
+    LocalFree,
+    LocalOnly,
+    Closure,
 }

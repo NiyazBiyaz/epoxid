@@ -18,4 +18,17 @@ public partial class ParameterView
         PositionalOnlyMarkerView => throw new InvalidOperationException("Cannot create description for marker-parameter"),
         _ => throw new InvalidOperationException(),
     };
+
+    public string? GetParamName()
+    {
+        return this switch
+        {
+            OrdinalParameterView ord => ord.Param.Name.RawString,
+            ParameterDefaultView def => def.Param.Name.RawString,
+            PositionalVariadicParameterView args => args.Param.Name.RawString,
+            KeywordVariadicParameterView kwargs => kwargs.Param.Name.RawString,
+
+            _ => null,
+        };
+    }
 }

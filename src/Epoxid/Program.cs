@@ -1,11 +1,10 @@
 using System.Runtime.CompilerServices;
-using Epoxid.CodeGen;
+using Epoxid.VM;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.Runtime;
-using Epoxid.VM;
-using Epoxid.Runtime.Objects;
+using Epoxid.CodeGen;
 
 [assembly: InternalsVisibleTo("Epoxid.Tests")]
 
@@ -38,33 +37,29 @@ public static class Program
             PositionMap = tokenizer.PositionMap,
         };
 
-        var builder = new CodeBuilder();
-        var generator = new BlockGenerator(fileView);
-
-        generator.GenerateModule(builder);
-
-        var code = builder.Compile();
-
-#if DEBUG
-        Console.WriteLine(code);
-
-        foreach (var function in builder.Constants.OfType<EpFunction>())
-        {
-            Console.WriteLine($"Code of function '{function.QualName}':");
-            Console.WriteLine(function.Code);
-        }
-
-        Console.WriteLine("-------------");
-#endif
-
-        var engine = new Engine();
-        Engine.SetCurrentEngine(engine);
         var env = new EpEnvironment()
         {
             Builtins = Builtins.BuiltinsScope,
             Module = new(),
         };
 
+        var st = SymbolTable.Create(fileView, "__main__");
+        var builder = new CodeBuilder(st);
+
+        BlockGenerator.Generate(builder, fileView);
+
+        var code = builder.Compile();
+
+#if DEBUG
+        foreach (var instr in code.Instructions)
+        {
+            Console.WriteLine(instr);
+        }
+
+        Console.WriteLine("==============================");
+#endif
+
+        var engine = Engine.CurrentEngine;
         engine.RunCode(code, [], env);
 
         return 0;

@@ -1,181 +1,59 @@
 namespace Epoxid.VM;
 
-public enum Opcode : byte
+internal enum Opcode : byte
 {
-    /// <summary>
-    /// <b>Add</b>s object from <see cref="Instruction.RegSrc1"/> to object from <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
+    // Binary operations
     Add,
-
-    /// <summary>
-    /// <b>Sub</b>tracts from object <see cref="Instruction.RegSrc1"/> object from <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     Sub,
-
-    /// <summary>
-    /// <b>Mul</b>tiplies object from <see cref="Instruction.RegSrc1"/> by object from <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     Mul,
-
-    /// <summary>
-    /// <b>T</b>rue-<b>div</b>ides object from <see cref="Instruction.RegSrc1"/> by object from <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     TDiv,
-
-    /// <summary>
-    /// Gets the <b>mod</b>ule of <see cref="Instruction.RegSrc1"/> by <see cref="Instruction.RegSrc2"/> and
-    /// stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     Mod,
-
-    /// <summary>
-    /// <b>Eq</b>uates object from <see cref="Instruction.RegSrc1"/> to object from <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     Eq,
-
-    /// <summary>
-    /// <b>N</b>egatively <b>eq</b>uates object from <see cref="Instruction.RegSrc1"/> to object from <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     NEq,
-
-    /// <summary>
-    /// Determines that object from <see cref="Instruction.RegSrc1"/> is less than <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     LsTh,
-
-    /// <summary>
-    /// Determines that object from <see cref="Instruction.RegSrc1"/> is greater than <see cref="Instruction.RegSrc2"/>
-    /// and stores result in <see cref="Instruction.RegDest"/>
-    /// </summary>
     GrTh,
-
-    /// <summary>
-    /// <b>In</b>-place <b>add</b> object from <see cref="Instruction.RegDest"/> to object from <see cref="Instruction.RegSrc1"/>
-    /// if first supports it, otherwise add object from <see cref="Instruction.RegDest"/> to object from
-    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
-    /// </summary>
     InAdd,
-
-    /// <summary>
-    /// <b>In</b>-place <b>sub</b>tract from object <see cref="Instruction.RegDest"/> object from <see cref="Instruction.RegSrc1"/>
-    /// if first supports it, otherwise subtract from object <see cref="Instruction.RegDest"/> object from
-    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
-    /// </summary>
     InSub,
-
-    /// <summary>
-    /// <b>In</b>-place <b>mul</b>tiply object from <see cref="Instruction.RegDest"/> by object from <see cref="Instruction.RegSrc1"/>
-    /// if first supports it, otherwise multiply object from <see cref="Instruction.RegDest"/> by object from
-    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
-    /// </summary>
     InMul,
-
-    /// <summary>
-    /// <b>In</b>-place <b>t</b>rue-<b>div</b>ide object from <see cref="Instruction.RegDest"/> by object from <see cref="Instruction.RegSrc1"/>
-    /// if first supports it, otherwise true-divide object from <see cref="Instruction.RegDest"/> by object from
-    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
-    /// </summary>
     InTDiv,
-
-    /// <summary>
-    /// <b>In</b>-place get <b>mod</b>ule of object from <see cref="Instruction.RegDest"/> by object from <see cref="Instruction.RegSrc1"/>
-    /// if first supports it, otherwise get module of object from <see cref="Instruction.RegDest"/> by object from
-    /// <see cref="Instruction.RegSrc1"/> and save result to <see cref="Instruction.RegDest"/>.
-    /// </summary>
     InMod,
 
-    /// <summary>
-    /// <b>Call</b>s the function that stored in the <see cref="Instruction.RegSrc1"/> with <see cref="Instruction.RegSrc2"/>
-    /// number of positional arguments starting from register <see cref="Instruction.RegDest"/>+1 and stores returned
-    /// value in the <see cref="Instruction.RegDest"/>
-    /// </summary>
-    Call = 64,
-
-    /// <summary>
-    /// <b>Ret</b>urns from the current frame object stored in the <see cref="Instruction.RegDest"/>
-    /// </summary>
+    // Special operations
+    Call,
     Ret,
-
-    /// <summary>
-    /// <b>Ret</b>urns from the current frame <b>c</b>onstant object stored in the <see cref="CodeObject.Constants"/>
-    /// by index <see cref="Instruction.Immediate16"/>
-    /// </summary>
-    RetC,
-
-    /// <summary>
-    /// Unconditionally changes program counter by the value of <see cref="Instruction.Immediate16"/>
-    /// </summary>
-    Brc,
-
-    /// <summary>
-    /// Changes program counter by the value of <see cref="Instruction.Immediate16"/> if boolean value in the
-    /// <see cref="Instruction.RegDest"/> is equals to <b>True</b>
-    /// </summary>
-    BrTr,
-
-    /// <summary>
-    /// Changes program counter by the value of <see cref="Instruction.Immediate16"/> if boolean value in the
-    /// <see cref="Instruction.RegDest"/> is equals to <b>False</b>
-    /// </summary>
-    BrFl,
-
+    BrcForw,
+    BrcBack,
+    BrPopTr,
+    BrPopFl,
+    BrPeekTr,
+    BrPeekFl,
     BindFun,
+    Pop,
 
-    /// <summary>
-    /// <b>Move</b>s object from <see cref="Instruction.RegSrc1"/> to <see cref="Instruction.RegDest"/>
-    /// </summary>
-    Move,
-
-    /// <summary>
-    /// <b>L</b>oa<b>d</b>s <b>const</b>ant object from <see cref="CodeObject.Constants"/> with index stored in
-    /// <see cref="Instruction.Immediate16"/> to register <see cref="Instruction.RegDest"/>
-    /// </summary>
+    // Load/store operations
     LdConst,
-
-    /// <summary>
-    /// <b>L</b>oa<b>d</b>s <b>var</b>iable from the environment whose name is stored in <see cref="CodeObject.VarNames"/>
-    /// with index stored in <see cref="Instruction.Immediate16"/>, to register <see cref="Instruction.RegDest"/>
-    /// </summary>
-    LdVar,
-
-    /// <summary>
-    /// <b>St</b>ores value from <see cref="Instruction.RegDest"/> to the environment <b>var</b>iable whose name is
-    /// stored in <see cref="CodeObject.VarNames"/> with index stored in <see cref="Instruction.Immediate16"/>.
-    /// </summary>
-    StVar,
-
-    /// <summary>
-    /// <b>L</b>oa<b>d</b>s argument passed to the frame with index <see cref="Instruction.Immediate16"/> and stores it
-    /// in the <see cref="Instruction.RegDest"/>
-    /// </summary>
     LdArg,
+    LdVar,
+    StVar,
+    LdLocal,
+    StLocal,
+    LdCell,
+    StCell,
+
+    // Class operations
+    GAttr,
+    SAttr,
+
+    // Extended arguments
+    Ext1,
+    Ext2,
+    Ext3,
 }
 
 internal static class OpcodeExtensions
 {
     extension(Opcode opcode)
     {
-        public bool IsRegisterToRegister => opcode < Opcode.InAdd;
-
-        public bool IsInPlace => opcode is >= Opcode.InAdd and < Opcode.Call;
-
-        public bool IsBranch => opcode >= Opcode.Brc && opcode <= Opcode.BrFl;
-
-        /// <summary>
-        /// Determines whether <see cref="Opcode"/> is last instruction of control-flow-graph block.
-        /// </summary>
-        public bool IsEndOfCfgBlock => opcode switch
-        {
-            Opcode.Brc or Opcode.BrFl or Opcode.BrTr => true,
-            Opcode.Ret or Opcode.RetC => true,
-            _ => false,
-        };
+        public bool IsCanBeLast => opcode is Opcode.Ret;
     }
 }

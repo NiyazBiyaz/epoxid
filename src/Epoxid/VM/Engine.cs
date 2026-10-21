@@ -1,224 +1,407 @@
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Epoxid.Runtime;
 using Epoxid.Runtime.Objects;
 
 namespace Epoxid.VM;
 
-public class Engine
+internal class Engine
 {
-    private const int register_stack_count = 10_000;
+    private const int initial_stack_size = 64_000;
 
-    private readonly EpObject[] registerStack = new EpObject[register_stack_count];
+    // TODO: thread-local engines.
+    public static Engine CurrentEngine { get; set; } = new();
 
-    private int stackCount = 0;
+    private readonly EpObject?[] stack = new EpObject[initial_stack_size];
 
-    // TODO: Probably change approach to something like thread-local Engine.
-    // So this is why a private: we can add something like thread id to get/set methods.
-    private static Engine currentEngine = null!;
+    /// <summary>
+    /// Count of the value on stack.
+    /// </summary>
+    private int stackPointer = 0;
 
-    internal static void SetCurrentEngine(Engine engine) => currentEngine = engine;
-
-    internal static Engine GetCurrentEngine() => currentEngine;
-
-    public EpObject RunCode(CodeObject code, ReadOnlySpan<EpObject> argSpan, EpEnvironment environment)
+    public EpObject RunCode(CodeObject code, ReadOnlySpan<EpObject> arguments, EpEnvironment environment)
     {
-        if (currentEngine == null)
+        if (CurrentEngine == null)
         {
-            throw new InvalidOperationException("CurrentEngine is not set, execution of frames can cause an error.");
+            throw new WarningException("CurrentEngine is not set, execution of new frames can cause an error");
         }
 
-        EpObject result = default!;
-        var frame = registerStack.AsSpan(stackCount, code.StackSize);
-        stackCount += code.StackSize;
+        EpObject ret = null!;
 
         bool stop = false;
         int programCounter = 0;
+        int extendedArgsRegister = 0;
         while (!stop)
         {
-        nextInstruction: // To avoid programCounter auto-incrementing after branches
-            if (code.Instructions.Length <= programCounter)
+            if (programCounter >= code.Instructions.Length)
             {
                 throw new ArgumentException("Invalid code object: code never returns");
+            }
+            if (programCounter < 0)
+            {
+                throw new ArgumentException("Invalid code object: program counter became negative while executing");
             }
 
             var current = code.Instructions[programCounter];
 
             switch (current.Opcode)
             {
-                case Opcode.LdConst:
-                    frame[current.RegDest] = code.Constants[current.Immediate16];
-                    break;
+                #region Binary operations
 
-                case Opcode.LdArg:
-                    frame[current.RegDest] = argSpan[current.Immediate16];
-                    break;
-
-                case Opcode.LdVar:
+                case Opcode.Add:
                 {
-                    var variable = environment.SearchVariable(code.VarNames[current.Immediate16])
-                        ?? throw new Exception("NameError: TODO");
-
-                    frame[current.RegDest] = variable;
+                    EpObject right = pop(), left = pop();
+                    push(Core.AddObjects(left, right));
+                    break;
+                }
+                case Opcode.Sub:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.SubtractObjects(left, right));
+                    break;
+                }
+                case Opcode.Mul:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.MultiplyObjects(left, right));
+                    break;
+                }
+                case Opcode.TDiv:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.TrueDivideObjects(left, right));
+                    break;
+                }
+                case Opcode.Mod:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.ModuleObjects(left, right));
+                    break;
+                }
+                case Opcode.Eq:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.EqualObjects(left, right));
+                    break;
+                }
+                case Opcode.NEq:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.NotEqualObjects(left, right));
+                    break;
+                }
+                case Opcode.GrTh:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.GreaterThanObjects(left, right));
+                    break;
+                }
+                case Opcode.LsTh:
+                {
+                    EpObject right = pop(), left = pop();
+                    push(Core.LessThanObjects(left, right));
+                    break;
+                }
+                case Opcode.InAdd:
+                {
+                    EpObject target = pop(), rhs = pop();
+                    if (Core.TryInPlaceAdd(target, rhs, out var res))
+                        push(res);
+                    else
+                        push(Core.AddObjects(target, rhs));
+                    break;
+                }
+                case Opcode.InSub:
+                {
+                    EpObject target = pop(), rhs = pop();
+                    if (Core.TryInPlaceSubtract(target, rhs, out var res))
+                        push(res);
+                    else
+                        push(Core.SubtractObjects(target, rhs));
+                    break;
+                }
+                case Opcode.InMul:
+                {
+                    EpObject target = pop(), rhs = pop();
+                    if (Core.TryInPlaceMultiply(target, rhs, out var res))
+                        push(res);
+                    else
+                        push(Core.MultiplyObjects(target, rhs));
+                    break;
+                }
+                case Opcode.InTDiv:
+                {
+                    EpObject target = pop(), rhs = pop();
+                    if (Core.TryInPlaceTrueDivide(target, rhs, out var res))
+                        push(res);
+                    else
+                        push(Core.TrueDivideObjects(target, rhs));
+                    break;
+                }
+                case Opcode.InMod:
+                {
+                    EpObject target = pop(), rhs = pop();
+                    if (Core.TryInPlaceModule(target, rhs, out var res))
+                        push(res);
+                    else
+                        push(Core.ModuleObjects(target, rhs));
                     break;
                 }
 
-                case Opcode.StVar:
-                    environment.Module.Bind(code.VarNames[current.Immediate16], frame[current.RegDest]);
-                    break;
-
-                case Opcode.Ret:
-                    result = frame[current.RegDest];
-                    frame.Clear();
-                    stop = true;
-                    break;
-
-                case Opcode.RetC:
-                    result = code.Constants[current.Immediate16];
-                    frame.Clear();
-                    stop = true;
-                    break;
+                #endregion
+                #region Special operations
 
                 case Opcode.Call:
                 {
-                    var arguments = frame.Slice(current.RegDest + 1, current.RegSrc2);
-                    var func = frame[current.RegSrc1];
-                    frame[current.RegDest] = Core.CallObject(func, arguments);
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int argCount = getAndErase(ref extendedArgsRegister);
+
+                    var callValues = stack.AsSpan(stackPointer - argCount - 1, argCount + 1);
+
+                    var args = callValues[1..];
+                    var function = callValues[0];
+
+                    Debug.Assert(function != null);
+                    Debug.Assert(!args.Contains(null));
+
+                    var res = Core.CallObject(function, args!);
+
+                    stackPointer -= argCount + 1;
+                    callValues.Clear();
+
+                    push(res);
                     break;
                 }
-
-                case Opcode.Move:
-                    frame[current.RegDest] = frame[current.RegSrc1];
+                case Opcode.Ret:
+                    ret = pop();
+                    stop = true;
                     break;
 
-                case Opcode.Brc:
-                    programCounter += current.Immediate16;
-                    goto nextInstruction;
+                case Opcode.BrcForw:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
 
-                case Opcode.BrTr:
-                    if (Core.ConvertToBool(frame[current.RegDest]))
+                    int jumpDelta = getAndErase(ref extendedArgsRegister);
+
+                    programCounter += jumpDelta;
+
+                    break;
+                }
+                case Opcode.BrcBack:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int jumpDelta = getAndErase(ref extendedArgsRegister);
+
+                    programCounter -= jumpDelta;
+
+                    break;
+                }
+                case Opcode.BrPopTr:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int jumpDelta = getAndErase(ref extendedArgsRegister);
+
+                    var value = pop();
+                    if (Core.ConvertToBool(value))
                     {
-                        programCounter += current.Immediate16;
-                        goto nextInstruction;
+                        programCounter += jumpDelta;
                     }
                     break;
+                }
+                case Opcode.BrPopFl:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
 
-                case Opcode.BrFl:
-                    if (!Core.ConvertToBool(frame[current.RegDest]))
+                    int jumpDelta = getAndErase(ref extendedArgsRegister);
+
+                    var value = pop();
+                    if (!Core.ConvertToBool(value))
                     {
-                        programCounter += current.Immediate16;
-                        goto nextInstruction;
+                        programCounter += jumpDelta;
                     }
                     break;
+                }
+                case Opcode.BrPeekTr:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
 
+                    int jumpDelta = getAndErase(ref extendedArgsRegister);
+
+                    var value = peek();
+                    if (Core.ConvertToBool(value))
+                    {
+                        programCounter += jumpDelta;
+                    }
+                    break;
+                }
+                case Opcode.BrPeekFl:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int jumpDelta = getAndErase(ref extendedArgsRegister);
+
+                    var value = peek();
+                    if (!Core.ConvertToBool(value))
+                    {
+                        programCounter += jumpDelta;
+                    }
+                    break;
+                }
                 case Opcode.BindFun:
                 {
-                    var dest = frame[current.RegDest];
+                    var value = peek();
 
-                    if (dest is not EpFunction function)
-                    {
-                        throw new InvalidOperationException($"Cannot bind environment: object is not a function: {dest}");
-                    }
+                    if (value is not EpFunction function)
+                        throw new InvalidCodeException("value is not a function");
 
                     // TODO: add some stuff with cells etc
                     function.Environment = environment;
-
                     break;
                 }
 
-                // Register-to-register section
-                case Opcode.Add:
-                    frame[current.RegDest] = Core.AddObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
+                #endregion
+                #region Load/Store operations
 
-                case Opcode.Sub:
-                    frame[current.RegDest] = Core.SubtractObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.Mul:
-                    frame[current.RegDest] = Core.MultiplyObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.TDiv:
-                    frame[current.RegDest] = Core.TrueDivideObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.Mod:
-                    frame[current.RegDest] = Core.ModuleObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.Eq:
-                    frame[current.RegDest] = Core.EqualObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.NEq:
-                    frame[current.RegDest] = Core.NotEqualObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.LsTh:
-                    frame[current.RegDest] = Core.LessThanObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.GrTh:
-                    frame[current.RegDest] = Core.GreaterThanObjects(frame[current.RegSrc1], frame[current.RegSrc2]);
-                    break;
-
-                case Opcode.InAdd:
+                case Opcode.LdConst:
                 {
-                    if (!Core.TryInPlaceAdd(frame[current.RegDest], frame[current.RegSrc1], out var value))
-                    {
-                        value = Core.AddObjects(frame[current.RegDest], frame[current.RegSrc1]);
-                    }
-                    frame[current.RegDest] = value;
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int constantIndex = getAndErase(ref extendedArgsRegister);
+
+                    push(code.Constants[constantIndex]);
                     break;
                 }
-
-                case Opcode.InSub:
+                case Opcode.LdArg:
                 {
-                    if (!Core.TryInPlaceSubtract(frame[current.RegDest], frame[current.RegSrc1], out var value))
-                    {
-                        value = Core.SubtractObjects(frame[current.RegDest], frame[current.RegSrc1]);
-                    }
-                    frame[current.RegDest] = value;
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int argumentIndex = getAndErase(ref extendedArgsRegister);
+
+                    push(arguments[argumentIndex]);
                     break;
                 }
-
-                case Opcode.InMul:
+                case Opcode.LdVar:
                 {
-                    if (!Core.TryInPlaceMultiply(frame[current.RegDest], frame[current.RegSrc1], out var value))
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int nameIndex = getAndErase(ref extendedArgsRegister);
+                    string name = code.VarNames[nameIndex];
+
+                    var var = environment.SearchVariable(name);
+                    if (var == null)
                     {
-                        value = Core.MultiplyObjects(frame[current.RegDest], frame[current.RegSrc1]);
+                        throw new NotImplementedException("Errors in engine.");
                     }
-                    frame[current.RegDest] = value;
+                    else
+                        push(var);
                     break;
                 }
-
-                case Opcode.InTDiv:
+                case Opcode.StVar:
                 {
-                    if (!Core.TryInPlaceTrueDivide(frame[current.RegDest], frame[current.RegSrc1], out var value))
-                    {
-                        value = Core.TrueDivideObjects(frame[current.RegDest], frame[current.RegSrc1]);
-                    }
-                    frame[current.RegDest] = value;
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int nameIndex = getAndErase(ref extendedArgsRegister);
+                    string name = code.VarNames[nameIndex];
+
+                    environment.Module.Bind(name, pop());
                     break;
                 }
-
-                case Opcode.InMod:
+                case Opcode.LdLocal:
                 {
-                    if (!Core.TryInPlaceModule(frame[current.RegDest], frame[current.RegSrc1], out var value))
-                    {
-                        value = Core.ModuleObjects(frame[current.RegDest], frame[current.RegSrc1]);
-                    }
-                    frame[current.RegDest] = value;
-                    break;
+                    throw new NotImplementedException("LdLocal");
+                }
+                case Opcode.StLocal:
+                {
+                    throw new NotImplementedException("StLocal");
+                }
+                case Opcode.LdCell:
+                {
+                    throw new NotImplementedException("LdCell");
+                }
+                case Opcode.StCell:
+                {
+                    throw new NotImplementedException("StCell");
                 }
 
-                default:
-                    throw new InvalidOperationException($"Invalid opcode value: {current.Opcode}");
+                #endregion
+                #region Extended arguments
+
+                case Opcode.Ext1:
+                    addExtendedArg(ref extendedArgsRegister, 1, current.Argument);
+                    break;
+
+                case Opcode.Ext2:
+                    addExtendedArg(ref extendedArgsRegister, 2, current.Argument);
+                    break;
+
+                case Opcode.Ext3:
+                    addExtendedArg(ref extendedArgsRegister, 3, current.Argument);
+                    break;
+
+                #endregion
             }
 
             programCounter += 1;
         }
 
-        stackCount -= code.StackSize;
-        return result;
+        return ret;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private EpObject pop()
+    {
+        if (stackPointer < 1)
+            throw new InvalidOperationException("Cannot pop from stack: no values");
+
+        stackPointer -= 1;
+        var value = stack[stackPointer] ?? throw new NullReferenceException("Value on stack is null");
+        stack[stackPointer] = null;
+        return value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private EpObject peek()
+    {
+        if (stackPointer < 1)
+            throw new InvalidOperationException("Cannot peek on stack: no values");
+
+        var value = stack[stackPointer - 1] ?? throw new NullReferenceException("Value on stack is null");
+        return value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void push(EpObject value)
+    {
+        Debug.Assert(value != null);
+
+        if (stackPointer < stack.Length)
+        {
+            stack[stackPointer] = value;
+            stackPointer += 1;
+        }
+        else
+        {
+            throw new EngineOverflowException(stack.Length);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void addExtendedArg(ref int register, int octet, byte value)
+    {
+        Debug.Assert(octet is >= 0 and <= 3);
+
+        register |= value << (octet * 8);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int getAndErase(ref int register)
+    {
+        int value = register;
+        register = 0;
+        return value;
     }
 }

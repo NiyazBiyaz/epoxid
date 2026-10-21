@@ -1,252 +1,113 @@
-using System.Buffers;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
 using Epoxid.Runtime.Objects;
 using Epoxid.SyntaxAnalysis;
 using Epoxid.SyntaxAnalysis.Common;
-using Epoxid.SyntaxAnalysis.Common.Ast;
 using Epoxid.SyntaxAnalysis.Tokens;
-using Epoxid.VM;
 
 namespace Epoxid.CodeGen;
 
-internal class BlockGenerator
+internal static class BlockGenerator
 {
-    private readonly Stack<IntermediateLoop> loops = [];
-    private readonly Dictionary<string, Variable> variables = [];
-
-    private bool inLoop => loops.Count > 0;
-
-    private readonly IEnumerable<IStatementView> blockStatements;
-    private readonly bool isFunction;
-
-    public BlockGenerator(FileView file)
+    public static void Generate(CodeBuilder builder, FileView module)
     {
-        blockStatements = file.Statements;
+        generateStatements(builder, module.Statements);
 
-        scanVariables(true);
-    }
-
-    public BlockGenerator(BlockView block, Dictionary<string, Variable> closureVariables, bool isFunction)
-    {
-        blockStatements = block.GetStatements();
-        variables = closureVariables;
-        this.isFunction = isFunction;
-
-        scanVariables(false);
-    }
-
-    private void scanVariables(bool initGlobal)
-    {
-        var topLevelStmts = blockStatements.GetTopLevelStatements().ToImmutableArray();
-
-        var locallyAssigned = topLevelStmts
-            .SelectMany(stmt => stmt switch
-            {
-                ClassDefView classDef => [classDef],
-                FunctionDefView functionDef => [functionDef],
-                _ => stmt.ChildrenAndSelf(),
-            })
-            .SelectMany<IRedView, string>(ast => ast switch
-            {
-                AssignmentExpressionView assignmentExpression => [assignmentExpression.Target.RawString],
-                AssignmentView assignment => assignment switch
-                {
-                    SimpleAssignmentView simple => [simple.Target.RawString],
-
-                    AugmentedAssignmentView augAssign => augAssign.Target switch
-                    {
-                        NameSingleTargetView name => [name.Value.RawString],
-
-                        CompositeSingleTargetView composite => throw new NotImplementedException(),
-
-                        GroupedTargetView grouped => throw new NotImplementedException(),
-
-                        _ => throw new UnreachableException()
-                    },
-
-                    AnnotatedParenthesizedAssignmentView view => throw new NotImplementedException(),
-                    CascadeAssignmentView view => throw new NotImplementedException(),
-                    AnnotatedAssignmentView view => throw new NotImplementedException(),
-                    AnnotatedSubscriptAttributeAssignmentView view => throw new NotImplementedException(),
-                    _ => throw new UnreachableException(),
-                },
-
-                FunctionDefView func => [func.Name.RawString],
-
-                ClassDefView classDef => [classDef.Name.RawString],
-
-                _ => [],
-            })
-            .ToHashSet();
-
-        foreach (var name in locallyAssigned)
+        if (builder.RequiresReturnNone)
         {
-            var variable = new Variable()
-            {
-                Name = name,
-                Kind = initGlobal ? VariableKind.Global : VariableKind.Local,
-            };
-            variables.Add(name, variable);
-        }
-
-        if (!isFunction)
-            return;
-
-        foreach (var funcOrClassDef in topLevelStmts)
-        {
-            if (funcOrClassDef is FunctionDefView funcDef)
-            {
-                // TODO
-            }
-            else if (funcOrClassDef is ClassDefView classDef)
-            {
-                // TODO
-            }
+            builder.LdConst(CodeBuilder.NoneConstantIndex);
+            builder.Ret();
         }
     }
 
-    public void GenerateModule(CodeBuilder builder)
+    private static void generateStatements(CodeBuilder builder, IEnumerable<IStatementView> statements)
     {
-        foreach (var variable in variables.Values)
+        foreach (var stmt in statements)
         {
-            if (variable.Kind == VariableKind.Local)
+            switch (stmt)
             {
-                variable.Register = builder.AllocateRegister();
-            }
-        }
-
-        generateStatements(builder, blockStatements);
-        builder.RetC(CodeBuilder.NoneConstantIndex);
-    }
-
-    public void GenerateFunction(CodeBuilder builder)
-    {
-        foreach (var variable in variables.Values)
-        {
-            if (variable.Kind == VariableKind.Local && variable.ParameterPosition == null)
-            {
-                variable.Register = builder.AllocateRegister();
-            }
-        }
-
-        generateStatements(builder, blockStatements);
-
-        if (!builder.CanBeCompleted)
-        {
-            builder.RetC(CodeBuilder.NoneConstantIndex);
-        }
-    }
-
-    private void generateStatements(CodeBuilder builder, IEnumerable<IStatementView> statements)
-    {
-        foreach (var statement in statements)
-        {
-            switch (statement)
-            {
-                case SingleSimpleStatementView singleSimple:
-                {
-                    generateSimpleStatement(builder, singleSimple.Value);
+                case SingleSimpleStatementView single:
+                    simpleStatement(builder, single.Value);
                     break;
-                }
-                case SeparatedSimpleStatementsView separatedSimples:
-                {
-                    foreach (var simple in separatedSimples.Values)
+
+                case SeparatedSimpleStatementsView separated:
+                    foreach (var simple in separated.Values)
                     {
-                        generateSimpleStatement(builder, simple);
+                        simpleStatement(builder, simple);
                     }
                     break;
-                }
+
+                case FunctionDefView function:
+                    throw new NotImplementedException();
+
+                case ClassDefView classDef:
+                    throw new NotImplementedException();
+
                 case IfStatementView ifStmt:
                 {
-                    var elseLabel = new Label();
-                    var endLabel = new Label();
+                    var elseLabel = builder.CreateLabel();
+                    var endLabel = builder.CreateLabel();
 
-                    var conditionRegister = getExpressionRegister(builder, ifStmt.Condition);
-                    builder.BrFl(elseLabel, conditionRegister);
-                    generateStatements(builder, ifStmt.Block.GetStatements());
-                    builder.Brc(endLabel);
+                    namedExpression(builder, ifStmt.Condition);
+                    builder.BrPopFl(elseLabel);
+
+                    generateBlock(builder, ifStmt.Block);
+                    builder.BrcForw(endLabel);
 
                     foreach (var elif in ifStmt.Elifs)
                     {
                         builder.PutLabel(elseLabel);
-                        elseLabel = new Label();
-                        conditionRegister = getExpressionRegister(builder, elif.Condition);
-                        builder.BrFl(elseLabel, conditionRegister);
-                        generateStatements(builder, elif.Block.GetStatements());
-                        builder.Brc(endLabel);
+                        elseLabel = builder.CreateLabel();
+
+                        namedExpression(builder, elif.Condition);
+                        builder.BrPopFl(elseLabel);
+
+                        generateBlock(builder, elif.Block);
+                        builder.BrcForw(endLabel);
                     }
 
                     builder.PutLabel(elseLabel);
                     if (ifStmt.Else != null)
                     {
-                        generateStatements(builder, ifStmt.Else.Block.GetStatements());
+                        generateBlock(builder, ifStmt.Else.Block);
                     }
-
                     builder.PutLabel(endLabel);
 
                     break;
                 }
                 case WhileStatementView whileStmt:
                 {
-                    var headLabel = new Label();
-                    var elseLabel = new Label();
-                    var endLabel = new Label();
-                    beginLoop(builder, new IntermediateLoop(headLabel, endLabel));
+                    var headLabel = builder.CreateLabel();
+                    var elseLabel = builder.CreateLabel();
+                    var endLabel = builder.CreateLabel();
+
+                    builder.BeginLoop(new Loop(headLabel, endLabel));
 
                     builder.PutLabel(headLabel);
-                    var conditionRegister = getExpressionRegister(builder, whileStmt.Condition);
-                    builder.BrFl(elseLabel, conditionRegister);
+                    namedExpression(builder, whileStmt.Condition);
+                    builder.BrPopFl(elseLabel);
 
-                    generateStatements(builder, whileStmt.Block.GetStatements());
-
-                    endLoop(builder);
-
-                    builder.Brc(headLabel, true);
+                    generateBlock(builder, whileStmt.Block);
+                    builder.BrcBack(headLabel);
 
                     builder.PutLabel(elseLabel);
                     if (whileStmt.Else != null)
                     {
-                        generateStatements(builder, whileStmt.Else.Block.GetStatements());
+                        generateBlock(builder, whileStmt.Else.Block);
                     }
-
                     builder.PutLabel(endLabel);
 
-                    break;
-                }
-                case FunctionDefView functionDef:
-                {
-                    string functionName = functionDef.Name.RawString;
-
-                    var variable = variables[functionName];
-
-                    if (functionDef.AsyncKeyword != null)
-                        throw new NotImplementedException();
-
-                    var funcGenerator = new FunctionGenerator();
-
-                    var variablesCopy = variables.ToDictionary();
-
-                    var code = funcGenerator.GenerateCodeObject(functionDef, variablesCopy);
-                    var function = new EpFunction(functionName, code)
-                    {
-                        ParamsDescription = funcGenerator.GetParamsDescription(),
-                    };
-
-                    var functionConstant = builder.AddConstant(function);
-                    var functionRegister = variable.Register ?? builder.AllocateRegister();
-                    builder.LdConst(functionRegister, functionConstant);
-                    builder.BindFun(functionRegister);
-                    storeVariable(builder, variable, functionRegister);
+                    builder.EndLoop();
 
                     break;
                 }
+                case ForStatementView forStmt:
+                    throw new NotImplementedException();
 
-                case ClassDefView:
-                case ForStatementView:
-                case TryStatementView:
-                case WithStatementView:
+                case TryStatementView tryStmt:
+                    throw new NotImplementedException();
+
+                case WithStatementView withStmt:
                     throw new NotImplementedException();
 
                 default:
@@ -255,515 +116,593 @@ internal class BlockGenerator
         }
     }
 
-    private void generateSimpleStatement(CodeBuilder builder, ISimpleStatementView statement)
+    private static void generateBlock(CodeBuilder builder, BlockView block) => generateStatements(builder, block.GetStatements());
+
+    private static void simpleStatement(CodeBuilder builder, ISimpleStatementView stmt)
     {
-        switch (statement)
+        switch (stmt)
         {
-            case SimpleAssignmentView simpleAssignment:
+            // TODO: remove simple assignment
+            case SimpleAssignmentView simple:
             {
-                if (simpleAssignment.Rhs.Value is not IExpressionView expression)
-                {
-                    throw new NotImplementedException();
-                }
-
-                var variable = variables[simpleAssignment.Target.RawString];
-
-                var result = getExpressionRegister(builder, expression, variable.Register);
-                storeVariable(builder, variable, result);
-
+                string name = simple.Target.RawString;
+                annotatedRhs(builder, simple.Rhs.Value);
+                storeVariable(builder, name);
                 break;
             }
-            case AugmentedAssignmentView augAssignment:
-            {
-                if (augAssignment.Rhs is not IExpressionView expression)
-                {
-                    throw new NotImplementedException();
-                }
-
-                if (augAssignment.Target is NameSingleTargetView name)
-                {
-                    var variable = variables[name.Value.RawString];
-
-                    var lhs = variable.Register ?? getVariable(builder, name.Value.RawString);
-                    var rhs = getExpressionRegister(builder, expression);
-
-                    var inPlaceResult = augAssignment.Operator.Type switch
-                    {
-                        TokenType.PlusEqual => builder.InAdd(lhs, rhs),
-                        TokenType.MinusEqual => builder.InSub(lhs, rhs),
-                        TokenType.StarEqual => builder.InMul(lhs, rhs),
-                        TokenType.SlashEqual => builder.InTDiv(lhs, rhs),
-                        TokenType.PercentEqual => builder.InMod(lhs, rhs),
-                        _ => throw new NotImplementedException(),
-                    };
-
-                    storeVariable(builder, variable, inPlaceResult);
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-
+            case AugmentedAssignmentView augAssign:
+                augmentedAssignment(builder, augAssign.Target, augAssign.Rhs, augAssign.Operation);
                 break;
-            }
-            case BreakStatementView:
-            {
-                if (!loops.TryPeek(out var loop))
-                {
-                    throw new SyntaxErrorException("Invalid program: 'break' outside of loop");
-                }
-
-                builder.Brc(loop.EndLabel);
-
-                break;
-            }
-            case ContinueStatementView:
-            {
-                if (!loops.TryPeek(out var loop))
-                {
-                    throw new SyntaxErrorException("Invalid program: 'continue' outside of loop");
-                }
-
-                builder.Brc(loop.HeadLabel, true);
-
-                break;
-            }
-            case IExpressionView expression:
-                getExpressionRegister(builder, expression);
-                break;
-
-            case ReturnStatementView returnStmt:
-            {
-                if (returnStmt.Expression is not IExpressionView expression)
-                {
-                    throw new NotImplementedException();
-                }
-
-                var result = getExpressionRegister(builder, expression);
-
-                builder.Ret(result);
-                break;
-            }
 
             case PassStatementView:
                 break;
 
-            case IImportStatementView:
-            case AnnotatedSubscriptAttributeAssignmentView:
-            case AnnotatedParenthesizedAssignmentView:
-            case AnnotatedAssignmentView:
-            case CascadeAssignmentView:
-            case YieldStatementView:
-            case TypeAliasView:
-            case GlobalStatementView:
-            case AssertStatementView:
-            case NonlocalStatementView:
-            case RaiseStatementView:
-            case DeleteStatementView:
-            case StarExpressionsView:
-            case StarBitwiseOrExpressionView:
+            case ReturnStatementView ret:
+            case BreakStatementView brk:
+            case ContinueStatementView cont:
                 throw new NotImplementedException();
+
+            case IStarExpressionView starred:
+                starExpression(builder, starred);
+                break;
+
+            case StarExpressionsView starredMany:
+                starExpression(builder, starredMany);
+                break;
+
+            case AssertStatementView:
+            case IImportStatementView:
+            case RaiseStatementView:
+            case NonlocalStatementView:
+            case TypeAliasView:
+            case DeleteStatementView:
+            case YieldStatementView:
+            case GlobalStatementView:
+                throw new NotImplementedException();
+
+            case AnnotatedSubscriptAttributeAssignmentView:
+            case AnnotatedAssignmentView:
+            case AnnotatedParenthesizedAssignmentView:
+            case CascadeAssignmentView:
+                throw new NotImplementedException();
+
+            default:
+                throw new UnreachableException();
+        }
+        builder.ClearStack(stmt);
+    }
+
+    private static void augmentedAssignment(CodeBuilder builder, SingleTargetView target, IAnnotatedRhsView rhs, AugmentedAssignment operation)
+    {
+        switch (target)
+        {
+            case NameSingleTargetView nameTarget:
+            {
+                string name = nameTarget.Value.RawString;
+                loadVariable(builder, name);
+                annotatedRhs(builder, rhs);
+                augmentedAssignmentOperation(builder, operation);
+                storeVariable(builder, name);
+                break;
+            }
+            case GroupedTargetView grouped:
+                augmentedAssignment(builder, grouped.Target, rhs, operation);
+                break;
+
+            case CompositeSingleTargetView composite:
+                throw new NotImplementedException();
+
             default:
                 throw new UnreachableException();
         }
     }
 
-    private Register getExpressionRegister(CodeBuilder builder, INamedExpressionView expression, Register? resultRegister = null)
+    private static void augmentedAssignmentOperation(CodeBuilder builder, AugmentedAssignment operation)
     {
-        resultRegister ??= builder.AllocateRegister();
-
-        switch (expression)
+        switch (operation)
         {
-            case AssignmentExpressionView assignment:
+            case AugmentedAssignment.Add:
+                builder.InAdd();
+                break;
+            case AugmentedAssignment.Subtract:
+                builder.InSub();
+                break;
+            case AugmentedAssignment.Multiply:
+                builder.InMul();
+                break;
+            case AugmentedAssignment.MatrixMultiply:
+                throw new NotImplementedException();
+            case AugmentedAssignment.TrueDivide:
+                builder.InTDiv();
+                break;
+            case AugmentedAssignment.FloorDivide:
+                throw new NotImplementedException();
+            case AugmentedAssignment.Module:
+                builder.InMod();
+                break;
+            case AugmentedAssignment.Power:
+                throw new NotImplementedException();
+            case AugmentedAssignment.LeftShift:
+                throw new NotImplementedException();
+            case AugmentedAssignment.RightShift:
+                throw new NotImplementedException();
+            case AugmentedAssignment.BitwiseAnd:
+                throw new NotImplementedException();
+            case AugmentedAssignment.BitwiseXor:
+                throw new NotImplementedException();
+            case AugmentedAssignment.BitwiseOr:
+                throw new NotImplementedException();
+            default:
+                throw new UnreachableException($"Invalid AugmentedAssignment value: {operation}");
+        }
+    }
+
+    private static void storeVariable(CodeBuilder builder, string name)
+    {
+        var variable = builder.SymbolTable.Symbols[name];
+        switch (variable.Kind)
+        {
+            case VariableKind.Local:
             {
-                var variable = variables[assignment.Target.RawString];
-                var result = getExpressionRegister(builder, assignment.Value, variable.Register);
-                storeVariable(builder, variable, result);
+                int index = builder.AddVariable(variable.Name);
+                builder.StLocal(index);
                 break;
             }
-            case IfExpressionView ifExpression:
+            case VariableKind.Cell:
             {
-                var elseLabel = new Label();
-                var endLabel = new Label();
+                int index = builder.AddVariable(variable.Name);
+                builder.StCell(index);
+                break;
+            }
+            case VariableKind.GlobalExplicit:
+            {
+                int index = builder.AddVariable(variable.Name);
+                builder.StVar(index);
+                break;
+            }
+            case VariableKind.GlobalImplicit:
+            case VariableKind.Free:
+                throw new UnreachableException($"Invalid VariableKind value in this context: {variable.Kind}");
 
-                var conditionRegister = getExpressionRegister(builder, ifExpression.Condition);
-                builder.BrFl(elseLabel, conditionRegister);
-                resultRegister = getExpressionRegister(builder, ifExpression.Then);
-                builder.Brc(endLabel);
+            default:
+                throw new UnreachableException($"Invalid VariableKind value: {variable.Kind}");
+        }
+    }
+
+    private static void annotatedRhs(CodeBuilder builder, IAnnotatedRhsView rhs)
+    {
+        switch (rhs)
+        {
+            case IStarExpressionView star:
+                starExpression(builder, star);
+                break;
+
+            case StarExpressionsView stars:
+                starExpression(builder, stars);
+                break;
+
+            case YieldExpressionView yield:
+                throw new NotImplementedException();
+
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    private static void starExpression(CodeBuilder builder, StarExpressionsView starred) => throw new NotImplementedException();
+
+    private static void starExpression(CodeBuilder builder, IStarExpressionView starred)
+    {
+        switch (starred)
+        {
+            case IExpressionView expr:
+                namedExpression(builder, expr);
+                break;
+
+            case StarBitwiseOrExpressionView starredBitwiseOr:
+                throw new NotImplementedException();
+
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    private static void namedExpression(CodeBuilder builder, INamedExpressionView expr)
+    {
+        switch (expr)
+        {
+            case IfExpressionView ifExpr:
+            {
+                var elseLabel = builder.CreateLabel();
+                var endLabel = builder.CreateLabel();
+
+                namedExpression(builder, ifExpr.Condition);
+                builder.BrPopFl(elseLabel);
+                namedExpression(builder, ifExpr.Then);
+                builder.BrcForw(endLabel);
 
                 builder.PutLabel(elseLabel);
-                var elseResultRegister = getExpressionRegister(builder, ifExpression.Else);
-                builder.Move(resultRegister, elseResultRegister);
-
+                namedExpression(builder, ifExpr.Else);
                 builder.PutLabel(endLabel);
 
                 break;
             }
-            case DisjunctionView disjunction:
-            {
-                var shortCircuit = new Label();
-                foreach (var conj in disjunction.Conjunctions)
-                {
-                    var expressionRegister = generateConjunction(builder, conj);
-                    builder.Move(resultRegister, expressionRegister);
-                    builder.BrTr(shortCircuit, resultRegister);
-                }
-                builder.PutLabel(shortCircuit);
+            case AssignmentExpressionView assignmentExpression:
+                throw new NotImplementedException();
+
+            case DisjunctionView disj:
+                disjunction(builder, disj);
                 break;
-            }
-            case BitwiseOrView bitwiseOr:
-            case BitwiseXorView bitwiseXor:
-            case BitwiseAndView bitwiseAnd:
-            case BitShiftView bitShift:
+
+            case BitwiseOrView bOr:
+                throw new NotImplementedException();
+
+            case BitwiseXorView bXor:
+                throw new NotImplementedException();
+
+            case BitwiseAndView bAnd:
+                throw new NotImplementedException();
+
+            case BitShiftView bShift:
                 throw new NotImplementedException();
 
             case SumView sum:
             {
-                var left = getExpressionRegister(builder, sum.Left);
-                var right = getExpressionRegister(builder, sum.Right);
-                var opcode = sum.Operator.Type switch
+                namedExpression(builder, sum.Left);
+                namedExpression(builder, sum.Right);
+                switch (sum.Operator.Type)
                 {
-                    TokenType.Plus => Opcode.Add,
-                    TokenType.Minus => Opcode.Sub,
-                    _ => throw new UnreachableException(),
-                };
-
-                builder.RegisterToRegister(opcode, resultRegister, left, right);
+                    case TokenType.Plus:
+                        builder.Add();
+                        break;
+                    case TokenType.Minus:
+                        builder.Sub();
+                        break;
+                    default:
+                        throw new UnreachableException();
+                }
                 break;
             }
             case TermView term:
             {
-                var left = getExpressionRegister(builder, term.Left);
-                var right = getExpressionRegister(builder, term.Right);
-                var opcode = term.Operator.Type switch
+                namedExpression(builder, term.Left);
+                namedExpression(builder, term.Right);
+                switch (term.Operator.Type)
                 {
-                    TokenType.Star => Opcode.Mul,
-                    TokenType.Slash => Opcode.TDiv,
-                    TokenType.Percent => Opcode.Mod,
-                    TokenType.DoubleSlash => throw new NotImplementedException(),
-                    TokenType.At => throw new NotImplementedException(),
-                    _ => throw new UnreachableException(),
-                };
-
-                builder.RegisterToRegister(opcode, resultRegister, left, right);
+                    case TokenType.Star:
+                        builder.Mul();
+                        break;
+                    case TokenType.Slash:
+                        builder.TDiv();
+                        break;
+                    case TokenType.Percent:
+                        builder.Mod();
+                        break;
+                    case TokenType.DoubleSlash:
+                        throw new NotImplementedException();
+                    case TokenType.At:
+                        throw new NotImplementedException();
+                    default:
+                        throw new UnreachableException();
+                }
                 break;
             }
             case FactorView factor:
+                throw new NotImplementedException();
             case PowerView power:
-            case DotOperationPrimaryView dotPrimary:
-            case SubscriptPrimaryView subscript:
-            case CallWithGeneratorPrimaryView callGenerator:
                 throw new NotImplementedException();
 
-            case CallWithArgumentsPrimaryView callArgs:
+            case AtomPrimaryView atomPrimary:
+                atom(builder, atomPrimary.Atom);
+                break;
+
+            case SubscriptPrimaryView subscript:
+                throw new NotImplementedException();
+
+            case DotOperationPrimaryView attr:
             {
-                var funcRegister = getExpressionRegister(builder, callArgs.Function);
+                int attrNameIndex = builder.AddVariable(attr.Right.RawString);
 
-                Register[] argRegistersArray = [];
-                Span<Register> argRegisters = default;
-                bool shouldReturnArray = false;
-                try
-                {
-                    switch (callArgs.Arguments)
-                    {
-                        case null:
-                            break;
-
-                        case ArgumentsWithOnlyKeywordsView onlyKeywords:
-                        {
-                            throw new NotImplementedException();
-                        }
-
-                        case ArgumentsWithPositionalView positional:
-                        {
-                            if (positional.KeywordArgumentsPart != null)
-                            {
-                                throw new NotImplementedException();
-                            }
-
-                            int argsSize = positional.PositionalArgumentsPart.Length;
-                            argRegistersArray = ArrayPool<Register>.Shared.Rent(argsSize);
-                            argRegisters = argRegistersArray.AsSpan(0, argsSize);
-                            shouldReturnArray = true;
-
-                            for (int i = 0; i < argsSize; i++)
-                            {
-                                argRegisters[i] = positional.PositionalArgumentsPart[i] switch
-                                {
-                                    INamedExpressionView named => getExpressionRegister(builder, named),
-                                    StarredExpressionView => throw new NotImplementedException(),
-                                    _ => throw new UnreachableException(),
-                                };
-                            }
-
-                            break;
-                        }
-                        default:
-                            throw new UnreachableException();
-                    }
-
-                    // Place all call stuff in a row
-                    int callId = builder.BeginNewCall();
-                    int relativeRegisterAddress = 0;
-                    int callSize = 2 + argRegisters.Length;
-                    funcRegister = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), funcRegister);
-
-                    resultRegister.CallId = callId;
-                    resultRegister.CallRelativeAddress = relativeRegisterAddress++;
-                    resultRegister.CallCount = callSize;
-                    builder.LdConst(resultRegister, CodeBuilder.NoneConstantIndex);
-
-                    for (int i = 0; i < argRegisters.Length; i++)
-                    {
-                        argRegisters[i] = builder.Move(builder.AllocateRegister(callId, relativeRegisterAddress++, callSize), argRegisters[i]);
-                    }
-                }
-                finally
-                {
-                    if (shouldReturnArray)
-                        ArrayPool<Register>.Shared.Return(argRegistersArray);
-                }
-
-                builder.Call(funcRegister, resultRegister, argRegisters.Length);
+                namedExpression(builder, attr.Left);
+                builder.GAttr(attrNameIndex);
                 break;
             }
+            case CallWithArgumentsPrimaryView call:
+                callPrimary(builder, call);
+                break;
 
-            case AtomPrimaryView atom:
-            {
-                return atom.Atom switch
-                {
-                    NamedGroupExpressionView namedGroupExpression => getExpressionRegister(builder, namedGroupExpression.Value),
-
-                    YieldGroupExpressionView yieldGroupExpression => throw new NotImplementedException(),
-
-                    NameAtomView nameAtom => getVariable(builder, nameAtom.Value.RawString),
-
-                    NumberAtomView number => builder.LdConst(resultRegister,
-                        builder.AddConstant(NumberParser.GetNumberType(number.Value.RawString) switch
-                        {
-                            NumberType.Integer => (EpInteger)NumberParser.ParseInteger(number.Value.RawString),
-                            NumberType.Float => (EpFloat)NumberParser.ParseFloat(number.Value.RawString),
-                            // TODO: (EpComplex)NumberParser.ParseComplex(number.Value.RawString),
-                            NumberType.Complex => throw new NotImplementedException(),
-                            _ => throw new UnreachableException(),
-                        })),
-
-                    StringValueAtomView str => loadString(builder, resultRegister, str),
-
-                    StringTemplateAtomView tStr => throw new NotImplementedException(),
-
-                    NoneAtomView => builder.LdConst(resultRegister, CodeBuilder.NoneConstantIndex),
-                    TrueAtomView => builder.LdConst(resultRegister, CodeBuilder.TrueConstantIndex),
-                    FalseAtomView => builder.LdConst(resultRegister, CodeBuilder.FalseConstantIndex),
-                    EllipsisAtomView => builder.LdConst(resultRegister, CodeBuilder.EllipsisConstantIndex),
-
-                    TupleView tuple => throw new NotImplementedException(),
-                    GeneratorExpressionView generatorExpr => throw new NotImplementedException(),
-
-                    ListView list => throw new NotImplementedException(),
-                    ListComprehensionView listComp => throw new NotImplementedException(),
-
-                    DictView dict => throw new NotImplementedException(),
-                    DictComprehensionView dictComp => throw new NotImplementedException(),
-
-                    SetView set => throw new NotImplementedException(),
-                    SetComprehensionView setComp => throw new NotImplementedException(),
-
-                    _ => throw new UnreachableException()
-                };
-            }
+            case CallWithGeneratorPrimaryView generatorCall:
+                throw new NotImplementedException();
 
             default:
                 throw new UnreachableException();
         }
-
-        return resultRegister;
     }
 
-    private Register generateConjunction(CodeBuilder builder, ConjunctionView conj)
+    private static void disjunction(CodeBuilder builder, DisjunctionView disj)
     {
-        var shortCircuit = new Label();
-        var resultRegister = builder.AllocateRegister();
-        foreach (var inversion in conj.Inversions)
+        if (disj.Conjunctions.Length == 1)
         {
-            var expressionRegister = inversion switch
-            {
-                InversionView inv => generateInversion(builder, inv),
-                IComparisonExpressionView comparisonExpression => generateComparison(builder, comparisonExpression),
-                _ => throw new UnreachableException(),
-            };
-            builder.Move(resultRegister, expressionRegister);
-            builder.BrFl(shortCircuit, resultRegister);
+            conjunction(builder, disj.Conjunctions[0]);
+            return;
         }
-        builder.PutLabel(shortCircuit);
 
-        return resultRegister;
+        var shortWay = builder.CreateLabel();
+        bool insertBranch = false;
+        foreach (var conj in disj.Conjunctions)
+        {
+            if (insertBranch)
+            {
+                builder.BrPeekTr(shortWay);
+                insertBranch = true;
+            }
+            conjunction(builder, conj);
+        }
+        builder.PutLabel(shortWay);
     }
 
-    private Register generateInversion(CodeBuilder builder, InversionView inversion) => throw new NotImplementedException();
-
-    private Register generateComparison(CodeBuilder builder, IComparisonExpressionView comparisonExpression)
+    private static void conjunction(CodeBuilder builder, ConjunctionView conj)
     {
-        switch (comparisonExpression)
+        if (conj.Inversions.Length == 1)
         {
-            case IBitwiseOrExpressionView bitwiseOr:
-                return getExpressionRegister(builder, bitwiseOr);
+            inversion(builder, conj.Inversions[0]);
+            return;
+        }
+
+        var shortWay = builder.CreateLabel();
+        bool insertBranch = false;
+        foreach (var inv in conj.Inversions)
+        {
+            if (insertBranch)
+            {
+                builder.BrPeekFl(shortWay);
+                insertBranch = true;
+            }
+            inversion(builder, inv);
+        }
+        builder.PutLabel(shortWay);
+    }
+
+    private static void inversion(CodeBuilder builder, IInversionExpressionView inversion)
+    {
+        switch (inversion)
+        {
+            case InversionView inv:
+                throw new NotImplementedException();
 
             case ComparisonView comparison:
             {
-                var shortCircuit = new Label();
-                var resultRegister = builder.AllocateRegister();
+                namedExpression(builder, comparison.First);
 
-                var leftRegister = getExpressionRegister(builder, comparison.First);
-
-                foreach (var rhs in comparison.Rest)
+                foreach (var compare in comparison.Rest)
                 {
-                    var rightRegister = getExpressionRegister(builder, rhs.Operand);
-                    builder.RegisterToRegister(rhs.Operation switch
+                    namedExpression(builder, compare.Operand);
+
+                    switch (compare.Operation)
                     {
-                        CompareOperation.Equals => Opcode.Eq,
-                        CompareOperation.NotEquals => Opcode.NEq,
-                        CompareOperation.LessThan => Opcode.LsTh,
-                        CompareOperation.LessThanEquals => throw new NotImplementedException(),
-                        CompareOperation.GreaterThan => Opcode.GrTh,
-                        CompareOperation.GreaterThanEquals => throw new NotImplementedException(),
-                        CompareOperation.In => throw new NotImplementedException(),
-                        CompareOperation.NotIn => throw new NotImplementedException(),
-                        CompareOperation.Is => throw new NotImplementedException(),
-                        CompareOperation.IsNot => throw new NotImplementedException(),
+                        case CompareOperation.Equals:
+                            builder.Eq();
+                            break;
 
-                        _ => throw new UnreachableException(),
-                    }, resultRegister, leftRegister, rightRegister);
-                    builder.BrFl(shortCircuit, resultRegister);
+                        case CompareOperation.NotEquals:
+                            builder.NEq();
+                            break;
 
-                    leftRegister = rightRegister;
+                        case CompareOperation.LessThan:
+                            builder.LsTh();
+                            break;
+
+                        case CompareOperation.LessThanEquals:
+                            throw new NotImplementedException();
+
+                        case CompareOperation.GreaterThan:
+                            builder.GrTh();
+                            break;
+
+                        case CompareOperation.GreaterThanEquals:
+                            throw new NotImplementedException();
+
+                        case CompareOperation.In:
+                            throw new NotImplementedException();
+
+                        case CompareOperation.NotIn:
+                            throw new NotImplementedException();
+
+                        case CompareOperation.Is:
+                            throw new NotImplementedException();
+
+                        case CompareOperation.IsNot:
+                            throw new NotImplementedException();
+
+                        default:
+                            throw new UnreachableException();
+                    }
                 }
-
-                builder.PutLabel(shortCircuit);
-
-                return resultRegister;
+                break;
             }
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    private static void callPrimary(CodeBuilder builder, CallWithArgumentsPrimaryView call)
+    {
+        namedExpression(builder, call.Function);
+
+        int argCount = 0;
+        switch (call.Arguments)
+        {
+            case ArgumentsWithPositionalView withPositional:
+            {
+                foreach (var positional in withPositional.PositionalArgumentsPart)
+                {
+                    if (positional is INamedExpressionView named)
+                    {
+                        namedExpression(builder, named);
+                    }
+                    else if (positional is StarredExpressionView)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else
+                        throw new UnreachableException();
+                }
+                argCount = withPositional.PositionalArgumentsPart.Length;
+                break;
+            }
+            case ArgumentsWithOnlyKeywordsView:
+                throw new NotImplementedException();
+        }
+
+        builder.Call(argCount);
+    }
+
+    private static void atom(CodeBuilder builder, IAtomView atom)
+    {
+        switch (atom)
+        {
+            case SetComprehensionView setComp:
+                throw new NotImplementedException();
+
+            case SetView set:
+                throw new NotImplementedException();
+
+            case GeneratorExpressionView generator:
+                throw new NotImplementedException();
+
+            case TupleView tuple:
+                throw new NotImplementedException();
+
+            case DictComprehensionView dictComp:
+                throw new NotImplementedException();
+
+            case DictView dict:
+                throw new NotImplementedException();
+
+            case ListComprehensionView listComp:
+                throw new NotImplementedException();
+
+            case ListView list:
+                throw new NotImplementedException();
+
+            case TrueAtomView:
+                builder.LdConst(CodeBuilder.TrueConstantIndex);
+                break;
+
+            case FalseAtomView:
+                builder.LdConst(CodeBuilder.FalseConstantIndex);
+                break;
+
+            case NoneAtomView:
+                builder.LdConst(CodeBuilder.NoneConstantIndex);
+                break;
+
+            case EllipsisAtomView:
+                builder.LdConst(CodeBuilder.EllipsisConstantIndex);
+                break;
+
+            case NumberAtomView numberAtom:
+            {
+                string number = numberAtom.Value.RawString;
+                int constIndex = NumberParser.GetNumberType(number) switch
+                {
+                    NumberType.Integer => builder.AddConstant(new EpInteger((int)NumberParser.ParseInteger(number))),
+
+                    NumberType.Float => builder.AddConstant(new EpFloat(NumberParser.ParseFloat(number))),
+
+                    NumberType.Complex => throw new NotImplementedException(),
+
+                    _ => throw new UnreachableException(),
+                };
+                builder.LdConst(constIndex);
+                break;
+            }
+
+            case NameAtomView nameAtom:
+            {
+                loadVariable(builder, nameAtom.Value.RawString);
+                break;
+            }
+
+            case StringValueAtomView str:
+                stringAtom(builder, str);
+                break;
+
+            case StringTemplateAtomView tStr:
+                stringTemplateAtom(builder, tStr);
+                break;
+
+            case NamedGroupExpressionView namedGroup:
+                namedExpression(builder, namedGroup.Value);
+                break;
+
+            case YieldGroupExpressionView yieldGroup:
+                throw new NotImplementedException();
 
             default:
                 throw new UnreachableException();
         }
     }
 
-    private static Register loadString(CodeBuilder builder, Register resultRegister, StringValueAtomView str)
+    private static void loadVariable(CodeBuilder builder, string variableName)
     {
-        if (str.Parts.Any(p => p is FStringView))
+        if (!builder.SymbolTable.Symbols.TryGetValue(variableName, out var variable))
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException($"Symbol table doesn't contain record on the variable '{variableName}'");
         }
-
-        string strValue;
-        switch (str.Parts.Count)
+        switch (variable.Kind)
         {
-            case 1:
-                strValue = ((StringConstantView)str.Parts[0]).Value.RawString;
-                strValue = StringParser.ParseQuoted(strValue);
-                break;
-            case 2:
-                // TODO: StringParser.ParseQuotedMany(str.Parts)
-                string part0 = ((StringConstantView)str.Parts[0]).Value.RawString;
-                part0 = StringParser.ParseQuoted(part0);
-                string part1 = ((StringConstantView)str.Parts[1]).Value.RawString;
-                part1 = StringParser.ParseQuoted(part1);
-                strValue = part0 + part1;
-                break;
-            default:
-                var sb = new StringBuilder();
-
-                foreach (var part in str.Parts)
-                {
-                    string partValue = ((StringConstantView)part).Value.RawString;
-                    sb.Append(StringParser.ParseQuoted(partValue));
-                }
-
-                strValue = sb.ToString();
-                break;
-        }
-
-        return builder.LdConst(resultRegister, builder.AddConstant(new EpString(strValue)));
-    }
-
-    private void beginLoop(CodeBuilder builder, IntermediateLoop newLoop)
-    {
-        if (loops.Count == 0)
-        {
-            builder.BeginLoopLifetime();
-        }
-
-        loops.Push(newLoop);
-    }
-
-    private void endLoop(CodeBuilder builder)
-    {
-        loops.Pop();
-
-        if (loops.Count == 0)
-        {
-            builder.EndLoopLifetime();
-        }
-    }
-
-    private void storeVariable(CodeBuilder builder, Variable variable, Register source)
-    {
-        if (variable.Kind == VariableKind.Global)
-        {
-            builder.StVar(source, builder.AddVariable(variable.Name));
-        }
-        else if (variable.Kind == VariableKind.Cell)
-        {
-            throw new NotImplementedException();
-            // builder.StCell(variableValue, variable.CellNumber);
-        }
-        else if (variable.Kind == VariableKind.Local)
-        {
-            Debug.Assert(variable.Register != null);
-
-            if (variable.Register != source)
-            {
-                builder.Move(variable.Register, source);
-            }
-
-            if (inLoop)
-            {
-                builder.AddToLoopLifetime(variable.Register);
-            }
-        }
-    }
-
-    private Register getVariable(CodeBuilder builder, string variableName)
-    {
-        var resultRegister = builder.AllocateRegister();
-
-        if (variables.TryGetValue(variableName, out var variable))
-        {
-            if (variable.Kind == VariableKind.Cell)
-            {
+            case VariableKind.Cell:
+            case VariableKind.Free:
                 throw new NotImplementedException();
-                // return builder.LdCell(resultRegister, variable.CellNumber);
-            }
-            else if (variable.Kind == VariableKind.Local)
+
+            case VariableKind.Local:
+                // TODO: also arguments
+                throw new NotImplementedException("Indexes for the variables that were saved in the function environment");
+
+            case VariableKind.GlobalExplicit:
+            case VariableKind.GlobalImplicit:
             {
-                if (variable.ParameterPosition.HasValue && variable.Register == null)
+                int index = builder.AddVariable(variable.Name);
+                builder.LdVar(index);
+                break;
+            }
+        }
+    }
+
+    private static void stringTemplateAtom(CodeBuilder builder, StringTemplateAtomView tStr) => throw new NotImplementedException();
+
+    private static void stringAtom(CodeBuilder builder, StringValueAtomView str)
+    {
+        // TODO: more optimized way to concatenate strings.
+        // TODO: f-strings
+        var sb = new StringBuilder();
+        foreach (var part in str.Parts)
+        {
+            switch (part)
+            {
+                case FStringView fStr:
+                    throw new NotImplementedException();
+
+                case StringConstantView strConst:
                 {
-                    variable.Register = builder.AllocateRegister();
-                    builder.LdArg(variable.Register, variable.ParameterPosition.Value);
+                    string raw = strConst.Value.RawString;
+                    if (StringParser.HasPrefix(raw))
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    string value = StringParser.ParseQuoted(raw);
+                    sb.Append(value);
+                    break;
                 }
-
-                Debug.Assert(variable.Register != null);
-
-                if (inLoop)
-                {
-                    builder.AddToLoopLifetime(variable.Register);
-                }
-
-                return variable.Register;
+                default:
+                    throw new UnreachableException();
             }
         }
 
-        return builder.LdVar(resultRegister, builder.AddVariable(variableName));
+        string result = sb.ToString();
+        int index = builder.AddConstant((EpString)result);
+        builder.LdConst(index);
     }
 }
