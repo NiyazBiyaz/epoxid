@@ -29,6 +29,10 @@ internal class Engine
 
         EpObject ret = null!;
 
+        var locals = stack.AsSpan(stackPointer, code.LocalsCount);
+        arguments.CopyTo(locals!);
+        stackPointer += code.LocalsCount;
+
         bool stop = false;
         int programCounter = 0;
         int extendedArgsRegister = 0;
@@ -312,11 +316,15 @@ internal class Engine
                 }
                 case Opcode.LdLocal:
                 {
-                    throw new NotImplementedException("LdLocal");
+                    var value = locals[current.Argument] ?? throw new Exception("TODO: NameError");
+                    push(value);
+                    break;
                 }
                 case Opcode.StLocal:
                 {
-                    throw new NotImplementedException("StLocal");
+                    var value = pop();
+                    locals[current.Argument] = value;
+                    break;
                 }
                 case Opcode.LdCell:
                 {
@@ -347,6 +355,9 @@ internal class Engine
 
             programCounter += 1;
         }
+
+        locals.Clear();
+        stackPointer -= locals.Length;
 
         return ret;
     }

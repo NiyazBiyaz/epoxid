@@ -1,4 +1,3 @@
-
 using System.Diagnostics;
 using Epoxid.CodeGen;
 using Epoxid.SyntaxAnalysis;
@@ -88,8 +87,11 @@ public class TestFunctionGenerator
             PositionMap = tokenizer.PositionMap,
         };
 
+        var st = SymbolTable.Create(view, "test");
+        var parentCb = new CodeBuilder(st);
+
         var func = view.Statements[0] as FunctionDefView ?? throw new UnreachableException("Code doesn't contain function definition");
         var generator = new FunctionGenerator();
-        generator.GenerateCodeObject(func, []);
+        generator.GenerateCodeObject(parentCb, func);
     }
 }

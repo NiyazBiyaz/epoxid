@@ -46,7 +46,7 @@ public static class Program
         var st = SymbolTable.Create(fileView, "__main__");
         var builder = new CodeBuilder(st);
 
-        BlockGenerator.Generate(builder, fileView);
+        CodeGenerator.Generate(builder, fileView);
 
         var code = builder.Compile();
 

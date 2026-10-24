@@ -7,11 +7,22 @@ using Epoxid.SyntaxAnalysis.Tokens;
 
 namespace Epoxid.CodeGen;
 
-internal static class BlockGenerator
+internal static class CodeGenerator
 {
     public static void Generate(CodeBuilder builder, FileView module)
     {
         generateStatements(builder, module.Statements);
+
+        if (builder.RequiresReturnNone)
+        {
+            builder.LdConst(CodeBuilder.NoneConstantIndex);
+            builder.Ret();
+        }
+    }
+
+    public static void GenerateFunction(CodeBuilder builder, FunctionDefView functionDef)
+    {
+        generateBlock(builder, functionDef.Block);
 
         if (builder.RequiresReturnNone)
         {
@@ -38,8 +49,21 @@ internal static class BlockGenerator
                     break;
 
                 case FunctionDefView function:
-                    throw new NotImplementedException();
+                {
+                    var funcGen = new FunctionGenerator();
+                    var code = funcGen.GenerateCodeObject(builder, function);
+                    var parameters = funcGen.GetParamsDescription();
+                    var functionObject = new EpFunction(function.Name.RawString, code)
+                    {
+                        ParamsDescription = parameters,
+                    };
 
+                    int functionIndex = builder.AddConstant(functionObject);
+                    builder.LdConst(functionIndex);
+                    builder.BindFun();
+                    storeVariable(builder, function.Name.RawString);
+                    break;
+                }
                 case ClassDefView classDef:
                     throw new NotImplementedException();
 
@@ -138,6 +162,26 @@ internal static class BlockGenerator
                 break;
 
             case ReturnStatementView ret:
+            {
+                if (!builder.IsFunction)
+                    throw new SyntaxErrorException("'return' is not allowed outside of the function block");
+
+                switch (ret.Expression)
+                {
+                    case IStarExpressionView star:
+                        starExpression(builder, star);
+                        break;
+
+                    case StarExpressionsView stars:
+                        starExpression(builder, stars);
+                        break;
+
+                    default:
+                        throw new NotImplementedException();
+                }
+                builder.Ret();
+                break;
+            }
             case BreakStatementView brk:
             case ContinueStatementView cont:
                 throw new NotImplementedException();
@@ -234,38 +278,6 @@ internal static class BlockGenerator
                 throw new NotImplementedException();
             default:
                 throw new UnreachableException($"Invalid AugmentedAssignment value: {operation}");
-        }
-    }
-
-    private static void storeVariable(CodeBuilder builder, string name)
-    {
-        var variable = builder.SymbolTable.Symbols[name];
-        switch (variable.Kind)
-        {
-            case VariableKind.Local:
-            {
-                int index = builder.AddVariable(variable.Name);
-                builder.StLocal(index);
-                break;
-            }
-            case VariableKind.Cell:
-            {
-                int index = builder.AddVariable(variable.Name);
-                builder.StCell(index);
-                break;
-            }
-            case VariableKind.GlobalExplicit:
-            {
-                int index = builder.AddVariable(variable.Name);
-                builder.StVar(index);
-                break;
-            }
-            case VariableKind.GlobalImplicit:
-            case VariableKind.Free:
-                throw new UnreachableException($"Invalid VariableKind value in this context: {variable.Kind}");
-
-            default:
-                throw new UnreachableException($"Invalid VariableKind value: {variable.Kind}");
         }
     }
 
@@ -657,8 +669,8 @@ internal static class BlockGenerator
                 throw new NotImplementedException();
 
             case VariableKind.Local:
-                // TODO: also arguments
-                throw new NotImplementedException("Indexes for the variables that were saved in the function environment");
+                builder.LdLocal(variable.LocalIndex);
+                break;
 
             case VariableKind.GlobalExplicit:
             case VariableKind.GlobalImplicit:
@@ -667,6 +679,37 @@ internal static class BlockGenerator
                 builder.LdVar(index);
                 break;
             }
+        }
+    }
+
+    private static void storeVariable(CodeBuilder builder, string name)
+    {
+        var variable = builder.SymbolTable.Symbols[name];
+        switch (variable.Kind)
+        {
+            case VariableKind.Local:
+            {
+                builder.StLocal(variable.LocalIndex);
+                break;
+            }
+            case VariableKind.Cell:
+            {
+                int index = builder.AddVariable(variable.Name);
+                builder.StCell(index);
+                break;
+            }
+            case VariableKind.GlobalExplicit:
+            {
+                int index = builder.AddVariable(variable.Name);
+                builder.StVar(index);
+                break;
+            }
+            case VariableKind.GlobalImplicit:
+            case VariableKind.Free:
+                throw new UnreachableException($"Invalid VariableKind value in this context: {variable.Kind}");
+
+            default:
+                throw new UnreachableException($"Invalid VariableKind value: {variable.Kind}");
         }
     }
 

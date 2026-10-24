@@ -38,7 +38,7 @@ internal static class Core
 
             case EpFunction func:
             {
-                var eng = Engine.GetCurrentEngine();
+                var eng = Engine.CurrentEngine;
 
                 if (func.Environment == null)
                 {

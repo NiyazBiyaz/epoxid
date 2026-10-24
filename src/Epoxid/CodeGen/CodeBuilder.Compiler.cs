@@ -69,12 +69,14 @@ internal partial class CodeBuilder
             instructionBuilder.Add(result);
         }
 
-        return new()
-        {
-            Constants = [.. constants],
-            VarNames = [.. variableNames],
-            Instructions = instructionBuilder.ToImmutable(),
-        };
+        int localsCount = SymbolTable.Symbols.Values.Count(static v => v.Kind == VariableKind.Local);
+
+        return new(
+            instructionBuilder.ToImmutable(),
+            [.. constants],
+            [.. variableNames],
+            localsCount
+        );
     }
 
     private void fillIndexes()

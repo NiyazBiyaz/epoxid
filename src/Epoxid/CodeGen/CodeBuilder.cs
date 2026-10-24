@@ -32,6 +32,8 @@ internal partial class CodeBuilder(SymbolTable symbolTable)
 
     public bool RequiresReturnNone => !instructions[^1].Opcode.IsCanBeLast;
 
+    public bool IsFunction { get; init; } = false;
+
     public SymbolTable SymbolTable { get; } = symbolTable;
 
     public int AddVariable(string variable)

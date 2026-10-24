@@ -7,6 +7,8 @@ internal class Variable
     public required DeclarationScopeKind ScopeKind { get; init; }
     public required string Name { get; init; }
 
+    public int LocalIndex { get; set; }
+
     public override string ToString() => $"Variable({Name}; {Kind}; {Usage}; {ScopeKind})";
 }
 

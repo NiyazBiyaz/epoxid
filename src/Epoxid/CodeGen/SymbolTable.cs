@@ -6,7 +6,6 @@ namespace Epoxid.CodeGen;
 
 internal class SymbolTable
 {
-    // TODO: maybe another way to create qualified names
     public string Owner { get; }
 
     public Dictionary<string, Variable> Symbols { get; } = [];
@@ -61,6 +60,11 @@ internal class SymbolTable
             {
                 symbol.Kind = VariableKind.GlobalExplicit;
             }
+        }
+
+        foreach (var (i, symbol) in Symbols.Values.Index())
+        {
+            symbol.LocalIndex = i;
         }
     }
 
@@ -980,17 +984,9 @@ internal class SymbolTable
             .ToList()
             ?? [];
 
-        // Maybe another way to manage qual names
-        string qualifiedName = Owner + '.' + function.Name.RawString;
-
-        deferredChildren.Add((function.Block, parameters, qualifiedName, true));
+        deferredChildren.Add((function.Block, parameters, function.Name.RawString, true));
     }
 
     private void defer(ClassDefView classDef)
-    {
-        // See above
-        string qualifiedName = Owner + '.' + classDef.Name.RawString;
-
-        deferredChildren.Add((classDef.Block, [], qualifiedName, true));
-    }
+        => deferredChildren.Add((classDef.Block, [], classDef.Name.RawString, true));
 }

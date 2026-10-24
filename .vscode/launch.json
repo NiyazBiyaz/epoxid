@@ -26,6 +26,18 @@
             ],
         },
         {
+            "name": "Debug: Epoxid __fibonacci__",
+            "type": "coreclr",
+            "preLaunchTask": "dotnet: build",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/Epoxid",
+            "program": 
+                "${workspaceFolder}/src/Epoxid/bin/Debug/net10.0/epoxid.dll",
+            "args": [
+                "__fibonacci__.ep"
+            ],
+        },
+        {
             "name": "Debug: Parser generator",
             "type": "coreclr",
             "preLaunchTask": "dotnet: build",
