@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -x
 
 dotnet build ./src/Epoxid.SyntaxAnalysis.Generator -c Release
