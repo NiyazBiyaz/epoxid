@@ -22,7 +22,6 @@ partial class ReferenceTypes
     });
 
     // Property of the '__pondering__' slot
-    [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     public partial string? PonDeRing
     {
         [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
@@ -49,7 +48,6 @@ partial class ReferenceTypes
     private const int _PonDeRing_Index = _EpObjectSlotCount + 0;
 
     // Property of the '__bau__' slot
-    [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     public partial global::Epoxid.Fluffy.ReferenceTypes Bau
     {
         [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]

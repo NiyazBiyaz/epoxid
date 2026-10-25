@@ -53,7 +53,7 @@ internal static class Core
         }
     }
 
-    internal static EpTuple GetMethodResolutionOrder(EpType type) => [.. getMro(type)];
+    internal static EpTuple MethodResolutionOrder(EpType type) => [.. getMro(type)];
 
     private static List<EpType> getMro(EpType type)
     {

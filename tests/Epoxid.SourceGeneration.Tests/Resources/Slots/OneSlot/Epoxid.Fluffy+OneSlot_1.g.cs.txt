@@ -21,7 +21,6 @@ partial class OneSlot
     });
 
     // Property of the '__bau__' slot
-    [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     public partial string? Bau
     {
         [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]

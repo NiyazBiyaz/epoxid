@@ -13,14 +13,6 @@ public partial class EpType : EpObject
 
     public static readonly EpType Type = RuntimeInitializer.Type;
 
-    internal EpType(string name, EpType[] bases)
-        : base()
-    {
-        FillSlots();
-        DunderName = name;
-        DunderBases = bases;
-    }
-
     internal static EpType EmptyCtor() => new();
 
     private EpType()

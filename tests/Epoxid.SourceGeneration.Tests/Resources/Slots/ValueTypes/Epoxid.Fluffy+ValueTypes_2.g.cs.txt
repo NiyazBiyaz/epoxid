@@ -22,7 +22,6 @@ partial class ValueTypes
     });
 
     // Property of the '__pondering__' slot
-    [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     public partial int? PonDeRing
     {
         [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
@@ -49,7 +48,6 @@ partial class ValueTypes
     private const int _PonDeRing_Index = _EpObjectSlotCount + 0;
 
     // Property of the '__bau__' slot
-    [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
     public partial long Bau
     {
         [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
