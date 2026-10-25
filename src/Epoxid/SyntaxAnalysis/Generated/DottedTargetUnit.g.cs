@@ -13,7 +13,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>DottedTargetUnit</i>.
 /// </summary>
-public sealed partial record DottedTargetUnitNode : GreenNode, IAssignmentTargetUnitNode
+public sealed partial record DottedTargetUnitNode : GreenNode, IAssignmentTargetUnitNode, ISingleTargetNode, ICompositeSingleTargetNode
 {
     public TargetPrimaryNode Left => (TargetPrimaryNode)Children![0];
     public TokenNode Right => (TokenNode)Children![2];
@@ -24,7 +24,7 @@ public sealed partial record DottedTargetUnitNode : GreenNode, IAssignmentTarget
 /// <summary>
 /// View class that represents <i>DottedTargetUnit</i>.
 /// </summary>
-public sealed partial class DottedTargetUnitView : RedView, IAssignmentTargetUnitView
+public sealed partial class DottedTargetUnitView : RedView, IAssignmentTargetUnitView, ISingleTargetView, ICompositeSingleTargetView
 {
     public DottedTargetUnitView(DottedTargetUnitNode green, int position, IRedView? parent)
         : base(green, position, parent)

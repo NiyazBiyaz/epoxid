@@ -15,8 +15,8 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record SubscriptPrimaryNode : PrimaryNode
 {
-    public PrimaryNode Target => (PrimaryNode)Children![1];
-    public SlicesNode Subscript => (SlicesNode)Children![3];
+    public PrimaryNode Left => (PrimaryNode)Children![1];
+    public SlicesNode Right => (SlicesNode)Children![3];
     public override SubscriptPrimaryView GetView(int position, IRedView? parent)
         => new SubscriptPrimaryView(this, position, parent);
 }
@@ -31,31 +31,31 @@ public sealed partial class SubscriptPrimaryView : PrimaryView
     {
     }
 
-    private PrimaryView? _field_target = null;
-    public PrimaryView Target
+    private PrimaryView? _field_left = null;
+    public PrimaryView Left
     {
         get
         {
-            if (_field_target == null)
+            if (_field_left == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_target = (PrimaryView)((SubscriptPrimaryNode)base.Green).Target!.GetView(_positionOfField, this);
+                _field_left = (PrimaryView)((SubscriptPrimaryNode)base.Green).Left!.GetView(_positionOfField, this);
             }
-            return (PrimaryView)_field_target;
+            return (PrimaryView)_field_left;
         }
     }
 
-    private SlicesView? _field_subscript = null;
-    public SlicesView Subscript
+    private SlicesView? _field_right = null;
+    public SlicesView Right
     {
         get
         {
-            if (_field_subscript == null)
+            if (_field_right == null)
             {
                 var _positionOfField = base.GetPositionFor(3);
-                _field_subscript = (SlicesView)((SubscriptPrimaryNode)base.Green).Subscript!.GetView(_positionOfField, this);
+                _field_right = (SlicesView)((SubscriptPrimaryNode)base.Green).Right!.GetView(_positionOfField, this);
             }
-            return (SlicesView)_field_subscript;
+            return (SlicesView)_field_right;
         }
     }
 }

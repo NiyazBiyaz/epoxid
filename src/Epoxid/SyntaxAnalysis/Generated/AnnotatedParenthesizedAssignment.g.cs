@@ -15,7 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record AnnotatedParenthesizedAssignmentNode : AssignmentNode
 {
-    public SingleTargetNode Target => (SingleTargetNode)Children![1];
+    public ISingleTargetNode Target => (ISingleTargetNode)Children![1];
     public IExpressionNode TypeHint => (IExpressionNode)Children![4];
     public EqualAnnotatedRhsNode? Rhs => Children![5] as EqualAnnotatedRhsNode;
     public override AnnotatedParenthesizedAssignmentView GetView(int position, IRedView? parent)
@@ -32,17 +32,17 @@ public sealed partial class AnnotatedParenthesizedAssignmentView : AssignmentVie
     {
     }
 
-    private SingleTargetView? _field_target = null;
-    public SingleTargetView Target
+    private ISingleTargetView? _field_target = null;
+    public ISingleTargetView Target
     {
         get
         {
             if (_field_target == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_target = (SingleTargetView)((AnnotatedParenthesizedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
+                _field_target = (ISingleTargetView)((AnnotatedParenthesizedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
             }
-            return (SingleTargetView)_field_target;
+            return (ISingleTargetView)_field_target;
         }
     }
 

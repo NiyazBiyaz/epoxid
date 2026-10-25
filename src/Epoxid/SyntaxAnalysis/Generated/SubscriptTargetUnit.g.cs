@@ -13,10 +13,10 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>SubscriptTargetUnit</i>.
 /// </summary>
-public sealed partial record SubscriptTargetUnitNode : GreenNode, IAssignmentTargetUnitNode
+public sealed partial record SubscriptTargetUnitNode : GreenNode, IAssignmentTargetUnitNode, ISingleTargetNode, ICompositeSingleTargetNode
 {
-    public TargetPrimaryNode Primary => (TargetPrimaryNode)Children![0];
-    public SlicesNode Subscript => (SlicesNode)Children![2];
+    public TargetPrimaryNode Left => (TargetPrimaryNode)Children![0];
+    public SlicesNode Right => (SlicesNode)Children![2];
     public override SubscriptTargetUnitView GetView(int position, IRedView? parent)
         => new SubscriptTargetUnitView(this, position, parent);
 }
@@ -24,38 +24,38 @@ public sealed partial record SubscriptTargetUnitNode : GreenNode, IAssignmentTar
 /// <summary>
 /// View class that represents <i>SubscriptTargetUnit</i>.
 /// </summary>
-public sealed partial class SubscriptTargetUnitView : RedView, IAssignmentTargetUnitView
+public sealed partial class SubscriptTargetUnitView : RedView, IAssignmentTargetUnitView, ISingleTargetView, ICompositeSingleTargetView
 {
     public SubscriptTargetUnitView(SubscriptTargetUnitNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private TargetPrimaryView? _field_primary = null;
-    public TargetPrimaryView Primary
+    private TargetPrimaryView? _field_left = null;
+    public TargetPrimaryView Left
     {
         get
         {
-            if (_field_primary == null)
+            if (_field_left == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_primary = (TargetPrimaryView)((SubscriptTargetUnitNode)base.Green).Primary!.GetView(_positionOfField, this);
+                _field_left = (TargetPrimaryView)((SubscriptTargetUnitNode)base.Green).Left!.GetView(_positionOfField, this);
             }
-            return (TargetPrimaryView)_field_primary;
+            return (TargetPrimaryView)_field_left;
         }
     }
 
-    private SlicesView? _field_subscript = null;
-    public SlicesView Subscript
+    private SlicesView? _field_right = null;
+    public SlicesView Right
     {
         get
         {
-            if (_field_subscript == null)
+            if (_field_right == null)
             {
                 var _positionOfField = base.GetPositionFor(2);
-                _field_subscript = (SlicesView)((SubscriptTargetUnitNode)base.Green).Subscript!.GetView(_positionOfField, this);
+                _field_right = (SlicesView)((SubscriptTargetUnitNode)base.Green).Right!.GetView(_positionOfField, this);
             }
-            return (SlicesView)_field_subscript;
+            return (SlicesView)_field_right;
         }
     }
 }

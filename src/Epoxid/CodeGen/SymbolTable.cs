@@ -203,7 +203,8 @@ internal class SymbolTable
                 break;
 
             case SubscriptTargetUnitView subscript:
-                fillWithTargetPrimary(subscript.Primary);
+                fillWithTargetPrimary(subscript.Left);
+                fillWithSlices(subscript.Right);
                 break;
 
             // In attribute only left part can be variable
@@ -246,7 +247,7 @@ internal class SymbolTable
                 break;
 
             case AtomTargetView atom:
-                fillWithAtom(atom.Value);
+                fillWithAtom(atom.Atom);
                 break;
 
             default:
@@ -446,19 +447,13 @@ internal class SymbolTable
                 fillWithAnnotatedRhs(cascade.Rhs);
                 break;
             }
-            // TODO: remove simple assignment
-            case SimpleAssignmentView simple:
-                variableAssigned(simple.Target.RawString);
-                fillWithAnnotatedRhs(simple.Rhs.Value);
-                break;
-
             case AugmentedAssignmentView augmented:
                 fillWithSingleAssignmentTarget(augmented.Target);
                 fillWithAnnotatedRhs(augmented.Rhs);
                 break;
 
             case AnnotatedParenthesizedAssignmentView:
-            case AnnotatedSubscriptAttributeAssignmentView:
+            case AnnotatedCompositeTargetAssignmentView:
             case AnnotatedAssignmentView:
                 throw new NotImplementedException();
 
@@ -467,37 +462,25 @@ internal class SymbolTable
         }
     }
 
-    private void fillWithSingleAssignmentTarget(SingleTargetView target)
+    private void fillWithSingleAssignmentTarget(ISingleTargetView target)
     {
         switch (target)
         {
-            case NameSingleTargetView name:
-                variableAssigned(name.Value.RawString);
+            case NameSingleTargetAtomView name:
+                variableAssigned(name.Name.RawString);
                 break;
 
             case GroupedTargetView grouped:
                 fillWithSingleAssignmentTarget(grouped.Target);
                 break;
 
-            case CompositeSingleTargetView composite:
-                fillWithSubscriptAttribute(composite.Value);
+            case DottedTargetUnitView dotted:
+                fillWithTargetPrimary(dotted.Left);
                 break;
 
-            default:
-                throw new UnreachableException();
-        }
-    }
-
-    private void fillWithSubscriptAttribute(SingleSubscriptAttributeTargetView target)
-    {
-        fillWithTargetPrimary(target.Primary);
-        switch (target)
-        {
-            case SingleSubscriptTargetView subscript:
-                fillWithSlices(subscript.Subscript);
-                break;
-
-            case SingleAttributeTargetView:
+            case SubscriptTargetUnitView subscript:
+                fillWithTargetPrimary(subscript.Left);
+                fillWithSlices(subscript.Right);
                 break;
 
             default:
@@ -628,9 +611,16 @@ internal class SymbolTable
         switch (primary)
         {
             case CallWithGeneratorPrimaryView:
-            case DotOperationPrimaryView:
-            case SubscriptPrimaryView:
                 throw new NotImplementedException();
+
+            case SubscriptPrimaryView subscript:
+                fillWithPrimary(subscript.Left);
+                fillWithSlices(subscript.Right);
+                break;
+
+            case DotOperationPrimaryView dotted:
+                fillWithPrimary(dotted.Left);
+                break;
 
             case CallWithArgumentsPrimaryView call:
                 fillWithPrimary(call.Function);

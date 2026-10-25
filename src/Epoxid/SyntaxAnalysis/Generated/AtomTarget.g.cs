@@ -15,7 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record AtomTargetNode : TargetPrimaryNode
 {
-    public IAtomNode Value => (IAtomNode)Children![0];
+    public IAtomNode Atom => (IAtomNode)Children![0];
     public override AtomTargetView GetView(int position, IRedView? parent)
         => new AtomTargetView(this, position, parent);
 }
@@ -30,17 +30,17 @@ public sealed partial class AtomTargetView : TargetPrimaryView
     {
     }
 
-    private IAtomView? _field_value = null;
-    public IAtomView Value
+    private IAtomView? _field_atom = null;
+    public IAtomView Atom
     {
         get
         {
-            if (_field_value == null)
+            if (_field_atom == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_value = (IAtomView)((AtomTargetNode)base.Green).Value!.GetView(_positionOfField, this);
+                _field_atom = (IAtomView)((AtomTargetNode)base.Green).Atom!.GetView(_positionOfField, this);
             }
-            return (IAtomView)_field_value;
+            return (IAtomView)_field_atom;
         }
     }
 }

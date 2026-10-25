@@ -39,8 +39,6 @@ internal enum Opcode : byte
     StLocal,
     LdCell,
     StCell,
-
-    // Class operations
     GAttr,
     SAttr,
 

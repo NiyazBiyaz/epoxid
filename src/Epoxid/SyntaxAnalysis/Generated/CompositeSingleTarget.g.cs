@@ -11,36 +11,23 @@ using Epoxid.SyntaxAnalysis.Common.Ast;
 namespace Epoxid.SyntaxAnalysis;
 
 /// <summary>
-/// Node class that represents <i>CompositeSingleTarget</i>.
+/// Node interface that represents <i>CompositeSingleTarget</i>.
 /// </summary>
-public sealed partial record CompositeSingleTargetNode : SingleTargetNode
-{
-    public SingleSubscriptAttributeTargetNode Value => (SingleSubscriptAttributeTargetNode)Children![0];
-    public override CompositeSingleTargetView GetView(int position, IRedView? parent)
-        => new CompositeSingleTargetView(this, position, parent);
-}
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>DottedTargetUnitNode</i><br/>
+/// 2. <i>SubscriptTargetUnitNode</i><br/>
+/// </remarks>
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(DottedTargetUnitNode), typeof(SubscriptTargetUnitNode))]
+public partial interface ICompositeSingleTargetNode : IGreenNode;
 
 /// <summary>
-/// View class that represents <i>CompositeSingleTarget</i>.
+/// View interface that represents <i>CompositeSingleTarget</i>.
 /// </summary>
-public sealed partial class CompositeSingleTargetView : SingleTargetView
-{
-    public CompositeSingleTargetView(CompositeSingleTargetNode green, int position, IRedView? parent)
-        : base(green, position, parent)
-    {
-    }
-
-    private SingleSubscriptAttributeTargetView? _field_value = null;
-    public SingleSubscriptAttributeTargetView Value
-    {
-        get
-        {
-            if (_field_value == null)
-            {
-                var _positionOfField = base.GetPositionFor(0);
-                _field_value = (SingleSubscriptAttributeTargetView)((CompositeSingleTargetNode)base.Green).Value!.GetView(_positionOfField, this);
-            }
-            return (SingleSubscriptAttributeTargetView)_field_value;
-        }
-    }
-}
+/// <remarks>
+/// Implementors:<br/>
+/// 1. <i>DottedTargetUnitView</i><br/>
+/// 2. <i>SubscriptTargetUnitView</i><br/>
+/// </remarks>
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(DottedTargetUnitView), typeof(SubscriptTargetUnitView))]
+public partial interface ICompositeSingleTargetView : IRedView;

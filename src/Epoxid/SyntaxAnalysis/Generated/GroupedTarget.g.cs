@@ -13,9 +13,11 @@ namespace Epoxid.SyntaxAnalysis;
 /// <summary>
 /// Node class that represents <i>GroupedTarget</i>.
 /// </summary>
-public sealed partial record GroupedTargetNode : SingleTargetNode
+public sealed partial record GroupedTargetNode : SingleTargetAtomNode
 {
-    public SingleTargetNode Target => (SingleTargetNode)Children![1];
+    public ISingleTargetNode Target => (ISingleTargetNode)Children![1];
+    public TokenNode LeftParen => (TokenNode)Children![0];
+    public TokenNode RightParen => (TokenNode)Children![2];
     public override GroupedTargetView GetView(int position, IRedView? parent)
         => new GroupedTargetView(this, position, parent);
 }
@@ -23,24 +25,52 @@ public sealed partial record GroupedTargetNode : SingleTargetNode
 /// <summary>
 /// View class that represents <i>GroupedTarget</i>.
 /// </summary>
-public sealed partial class GroupedTargetView : SingleTargetView
+public sealed partial class GroupedTargetView : SingleTargetAtomView
 {
     public GroupedTargetView(GroupedTargetNode green, int position, IRedView? parent)
         : base(green, position, parent)
     {
     }
 
-    private SingleTargetView? _field_target = null;
-    public SingleTargetView Target
+    private ISingleTargetView? _field_target = null;
+    public ISingleTargetView Target
     {
         get
         {
             if (_field_target == null)
             {
                 var _positionOfField = base.GetPositionFor(1);
-                _field_target = (SingleTargetView)((GroupedTargetNode)base.Green).Target!.GetView(_positionOfField, this);
+                _field_target = (ISingleTargetView)((GroupedTargetNode)base.Green).Target!.GetView(_positionOfField, this);
             }
-            return (SingleTargetView)_field_target;
+            return (ISingleTargetView)_field_target;
+        }
+    }
+
+    private TokenView? _field_leftParen = null;
+    public TokenView LeftParen
+    {
+        get
+        {
+            if (_field_leftParen == null)
+            {
+                var _positionOfField = base.GetPositionFor(0);
+                _field_leftParen = (TokenView)((GroupedTargetNode)base.Green).LeftParen!.GetView(_positionOfField, this);
+            }
+            return (TokenView)_field_leftParen;
+        }
+    }
+
+    private TokenView? _field_rightParen = null;
+    public TokenView RightParen
+    {
+        get
+        {
+            if (_field_rightParen == null)
+            {
+                var _positionOfField = base.GetPositionFor(2);
+                _field_rightParen = (TokenView)((GroupedTargetNode)base.Green).RightParen!.GetView(_positionOfField, this);
+            }
+            return (TokenView)_field_rightParen;
         }
     }
 }

@@ -146,12 +146,23 @@ internal static class CodeGenerator
     {
         switch (stmt)
         {
-            // TODO: remove simple assignment
-            case SimpleAssignmentView simple:
+            case CascadeAssignmentView cascade:
             {
-                string name = simple.Target.RawString;
-                annotatedRhs(builder, simple.Rhs.Value);
-                storeVariable(builder, name);
+                if (cascade.Targets.Count == 1)
+                {
+                    var singleTarget = cascade.Targets[0].Value;
+
+                    assignmentTarget(builder, singleTarget, AssignmentTargetContext.Load);
+                    annotatedRhs(builder, cascade.Rhs);
+                    assignmentTarget(builder, singleTarget, AssignmentTargetContext.Store);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                annotatedRhs(builder, cascade.Rhs);
+
                 break;
             }
             case AugmentedAssignmentView augAssign:
@@ -204,10 +215,9 @@ internal static class CodeGenerator
             case GlobalStatementView:
                 throw new NotImplementedException();
 
-            case AnnotatedSubscriptAttributeAssignmentView:
+            case AnnotatedCompositeTargetAssignmentView:
             case AnnotatedAssignmentView:
             case AnnotatedParenthesizedAssignmentView:
-            case CascadeAssignmentView:
                 throw new NotImplementedException();
 
             default:
@@ -216,13 +226,62 @@ internal static class CodeGenerator
         builder.ClearStack(stmt);
     }
 
-    private static void augmentedAssignment(CodeBuilder builder, SingleTargetView target, IAnnotatedRhsView rhs, AugmentedAssignment operation)
+    private static void assignmentTarget(CodeBuilder builder, IAssignmentTargetVariantView target, AssignmentTargetContext context)
     {
         switch (target)
         {
-            case NameSingleTargetView nameTarget:
+            case NameTargetAtomView nameTarget:
             {
-                string name = nameTarget.Value.RawString;
+                if (context == AssignmentTargetContext.Load)
+                {
+                    // Ignore simple name for Load
+                }
+                else if (context == AssignmentTargetContext.Store)
+                {
+                    string name = nameTarget.Value.RawString;
+                    storeVariable(builder, name);
+                }
+                else
+                    throw new UnreachableException($"Invalid {nameof(AssignmentTargetContext)} value: {context}");
+                break;
+            }
+            case DottedTargetUnitView dotted:
+            {
+                if (context == AssignmentTargetContext.Load)
+                {
+                    // Load stem of the target
+                    targetPrimary(builder, dotted.Left);
+                }
+                else if (context == AssignmentTargetContext.Store)
+                {
+                    var attrName = dotted.Right.RawString;
+                    storeAttribute(builder, attrName);
+                }
+                else
+                    throw new UnreachableException($"Invalid {nameof(AssignmentTargetContext)} value: {context}");
+                break;
+            }
+            case SubscriptTargetUnitView subscript:
+
+            case GroupedTargetAtomView grouped:
+            case TupleTargetAtomView tupled:
+            case ListTargetAtomView listed:
+            case StarredAssignmentTargetView starred:
+            case AssignmentTargetsView targets:
+                throw new NotImplementedException();
+
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    private static void augmentedAssignment(CodeBuilder builder, ISingleTargetView target, IAnnotatedRhsView rhs, AugmentedAssignment operation)
+    {
+        switch (target)
+        {
+            case NameSingleTargetAtomView nameTarget:
+            {
+                string name = nameTarget.Name.RawString;
                 loadVariable(builder, name);
                 annotatedRhs(builder, rhs);
                 augmentedAssignmentOperation(builder, operation);
@@ -233,7 +292,8 @@ internal static class CodeGenerator
                 augmentedAssignment(builder, grouped.Target, rhs, operation);
                 break;
 
-            case CompositeSingleTargetView composite:
+            case SubscriptTargetUnitView:
+            case DottedTargetUnitView:
                 throw new NotImplementedException();
 
             default:
@@ -278,6 +338,33 @@ internal static class CodeGenerator
                 throw new NotImplementedException();
             default:
                 throw new UnreachableException($"Invalid AugmentedAssignment value: {operation}");
+        }
+    }
+
+    private static void targetPrimary(CodeBuilder builder, TargetPrimaryView target)
+    {
+        switch (target)
+        {
+            case AtomTargetView atom:
+                atomExpression(builder, atom.Atom);
+                break;
+
+            case CallTargetView call:
+                targetPrimary(builder, call.Primary);
+                callWithArguments(builder, call.Arguments);
+                break;
+
+            case AttributeTargetView attributeTarget:
+                targetPrimary(builder, attributeTarget.Primary);
+                loadAttribute(builder, attributeTarget.AttributeName.RawString);
+                break;
+
+            case SubscriptTargetView subscript:
+            case GeneratorTargetView generatorCall:
+                throw new NotImplementedException();
+
+            default:
+                throw new UnreachableException();
         }
     }
 
@@ -405,7 +492,7 @@ internal static class CodeGenerator
                 throw new NotImplementedException();
 
             case AtomPrimaryView atomPrimary:
-                atom(builder, atomPrimary.Atom);
+                atomExpression(builder, atomPrimary.Atom);
                 break;
 
             case SubscriptPrimaryView subscript:
@@ -413,10 +500,8 @@ internal static class CodeGenerator
 
             case DotOperationPrimaryView attr:
             {
-                int attrNameIndex = builder.AddVariable(attr.Right.RawString);
-
                 namedExpression(builder, attr.Left);
-                builder.GAttr(attrNameIndex);
+                loadAttribute(builder, attr.Right.RawString);
                 break;
             }
             case CallWithArgumentsPrimaryView call:
@@ -482,6 +567,10 @@ internal static class CodeGenerator
             case InversionView inv:
                 throw new NotImplementedException();
 
+            case IBitwiseOrExpressionView expression:
+                namedExpression(builder, expression);
+                break;
+
             case ComparisonView comparison:
             {
                 namedExpression(builder, comparison.First);
@@ -540,9 +629,13 @@ internal static class CodeGenerator
     private static void callPrimary(CodeBuilder builder, CallWithArgumentsPrimaryView call)
     {
         namedExpression(builder, call.Function);
+        callWithArguments(builder, call.Arguments);
+    }
 
+    private static void callWithArguments(CodeBuilder builder, ArgumentsView? arguments)
+    {
         int argCount = 0;
-        switch (call.Arguments)
+        switch (arguments)
         {
             case ArgumentsWithPositionalView withPositional:
             {
@@ -569,7 +662,7 @@ internal static class CodeGenerator
         builder.Call(argCount);
     }
 
-    private static void atom(CodeBuilder builder, IAtomView atom)
+    private static void atomExpression(CodeBuilder builder, IAtomView atom)
     {
         switch (atom)
         {
@@ -711,6 +804,18 @@ internal static class CodeGenerator
             default:
                 throw new UnreachableException($"Invalid VariableKind value: {variable.Kind}");
         }
+    }
+
+    private static void storeAttribute(CodeBuilder builder, string attrName)
+    {
+        var nameIndex = builder.AddVariable(attrName);
+        builder.SAttr(nameIndex);
+    }
+
+    private static void loadAttribute(CodeBuilder builder, string attrName)
+    {
+        var nameIndex = builder.AddVariable(attrName);
+        builder.GAttr(nameIndex);
     }
 
     private static void stringTemplateAtom(CodeBuilder builder, StringTemplateAtomView tStr) => throw new NotImplementedException();

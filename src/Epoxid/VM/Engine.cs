@@ -334,6 +334,23 @@ internal class Engine
                 {
                     throw new NotImplementedException("StCell");
                 }
+                case Opcode.GAttr:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int nameIndex = getAndErase(ref extendedArgsRegister);
+                    string name = code.VarNames[nameIndex];
+
+                    var stem = peek();
+                    var value = Core.GetAttribute(stem, (EpString)name); // TODO: string interning?
+                    push(value);
+
+                    break;
+                }
+                case Opcode.SAttr:
+                {
+                    throw new NotImplementedException();
+                }
 
                 #endregion
                 #region Extended arguments

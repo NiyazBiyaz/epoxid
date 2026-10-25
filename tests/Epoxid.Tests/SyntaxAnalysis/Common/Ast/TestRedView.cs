@@ -33,14 +33,14 @@ public class TestRedView
             {
                 case 0:
                 {
-                    if (ass is not SimpleAssignmentView simple)
+                    if (ass is not CascadeAssignmentView simple)
                     {
                         Assert.Fail("Invalid node type");
                         return;
                     }
 
-                    Assert.Equal("b", simple.Target.RawString);
-                    Assert.Equal("10", simple.Rhs.Value.RecoverText());
+                    Assert.Equal("b", simple.Targets[0].Value.RecoverText());
+                    Assert.Equal("10", simple.Rhs.RecoverText());
 
                     break;
                 }
@@ -60,14 +60,14 @@ public class TestRedView
                 }
                 case 2:
                 {
-                    if (ass is not SimpleAssignmentView annotated)
+                    if (ass is not CascadeAssignmentView annotated)
                     {
                         Assert.Fail("Invalid node type");
                         return;
                     }
 
-                    Assert.Equal("u", annotated.Target.RawString);
-                    Assert.Equal("30", annotated.Rhs!.Value.RecoverText());
+                    Assert.Equal("u", annotated.Targets[0].Value.RecoverText());
+                    Assert.Equal("30", annotated.Rhs.RecoverText());
 
                     break;
                 }

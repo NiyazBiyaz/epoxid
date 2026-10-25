@@ -11,33 +11,25 @@ using Epoxid.SyntaxAnalysis.Common.Ast;
 namespace Epoxid.SyntaxAnalysis;
 
 /// <summary>
-/// Node class that represents <i>SingleTarget</i>.
+/// Node interface that represents <i>SingleTarget</i>.
 /// </summary>
 /// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>CompositeSingleTargetNode</i><br/>
-/// 2. <i>NameSingleTargetNode</i><br/>
-/// 3. <i>GroupedTargetNode</i><br/>
+/// Implementors:<br/>
+/// 1. <i>DottedTargetUnitNode</i><br/>
+/// 2. <i>SubscriptTargetUnitNode</i><br/>
+/// 3. <i>SingleTargetAtomNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(CompositeSingleTargetNode), typeof(NameSingleTargetNode), typeof(GroupedTargetNode))]
-public abstract partial record SingleTargetNode : GreenNode
-{
-}
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(DottedTargetUnitNode), typeof(SubscriptTargetUnitNode), typeof(SingleTargetAtomNode))]
+public partial interface ISingleTargetNode : IGreenNode;
 
 /// <summary>
-/// View class that represents <i>SingleTarget</i>.
+/// View interface that represents <i>SingleTarget</i>.
 /// </summary>
 /// <remarks>
-/// Inheritors:<br/>
-/// 1. <i>CompositeSingleTargetView</i><br/>
-/// 2. <i>NameSingleTargetView</i><br/>
-/// 3. <i>GroupedTargetView</i><br/>
+/// Implementors:<br/>
+/// 1. <i>DottedTargetUnitView</i><br/>
+/// 2. <i>SubscriptTargetUnitView</i><br/>
+/// 3. <i>SingleTargetAtomView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(CompositeSingleTargetView), typeof(NameSingleTargetView), typeof(GroupedTargetView))]
-public abstract partial class SingleTargetView : RedView
-{
-    public SingleTargetView(SingleTargetNode green, int position, IRedView? parent)
-        : base(green, position, parent)
-    {
-    }
-}
+[global::Epoxid.SyntaxAnalysis.WildUnion(typeof(DottedTargetUnitView), typeof(SubscriptTargetUnitView), typeof(SingleTargetAtomView))]
+public partial interface ISingleTargetView : IRedView;

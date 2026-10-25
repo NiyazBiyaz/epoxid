@@ -22,7 +22,9 @@ public class EpSlotDescriptor(SlotOffset offset, string slotName) : EpObject
         var slots = instance.DunderSlots.Span;
 
         if (slots[descriptor.offset.Value] is not EpObject slotValue)
-            throw new Exception(); // TODO: runtime errors
+        {
+            throw new NotImplementedException("CLR objects wrapper is not implemented yet.");
+        }
 
         return slotValue;
     }

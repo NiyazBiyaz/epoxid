@@ -15,7 +15,7 @@ namespace Epoxid.SyntaxAnalysis;
 /// </summary>
 public sealed partial record AugmentedAssignmentNode : AssignmentNode
 {
-    public SingleTargetNode Target => (SingleTargetNode)Children![0];
+    public ISingleTargetNode Target => (ISingleTargetNode)Children![0];
     public TokenNode Operator => (TokenNode)Children![1];
     public IAnnotatedRhsNode Rhs => (IAnnotatedRhsNode)Children![2];
     public override AugmentedAssignmentView GetView(int position, IRedView? parent)
@@ -32,17 +32,17 @@ public sealed partial class AugmentedAssignmentView : AssignmentView
     {
     }
 
-    private SingleTargetView? _field_target = null;
-    public SingleTargetView Target
+    private ISingleTargetView? _field_target = null;
+    public ISingleTargetView Target
     {
         get
         {
             if (_field_target == null)
             {
                 var _positionOfField = base.GetPositionFor(0);
-                _field_target = (SingleTargetView)((AugmentedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
+                _field_target = (ISingleTargetView)((AugmentedAssignmentNode)base.Green).Target!.GetView(_positionOfField, this);
             }
-            return (SingleTargetView)_field_target;
+            return (ISingleTargetView)_field_target;
         }
     }
 

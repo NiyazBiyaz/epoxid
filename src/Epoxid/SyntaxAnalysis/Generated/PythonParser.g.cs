@@ -1022,13 +1022,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // Assignment:
     //     | Name ':' Expression -EqualAnnotatedRhs -> AnnotatedAssignment(Target=name, TypeHint=expression, Rhs=equal_annotated_rhs)
     //
-    //     | Name EqualAnnotatedRhs -> SimpleAssignment(Target=name, Rhs=equal_annotated_rhs)
-    //
     //     | '(' SingleTarget ')' ':' Expression -EqualAnnotatedRhs -> AnnotatedParenthesizedAssignment(
     //         Target=single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
     //
-    //     | SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedSubscriptAttributeAssignment(
-    //         Target=single_subscript_attribute_target, TypeHint=expression, Rhs=equal_annotated_rhs)
+    //     | CompositeSingleTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedCompositeTargetAssignment(
+    //         Target=composite_single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
     //
     //     | (AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'=' -> CascadeAssignment(
     //         Targets=cascade_target_Plus, Rhs=annotated_rhs)
@@ -1073,29 +1071,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Name EqualAnnotatedRhs -> SimpleAssignment(Target=name, Rhs=equal_annotated_rhs)
-            base.LogAlternativeEntered("Name EqualAnnotatedRhs");
-            IGreenNode? name;
-            IGreenNode? equal_annotated_rhs;
-            if ((name = Expect(TokenType.Name)) is not null
-                &&
-                (equal_annotated_rhs = rule_EqualAnnotatedRhs()) is not null
-            )
-            {
-                base.LogAlternativeSucceed("Name EqualAnnotatedRhs");
-                _res = new SimpleAssignmentNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        name,
-                        equal_annotated_rhs,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("Name EqualAnnotatedRhs");
-        }
-        base.Reset(_mark);
-        {
             // '(' SingleTarget ')' ':' Expression -EqualAnnotatedRhs -> AnnotatedParenthesizedAssignment(
             //         Target=single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
             base.LogAlternativeEntered("'(' SingleTarget ')' ':' Expression -EqualAnnotatedRhs");
@@ -1136,14 +1111,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedSubscriptAttributeAssignment(
-            //         Target=single_subscript_attribute_target, TypeHint=expression, Rhs=equal_annotated_rhs)
-            base.LogAlternativeEntered("SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs");
-            IGreenNode? single_subscript_attribute_target;
+            // CompositeSingleTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedCompositeTargetAssignment(
+            //         Target=composite_single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
+            base.LogAlternativeEntered("CompositeSingleTarget ':' Expression -EqualAnnotatedRhs");
+            IGreenNode? composite_single_target;
             IGreenNode? colon;
             IGreenNode? expression;
             IGreenNode? equal_annotated_rhs;
-            if ((single_subscript_attribute_target = rule_SingleSubscriptAttributeTarget()) is not null
+            if ((composite_single_target = rule_CompositeSingleTarget()) is not null
                 &&
                 (colon = Expect(TokenType.Colon)) is not null
                 &&
@@ -1152,11 +1127,11 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 ((equal_annotated_rhs = rule_EqualAnnotatedRhs()) is not null || true) // Optional
             )
             {
-                base.LogAlternativeSucceed("SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs");
-                _res = new AnnotatedSubscriptAttributeAssignmentNode()
+                base.LogAlternativeSucceed("CompositeSingleTarget ':' Expression -EqualAnnotatedRhs");
+                _res = new AnnotatedCompositeTargetAssignmentNode()
                 {
                     Children = new NodeArray<IGreenNode>([
-                        single_subscript_attribute_target,
+                        composite_single_target,
                         colon,
                         expression,
                         equal_annotated_rhs ?? VoidNode.Instance,
@@ -1164,7 +1139,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 };
                 goto _Return;
             }
-            base.LogAlternativeFailed("SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs");
+            base.LogAlternativeFailed("CompositeSingleTarget ':' Expression -EqualAnnotatedRhs");
         }
         base.Reset(_mark);
         {
@@ -2168,10 +2143,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // ImportStatement:
     //     | ImportName
     //     | ImportFrom
-    //
-    //
-    //
-    //
     //
     //
     //
@@ -7597,14 +7568,14 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     // Primary:
     //     | -'await' Primary '.' Name -> DotOperationPrimary(AwaitKeyword=await_Keyword, Left=primary, Right=name)
     //
+    //     | -'await' Primary '[' Slices ']' -> SubscriptPrimary(
+    //         AwaitKeyword=await_Keyword, Left=primary, Right=slices)
+    //
     //     | -'await' Primary GeneratorExpression -> CallWithGeneratorPrimary(
     //         AwaitKeyword=await_Keyword, Function=primary, Argument=generator_expression)
     //
     //     | -'await' Primary '(' -Arguments ')' -> CallWithArgumentsPrimary(
     //         AwaitKeyword=await_Keyword, Function=primary, Arguments=arguments)
-    //
-    //     | -'await' Primary '[' Slices ']' -> SubscriptPrimary(
-    //         AwaitKeyword=await_Keyword, Target=primary, Subscript=slices)
     //
     //     | -'await' Atom -> AtomPrimary(AwaitKeyword=await_Keyword, Atom=atom)
     PrimaryNode? raw_rule_Primary()
@@ -7642,6 +7613,42 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("-'await' Primary '.' Name");
+        }
+        base.Reset(_mark);
+        {
+            // -'await' Primary '[' Slices ']' -> SubscriptPrimary(
+            //         AwaitKeyword=await_Keyword, Left=primary, Right=slices)
+            base.LogAlternativeEntered("-'await' Primary '[' Slices ']'");
+            IGreenNode? await_Keyword;
+            IGreenNode? primary;
+            IGreenNode? left_square_bracket;
+            IGreenNode? slices;
+            IGreenNode? right_square_bracket;
+            if (((await_Keyword = Expect("await")) is not null || true) // Optional
+                &&
+                (primary = rule_Primary()) is not null
+                &&
+                (left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
+                &&
+                (slices = rule_Slices()) is not null
+                &&
+                (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
+            )
+            {
+                base.LogAlternativeSucceed("-'await' Primary '[' Slices ']'");
+                _res = new SubscriptPrimaryNode()
+                {
+                    Children = new NodeArray<IGreenNode>([
+                        await_Keyword ?? VoidNode.Instance,
+                        primary,
+                        left_square_bracket,
+                        slices,
+                        right_square_bracket,
+                    ]),
+                };
+                goto _Return;
+            }
+            base.LogAlternativeFailed("-'await' Primary '[' Slices ']'");
         }
         base.Reset(_mark);
         {
@@ -7706,42 +7713,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
                 goto _Return;
             }
             base.LogAlternativeFailed("-'await' Primary '(' -Arguments ')'");
-        }
-        base.Reset(_mark);
-        {
-            // -'await' Primary '[' Slices ']' -> SubscriptPrimary(
-            //         AwaitKeyword=await_Keyword, Target=primary, Subscript=slices)
-            base.LogAlternativeEntered("-'await' Primary '[' Slices ']'");
-            IGreenNode? await_Keyword;
-            IGreenNode? primary;
-            IGreenNode? left_square_bracket;
-            IGreenNode? slices;
-            IGreenNode? right_square_bracket;
-            if (((await_Keyword = Expect("await")) is not null || true) // Optional
-                &&
-                (primary = rule_Primary()) is not null
-                &&
-                (left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
-                &&
-                (slices = rule_Slices()) is not null
-                &&
-                (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
-            )
-            {
-                base.LogAlternativeSucceed("-'await' Primary '[' Slices ']'");
-                _res = new SubscriptPrimaryNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        await_Keyword ?? VoidNode.Instance,
-                        primary,
-                        left_square_bracket,
-                        slices,
-                        right_square_bracket,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("-'await' Primary '[' Slices ']'");
         }
         base.Reset(_mark);
         {
@@ -10971,114 +10942,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     }
     #endregion // AssignmentTargetUnit
 
-    #region DottedTargetUnit
-    // DottedTargetUnit: TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
-    DottedTargetUnitNode? rule_DottedTargetUnit()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("DottedTargetUnit");
-        int _mark = base.Mark();
-        DottedTargetUnitNode? _res = null;
-        {
-            // TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
-            base.LogAlternativeEntered("TargetPrimary '.' Name !TargetPrimaryContinuation");
-            IGreenNode? target_primary;
-            IGreenNode? dot;
-            IGreenNode? name;
-            if ((target_primary = rule_TargetPrimary()) is not null
-                &&
-                (dot = Expect(TokenType.Dot)) is not null
-                &&
-                (name = Expect(TokenType.Name)) is not null
-                &&
-                _LookaheadHelper_target_primary_continuation()
-            )
-            {
-                base.LogAlternativeSucceed("TargetPrimary '.' Name !TargetPrimaryContinuation");
-                _res = new DottedTargetUnitNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        target_primary,
-                        dot,
-                        name,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("TargetPrimary '.' Name !TargetPrimaryContinuation");
-            bool _LookaheadHelper_target_primary_continuation()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = rule_TargetPrimaryContinuation() != null;
-                base.Reset(_mark);
-                return _wasParsed == false;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("DottedTargetUnit");
-    _Return:
-        base.LogRuleExiting("DottedTargetUnit");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // DottedTargetUnit
-
-    #region SubscriptTargetUnit
-    // SubscriptTargetUnit: TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Primary=target_primary, Subscript=slices)
-    SubscriptTargetUnitNode? rule_SubscriptTargetUnit()
-    {
-        base.LogIncreaseLevel();
-        base.LogRuleEntered("SubscriptTargetUnit");
-        int _mark = base.Mark();
-        SubscriptTargetUnitNode? _res = null;
-        {
-            // TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Primary=target_primary, Subscript=slices)
-            base.LogAlternativeEntered("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
-            IGreenNode? target_primary;
-            IGreenNode? left_square_bracket;
-            IGreenNode? slices;
-            IGreenNode? right_square_bracket;
-            if ((target_primary = rule_TargetPrimary()) is not null
-                &&
-                (left_square_bracket = Expect(TokenType.LeftSquareBracket)) is not null
-                &&
-                (slices = rule_Slices()) is not null
-                &&
-                (right_square_bracket = Expect(TokenType.RightSquareBracket)) is not null
-                &&
-                _LookaheadHelper_target_primary_continuation()
-            )
-            {
-                base.LogAlternativeSucceed("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
-                _res = new SubscriptTargetUnitNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        target_primary,
-                        left_square_bracket,
-                        slices,
-                        right_square_bracket,
-                    ]),
-                };
-                goto _Return;
-            }
-            base.LogAlternativeFailed("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
-            bool _LookaheadHelper_target_primary_continuation()
-            {
-                int _mark = base.Mark();
-                bool _wasParsed = rule_TargetPrimaryContinuation() != null;
-                base.Reset(_mark);
-                return _wasParsed == false;
-            }
-        }
-        base.Reset(_mark);
-        base.LogRuleFailed("SubscriptTargetUnit");
-    _Return:
-        base.LogRuleExiting("SubscriptTargetUnit");
-        base.LogDecreaseLevel();
-        return _res;
-    }
-    #endregion // SubscriptTargetUnit
-
     #region AssignmentTargetAtom
     // AssignmentTargetAtom:
     //     | Name -> NameTargetAtom(Value=name)
@@ -11199,42 +11062,82 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     #endregion // AssignmentTargetAtom
 
     #region SingleTarget
+    // @union
     // SingleTarget:
-    //     | SingleSubscriptAttributeTarget -> CompositeSingleTarget(Value=single_subscript_attribute_target)
-    //     | Name -> NameSingleTarget(Value=name)
-    //     | '(' SingleTarget ')' -> GroupedTarget(Target=single_target)
-    SingleTargetNode? rule_SingleTarget()
+    //     | DottedTargetUnit
+    //     | SubscriptTargetUnit
+    //     | SingleTargetAtom
+    ISingleTargetNode? rule_SingleTarget()
     {
         base.LogIncreaseLevel();
         base.LogRuleEntered("SingleTarget");
         int _mark = base.Mark();
-        SingleTargetNode? _res = null;
+        ISingleTargetNode? _res = null;
         {
-            // SingleSubscriptAttributeTarget -> CompositeSingleTarget(Value=single_subscript_attribute_target)
-            base.LogAlternativeEntered("SingleSubscriptAttributeTarget");
-            IGreenNode? single_subscript_attribute_target;
-            if ((single_subscript_attribute_target = rule_SingleSubscriptAttributeTarget()) is not null)
+            // DottedTargetUnit
+            base.LogAlternativeEntered("DottedTargetUnit");
+            IGreenNode? dotted_target_unit;
+            if ((dotted_target_unit = rule_DottedTargetUnit()) is not null)
             {
-                base.LogAlternativeSucceed("SingleSubscriptAttributeTarget");
-                _res = new CompositeSingleTargetNode()
-                {
-                    Children = new NodeArray<IGreenNode>([
-                        single_subscript_attribute_target,
-                    ]),
-                };
+                base.LogAlternativeSucceed("DottedTargetUnit");
+                _res = (DottedTargetUnitNode?)dotted_target_unit;
                 goto _Return;
             }
-            base.LogAlternativeFailed("SingleSubscriptAttributeTarget");
+            base.LogAlternativeFailed("DottedTargetUnit");
         }
         base.Reset(_mark);
         {
-            // Name -> NameSingleTarget(Value=name)
+            // SubscriptTargetUnit
+            base.LogAlternativeEntered("SubscriptTargetUnit");
+            IGreenNode? subscript_target_unit;
+            if ((subscript_target_unit = rule_SubscriptTargetUnit()) is not null)
+            {
+                base.LogAlternativeSucceed("SubscriptTargetUnit");
+                _res = (SubscriptTargetUnitNode?)subscript_target_unit;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("SubscriptTargetUnit");
+        }
+        base.Reset(_mark);
+        {
+            // SingleTargetAtom
+            base.LogAlternativeEntered("SingleTargetAtom");
+            IGreenNode? single_target_atom;
+            if ((single_target_atom = rule_SingleTargetAtom()) is not null)
+            {
+                base.LogAlternativeSucceed("SingleTargetAtom");
+                _res = (SingleTargetAtomNode?)single_target_atom;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("SingleTargetAtom");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("SingleTarget");
+    _Return:
+        base.LogRuleExiting("SingleTarget");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // SingleTarget
+
+    #region SingleTargetAtom
+    // SingleTargetAtom:
+    //     | Name -> NameSingleTargetAtom(Name=name)
+    //     | '(' SingleTarget ')' -> GroupedTarget(Target=single_target, LeftParen=left_paren, RightParen=right_paren)
+    SingleTargetAtomNode? rule_SingleTargetAtom()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("SingleTargetAtom");
+        int _mark = base.Mark();
+        SingleTargetAtomNode? _res = null;
+        {
+            // Name -> NameSingleTargetAtom(Name=name)
             base.LogAlternativeEntered("Name");
             IGreenNode? name;
             if ((name = Expect(TokenType.Name)) is not null)
             {
                 base.LogAlternativeSucceed("Name");
-                _res = new NameSingleTargetNode()
+                _res = new NameSingleTargetAtomNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         name,
@@ -11246,7 +11149,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // '(' SingleTarget ')' -> GroupedTarget(Target=single_target)
+            // '(' SingleTarget ')' -> GroupedTarget(Target=single_target, LeftParen=left_paren, RightParen=right_paren)
             base.LogAlternativeEntered("'(' SingleTarget ')'");
             IGreenNode? left_paren;
             IGreenNode? single_target;
@@ -11272,26 +11175,69 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             base.LogAlternativeFailed("'(' SingleTarget ')'");
         }
         base.Reset(_mark);
-        base.LogRuleFailed("SingleTarget");
+        base.LogRuleFailed("SingleTargetAtom");
     _Return:
-        base.LogRuleExiting("SingleTarget");
+        base.LogRuleExiting("SingleTargetAtom");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // SingleTarget
+    #endregion // SingleTargetAtom
 
-    #region SingleSubscriptAttributeTarget
-    // SingleSubscriptAttributeTarget:
-    //     | TargetPrimary '.' Name !TargetPrimaryContinuation -> SingleAttributeTarget(Primary=target_primary, AttributeName=name)
-    //     | TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> SingleSubscriptTarget(Primary=target_primary, Subscript=slices)
-    SingleSubscriptAttributeTargetNode? rule_SingleSubscriptAttributeTarget()
+    #region CompositeSingleTarget
+    // @union
+    // CompositeSingleTarget:
+    //     | DottedTargetUnit
+    //     | SubscriptTargetUnit
+    ICompositeSingleTargetNode? rule_CompositeSingleTarget()
     {
         base.LogIncreaseLevel();
-        base.LogRuleEntered("SingleSubscriptAttributeTarget");
+        base.LogRuleEntered("CompositeSingleTarget");
         int _mark = base.Mark();
-        SingleSubscriptAttributeTargetNode? _res = null;
+        ICompositeSingleTargetNode? _res = null;
         {
-            // TargetPrimary '.' Name !TargetPrimaryContinuation -> SingleAttributeTarget(Primary=target_primary, AttributeName=name)
+            // DottedTargetUnit
+            base.LogAlternativeEntered("DottedTargetUnit");
+            IGreenNode? dotted_target_unit;
+            if ((dotted_target_unit = rule_DottedTargetUnit()) is not null)
+            {
+                base.LogAlternativeSucceed("DottedTargetUnit");
+                _res = (DottedTargetUnitNode?)dotted_target_unit;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("DottedTargetUnit");
+        }
+        base.Reset(_mark);
+        {
+            // SubscriptTargetUnit
+            base.LogAlternativeEntered("SubscriptTargetUnit");
+            IGreenNode? subscript_target_unit;
+            if ((subscript_target_unit = rule_SubscriptTargetUnit()) is not null)
+            {
+                base.LogAlternativeSucceed("SubscriptTargetUnit");
+                _res = (SubscriptTargetUnitNode?)subscript_target_unit;
+                goto _Return;
+            }
+            base.LogAlternativeFailed("SubscriptTargetUnit");
+        }
+        base.Reset(_mark);
+        base.LogRuleFailed("CompositeSingleTarget");
+    _Return:
+        base.LogRuleExiting("CompositeSingleTarget");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // CompositeSingleTarget
+
+    #region DottedTargetUnit
+    // DottedTargetUnit: TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
+    DottedTargetUnitNode? rule_DottedTargetUnit()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("DottedTargetUnit");
+        int _mark = base.Mark();
+        DottedTargetUnitNode? _res = null;
+        {
+            // TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
             base.LogAlternativeEntered("TargetPrimary '.' Name !TargetPrimaryContinuation");
             IGreenNode? target_primary;
             IGreenNode? dot;
@@ -11306,7 +11252,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("TargetPrimary '.' Name !TargetPrimaryContinuation");
-                _res = new SingleAttributeTargetNode()
+                _res = new DottedTargetUnitNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         target_primary,
@@ -11326,8 +11272,24 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
+        base.LogRuleFailed("DottedTargetUnit");
+    _Return:
+        base.LogRuleExiting("DottedTargetUnit");
+        base.LogDecreaseLevel();
+        return _res;
+    }
+    #endregion // DottedTargetUnit
+
+    #region SubscriptTargetUnit
+    // SubscriptTargetUnit: TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Left=target_primary, Right=slices)
+    SubscriptTargetUnitNode? rule_SubscriptTargetUnit()
+    {
+        base.LogIncreaseLevel();
+        base.LogRuleEntered("SubscriptTargetUnit");
+        int _mark = base.Mark();
+        SubscriptTargetUnitNode? _res = null;
         {
-            // TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> SingleSubscriptTarget(Primary=target_primary, Subscript=slices)
+            // TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Left=target_primary, Right=slices)
             base.LogAlternativeEntered("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
             IGreenNode? target_primary;
             IGreenNode? left_square_bracket;
@@ -11345,7 +11307,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             )
             {
                 base.LogAlternativeSucceed("TargetPrimary '[' Slices ']' !TargetPrimaryContinuation");
-                _res = new SingleSubscriptTargetNode()
+                _res = new SubscriptTargetUnitNode()
                 {
                     Children = new NodeArray<IGreenNode>([
                         target_primary,
@@ -11366,13 +11328,13 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
             }
         }
         base.Reset(_mark);
-        base.LogRuleFailed("SingleSubscriptAttributeTarget");
+        base.LogRuleFailed("SubscriptTargetUnit");
     _Return:
-        base.LogRuleExiting("SingleSubscriptAttributeTarget");
+        base.LogRuleExiting("SubscriptTargetUnit");
         base.LogDecreaseLevel();
         return _res;
     }
-    #endregion // SingleSubscriptAttributeTarget
+    #endregion // SubscriptTargetUnit
 
     #region TargetPrimary
     private readonly IMemoContainer<TargetPrimaryNode> _memo_TargetPrimary = CreateContainer<TargetPrimaryNode>();
@@ -11415,7 +11377,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     //     | TargetPrimary '[' Slices ']' &TargetPrimaryContinuation -> SubscriptTarget(Primary=target_primary, Subscript=slices)
     //     | TargetPrimary GeneratorExpression &TargetPrimaryContinuation -> GeneratorTarget(Primary=target_primary, Generator=generator_expression)
     //     | TargetPrimary '(' -Arguments ')' &TargetPrimaryContinuation -> CallTarget(Primary=target_primary, Arguments=arguments)
-    //     | Atom &TargetPrimaryContinuation -> AtomTarget(Value=atom)
+    //     | Atom &TargetPrimaryContinuation -> AtomTarget(Atom=atom)
     TargetPrimaryNode? raw_rule_TargetPrimary()
     {
         base.LogIncreaseLevel();
@@ -11571,7 +11533,7 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
         }
         base.Reset(_mark);
         {
-            // Atom &TargetPrimaryContinuation -> AtomTarget(Value=atom)
+            // Atom &TargetPrimaryContinuation -> AtomTarget(Atom=atom)
             base.LogAlternativeEntered("Atom &TargetPrimaryContinuation");
             IGreenNode? atom;
             if ((atom = rule_Atom()) is not null
@@ -11612,7 +11574,6 @@ public partial class PythonParser(ITokenNodeStream _tokenStream) : BaseParser<Fi
     //     | '('
     //     | '['
     //     | '.'
-    //
     //
     //
     //

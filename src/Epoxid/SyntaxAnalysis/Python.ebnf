@@ -120,13 +120,11 @@ CompoundStatement:
 Assignment:
     | Name ':' Expression -EqualAnnotatedRhs -> AnnotatedAssignment(Target=name, TypeHint=expression, Rhs=equal_annotated_rhs)
 
-    | Name EqualAnnotatedRhs -> SimpleAssignment(Target=name, Rhs=equal_annotated_rhs)
-
     | '(' SingleTarget ')' ':' Expression -EqualAnnotatedRhs -> AnnotatedParenthesizedAssignment(
         Target=single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
 
-    | SingleSubscriptAttributeTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedSubscriptAttributeAssignment(
-        Target=single_subscript_attribute_target, TypeHint=expression, Rhs=equal_annotated_rhs)
+    | CompositeSingleTarget ':' Expression -EqualAnnotatedRhs -> AnnotatedCompositeTargetAssignment(
+        Target=composite_single_target, TypeHint=expression, Rhs=equal_annotated_rhs)
 
     | (AssignmentTargetVariant '=' -> CascadeTarget(Value=assignment_target_variant))+ AnnotatedRhs !'=' -> CascadeAssignment(
         Targets=cascade_target_Plus, Rhs=annotated_rhs)
@@ -187,10 +185,6 @@ ImportStatement:
 
 # Import Statements
 # =================
-
-# CPython uses the `?` (`-` here) and NULL check for lazy. But it feels more like a hack, so make different rules for that.
-# If changed: don't forget to change lazy also because it's just copypaste.
-# Upd: TODO: there's new way to use keywords as fields, so we don't need that 'hack' anymore.
 
 ImportName: -'lazy' 'import' DottedName+.',' -> new(LazyKeyword=lazy_Keyword, Import=dotted_name_Gather)
 
@@ -566,14 +560,14 @@ Power: Primary '**' FactorExpression -> new(Left=primary, Right=factor_expressio
 Primary:
     | -'await' Primary '.' Name -> DotOperationPrimary(AwaitKeyword=await_Keyword, Left=primary, Right=name)
 
+    | -'await' Primary '[' Slices ']' -> SubscriptPrimary(
+        AwaitKeyword=await_Keyword, Left=primary, Right=slices)
+
     | -'await' Primary GeneratorExpression -> CallWithGeneratorPrimary(
         AwaitKeyword=await_Keyword, Function=primary, Argument=generator_expression)
 
     | -'await' Primary '(' -Arguments ')' -> CallWithArgumentsPrimary(
         AwaitKeyword=await_Keyword, Function=primary, Arguments=arguments)
-
-    | -'await' Primary '[' Slices ']' -> SubscriptPrimary(
-        AwaitKeyword=await_Keyword, Target=primary, Subscript=slices)
 
     | -'await' Atom -> AtomPrimary(AwaitKeyword=await_Keyword, Atom=atom)
 
@@ -771,24 +765,30 @@ AssignmentTargetUnit:
     | SubscriptTargetUnit
     | AssignmentTargetAtom
 
-DottedTargetUnit: TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
-
-SubscriptTargetUnit: TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Primary=target_primary, Subscript=slices)
-
 AssignmentTargetAtom:
     | Name -> NameTargetAtom(Value=name)
     | '(' AssignmentTargetUnit ')' -> GroupedTargetAtom(Target=assignment_target_unit)
     | '(' -AssignmentTargets ')' -> TupleTargetAtom(Items=assignment_targets)
     | '[' -AssignmentTargets ']' -> ListTargetAtom(Items=assignment_targets)
 
+@union
 SingleTarget:
-    | SingleSubscriptAttributeTarget -> CompositeSingleTarget(Value=single_subscript_attribute_target)
-    | Name -> NameSingleTarget(Value=name)
-    | '(' SingleTarget ')' -> GroupedTarget(Target=single_target)
+    | DottedTargetUnit
+    | SubscriptTargetUnit
+    | SingleTargetAtom
 
-SingleSubscriptAttributeTarget:
-    | TargetPrimary '.' Name !TargetPrimaryContinuation -> SingleAttributeTarget(Primary=target_primary, AttributeName=name)
-    | TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> SingleSubscriptTarget(Primary=target_primary, Subscript=slices)
+SingleTargetAtom:
+    | Name -> NameSingleTargetAtom(Name=name)
+    | '(' SingleTarget ')' -> GroupedTarget(Target=single_target, LeftParen=left_paren, RightParen=right_paren)
+
+@union
+CompositeSingleTarget:
+    | DottedTargetUnit
+    | SubscriptTargetUnit
+
+DottedTargetUnit: TargetPrimary '.' Name !TargetPrimaryContinuation -> new(Left=target_primary, Right=name)
+
+SubscriptTargetUnit: TargetPrimary '[' Slices ']' !TargetPrimaryContinuation -> new(Left=target_primary, Right=slices)
 
 @memo
 TargetPrimary:
@@ -796,14 +796,13 @@ TargetPrimary:
     | TargetPrimary '[' Slices ']' &TargetPrimaryContinuation -> SubscriptTarget(Primary=target_primary, Subscript=slices)
     | TargetPrimary GeneratorExpression &TargetPrimaryContinuation -> GeneratorTarget(Primary=target_primary, Generator=generator_expression)
     | TargetPrimary '(' -Arguments ')' &TargetPrimaryContinuation -> CallTarget(Primary=target_primary, Arguments=arguments)
-    | Atom &TargetPrimaryContinuation -> AtomTarget(Value=atom)
+    | Atom &TargetPrimaryContinuation -> AtomTarget(Atom=atom)
 
 @inline
 TargetPrimaryContinuation:
     | '('
     | '['
     | '.'
-
 
 # Targets for delete statement
 # ----------------------------

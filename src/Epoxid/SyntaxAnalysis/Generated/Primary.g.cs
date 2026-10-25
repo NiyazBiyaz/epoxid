@@ -16,12 +16,12 @@ namespace Epoxid.SyntaxAnalysis;
 /// <remarks>
 /// Inheritors:<br/>
 /// 1. <i>DotOperationPrimaryNode</i><br/>
-/// 2. <i>CallWithGeneratorPrimaryNode</i><br/>
-/// 3. <i>CallWithArgumentsPrimaryNode</i><br/>
-/// 4. <i>SubscriptPrimaryNode</i><br/>
+/// 2. <i>SubscriptPrimaryNode</i><br/>
+/// 3. <i>CallWithGeneratorPrimaryNode</i><br/>
+/// 4. <i>CallWithArgumentsPrimaryNode</i><br/>
 /// 5. <i>AtomPrimaryNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DotOperationPrimaryNode), typeof(CallWithGeneratorPrimaryNode), typeof(CallWithArgumentsPrimaryNode), typeof(SubscriptPrimaryNode), typeof(AtomPrimaryNode))]
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DotOperationPrimaryNode), typeof(SubscriptPrimaryNode), typeof(CallWithGeneratorPrimaryNode), typeof(CallWithArgumentsPrimaryNode), typeof(AtomPrimaryNode))]
 public abstract partial record PrimaryNode : GreenNode, IPowerExpressionNode
 {
     public TokenNode? AwaitKeyword => Children![0] as TokenNode;
@@ -33,12 +33,12 @@ public abstract partial record PrimaryNode : GreenNode, IPowerExpressionNode
 /// <remarks>
 /// Inheritors:<br/>
 /// 1. <i>DotOperationPrimaryView</i><br/>
-/// 2. <i>CallWithGeneratorPrimaryView</i><br/>
-/// 3. <i>CallWithArgumentsPrimaryView</i><br/>
-/// 4. <i>SubscriptPrimaryView</i><br/>
+/// 2. <i>SubscriptPrimaryView</i><br/>
+/// 3. <i>CallWithGeneratorPrimaryView</i><br/>
+/// 4. <i>CallWithArgumentsPrimaryView</i><br/>
 /// 5. <i>AtomPrimaryView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DotOperationPrimaryView), typeof(CallWithGeneratorPrimaryView), typeof(CallWithArgumentsPrimaryView), typeof(SubscriptPrimaryView), typeof(AtomPrimaryView))]
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(DotOperationPrimaryView), typeof(SubscriptPrimaryView), typeof(CallWithGeneratorPrimaryView), typeof(CallWithArgumentsPrimaryView), typeof(AtomPrimaryView))]
 public abstract partial class PrimaryView : RedView, IPowerExpressionView
 {
     public PrimaryView(PrimaryNode green, int position, IRedView? parent)

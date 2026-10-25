@@ -16,13 +16,12 @@ namespace Epoxid.SyntaxAnalysis;
 /// <remarks>
 /// Inheritors:<br/>
 /// 1. <i>AnnotatedAssignmentNode</i><br/>
-/// 2. <i>SimpleAssignmentNode</i><br/>
-/// 3. <i>AnnotatedParenthesizedAssignmentNode</i><br/>
-/// 4. <i>AnnotatedSubscriptAttributeAssignmentNode</i><br/>
-/// 5. <i>CascadeAssignmentNode</i><br/>
-/// 6. <i>AugmentedAssignmentNode</i><br/>
+/// 2. <i>AnnotatedParenthesizedAssignmentNode</i><br/>
+/// 3. <i>AnnotatedCompositeTargetAssignmentNode</i><br/>
+/// 4. <i>CascadeAssignmentNode</i><br/>
+/// 5. <i>AugmentedAssignmentNode</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(AnnotatedAssignmentNode), typeof(SimpleAssignmentNode), typeof(AnnotatedParenthesizedAssignmentNode), typeof(AnnotatedSubscriptAttributeAssignmentNode), typeof(CascadeAssignmentNode), typeof(AugmentedAssignmentNode))]
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(AnnotatedAssignmentNode), typeof(AnnotatedParenthesizedAssignmentNode), typeof(AnnotatedCompositeTargetAssignmentNode), typeof(CascadeAssignmentNode), typeof(AugmentedAssignmentNode))]
 public abstract partial record AssignmentNode : GreenNode, ISimpleStatementNode
 {
 }
@@ -33,13 +32,12 @@ public abstract partial record AssignmentNode : GreenNode, ISimpleStatementNode
 /// <remarks>
 /// Inheritors:<br/>
 /// 1. <i>AnnotatedAssignmentView</i><br/>
-/// 2. <i>SimpleAssignmentView</i><br/>
-/// 3. <i>AnnotatedParenthesizedAssignmentView</i><br/>
-/// 4. <i>AnnotatedSubscriptAttributeAssignmentView</i><br/>
-/// 5. <i>CascadeAssignmentView</i><br/>
-/// 6. <i>AugmentedAssignmentView</i><br/>
+/// 2. <i>AnnotatedParenthesizedAssignmentView</i><br/>
+/// 3. <i>AnnotatedCompositeTargetAssignmentView</i><br/>
+/// 4. <i>CascadeAssignmentView</i><br/>
+/// 5. <i>AugmentedAssignmentView</i><br/>
 /// </remarks>
-[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(AnnotatedAssignmentView), typeof(SimpleAssignmentView), typeof(AnnotatedParenthesizedAssignmentView), typeof(AnnotatedSubscriptAttributeAssignmentView), typeof(CascadeAssignmentView), typeof(AugmentedAssignmentView))]
+[global::Epoxid.SyntaxAnalysis.BaseRule(typeof(AnnotatedAssignmentView), typeof(AnnotatedParenthesizedAssignmentView), typeof(AnnotatedCompositeTargetAssignmentView), typeof(CascadeAssignmentView), typeof(AugmentedAssignmentView))]
 public abstract partial class AssignmentView : RedView, ISimpleStatementView
 {
     public AssignmentView(AssignmentNode green, int position, IRedView? parent)

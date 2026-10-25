@@ -19,6 +19,7 @@ public static class Builtins
         constructFunc("input", input, input_params);
         BuiltinsScope.Bind("int", EpInteger.Int);
         BuiltinsScope.Bind("float", EpFloat.Float);
+        BuiltinsScope.Bind("type", EpType.Type);
     }
 
     private static void constructFunc(string name, FrameCallFunction function, FunctionParametersDescription description)
