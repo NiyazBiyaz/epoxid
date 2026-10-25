@@ -86,25 +86,25 @@ internal class Engine
                 case Opcode.Eq:
                 {
                     EpObject right = pop(), left = pop();
-                    push(Core.EqualObjects(left, right));
+                    push(Core.EquateObjects(left, right));
                     break;
                 }
                 case Opcode.NEq:
                 {
                     EpObject right = pop(), left = pop();
-                    push(Core.NotEqualObjects(left, right));
+                    push(Core.NegativeEquateObjects(left, right));
                     break;
                 }
                 case Opcode.GrTh:
                 {
                     EpObject right = pop(), left = pop();
-                    push(Core.GreaterThanObjects(left, right));
+                    push(Core.CompareGreaterThanObjects(left, right));
                     break;
                 }
                 case Opcode.LsTh:
                 {
                     EpObject right = pop(), left = pop();
-                    push(Core.LessThanObjects(left, right));
+                    push(Core.CompareLessThanObjects(left, right));
                     break;
                 }
                 case Opcode.InAdd:

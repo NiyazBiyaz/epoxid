@@ -53,7 +53,85 @@ internal static class Core
         }
     }
 
-    // TODO: MRO
+    internal static EpTuple GetMethodResolutionOrder(EpType type) => [.. getMro(type)];
+
+    private static List<EpType> getMro(EpType type)
+    {
+        // TODO: reduce allocations
+        List<EpType> result;
+        switch (type.DunderBases.Length)
+        {
+            case 0:
+                result = [type];
+                break;
+
+            case 1:
+                result = [type, .. getMro(type.DunderBases[0])];
+                break;
+
+            default:
+            {
+                // Simple C3 linearization algorithm implementation
+                // TODO: use reversed lists, because now it would do O(n) for each linearization
+
+                // Get linearizations for the all bases
+                List<EpType>[] basesMro = new List<EpType>[type.DunderBases.Length];
+                for (int i = 0; i < type.DunderBases.Length; i++)
+                {
+                    basesMro[i] = getMro(type.DunderBases[i]);
+                }
+
+                result = [type];
+
+                // While any base linearizations contains elements, can add to the result
+                bool hasAny = true;
+                while (hasAny)
+                {
+                    EpType? candidate = null;
+                    foreach (var mro in basesMro)
+                    {
+                        if (mro.Count == 0)
+                            continue;
+
+                        // Peak first element of the first mro.
+                        var head = mro[0];
+
+                        // If peaked head appears in the tails of another mros, it cannot be used
+                        bool notInAnyTail = true;
+                        foreach (var tail in basesMro)
+                        {
+                            if (tail.IndexOf(head, 1) != -1)
+                            {
+                                notInAnyTail = false;
+                                break;
+                            }
+                        }
+                        if (notInAnyTail)
+                        {
+                            candidate = head;
+                            break;
+                        }
+                    }
+
+                    if (candidate == null)
+                        throw new MroConstructingException(type.DunderName);
+
+                    result.Add(candidate);
+                    foreach (var mro in basesMro)
+                    {
+                        // Remove selected item from the heads of the all mros
+                        if (mro[0] == candidate)
+                            mro.RemoveAt(0);
+                    }
+                    hasAny = basesMro.Any(mro => mro.Count > 0);
+                }
+
+                break;
+            }
+        }
+
+        return result;
+    }
 
     internal static EpObject AddObjects(EpObject left, EpObject right)
     {
@@ -137,7 +215,7 @@ internal static class Core
         return true;
     }
 
-    internal static EpObject EqualObjects(EpObject left, EpObject right)
+    internal static EpObject EquateObjects(EpObject left, EpObject right)
     {
         if (left.DunderClass.DunderEq == null)
         {
@@ -147,17 +225,17 @@ internal static class Core
         return left.DunderClass.DunderEq(left, right);
     }
 
-    internal static EpObject NotEqualObjects(EpObject left, EpObject right)
+    internal static EpObject NegativeEquateObjects(EpObject left, EpObject right)
     {
         if (left.DunderClass.DunderNe == null)
         {
-            throw new Exception($"TypeError: unsupported operand type for ==: '{left.DunderClass.DunderName}'");
+            throw new Exception($"TypeError: unsupported operand type for !=: '{left.DunderClass.DunderName}'");
         }
 
         return left.DunderClass.DunderNe(left, right);
     }
 
-    internal static EpObject LessThanObjects(EpObject left, EpObject right)
+    internal static EpObject CompareLessThanObjects(EpObject left, EpObject right)
     {
         if (left.DunderClass.DunderLt == null)
         {
@@ -167,7 +245,7 @@ internal static class Core
         return left.DunderClass.DunderLt(left, right);
     }
 
-    internal static EpObject GreaterThanObjects(EpObject left, EpObject right)
+    internal static EpObject CompareGreaterThanObjects(EpObject left, EpObject right)
     {
         if (left.DunderClass.DunderGt == null)
         {

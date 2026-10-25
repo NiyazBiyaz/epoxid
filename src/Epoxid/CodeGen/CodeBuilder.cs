@@ -64,7 +64,7 @@ internal partial class CodeBuilder(SymbolTable symbolTable)
             if (constant.DunderClass != value.DunderClass)
                 return false;
 
-            var equality = Core.EqualObjects(constant, value);
+            var equality = Core.EquateObjects(constant, value);
             return Core.ConvertToBool(equality);
         }
     }
