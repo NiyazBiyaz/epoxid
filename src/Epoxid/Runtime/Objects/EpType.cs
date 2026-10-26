@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Epoxid.SourceGeneration;
 
 namespace Epoxid.Runtime.Objects;
@@ -6,14 +7,68 @@ namespace Epoxid.Runtime.Objects;
 public partial class EpType : EpObject
 {
     [Slot("__name__")]
-    public partial string DunderName { get; internal set; }
+    public string DunderName { get; internal set; } = null!;
 
     [Slot("__bases__")]
-    public partial EpType[] DunderBases { get; internal set; }
+    public EpType[] DunderBases { get; internal set; } = null!;
 
-    public static readonly EpType Type = RuntimeInitializer.Type;
+    public static EpType Type { get; private set; } = null!;
+
+    internal static new void Ready()
+    {
+        Debug.Assert(RuntimeInitializer.IsInitialized);
+
+        Type = RuntimeInitializer.Type;
+
+        Type.DunderCall = dunderCallImplementation;
+    }
 
     internal static EpType EmptyCtor() => new();
+
+    internal void Initialize(string name, EpType[] bases)
+    {
+        DunderName = name;
+        DunderBases = bases;
+        DunderMro = Core.MethodResolutionOrder(this);
+    }
+
+    internal void EnrichSlots(IReadOnlyList<KnownSlotDescriptor>? knownSlots = null)
+    {
+        var slots = knownSlots ?? (this == Type ? known_slots : []);
+
+        DunderDict ??= [];
+        foreach (var descriptor in slots)
+        {
+            var slotName = new EpString(descriptor.DescriptorName);
+            if (!DunderDict.TryAdd(slotName, new WrapperObject<KnownSlotDescriptor>(descriptor)))
+            {
+                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for {slotName}");
+            }
+        }
+
+        copyMethods();
+    }
+
+    private void copyMethods()
+    {
+        if (this == Type)
+        {
+            postInitialization();
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Copy manually managed methods from EpObject.Object to EpType.Type
+    /// </summary>
+    private void postInitialization()
+    {
+        DunderEq = Object.DunderEq;
+        DunderNe = Object.DunderNe;
+        DunderNew = Object.DunderNew;
+        DunderGetAttribute = Object.DunderGetAttribute;
+        DunderSetAttr = Object.DunderSetAttr;
+    }
 
     private EpType()
         : base()
@@ -23,30 +78,13 @@ public partial class EpType : EpObject
     public EpType(string name, EpType[] bases, EpType type)
         : base(type)
     {
-        FillSlots();
-        DunderName = name;
-        DunderBases = bases;
-    }
-
-    internal void FillSlots()
-    {
-        DunderDict ??= [];
-
-        foreach (var (descriptorName, offset) in slot_descriptors_mapping)
-        {
-            var slotDescriptor = new EpSlotDescriptor(offset, descriptorName);
-            if (!DunderDict.TryAdd((EpString)descriptorName, slotDescriptor))
-            {
-                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{descriptorName}'");
-            }
-        }
-
-        DunderCall = dunderCallImplementation;
+        Initialize(name, bases);
+        EnrichSlots();
     }
 
     public override string ToString() => $"<class '{DunderName}'>";
 
-    private EpObject dunderCallImplementation(EpObject self, ReadOnlySpan<EpObject> args)
+    private static EpObject dunderCallImplementation(EpObject self, ReadOnlySpan<EpObject> args)
     {
         switch (self)
         {
@@ -70,83 +108,86 @@ public partial class EpType : EpObject
 
     #region Methods slots
 
+    [Slot("__mro__")]
+    public EpType[] DunderMro { get; internal set; } = null!;
+
     [Slot("__new__")]
-    public partial UnaryFunction DunderNew { get; set; }
+    public UnaryFunction DunderNew { get; set; } = null!;
 
     [Slot("__call__")]
-    public partial FrameDunderCall? DunderCall { get; set; }
+    public FrameDunderCall? DunderCall { get; set; }
 
     [Slot("__init__")]
-    public partial FrameDunderCall? DunderInit { get; set; }
+    public FrameDunderCall? DunderInit { get; set; }
 
     [Slot("__add__")]
-    public partial BinaryFunction? DunderAdd { get; set; }
+    public BinaryFunction? DunderAdd { get; set; }
 
     [Slot("__sub__")]
-    public partial BinaryFunction? DunderSub { get; set; }
+    public BinaryFunction? DunderSub { get; set; }
 
     [Slot("__mul__")]
-    public partial BinaryFunction? DunderMul { get; set; }
+    public BinaryFunction? DunderMul { get; set; }
 
     [Slot("__truediv__")]
-    public partial BinaryFunction? DunderTrueDiv { get; set; }
+    public BinaryFunction? DunderTrueDiv { get; set; }
 
     [Slot("__mod__")]
-    public partial BinaryFunction? DunderMod { get; set; }
+    public BinaryFunction? DunderMod { get; set; }
 
     [Slot("__pow__")]
-    public partial BinaryFunction? DunderPow { get; set; } // It's not really BinaryFunction because in Python it accepts 3 arguments, but for now...
+    public BinaryFunction? DunderPow { get; set; } // It's not really BinaryFunction because in Python it accepts 3 arguments, but for now...
 
     [Slot("__bool__")]
-    public partial UnaryFunction? DunderBool { get; set; }
+    public UnaryFunction? DunderBool { get; set; }
 
     [Slot("__len__")]
-    public partial UnaryFunction? DunderLen { get; set; }
+    public UnaryFunction? DunderLen { get; set; }
 
     [Slot("__eq__")]
-    public partial BinaryFunction? DunderEq { get; set; }
+    public BinaryFunction? DunderEq { get; set; }
 
     [Slot("__ne__")]
-    public partial BinaryFunction? DunderNe { get; set; }
+    public BinaryFunction? DunderNe { get; set; }
 
     [Slot("__lt__")]
-    public partial BinaryFunction? DunderLt { get; set; }
+    public BinaryFunction? DunderLt { get; set; }
 
     [Slot("__gt__")]
-    public partial BinaryFunction? DunderGt { get; set; }
+    public BinaryFunction? DunderGt { get; set; }
 
     [Slot("__iadd__")]
-    public partial BinaryFunction? DunderIAdd { get; set; }
+    public BinaryFunction? DunderIAdd { get; set; }
 
     [Slot("__isub__")]
-    public partial BinaryFunction? DunderISub { get; set; }
+    public BinaryFunction? DunderISub { get; set; }
 
     [Slot("__imul__")]
-    public partial BinaryFunction? DunderIMul { get; set; }
+    public BinaryFunction? DunderIMul { get; set; }
 
     [Slot("__itruediv__")]
-    public partial BinaryFunction? DunderITrueDiv { get; set; }
+    public BinaryFunction? DunderITrueDiv { get; set; }
 
     [Slot("__imod__")]
-    public partial BinaryFunction? DunderIMod { get; set; }
+    public BinaryFunction? DunderIMod { get; set; }
 
     [Slot("__ipow__")]
-    public partial BinaryFunction? DunderIPow { get; set; } // See above.
+    public BinaryFunction? DunderIPow { get; set; } // See above.
 
     [Slot("__get__")]
-    public partial DescriptorGetFunction? DunderGet { get; set; }
+    public DescriptorGetFunction? DunderGet { get; set; }
 
     [Slot("__set__")]
-    public partial DescriptorSetFunction? DunderSet { get; set; }
+    public DescriptorSetFunction? DunderSet { get; set; }
 
     [Slot("__getattribute__")]
-    public partial GetAttributeFunction DunderGetAttribute { get; set; }
+    public GetAttributeFunction DunderGetAttribute { get; set; } = null!;
 
     [Slot("__getattr__")]
-    public partial GetAttributeFunction? DunderGetAttr { get; set; }
+    public GetAttributeFunction? DunderGetAttr { get; set; }
 
     [Slot("__setattr__")]
-    public partial SetAttributeFunction DunderSetAttr { get; set; }
+    public SetAttributeFunction DunderSetAttr { get; set; } = null!;
 
     #endregion
 }

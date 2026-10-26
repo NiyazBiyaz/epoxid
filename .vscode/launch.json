@@ -38,6 +38,18 @@
             ],
         },
         {
+            "name": "Debug: Epoxid __attributes__",
+            "type": "coreclr",
+            "preLaunchTask": "dotnet: build",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/Epoxid",
+            "program": 
+                "${workspaceFolder}/src/Epoxid/bin/Debug/net10.0/epoxid.dll",
+            "args": [
+                "__attributes__.ep"
+            ],
+        },
+        {
             "name": "Debug: Parser generator",
             "type": "coreclr",
             "preLaunchTask": "dotnet: build",

@@ -1,0 +1,23 @@
+using Epoxid.SourceGeneration;
+using Epoxid.Runtime.Objects;
+
+namespace Epoxid.Fluffy;
+
+[EpoxidType]
+public partial class VariousTypes : EpObject
+{
+    [Slot("__pondering__")]
+    public string? PonDeRing { get; set; }
+
+    [Slot("__bau__")]
+    public VariousTypes Bau { get; set; }
+
+    [Slot("__baubau__")]
+    public VariousTypes? BauBau { get; set; }
+
+    [Slot("__fuzzy__")]
+    public long Fuzzy { get; set; }
+
+    [Slot("__hoeh__")]
+    public long? Hoeh { get; set; }
+}

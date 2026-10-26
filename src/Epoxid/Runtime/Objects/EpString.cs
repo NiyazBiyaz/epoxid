@@ -1,10 +1,8 @@
 using System.Text;
-using Epoxid.SourceGeneration;
 
 namespace Epoxid.Runtime.Objects;
 
-[EpoxidType]
-public partial class EpString : EpObject
+public class EpString : EpObject, IEquatable<EpString>
 {
     internal readonly string Value;
 
@@ -95,4 +93,16 @@ public partial class EpString : EpObject
             _ => (EpBool)true,
         };
     }
+
+    public bool Equals(EpString? other)
+    {
+        if (other == null)
+            return false;
+
+        return other.Value == Value;
+    }
+
+    public override bool Equals(object? obj) => obj is EpString otherStr && Equals(otherStr);
+
+    public override int GetHashCode() => Value.GetHashCode();
 }

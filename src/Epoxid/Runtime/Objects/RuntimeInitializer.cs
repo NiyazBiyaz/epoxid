@@ -1,28 +1,27 @@
 namespace Epoxid.Runtime.Objects;
 
-// Because we cannot control when the static fields is initialized within a single class, just create a new class
 internal static class RuntimeInitializer
 {
-    internal static EpType Object;
-    internal static EpType Type;
+    internal static EpType Object { get; private set; } = null!;
+    internal static EpType Type { get; private set; } = null!;
+    internal static bool IsInitialized { get; private set; } = false;
 
-    static RuntimeInitializer()
+    internal static void InitializeObjectType()
     {
-        // We need to avoid using many static dependencies, so use empty ctors and set everything manually
         Object = EpType.EmptyCtor();
         Type = EpType.EmptyCtor();
 
-        Object.DunderSlots = new object?[Object.SlotsCount];
-        Object.DunderName = "object";
         Object.DunderClass = Type;
-        Object.DunderBases = [];
-
-        Type.DunderSlots = new object?[Type.SlotsCount];
-        Type.DunderName = "type";
         Type.DunderClass = Type;
-        Type.DunderBases = [Object];
+        IsInitialized = true;
 
-        Object.FillSlots();
-        Type.FillSlots();
+        EpObject.Ready();
+        EpType.Ready();
+
+        Object.Initialize("object", []);
+        Type.Initialize("type", [Object]);
+
+        Object.EnrichSlots(EpObject.KnownSlots);
+        Type.EnrichSlots();
     }
 }

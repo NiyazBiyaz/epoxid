@@ -53,7 +53,7 @@ internal static class Core
         }
     }
 
-    internal static EpTuple MethodResolutionOrder(EpType type) => [.. getMro(type)];
+    internal static EpType[] MethodResolutionOrder(EpType type) => [.. getMro(type)];
 
     private static List<EpType> getMro(EpType type)
     {
@@ -328,8 +328,33 @@ internal static class Core
     }
 
     internal static EpObject GetAttribute(EpObject obj, EpObject attributeName)
-        => obj.DunderClass.DunderGetAttribute(obj, attributeName);
+    {
+        var value = obj.DunderClass.DunderGetAttribute(obj, attributeName)
+            ?? throw new NotImplementedException("Received value is null.");
+        return value;
+    }
 
     internal static void SetAttribute(EpObject obj, EpObject attributeName, EpObject value)
         => obj.DunderClass.DunderSetAttr(obj, attributeName, value);
+
+    internal static TResult? SearchMethod<TResult>(EpType objClass, EpString methodName)
+    {
+        TResult? result = default;
+        foreach (var type in objClass.DunderMro)
+        {
+            if (type.DunderClass.DunderDict!.TryGetValue(methodName, out var searchResult))
+            {
+                if (searchResult is TResult found)
+                {
+                    result = found;
+                    break;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Type is not match for the found method.");
+                }
+            }
+        }
+        return result;
+    }
 }

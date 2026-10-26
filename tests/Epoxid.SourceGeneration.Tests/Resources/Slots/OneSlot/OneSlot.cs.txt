@@ -7,5 +7,5 @@ namespace Epoxid.Fluffy;
 public partial class OneSlot : EpObject
 {
     [Slot("__bau__")]
-    public partial string? Bau { get; set; }
+    public string? Bau { get; set; }
 }

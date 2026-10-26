@@ -15,7 +15,16 @@ public class SourceBuilder
     {
         AddLine("{");
         indent += 1;
-        return new Block(this)
+        return new Block(this, true)
+        {
+            EndSuffix = blockEnd,
+        };
+    }
+
+    public Block BlockIndented(string blockEnd = "")
+    {
+        indent += 1;
+        return new Block(this, false)
         {
             EndSuffix = blockEnd,
         };
@@ -74,16 +83,24 @@ public class SourceBuilder
 
     public override string ToString() => builder.ToString();
 
-    public readonly struct Block(SourceBuilder reference) : IDisposable
+    public readonly struct Block(SourceBuilder reference, bool closeBrace) : IDisposable
     {
         private readonly SourceBuilder builderReference = reference;
+        private readonly bool closeBrace = closeBrace;
 
         public readonly string EndSuffix { get; init; } = "";
 
         public void Dispose()
         {
             builderReference.indent -= 1;
-            builderReference.AddLine("}" + EndSuffix);
+
+            builderReference.BeginLine();
+
+            if (closeBrace)
+                builderReference.Add("}");
+            builderReference.Add(EndSuffix);
+
+            builderReference.EndLine();
         }
     }
 }

@@ -22,11 +22,23 @@ public abstract class BaseGenerator<TTarget> : IIncrementalGenerator
         var pipeline = context.SyntaxProvider
             .ForAttributeWithMetadataName(
                 AttributeMetadataName,
-                predicate: isGeneratorCandidate,
+                predicate: IsGeneratorCandidate,
                 transform: CreateTarget)
             .Where(static target => target != null);
 
         context.RegisterSourceOutput(pipeline, emitFile!);
+    }
+
+    // Generic predicate for the class declarations with required partial modifier
+    protected virtual bool IsGeneratorCandidate(SyntaxNode node, CancellationToken ct)
+    {
+        if (node is not ClassDeclarationSyntax cl)
+            return false;
+
+        if (!cl.Modifiers.Any(SyntaxKind.PartialKeyword))
+            return false;
+
+        return true;
     }
 
     protected static string GetAccessibilityString(Accessibility accessibility) => accessibility switch
@@ -56,16 +68,5 @@ public abstract class BaseGenerator<TTarget> : IIncrementalGenerator
         string hintName = Generate(builder, target);
 
         context.AddSource(hintName, SourceText.From(builder.ToString(), Encoding.UTF8));
-    }
-
-    private static bool isGeneratorCandidate(SyntaxNode node, CancellationToken ct)
-    {
-        if (node is not ClassDeclarationSyntax cl)
-            return false;
-
-        if (!cl.Modifiers.Any(SyntaxKind.PartialKeyword))
-            return false;
-
-        return true;
     }
 }

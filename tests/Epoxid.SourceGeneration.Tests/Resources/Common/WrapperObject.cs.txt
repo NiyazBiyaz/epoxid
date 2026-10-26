@@ -1,0 +1,11 @@
+namespace Epoxid.Runtime.Objects;
+
+public class WrapperObject<T> : EpObject
+{
+    public T Value { get; set; }
+
+    public WrapperObject(T value)
+    {
+        Value = value;
+    }
+}

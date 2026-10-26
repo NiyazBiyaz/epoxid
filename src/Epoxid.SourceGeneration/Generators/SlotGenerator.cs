@@ -1,9 +1,5 @@
 using System.Collections.Immutable;
-// using System.Text;
 using Microsoft.CodeAnalysis;
-// using Microsoft.CodeAnalysis.CSharp;
-// using Microsoft.CodeAnalysis.CSharp.Syntax;
-// using Microsoft.CodeAnalysis.Text;
 
 namespace Epoxid.SourceGeneration.Generators;
 
@@ -12,10 +8,10 @@ public class SlotGenerator : BaseGenerator<SlotGenerator.TargetData>
 {
     protected override string AttributeMetadataName => "Epoxid.SourceGeneration.EpoxidTypeAttribute";
 
-    private const string slot_offset = "global::Epoxid.Runtime.SlotOffset";
-    private const string readonly_dictionary_string_offset = $"global::System.Collections.ObjectModel.ReadOnlyDictionary<string, {slot_offset}>";
-    private const string dictionary_string_offset = $"global::System.Collections.Generic.Dictionary<string, {slot_offset}>";
-    private const string collection_extensions_as_readonly = "global::System.Collections.Generic.CollectionExtensions.AsReadOnly";
+    private const string readonly_list_of_descriptors = $"global::System.Collections.Generic.IReadOnlyList<{known_descriptor}>";
+    private const string known_descriptor = "global::Epoxid.Runtime.Objects.KnownSlotDescriptor";
+    private const string instance_name = "_instance";
+    private const string value_name = "_value";
 
     protected override TargetData? CreateTarget(GeneratorAttributeSyntaxContext context, CancellationToken ct)
     {
@@ -28,9 +24,6 @@ public class SlotGenerator : BaseGenerator<SlotGenerator.TargetData>
         var slots = ImmutableArray.CreateBuilder<SlotData>();
         foreach (var member in target.GetMembers().OfType<IPropertySymbol>())
         {
-            if (member.GetMethod == null || member.SetMethod == null)
-                continue;
-
             var slotAttribute = member.GetAttributes().FirstOrDefault(SyntaxHelpers.IsSlotAttribute);
             if (slotAttribute is not AttributeData attr)
                 continue;
@@ -38,171 +31,100 @@ public class SlotGenerator : BaseGenerator<SlotGenerator.TargetData>
             string propertyName = member.Name;
             string descriptorName = (string)attr.ConstructorArguments[0].Value!;
             string typeName = SyntaxHelpers.GetGlobalQualifiedName(member.Type);
+            bool isEpoxidType = SyntaxHelpers.IsEpoxidObject(member.Type);
+
+            bool needNullable = member.Type.NullableAnnotation == NullableAnnotation.Annotated && !member.Type.IsValueType;
 
             slots.Add(new(
                 propertyName,
                 descriptorName,
                 typeName,
-                member.Type.NullableAnnotation == NullableAnnotation.Annotated,
-                member.Type.IsValueType,
-                member.DeclaredAccessibility,
-                member.GetMethod.DeclaredAccessibility,
-                member.SetMethod.DeclaredAccessibility));
+                isEpoxidType,
+                needNullable));
         }
 
         return new TargetData(
             target.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)),
             target.Name,
-            target.BaseType.Name,
-            new ValueArray<SlotData>(slots.ToImmutable())
-        );
+            new ValueArray<SlotData>(slots.ToImmutable()));
     }
 
     protected override string Generate(SourceBuilder builder, TargetData target)
     {
         builder.AddLine($"namespace {target.Namespace};");
-
+        builder.BlankLine();
         builder.AddLine($"partial class {target.ClassName}");
 
         using (builder.BlockScope())
         {
             builder.AddLines($"""
-            // Slots count of '{target.ClassName}' type.
             {GeneratedCodeAttribute}
-            protected const int {classSlotCount(target.ClassName)} = {classSlotCount(target.BaseClassName)} + {target.Slots.Length};
+            private static readonly {readonly_list_of_descriptors} known_slots =
+            [
             """);
-            builder.BlankLine();
-
-            builder.AddLines($"""
-            {GeneratedCodeAttribute}
-            internal override int SlotsCount => {classSlotCount(target.ClassName)};
-            """);
-            builder.BlankLine();
-
-            builder.AddLines($"""
-            {GeneratedCodeAttribute}
-            private static readonly {readonly_dictionary_string_offset} slot_descriptors_mapping
-                = {collection_extensions_as_readonly}(
-                new {dictionary_string_offset}
-            """);
-            using (builder.BlockScope(");"))
+            using (builder.BlockIndented("];"))
             {
+                bool blank = false;
                 foreach (var slot in target.Slots)
                 {
-                    builder.AddLine($"[\"{slot.DescriptorName}\"] = new {slot_offset}({slotIndex(slot.PropertyName)}),");
-                }
-            }
+                    if (blank)
+                        builder.BlankLine();
+                    blank = true;
 
-            for (int i = 0; i < target.Slots.Length; i++)
-            {
-                builder.BlankLine();
-                var slot = target.Slots[i];
-
-                string accessibility = GetAccessibilityString(slot.PropertyAccessibility);
-                string getAccess = GetAccessibilityString(slot.GetAccessibility);
-                string setAccess = GetAccessibilityString(slot.SetAccessibility);
-
-                builder.AddLines($"""
-                // Property of the '{slot.DescriptorName}' slot
-                {accessibility} partial {slot.TypeString} {slot.PropertyName}
-                """);
-
-                using (builder.BlockScope())
-                {
-                    builder.AddLine(GeneratedCodeAttribute);
-                    builder.BeginLine();
-                    if (slot.GetAccessibility < slot.PropertyAccessibility)
+                    builder.AddLines($"""
+                    new {known_descriptor}()
+                    """);
+                    using (builder.BlockScope(","))
                     {
-                        builder.Add($"{getAccess} ");
-                    }
-                    builder.Add("get");
-                    builder.EndLine();
-
-                    using (builder.BlockScope())
-                    {
-                        builder.AddLines($"""
-                        {slotsBoundCheck(slot.PropertyName)}
-                        var _span = base.DunderSlots.Span;
-                        """);
-
-                        if (!slot.IsTypeNullable)
+                        if (!slot.IsEpoxidType)
                         {
-                            builder.AddLines($"""
-                            var _value = _span[{slotIndex(slot.PropertyName)}];
-                            if (_value == null)
-                                throw new global::System.NullReferenceException("'{slot.PropertyName}' slot value is null.");
-                            return ({slot.TypeString})_value;
-                            """);
+                            builder.BeginLine();
+                            builder.Add($"GetSlot = static (_, {instance_name}, _) => ");
+                            builder.Add($"new {wrapper(slot.TypeString)}(");
+                            builder.Add($"{cast(instance_name, target.ClassName)}.{slot.PropertyName}),");
+                            builder.EndLine();
+
+                            builder.BeginLine();
+                            builder.Add($"SetSlot = static (_, {instance_name}, {value_name}) => ");
+                            builder.Add(cast(instance_name, wrapper(slot.TypeString)));
+                            builder.Add($".Value = ");
+                            builder.Add(cast(value_name, wrapper(slot.TypeString)));
+                            builder.Add(".Value,");
+                            builder.EndLine();
                         }
                         else
                         {
-                            builder.AddLine($"return ({slot.TypeString})_span[{slotIndex(slot.PropertyName)}];");
+                            builder.AddLines($"""
+                            GetSlot = static (_, {instance_name}, _) => {cast(instance_name, target.ClassName)}.{slot.PropertyName},
+                            SetSlot = static (_, {instance_name}, {value_name}) => {cast(instance_name, target.ClassName)}.{slot.PropertyName} = {cast(value_name, slot.TypeName)},
+                            """);
                         }
-                    }
 
-                    builder.AddLine(GeneratedCodeAttribute);
-                    builder.BeginLine();
-                    if (slot.SetAccessibility < slot.PropertyAccessibility)
-                    {
-                        builder.Add($"{setAccess} ");
-                    }
-                    builder.Add("set");
-                    builder.EndLine();
-
-                    using (builder.BlockScope())
-                    {
-                        builder.AddLines($"""
-                        {slotsBoundCheck(slot.PropertyName)}
-
-                        var _span = base.DunderSlots.Span;
-                        _span[{slotIndex(slot.PropertyName)}] = value;
-                        """);
+                        builder.AddLine($"DescriptorName = \"{slot.DescriptorName}\",");
                     }
                 }
-                builder.BlankLine();
-
-                builder.AddLines($"""
-                // Index of the slot '{slot.DescriptorName}'
-                {GeneratedCodeAttribute}
-                private const int {slotIndex(slot.PropertyName)} = {classSlotCount(target.BaseClassName)} + {i};
-                """);
             }
         }
 
         return target.Identifier;
     }
 
-    private static string slotsBoundCheck(string propertyName)
+    private static string cast(string variable, string type) => $"(({type}){variable})";
+
+    private static string wrapper(string typeName) => $"global::Epoxid.Runtime.Objects.WrapperObject<{typeName}>";
+
+    public record TargetData(string Namespace, string ClassName, ValueArray<SlotData> Slots)
     {
-        return $"""
-        if (base.DunderSlots.Length <= {slotIndex(propertyName)})
-            throw new global::System.Diagnostics.UnreachableException("Slot '{propertyName}' access error: slots have less size then slot index.");
-        """;
-    }
-
-    private static string slotIndex(string propertyName) => $"_{propertyName}_Index";
-
-    private static string classSlotCount(string className) => $"_{className}SlotCount";
-
-    public record TargetData(
-        string Namespace,
-        string ClassName,
-        string BaseClassName,
-        ValueArray<SlotData> Slots)
-    {
-        public string Identifier => $"{Namespace}+{ClassName}_{Slots.Length}.g.cs";
+        public string Identifier => $"g_{Namespace}+{ClassName}.g.cs";
     }
 
     public record SlotData(
         string PropertyName,
         string DescriptorName,
         string TypeName,
-        bool IsTypeNullable,
-        bool IsValueType,
-        Accessibility PropertyAccessibility,
-        Accessibility GetAccessibility,
-        Accessibility SetAccessibility)
+        bool IsEpoxidType,
+        bool NeedNullableAnnotation)
     {
-        public string TypeString => TypeName + (IsTypeNullable && !IsValueType ? "?" : "");
+        public string TypeString => TypeName + (NeedNullableAnnotation ? '?' : "");
     }
 }

@@ -5,6 +5,7 @@ using Epoxid.SyntaxAnalysis.Common;
 using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.Runtime;
 using Epoxid.CodeGen;
+using Epoxid.Runtime.Objects;
 
 [assembly: InternalsVisibleTo("Epoxid.Tests")]
 
@@ -36,6 +37,8 @@ public static class Program
             Root = fileView,
             PositionMap = tokenizer.PositionMap,
         };
+
+        RuntimeInitializer.InitializeObjectType();
 
         var env = new EpEnvironment()
         {

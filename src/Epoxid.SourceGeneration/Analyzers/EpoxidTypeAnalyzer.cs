@@ -55,24 +55,7 @@ public class EpoxidTypeAnalyzer : DiagnosticAnalyzer
         if (requiresPartial && !isPartial)
             context.ReportDiagnostic(Diagnostic.Create(Rules.MakePartial, node.Identifier.GetLocation()));
 
-        foreach (var prop in node.Members.OfType<PropertyDeclarationSyntax>())
-            analyzePropertyNeedPartial(context, prop);
-
         return requiresPartial;
-    }
-
-    private static void analyzePropertyNeedPartial(SyntaxNodeAnalysisContext context, PropertyDeclarationSyntax node)
-    {
-        if (node.Modifiers.Any(mod => mod.IsKind(SyntaxKind.PartialKeyword)))
-            return;
-
-        bool needPartial = context.SemanticModel
-            .GetDeclaredSymbol(node)
-            ?.GetAttributes()
-            .Any(SyntaxHelpers.IsSlotAttribute) ?? false;
-
-        if (needPartial)
-            context.ReportDiagnostic(Diagnostic.Create(Rules.MakePartial, node.Identifier.GetLocation()));
     }
 
     private static void analyzeNeedToBeDerived(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax node)
