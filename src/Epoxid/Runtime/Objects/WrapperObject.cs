@@ -11,4 +11,6 @@ public class WrapperObject<T> : EpObject
     }
 
     public static readonly EpType Wrapper = new("wrapper object", [Object], EpType.Type);
+
+    public override string ToString() => $"<wrapper object for '{Value}' CLR value>";
 }

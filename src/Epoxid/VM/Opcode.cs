@@ -39,8 +39,10 @@ internal enum Opcode : byte
     StLocal,
     LdCell,
     StCell,
-    GAttr,
-    SAttr,
+    GAttrPeek,
+    SAttrPeek,
+    GAttrPop,
+    SAttrPop,
 
     // Extended arguments
     Ext1,

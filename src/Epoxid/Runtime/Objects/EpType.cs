@@ -23,8 +23,6 @@ public partial class EpType : EpObject
         Type.DunderCall = dunderCallImplementation;
     }
 
-    internal static EpType EmptyCtor() => new();
-
     internal void Initialize(string name, EpType[] bases)
     {
         DunderName = name;
@@ -40,7 +38,7 @@ public partial class EpType : EpObject
         foreach (var descriptor in slots)
         {
             var slotName = new EpString(descriptor.DescriptorName);
-            if (!DunderDict.TryAdd(slotName, new WrapperObject<KnownSlotDescriptor>(descriptor)))
+            if (!DunderDict.TryAdd(slotName, descriptor))
             {
                 throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for {slotName}");
             }
@@ -56,6 +54,8 @@ public partial class EpType : EpObject
             postInitialization();
             return;
         }
+
+        // TODO: methods copying on arbitrary types
     }
 
     /// <summary>
@@ -69,6 +69,8 @@ public partial class EpType : EpObject
         DunderGetAttribute = Object.DunderGetAttribute;
         DunderSetAttr = Object.DunderSetAttr;
     }
+
+    internal static EpType EmptyCtor() => new();
 
     private EpType()
         : base()

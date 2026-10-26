@@ -4,7 +4,7 @@ using Epoxid.SyntaxAnalysis.Tokens;
 
 namespace Epoxid.Tests;
 
-public class TestInterpreter
+public class TestInterpreter : TestWithRuntimeUsage
 {
     private const string skip = "Test disabled while refactoring to VM";
 

@@ -59,7 +59,7 @@ public class SlotGenerator : BaseGenerator<SlotGenerator.TargetData>
         {
             builder.AddLines($"""
             {GeneratedCodeAttribute}
-            private static readonly {readonly_list_of_descriptors} known_slots =
+            private static {readonly_list_of_descriptors} known_slots =>
             [
             """);
             using (builder.BlockIndented("];"))

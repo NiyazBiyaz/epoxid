@@ -342,7 +342,7 @@ internal static class Core
         TResult? result = default;
         foreach (var type in objClass.DunderMro)
         {
-            if (type.DunderClass.DunderDict!.TryGetValue(methodName, out var searchResult))
+            if (type.DunderDict!.TryGetValue(methodName, out var searchResult))
             {
                 if (searchResult is TResult found)
                 {

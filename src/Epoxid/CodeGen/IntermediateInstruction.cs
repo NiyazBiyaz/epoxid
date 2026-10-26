@@ -53,13 +53,17 @@ internal record IntermediateInstruction
         Opcode.LdArg or
         Opcode.LdVar or
         Opcode.LdLocal or
-        Opcode.GAttr or
+        Opcode.GAttrPeek or
         Opcode.LdCell => +1,
+
+        Opcode.GAttrPop => 0,
 
         Opcode.StVar or
         Opcode.StCell or
         Opcode.StLocal or
-        Opcode.SAttr => -1,
+        Opcode.SAttrPeek => -1,
+
+        Opcode.SAttrPop => -2,
 
         Opcode.Ext1 or Opcode.Ext2 or Opcode.Ext3 => 0,
 

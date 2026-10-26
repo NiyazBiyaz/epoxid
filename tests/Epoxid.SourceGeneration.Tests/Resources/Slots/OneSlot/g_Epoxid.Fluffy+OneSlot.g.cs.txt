@@ -7,7 +7,7 @@ namespace Epoxid.Fluffy;
 partial class OneSlot
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Epoxid.SourceGeneration", null)]
-    private static readonly global::System.Collections.Generic.IReadOnlyList<global::Epoxid.Runtime.Objects.KnownSlotDescriptor> known_slots =
+    private static global::System.Collections.Generic.IReadOnlyList<global::Epoxid.Runtime.Objects.KnownSlotDescriptor> known_slots =>
     [
         new global::Epoxid.Runtime.Objects.KnownSlotDescriptor()
         {

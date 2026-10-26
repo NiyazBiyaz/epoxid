@@ -283,15 +283,21 @@ internal partial class CodeBuilder(SymbolTable symbolTable)
         ArgumentValue = index,
     });
 
-    public void GAttr(int index) => addInstruction(new()
+    public void GAttrPeek(int index) => addInstruction(new()
     {
-        Opcode = Opcode.GAttr,
+        Opcode = Opcode.GAttrPeek,
         ArgumentValue = index,
     });
 
-    public void SAttr(int index) => addInstruction(new()
+    public void GAttrPop(int index) => addInstruction(new()
     {
-        Opcode = Opcode.SAttr,
+        Opcode = Opcode.GAttrPop,
+        ArgumentValue = index,
+    });
+
+    public void SAttrPeek(int index) => addInstruction(new()
+    {
+        Opcode = Opcode.SAttrPeek,
         ArgumentValue = index,
     });
 

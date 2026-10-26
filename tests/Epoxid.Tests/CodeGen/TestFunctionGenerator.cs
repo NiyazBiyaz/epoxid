@@ -6,7 +6,7 @@ using Epoxid.SyntaxAnalysis.Tokens;
 
 namespace Epoxid.Tests.CodeGen;
 
-public class TestFunctionGenerator
+public class TestFunctionGenerator : TestWithRuntimeUsage
 {
     [Fact]
     public void TestValidateParameters_AllFine()

@@ -501,7 +501,7 @@ internal static class CodeGenerator
             case DotOperationPrimaryView attr:
             {
                 namedExpression(builder, attr.Left);
-                loadAttribute(builder, attr.Right.RawString);
+                loadAttributeAsExpression(builder, attr.Right.RawString);
                 break;
             }
             case CallWithArgumentsPrimaryView call:
@@ -809,13 +809,19 @@ internal static class CodeGenerator
     private static void storeAttribute(CodeBuilder builder, string attrName)
     {
         var nameIndex = builder.AddVariable(attrName);
-        builder.SAttr(nameIndex);
+        builder.SAttrPeek(nameIndex);
     }
 
     private static void loadAttribute(CodeBuilder builder, string attrName)
     {
         var nameIndex = builder.AddVariable(attrName);
-        builder.GAttr(nameIndex);
+        builder.GAttrPeek(nameIndex);
+    }
+
+    private static void loadAttributeAsExpression(CodeBuilder builder, string attrName)
+    {
+        var nameIndex = builder.AddVariable(attrName);
+        builder.GAttrPop(nameIndex);
     }
 
     private static void stringTemplateAtom(CodeBuilder builder, StringTemplateAtomView tStr) => throw new NotImplementedException();

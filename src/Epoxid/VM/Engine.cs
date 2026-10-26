@@ -266,6 +266,13 @@ internal class Engine
                     function.Environment = environment;
                     break;
                 }
+                case Opcode.Pop:
+                {
+                    int count = current.Argument;
+                    for (int i = 0; i < count; i++)
+                        pop();
+                    break;
+                }
 
                 #endregion
                 #region Load/Store operations
@@ -334,7 +341,7 @@ internal class Engine
                 {
                     throw new NotImplementedException("StCell");
                 }
-                case Opcode.GAttr:
+                case Opcode.GAttrPeek:
                 {
                     addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
 
@@ -347,9 +354,22 @@ internal class Engine
 
                     break;
                 }
-                case Opcode.SAttr:
+                case Opcode.SAttrPeek:
                 {
                     throw new NotImplementedException();
+                }
+                case Opcode.GAttrPop:
+                {
+                    addExtendedArg(ref extendedArgsRegister, 0, current.Argument);
+
+                    int nameIndex = getAndErase(ref extendedArgsRegister);
+                    string name = code.VarNames[nameIndex];
+
+                    var stem = pop();
+                    var value = Core.GetAttribute(stem, (EpString)name); // TODO: string interning?
+                    push(value);
+
+                    break;
                 }
 
                 #endregion
@@ -368,6 +388,9 @@ internal class Engine
                     break;
 
                 #endregion
+
+                default:
+                    throw new InvalidOperationException($"Invalid opcode value: {current.Opcode}");
             }
 
             programCounter += 1;

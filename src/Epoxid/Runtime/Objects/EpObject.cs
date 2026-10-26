@@ -35,7 +35,7 @@ public class EpObject
         DunderClass = null!;
     }
 
-    internal static readonly IReadOnlyList<KnownSlotDescriptor> KnownSlots = [
+    internal static IReadOnlyList<KnownSlotDescriptor> KnownSlots => [
         new()
         {
             GetSlot = static (_, instance, _) => instance.DunderClass,
@@ -63,11 +63,6 @@ public class EpObject
             throw new ArgumentException($"Cannot return object: given name is not a string: {nameObject}", nameof(nameObject));
 
         var fromClassDict = Core.SearchMethod<EpObject>(self.DunderClass, name);
-
-        if (fromClassDict is WrapperObject<KnownSlotDescriptor> knowDescriptor)
-        {
-            return knowDescriptor.Value.GetSlot(knowDescriptor, self, name);
-        }
 
         if (fromClassDict != null && fromClassDict.DunderClass.DunderGet != null && fromClassDict.DunderClass.DunderSet != null)
         {
