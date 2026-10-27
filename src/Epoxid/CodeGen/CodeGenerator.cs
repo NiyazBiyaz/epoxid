@@ -191,9 +191,27 @@ internal static class CodeGenerator
                 builder.Ret();
                 break;
             }
-            case BreakStatementView brk:
-            case ContinueStatementView cont:
-                throw new NotImplementedException();
+            case BreakStatementView:
+            {
+                if (!builder.TryGetLoop(out var loop))
+                {
+                    throw new SyntaxErrorException("'break' outside of a loop."); // TODO: proper error handling
+                }
+
+                builder.BrcForw(loop.EndLabel);
+                break;
+            }
+
+            case ContinueStatementView:
+            {
+                if (!builder.TryGetLoop(out var loop))
+                {
+                    throw new SyntaxErrorException("'break' outside of a loop."); // TODO: proper error handling
+                }
+
+                builder.BrcBack(loop.HeadLabel);
+                break;
+            }
 
             case IStarExpressionView starred:
                 starExpression(builder, starred);
@@ -221,7 +239,7 @@ internal static class CodeGenerator
             default:
                 throw new UnreachableException();
         }
-        builder.ClearStack(stmt);
+        builder.ClearStack();
     }
 
     private static void assignmentTarget(CodeBuilder builder, IAssignmentTargetVariantView target, AssignmentTargetContext context)

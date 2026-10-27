@@ -3,7 +3,6 @@ using Epoxid.Runtime;
 using Epoxid.VM;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Epoxid.SyntaxAnalysis.Common.Ast;
 
 namespace Epoxid.CodeGen;
 
@@ -87,7 +86,7 @@ internal partial class CodeBuilder(SymbolTable symbolTable)
 
     public void EndLoop() => loops.Pop();
 
-    public void ClearStack(IRedView view)
+    public void ClearStack()
     {
         Debug.Assert(stackDeltaAccumulator > -1, stackDeltaAccumulator.ToString());
 

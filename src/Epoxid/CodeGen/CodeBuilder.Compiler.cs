@@ -10,6 +10,7 @@ internal partial class CodeBuilder
     {
         fillIndexes();
 
+        // TODO: now here's would be a error with indexes after repacking long arguments.
         List<IntermediateInstruction> afterArgumentRepackingPass = [];
         foreach (var instr in instructions)
         {

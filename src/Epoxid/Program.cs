@@ -1,8 +1,6 @@
 using System.Runtime.CompilerServices;
 using Epoxid.VM;
 using Epoxid.SyntaxAnalysis;
-using Epoxid.SyntaxAnalysis.Common;
-using Epoxid.SyntaxAnalysis.Tokens;
 using Epoxid.Runtime;
 using Epoxid.CodeGen;
 using Epoxid.Runtime.Objects;
@@ -18,25 +16,9 @@ public static class Program
         if (args.Length != 1)
             return 1;
 
-        var file = File.ReadAllText(args[0]);
+        var fileContent = File.ReadAllText(args[0]);
 
-        var tokenizer = new Tokenizer(SynchronizationPoint.ClearPoint(new StringBuffer(file)));
-        var parser = new PythonParser(new TokenNodeStream(tokenizer));
-
-        var tree = parser.Parse();
-
-        if (tree == null)
-        {
-            Console.Error.WriteLine("Error while parsing file");
-            return 1;
-        }
-
-        var fileView = tree.GetView(0, null);
-        fileView.SyntaxTree = new SyntaxViewTree
-        {
-            Root = fileView,
-            PositionMap = tokenizer.PositionMap,
-        };
+        var fileView = PythonParser.ParseModuleView(fileContent.AsMemory());
 
         RuntimeInitializer.InitializeObjectType();
 
@@ -46,12 +28,7 @@ public static class Program
             Module = new(),
         };
 
-        var st = SymbolTable.Create(fileView, "__main__");
-        var builder = new CodeBuilder(st);
-
-        CodeGenerator.Generate(builder, fileView);
-
-        var code = builder.Compile();
+        var code = CodeFactory.CompileModule(fileView, "__main__");
 
 #if DEBUG
         foreach (var instr in code.Instructions)

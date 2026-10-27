@@ -53,12 +53,12 @@ internal class SymbolTable
             addChildTable(block, childParameters, qualName, isFunction);
         }
 
-        // TODO: Maybe it's wrong, idk, needs refactor
         if (isModule)
         {
             foreach (var symbol in Symbols.Values)
             {
-                symbol.Kind = VariableKind.GlobalExplicit;
+                if (!symbol.Usage.HasFlag(VariableUsages.Used) || symbol.Usage.HasFlag(VariableUsages.DefinedLocal))
+                    symbol.Kind = VariableKind.GlobalExplicit;
             }
         }
 
