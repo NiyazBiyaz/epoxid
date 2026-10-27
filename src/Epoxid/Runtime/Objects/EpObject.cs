@@ -93,12 +93,6 @@ public class EpObject
 
         var fromClassDict = Core.SearchMethod<EpObject>(self.DunderClass, name);
 
-        if (fromClassDict is WrapperObject<KnownSlotDescriptor> knowDescriptor)
-        {
-            knowDescriptor.Value.SetSlot(knowDescriptor, self, value);
-            return;
-        }
-
         if (fromClassDict != null && fromClassDict.DunderClass.DunderGet != null && fromClassDict.DunderClass.DunderSet != null)
         {
             fromClassDict.DunderClass.DunderSet!(fromClassDict, self, value);
