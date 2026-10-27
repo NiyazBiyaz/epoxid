@@ -161,8 +161,6 @@ internal static class CodeGenerator
                     throw new NotImplementedException();
                 }
 
-                annotatedRhs(builder, cascade.Rhs);
-
                 break;
             }
             case AugmentedAssignmentView augAssign:
