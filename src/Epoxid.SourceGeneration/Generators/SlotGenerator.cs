@@ -44,7 +44,7 @@ public class SlotGenerator : BaseGenerator<SlotGenerator.TargetData>
         }
 
         return new TargetData(
-            target.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)),
+            SyntaxHelpers.DisplayNamespace(target.ContainingNamespace),
             target.Name,
             new ValueArray<SlotData>(slots.ToImmutable()));
     }

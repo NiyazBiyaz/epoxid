@@ -1,22 +1,16 @@
 using Epoxid.Runtime.Objects;
+using Epoxid.SourceGeneration;
 
 namespace Epoxid.Runtime;
 
-// Сейчас я буду использовать обычные Console.Read/Write методы и глобальное состояние,
-// но мне это не нравится.
-// Причина в том, что сейчас надо убрать "магический" Interpreter, который по сути должен
-// был использовать инверсию зависимости, но конечная реализация `print` и `input` вообще
-// должна быть в Эпоксиде при помощи примитивов из sys, которого сейчас и близко нет.
-// Так что так...
-
-public static class Builtins
+public static partial class Builtins
 {
     public static readonly Scope BuiltinsScope = new();
 
     static Builtins()
     {
-        constructFunc("print", print, print_params);
-        constructFunc("input", input, input_params);
+        constructFunc("print", print, print_parameters);
+        constructFunc("input", input, input_parameters);
         BuiltinsScope.Bind("int", EpInteger.Int);
         BuiltinsScope.Bind("float", EpFloat.Float);
         BuiltinsScope.Bind("type", EpType.Type);
@@ -31,57 +25,28 @@ public static class Builtins
         BuiltinsScope.Bind(name, func);
     }
 
-    private static readonly FunctionParametersDescription print_params = new()
+    // Here's should be 'sys.write/read', but let's just let it work for now :P
+    [BuiltinFunction("print", @"end=(EpString)""\n""", @"sep=(EpString)"" """)]
+    private static EpNone printImpl(ReadOnlySpan<EpObject> args, EpString end, EpString sep)
     {
-        VariadicPositionalParam = FunctionParameter.Args,
-        KeywordOnlyParams = [new("end", false), new("file", false), new("sep", false)],
-    };
-
-    private static EpNone print(ReadOnlySpan<EpObject> args)
-    {
-        var kwargs = args[^1];
-        // Simple 'print' implementation on C# side.
-        EpObject? end = null, sep = null;
-
-        if (kwargs is EpDict kwargsDict)
-        {
-            kwargsDict.TryGetValue((EpString)"end", out end);
-
-            // NSY
-            // kwargs.TryGetValue((PsString)"file", out var file)
-
-            kwargsDict.TryGetValue((EpString)"sep", out sep);
-        }
-
-        end ??= (EpString)"\n";
-        sep ??= (EpString)" ";
-
         bool needSep = false;
-        foreach (var obj in args)
+        foreach (var arg in args)
         {
             if (needSep)
                 Console.Write(sep);
-
-            Console.Write(obj);
-
             needSep = true;
+            Console.Write(arg);
         }
+
         Console.Write(end);
 
         return EpNone.None;
     }
 
-    private static readonly FunctionParametersDescription input_params = new()
+    [BuiltinFunction("input", @"prompt=(EpString)""""")]
+    private static EpString inputImpl(EpString prompt)
     {
-        FreeParams = [new("prompt", false)]
-    };
-
-    private static EpString input(ReadOnlySpan<EpObject> args)
-    {
-        if (args.Length == 1)
-        {
-            Console.Write(args[0]);
-        }
+        Console.Write(prompt);
 
         var input = Console.ReadLine() ?? throw new Exception("EOFError()");
 

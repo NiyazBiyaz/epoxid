@@ -13,7 +13,7 @@ public static class Rules
         "Vital",
         DiagnosticSeverity.Error,
         true,
-        "This class or property should be declared as partial for source generation."
+        "This class, method or property should be declared as partial for source generation."
     );
 
     public static readonly DiagnosticDescriptor MakeClassDerivedFromEpObject = new(
@@ -34,6 +34,16 @@ public static class Rules
         DiagnosticSeverity.Warning,
         true,
         "Constructor of the Epoxid type should call base initializer for the correct slots allocation."
+    );
+
+    public static readonly DiagnosticDescriptor MakeStatic = new(
+        "EPSG004",
+        "Element should be declared as static",
+        "Element should be declared as static",
+        "Vital",
+        DiagnosticSeverity.Error,
+        true,
+        "This method should be declared as static because it is a builtin function."
     );
 
 #pragma warning restore RS2008 // Enable analyzer release tracking
