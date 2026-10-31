@@ -14,6 +14,7 @@ public static partial class Builtins
         BuiltinsScope.Bind("int", EpInteger.Int);
         BuiltinsScope.Bind("float", EpFloat.Float);
         BuiltinsScope.Bind("type", EpType.Type);
+        BuiltinsScope.Bind("bool", EpBool.Bool);
     }
 
     private static void constructFunc(string name, FrameCallFunction function, FunctionParametersDescription description)

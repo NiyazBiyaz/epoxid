@@ -38,7 +38,7 @@ public partial class EpType : EpObject
         DunderDict ??= [];
         foreach (var descriptor in known_slots)
         {
-            if (getDunderMethod(descriptor.DescriptorName) != null)
+            if (getKnownSlot(descriptor.DescriptorName) != null)
             {
                 var slotName = new EpString(descriptor.DescriptorName);
                 if (!DunderDict.TryAdd(slotName, descriptor))
@@ -80,8 +80,8 @@ public partial class EpType : EpObject
         {
             string dunderSlotName = slotDescriptor.DescriptorName;
             bool canBeCopied = isDunderMethodName(dunderSlotName)
-                            && getDunderMethod(dunderSlotName) == null
-                            && baseType.getDunderMethod(dunderSlotName) != null
+                            && getKnownSlot(dunderSlotName) == null
+                            && baseType.getKnownSlot(dunderSlotName) != null
                             && baseType.ownsDunderMethod(dunderSlotName);
 
             if (canBeCopied)
@@ -191,13 +191,14 @@ public partial class EpType : EpObject
         }
     }
 
-    private object? getDunderMethod(ReadOnlySpan<char> methodName)
+    private object? getKnownSlot(ReadOnlySpan<char> methodName)
     {
         return methodName switch
         {
             // Not methods, but would appear as slots
-            "__name__" or "__bases__" or "__mro__" => null,
-
+            "__name__" => DunderName,
+            "__bases__" => DunderBases,
+            "__mro__" => DunderMro,
             "__new__" => DunderNew,
             "__call__" => DunderCall,
             "__init__" => DunderInit,
