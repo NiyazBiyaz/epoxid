@@ -31,9 +31,9 @@ public static class Program
         var code = CodeFactory.CompileModule(fileView, "__main__");
 
 #if DEBUG
-        foreach (var instr in code.Instructions)
+        foreach (var (i, instr) in code.Instructions.Index())
         {
-            Console.WriteLine(instr);
+            Console.WriteLine($"{i}: {instr}");
         }
 
         Console.WriteLine("==============================");

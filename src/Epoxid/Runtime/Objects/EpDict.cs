@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Epoxid.Runtime.Objects;
@@ -7,16 +8,10 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
 {
     private readonly Dictionary<EpObject, EpObject> items;
 
-    public EpDict(Dictionary<EpObject, EpObject> items)
-        : base(Dict)
-    {
-        this.items = items;
-    }
-
     public EpDict()
         : base(Dict)
     {
-        items = [];
+        items = new Dictionary<EpObject, EpObject>(comparer: new EpObjectAlternateComparer());
     }
 
     public EpObject this[EpObject key]
@@ -27,10 +22,15 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
 
     public static readonly EpDict Empty = [];
 
-    internal static readonly EpType Dict = new("dict", [Object], EpType.Type)
+    internal static EpType Dict { get; private set; } = null!;
+
+    internal static new void Ready()
     {
-        DunderLen = dunderLenImplementation,
-    };
+        Debug.Assert(RuntimeInitializer.IsInitialized);
+
+        Dict = RuntimeInitializer.Dict;
+        Dict.DunderLen = dunderLenImplementation;
+    }
 
     public ICollection<EpObject> Keys => items.Keys;
 
@@ -39,6 +39,8 @@ public class EpDict : EpObject, IDictionary<EpObject, EpObject>
     public int Count => items.Count;
 
     public bool IsReadOnly => false;
+
+    public Dictionary<EpObject, EpObject>.AlternateLookup<string> GetStringLookup() => items.GetAlternateLookup<string>();
 
     public void Add(EpObject key, EpObject value) => items.Add(key, value);
 

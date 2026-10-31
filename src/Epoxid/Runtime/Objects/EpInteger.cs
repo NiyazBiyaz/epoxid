@@ -30,22 +30,28 @@ public class EpInteger : EpObject
 
     public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 
-    internal static readonly EpType Int = new("int", [Object], EpType.Type)
+    internal static readonly EpType Int;
+
+    static EpInteger()
     {
-        DunderNew = dunderNewImplementation,
-        DunderInit = dunderInitImplementation,
-        DunderAdd = dunderAddImplementation,
-        DunderSub = dunderSubImplementation,
-        DunderMul = dunderMulImplementation,
-        DunderTrueDiv = dunderTrueDivImplementation,
-        DunderMod = dunderModImplementation,
-        DunderPow = dunderPowImplementation,
-        DunderBool = dunderBoolImplementation,
-        DunderEq = dunderEqImplementation,
-        DunderNe = dunderNeImplementation,
-        DunderGt = dunderGtImplementation,
-        DunderLt = dunderLtImplementation,
-    };
+        Int = new("int", [Object], EpType.Type)
+        {
+            DunderNew = dunderNewImplementation,
+            DunderInit = dunderInitImplementation,
+            DunderAdd = dunderAddImplementation,
+            DunderSub = dunderSubImplementation,
+            DunderMul = dunderMulImplementation,
+            DunderTrueDiv = dunderTrueDivImplementation,
+            DunderMod = dunderModImplementation,
+            DunderPow = dunderPowImplementation,
+            DunderBool = dunderBoolImplementation,
+            DunderEq = dunderEqImplementation,
+            DunderNe = dunderNeImplementation,
+            DunderGt = dunderGtImplementation,
+            DunderLt = dunderLtImplementation,
+        };
+        Int.FillSlots();
+    }
 
     private static EpInteger dunderNewImplementation(EpObject type) => new((EpType)type, 0);
 

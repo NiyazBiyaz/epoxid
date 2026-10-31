@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Epoxid.Runtime.Objects;
 
 public class KnownSlotDescriptor : EpObject
@@ -6,17 +8,20 @@ public class KnownSlotDescriptor : EpObject
     public required DescriptorSetFunction SetSlot { get; init; }
     public required string DescriptorName { get; init; }
 
-    public static readonly EpType SlotDescriptor = new(
-        "slot descriptor",
-        [Object],
-        EpType.Type)
-    {
-        DunderGet = dunderGetImplementation,
-        DunderSet = dunderSetImplementation,
-    };
+    public static EpType SlotDescriptor { get; private set; } = null!;
 
     public KnownSlotDescriptor() : base(SlotDescriptor)
     {
+    }
+
+    internal static new void Ready()
+    {
+        Debug.Assert(RuntimeInitializer.IsInitialized);
+
+        SlotDescriptor = RuntimeInitializer.SlotDescriptor;
+
+        SlotDescriptor.DunderGet = dunderGetImplementation;
+        SlotDescriptor.DunderSet = dunderSetImplementation;
     }
 
     private static EpObject? dunderGetImplementation(EpObject self, EpObject instance, EpObject owner)

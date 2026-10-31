@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Epoxid.Runtime.Objects;
@@ -105,4 +106,23 @@ public class EpString : EpObject, IEquatable<EpString>
     public override bool Equals(object? obj) => obj is EpString otherStr && Equals(otherStr);
 
     public override int GetHashCode() => Value.GetHashCode();
+}
+
+public class EpObjectAlternateComparer : IEqualityComparer<EpObject>, IAlternateEqualityComparer<string, EpObject>
+{
+    public EpObject Create(string alternate) => new EpString(alternate);
+
+    public bool Equals(string alternate, EpObject other) => other is EpString str && str.Value == alternate;
+
+    public bool Equals(EpObject? x, EpObject? y)
+    {
+        if (x == null || y == null)
+            return false;
+
+        return Core.ConvertToBool(Core.EquateObjects(x, y));
+    }
+
+    public int GetHashCode(string alternate) => alternate.GetHashCode();
+
+    public int GetHashCode([DisallowNull] EpObject obj) => obj.GetHashCode(); // TODO: change to __hash__, maybe
 }

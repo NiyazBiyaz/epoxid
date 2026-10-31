@@ -12,6 +12,9 @@ public partial class EpType : EpObject
     [Slot("__bases__")]
     public EpType[] DunderBases { get; internal set; } = null!;
 
+    [Slot("__mro__")]
+    public EpType[] DunderMro { get; internal set; } = null!;
+
     public static EpType Type { get; private set; } = null!;
 
     internal static new void Ready()
@@ -30,17 +33,27 @@ public partial class EpType : EpObject
         DunderMro = Core.MethodResolutionOrder(this);
     }
 
-    internal void EnrichSlots(IReadOnlyList<KnownSlotDescriptor>? knownSlots = null)
+    internal void FillSlots(IReadOnlyList<KnownSlotDescriptor>? additionalSlots = null)
     {
-        var slots = knownSlots ?? (this == Type ? known_slots : []);
-
         DunderDict ??= [];
-        foreach (var descriptor in slots)
+        foreach (var descriptor in known_slots)
+        {
+            if (getDunderMethod(descriptor.DescriptorName) != null)
+            {
+                var slotName = new EpString(descriptor.DescriptorName);
+                if (!DunderDict.TryAdd(slotName, descriptor))
+                {
+                    throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{slotName}'");
+                }
+            }
+        }
+
+        foreach (var descriptor in additionalSlots ?? [])
         {
             var slotName = new EpString(descriptor.DescriptorName);
             if (!DunderDict.TryAdd(slotName, descriptor))
             {
-                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for {slotName}");
+                throw new InvalidOperationException($"Cannot add slot descriptor: __dict__ already have record for '{slotName}'");
             }
         }
 
@@ -55,8 +68,196 @@ public partial class EpType : EpObject
             return;
         }
 
-        // TODO: methods copying on arbitrary types
+        foreach (var baseType in DunderMro)
+        {
+            borrowDunderMethods(baseType);
+        }
     }
+
+    private void borrowDunderMethods(EpType baseType)
+    {
+        foreach (var slotDescriptor in known_slots)
+        {
+            string dunderSlotName = slotDescriptor.DescriptorName;
+            bool canBeCopied = isDunderMethodName(dunderSlotName)
+                            && getDunderMethod(dunderSlotName) == null
+                            && baseType.getDunderMethod(dunderSlotName) != null
+                            && baseType.ownsDunderMethod(dunderSlotName);
+
+            if (canBeCopied)
+            {
+                copyDunderMethod(baseType, dunderSlotName);
+            }
+        }
+    }
+
+    private bool ownsDunderMethod(string methodName)
+    {
+        Debug.Assert(DunderDict != null);
+        var lookup = DunderDict.GetStringLookup();
+        return lookup.ContainsKey(methodName);
+    }
+
+    private void copyDunderMethod(EpType type, ReadOnlySpan<char> methodName)
+    {
+        switch (methodName)
+        {
+            case "__name__":
+            case "__bases__":
+            case "__mro__":
+                throw new ArgumentException($"Invalid method to copy: '{methodName}'");
+
+            case "__new__":
+                DunderNew = type.DunderNew;
+                break;
+            case "__call__":
+                DunderCall = type.DunderCall;
+                break;
+            case "__init__":
+                DunderInit = type.DunderInit;
+                break;
+            case "__add__":
+                DunderAdd = type.DunderAdd;
+                break;
+            case "__sub__":
+                DunderSub = type.DunderSub;
+                break;
+            case "__mul__":
+                DunderMul = type.DunderMul;
+                break;
+            case "__truediv__":
+                DunderTrueDiv = type.DunderTrueDiv;
+                break;
+            case "__mod__":
+                DunderMod = type.DunderMod;
+                break;
+            case "__pow__":
+                DunderPow = type.DunderPow;
+                break;
+            case "__bool__":
+                DunderBool = type.DunderBool;
+                break;
+            case "__len__":
+                DunderLen = type.DunderLen;
+                break;
+            case "__eq__":
+                DunderEq = type.DunderEq;
+                break;
+            case "__ne__":
+                DunderNe = type.DunderNe;
+                break;
+            case "__lt__":
+                DunderLt = type.DunderLt;
+                break;
+            case "__gt__":
+                DunderGt = type.DunderGt;
+                break;
+            case "__iadd__":
+                DunderIAdd = type.DunderIAdd;
+                break;
+            case "__isub__":
+                DunderISub = type.DunderISub;
+                break;
+            case "__imul__":
+                DunderIMul = type.DunderIMul;
+                break;
+            case "__itruediv__":
+                DunderITrueDiv = type.DunderITrueDiv;
+                break;
+            case "__imod__":
+                DunderIMod = type.DunderIMod;
+                break;
+            case "__ipow__":
+                DunderIPow = type.DunderIPow;
+                break;
+            case "__get__":
+                DunderGet = type.DunderGet;
+                break;
+            case "__set__":
+                DunderSet = type.DunderSet;
+                break;
+            case "__getattribute__":
+                DunderGetAttribute = type.DunderGetAttribute;
+                break;
+            case "__getattr__":
+                DunderGetAttr = type.DunderGetAttr;
+                break;
+            case "__setattr__":
+                DunderSetAttr = type.DunderSetAttr;
+                break;
+
+            default:
+                throw new ArgumentException($"Unhandled method name: {methodName}");
+        }
+    }
+
+    private object? getDunderMethod(ReadOnlySpan<char> methodName)
+    {
+        return methodName switch
+        {
+            // Not methods, but would appear as slots
+            "__name__" or "__bases__" or "__mro__" => null,
+
+            "__new__" => DunderNew,
+            "__call__" => DunderCall,
+            "__init__" => DunderInit,
+            "__add__" => DunderAdd,
+            "__sub__" => DunderSub,
+            "__mul__" => DunderMul,
+            "__truediv__" => DunderTrueDiv,
+            "__mod__" => DunderMod,
+            "__pow__" => DunderPow,
+            "__bool__" => DunderBool,
+            "__len__" => DunderLen,
+            "__eq__" => DunderEq,
+            "__ne__" => DunderNe,
+            "__lt__" => DunderLt,
+            "__gt__" => DunderGt,
+            "__iadd__" => DunderIAdd,
+            "__isub__" => DunderISub,
+            "__imul__" => DunderIMul,
+            "__itruediv__" => DunderITrueDiv,
+            "__imod__" => DunderIMod,
+            "__ipow__" => DunderIPow,
+            "__get__" => DunderGet,
+            "__set__" => DunderSet,
+            "__getattribute__" => DunderGetAttribute,
+            "__getattr__" => DunderGetAttr,
+            "__setattr__" => DunderSetAttr,
+            _ => throw new ArgumentException($"Unhandled method name: {methodName}"),
+        };
+    }
+
+    private static bool isDunderMethodName(string methodName) => methodName switch
+    {
+        "__new__" => true,
+        "__call__" => true,
+        "__init__" => true,
+        "__add__" => true,
+        "__sub__" => true,
+        "__mul__" => true,
+        "__truediv__" => true,
+        "__mod__" => true,
+        "__pow__" => true,
+        "__bool__" => true,
+        "__len__" => true,
+        "__eq__" => true,
+        "__ne__" => true,
+        "__lt__" => true,
+        "__gt__" => true,
+        "__iadd__" => true,
+        "__isub__" => true,
+        "__imul__" => true,
+        "__itruediv__" => true,
+        "__imod__" => true,
+        "__ipow__" => true,
+        "__get__" => true,
+        "__set__" => true,
+        "__getattribute__" => true,
+        "__getattr__" => true,
+        "__setattr__" => true,
+        _ => false,
+    };
 
     /// <summary>
     /// Copy manually managed methods from EpObject.Object to EpType.Type
@@ -81,7 +282,6 @@ public partial class EpType : EpObject
         : base(type)
     {
         Initialize(name, bases);
-        EnrichSlots();
     }
 
     public override string ToString() => $"<class '{DunderName}'>";
@@ -109,9 +309,6 @@ public partial class EpType : EpObject
     }
 
     #region Methods slots
-
-    [Slot("__mro__")]
-    public EpType[] DunderMro { get; internal set; } = null!;
 
     [Slot("__new__")]
     public UnaryFunction DunderNew { get; set; } = null!;
