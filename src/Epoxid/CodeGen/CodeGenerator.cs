@@ -541,15 +541,10 @@ internal static class CodeGenerator
         }
 
         var shortWay = builder.CreateLabel();
-        bool insertBranch = false;
         foreach (var conj in disj.Conjunctions)
         {
-            if (insertBranch)
-            {
-                builder.BrPeekTr(shortWay);
-                insertBranch = true;
-            }
             conjunction(builder, conj);
+            builder.BrPeekTr(shortWay);
         }
         builder.PutLabel(shortWay);
     }
@@ -563,15 +558,10 @@ internal static class CodeGenerator
         }
 
         var shortWay = builder.CreateLabel();
-        bool insertBranch = false;
         foreach (var inv in conj.Inversions)
         {
-            if (insertBranch)
-            {
-                builder.BrPeekFl(shortWay);
-                insertBranch = true;
-            }
             inversion(builder, inv);
+            builder.BrPeekFl(shortWay);
         }
         builder.PutLabel(shortWay);
     }
